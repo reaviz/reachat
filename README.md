@@ -1,6 +1,17 @@
 # reachat
 💬 Building Blocks for LLM UI
 
+## Features
+- Markdown
+- Code block
+- CSV Table
+- JSON Block
+- Dynamic Links ( regex )
+- Source Support
+- Image Preview Support
+- File Upload Support
+- Polygot LLM Support - Vercel, OpenAI, Claude
+
 ## References
 - https://www.chatbotui.com/
 - https://llm-ui.com/
