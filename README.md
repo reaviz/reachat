@@ -32,6 +32,39 @@
     - SessionUpload
     - SessionSendButton
 
+## API
+```ts
+const { response } = useLlm({
+  source: 'openai' | 'vercel' | 'claude',
+  renderers: [
+    Markdown
+  ]
+});
+
+export interface MessageSource {
+  url: string;
+  label: string;
+}
+
+export interface SessionMessages {
+  question: string;
+  response: string;
+  sources: MessageSource[];
+}
+
+export interface Session {
+  title: string;
+  messages: SessionMessages[];
+  createdAt: DateTime;
+  lastUpdatedAt: DateTime;
+}
+
+export interface SessionOptions {
+  animated: boolean;
+  sessions: Session[];
+}
+```
+
 ## References
 - https://www.chatbotui.com/
 - https://llm-ui.com/
