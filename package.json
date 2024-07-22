@@ -2,13 +2,109 @@
   "name": "reachat",
   "version": "1.0.0",
   "description": "Chat UI for Building LLMs",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-storybook": "storybook build",
+    "build": "vite build --mode library",
+    "lint": "eslint --ext js,ts,tsx",
+    "lint:fix": "eslint --ext js,ts,tsx --fix src",
+    "lint:prettier": "prettier --loglevel warn --write 'src/**/*.{ts,tsx,js,jsx}'",
+    "prettier": "prettier --loglevel warn --write 'src/**/*.{ts,tsx,js,jsx}'",
+    "start": "storybook dev -p 9009",
+    "test": "vitest --passWithNoTests",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
+    "prepare": "husky install"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
+  "source": "src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./index.css": "./dist/index.css"
+  },
+  "browser": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "dependencies": {
-    "reablocks": "^8.4.1"
+    "reablocks": "^8.4.1",
+    "framer-motion": "^10.16.16"
+  },
+  "devDependencies": {
+    "@storybook/addon-docs": "^8.1.1",
+    "@storybook/addon-essentials": "^8.1.1",
+    "@storybook/addon-mdx-gfm": "^8.1.1",
+    "@storybook/addon-storysource": "^8.1.1",
+    "@storybook/addon-themes": "^8.1.1",
+    "@storybook/manager-api": "^8.1.1",
+    "@storybook/preview-api": "^8.1.1",
+    "@storybook/react": "^8.1.1",
+    "@storybook/react-vite": "^8.1.1",
+    "@storybook/theming": "^8.1.1",
+    "@types/classnames": "^2.3.1",
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@typescript-eslint/parser": "^7.6.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/coverage-v8": "^1.4.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-no-relative-import-paths": "^1.5.4",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "eslint-plugin-storybook": "^0.8.0",
+    "fast-glob": "^3.3.2",
+    "husky": "^9.0.11",
+    "jsdom": "^24.0.0",
+    "lint-staged": "^15.2.2",
+    "postcss-nested": "^6.0.1",
+    "postcss-preset-env": "^9.5.2",
+    "prettier": "^3.2.5",
+    "react": "^18.0.0",
+    "react-docgen-typescript": "^2.2.2",
+    "react-dom": "^18.0.0",
+    "react-hook-form": "^7.51.1",
+    "rollup-plugin-peer-deps-external": "2.2.4",
+    "storybook": "^8.1.1",
+    "tailwindcss": "^3.4.1",
+    "tw-colors": "^3.3.1",
+    "typescript": "^4.9.5",
+    "typescript-rewrite-paths": "^1.3.1",
+    "vite": "^5.2.2",
+    "vite-plugin-checker": "^0.6.4",
+    "vite-plugin-css-injected-by-js": "^3.5.0",
+    "vite-plugin-dts": "^3.7.3",
+    "vite-plugin-static-copy": "^1.0.4",
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^1.4.0"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "arrowParens": "avoid",
+    "bracketSpacing": true,
+    "printWidth": 80
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

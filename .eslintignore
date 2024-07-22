@@ -1,0 +1,6 @@
+dist/
+types/
+docs/
+demo/
+.storybook/
+coverage/
