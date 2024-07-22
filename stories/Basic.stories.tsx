@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { Sessions, SessionsProps, Session } from '../src';
 
 export default {
@@ -7,7 +7,7 @@ export default {
   component: Sessions,
 } as Meta;
 
-const Template: Story<SessionsProps> = (args) => <Sessions {...args} />;
+const Template: StoryFn<SessionsProps> = (args) => <Sessions {...args} />;
 
 const fakeSessions: Session[] = [
   {

@@ -15,12 +15,12 @@ interface SessionInputProps {
   /**
    * Callback function to handle sending a new message.
    */
-  onSendMessage: (message: string) => void;
+  onSendMessage?: (message: string) => void;
 
   /**
    * Callback function to handle stopping the current action.
    */
-  onStopMessage: () => void;
+  onStopMessage?: () => void;
 }
 
 export const SessionInput: FC<SessionInputProps> = ({ onSendMessage, isLoading, inputPlaceholder, onStopMessage }) => {

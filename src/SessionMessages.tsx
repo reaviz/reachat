@@ -1,9 +1,9 @@
 import React from 'react';
 import { SessionMessage } from './SessionMessage';
-import { ResponseTransformer } from './types';
+import { ResponseTransformer, Conversation } from './types';
 
 interface SessionMessagesProps {
-  conversations: { id: string; question: string; response: string }[];
+  conversations: Conversation[];
   responseTransformers?: ResponseTransformer[];
 }
 
