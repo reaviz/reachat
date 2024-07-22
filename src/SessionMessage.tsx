@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { ResponseTransformer } from './types';
+import ReactMarkdown from 'react-markdown';
 
 interface SessionMessageProps {
   question: string;
@@ -23,8 +24,16 @@ export const SessionMessage: FC<SessionMessageProps> = ({
 
   return (
     <div className="conversation mb-2">
-      <p className="question font-semibold">{question}</p>
-      <p className="response text-gray-700">{transformResponse(response)}</p>
+      <div className="question font-semibold">
+        <ReactMarkdown>
+          {transformResponse(question)}
+        </ReactMarkdown>
+      </div>
+      <div className="response text-gray-700">
+        <ReactMarkdown>
+          {transformResponse(response)}
+        </ReactMarkdown>
+      </div>
     </div>
   );
 };

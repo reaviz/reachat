@@ -3,6 +3,7 @@ import { ResponseTransformer, Session } from './types';
 import { SessionsList } from './SessionsList';
 import { SessionMessages } from './SessionMessages';
 import { SessionInput } from './SessionInput';
+import { useHotkeys } from 'reakeys';
 
 export interface SessionsProps {
   /**
@@ -56,6 +57,16 @@ export interface SessionsProps {
    * Callback function to handle stopping the current action.
    */
   onStopMessage?: () => void;
+
+  /**
+   * Callback function to handle creating a new session.
+   */
+  onNewSession?: () => void;
+
+  /**
+   * Callback function to handle creating a new session.
+   */
+  onCreateNewSession?: () => void;
 }
 
 export const Sessions: FC<SessionsProps> = ({
@@ -69,7 +80,21 @@ export const Sessions: FC<SessionsProps> = ({
   inputPlaceholder = 'Type your message here...',
   onSendMessage,
   onStopMessage,
+  onNewSession,
+  onCreateNewSession
 }) => {
+  useHotkeys([
+    {
+      name: 'Create new session',
+      category: 'Chat',
+      keys: 'meta+shift+s',
+      callback: event => {
+        event.preventDefault();
+        onNewSession?.();
+      }
+    }
+  ]);
+
   return (
     <div className={`sessions-container ${viewType === 'companion' ? 'p-4' : 'p-8'}`}>
       {isLoading ? (
@@ -81,6 +106,7 @@ export const Sessions: FC<SessionsProps> = ({
             activeSessionId={activeSessionId}
             onSelectSession={onSelectSession}
             onDeleteSession={onDeleteSession}
+            onCreateNewSession={onCreateNewSession}
           />
           {activeSessionId && (
             <div className="active-session mt-4">
