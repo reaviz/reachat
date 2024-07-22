@@ -1,5 +1,5 @@
 export interface LlmOptions {
-  provider: 'openai' | 'claude' | 'gemini';
+  // provider: 'openai' | 'claude' | 'gemini';
 }
 
 export const useLlm = (options: LlmOptions) => {

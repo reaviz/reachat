@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { ResponseTransformer, Session } from './types';
 import { SessionsList } from './SessionsList';
 import { SessionMessages } from './SessionMessages';
+import { SessionInput } from './SessionInput';
 
 export interface SessionsProps {
   /**
@@ -22,6 +23,16 @@ export interface SessionsProps {
   activeSessionId?: string;
 
   /**
+   * Indicates whether the sessions are currently loading.
+   */
+  isLoading?: boolean;
+
+  /**
+   * Placeholder text for the input field.
+   */
+  inputPlaceholder?: string;
+
+  /**
    * Array of transformer functions to apply to the response.
    */
   responseTransformers?: ResponseTransformer[];
@@ -35,6 +46,11 @@ export interface SessionsProps {
    * Callback function to handle when a session is deleted.
    */
   onDeleteSession?: (sessionId: string) => void;
+
+  /**
+   * Callback function to handle sending a new message.
+   */
+  onSendMessage?: (message: string) => void;
 }
 
 export const Sessions: FC<SessionsProps> = ({
@@ -44,7 +60,9 @@ export const Sessions: FC<SessionsProps> = ({
   onDeleteSession,
   isLoading,
   activeSessionId,
-  responseTransformers = []
+  responseTransformers = [],
+  inputPlaceholder = 'Type your message here...',
+  onSendMessage
 }) => {
   return (
     <div className={`sessions-container ${viewType === 'companion' ? 'p-4' : 'p-8'}`}>
@@ -68,6 +86,11 @@ export const Sessions: FC<SessionsProps> = ({
                     <SessionMessages
                       conversations={session.conversations}
                       responseTransformers={responseTransformers}
+                    />
+                    <SessionInput
+                      inputPlaceholder={inputPlaceholder}
+                      isLoading={isLoading}
+                      onSendMessage={onSendMessage}
                     />
                   </div>
                 ))}
