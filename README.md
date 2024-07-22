@@ -12,25 +12,14 @@
 - File Upload Support
 - Typeahead
 - Keyboard shortcuts
-- Polygot LLM Support - Vercel, OpenAI, Claude
+- Tailwind for Themeing
+- Polygot LLM Support - Vercel, OpenAI, Claude, Gemini
 
-## Components
-- Sessions
-  - SessionList
-    - NewSessionButton
-    - SessionListItem
-  - SessionMessages
-    - SessionMessage
-      - SessionQuestion
-      - Session Reply
-        - Session Renderer
-      - SessionSource
-      - SessionRefreshButton
-      - SessionRatingButton
-  - SessionInput
-    - SessionTypeahead
-    - SessionUpload
-    - SessionSendButton
+## Installation
+TODO
+
+## Themeing
+TODO
 
 ## References
 - https://www.chatbotui.com/

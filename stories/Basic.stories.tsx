@@ -13,17 +13,21 @@ const fakeSessions: Session[] = [
   {
     id: '1',
     title: 'Session 1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
     conversations: [
-      { id: '1', question: 'What is React?', response: 'React is a JavaScript library for building user interfaces.' },
-      { id: '2', question: 'What is JSX?', response: 'JSX is a syntax extension for JavaScript.' },
+      { id: '1', question: 'What is React?', response: 'React is a JavaScript library for building user interfaces.', createdAt: new Date(), updatedAt: new Date() },
+      { id: '2', question: 'What is JSX?', response: 'JSX is a syntax extension for JavaScript.', createdAt: new Date(), updatedAt: new Date() },
     ],
   },
   {
     id: '2',
     title: 'Session 2',
+    createdAt: new Date(),
+    updatedAt: new Date(),
     conversations: [
-      { id: '1', question: 'What is TypeScript?', response: 'TypeScript is a typed superset of JavaScript.' },
-      { id: '2', question: 'What is a component?', response: 'A component is a reusable piece of UI.' },
+      { id: '1', question: 'What is TypeScript?', response: 'TypeScript is a typed superset of JavaScript.', createdAt: new Date(), updatedAt: new Date() },
+      { id: '2', question: 'What is a component?', response: 'A component is a reusable piece of UI.', createdAt: new Date(), updatedAt: new Date() },
     ],
   },
 ];

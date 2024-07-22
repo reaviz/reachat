@@ -6,8 +6,8 @@ import { SessionInput } from './SessionInput';
 
 export interface SessionsProps {
   /**
-   * The type of prompt to display. Companion prompts are smaller and are 
-   * meant to be displayed alongside other content. Full prompts are larger 
+   * The type of prompt to display. Companion prompts are smaller and are
+   * meant to be displayed alongside other content. Full prompts are larger
    * and are meant to be displayed on their own.
    */
   viewType: 'companion' | 'full';
@@ -51,6 +51,11 @@ export interface SessionsProps {
    * Callback function to handle sending a new message.
    */
   onSendMessage?: (message: string) => void;
+
+  /**
+   * Callback function to handle stopping the current action.
+   */
+  onStopMessage?: () => void;
 }
 
 export const Sessions: FC<SessionsProps> = ({
@@ -62,7 +67,8 @@ export const Sessions: FC<SessionsProps> = ({
   activeSessionId,
   responseTransformers = [],
   inputPlaceholder = 'Type your message here...',
-  onSendMessage
+  onSendMessage,
+  onStopMessage,
 }) => {
   return (
     <div className={`sessions-container ${viewType === 'companion' ? 'p-4' : 'p-8'}`}>
@@ -91,6 +97,7 @@ export const Sessions: FC<SessionsProps> = ({
                       inputPlaceholder={inputPlaceholder}
                       isLoading={isLoading}
                       onSendMessage={onSendMessage}
+                      onStopMessage={onStopMessage}
                     />
                   </div>
                 ))}

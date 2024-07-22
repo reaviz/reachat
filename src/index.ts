@@ -6,3 +6,4 @@ export * from './SessionMessage';
 export * from './SessionListItem';
 export * from './SessionsList';
 export * from './types';
+export * from './theme';
