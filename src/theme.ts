@@ -1,5 +1,6 @@
 export interface ChatTheme {
   base: string;
+  empty: string;
   sessions: {
     base: string;
     create: string;
@@ -27,6 +28,7 @@ export interface ChatTheme {
 
 export const chatTheme: ChatTheme = {
   base: 'text-white',
+  empty: 'text-center flex-1',
   sessions: {
     base: '',
     create: 'mb-4',

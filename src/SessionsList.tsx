@@ -16,11 +16,6 @@ interface SessionsListProps {
   activeSessionId?: string;
 
   /**
-   * Additional class name to apply to the list.
-   */
-  className?: string;
-
-  /**
    * Theme to use for the sessions list.
    */
   theme?: ChatTheme;
@@ -49,7 +44,6 @@ interface SessionsListProps {
 export const SessionsList: FC<SessionsListProps> = ({
   sessions,
   theme,
-  className,
   newSessionText = 'New Session',
   activeSessionId,
   onSelectSession,
@@ -57,7 +51,7 @@ export const SessionsList: FC<SessionsListProps> = ({
   onCreateNewSession
 }) => {
   return (
-    <List className={cn(theme.sessions.base, className)}>
+    <List className={cn(theme.sessions.base)}>
       <ListItem disableGutters disablePadding>
         <Button
           fullWidth

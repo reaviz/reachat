@@ -36,9 +36,43 @@ export const Console = () => {
       <Sessions
         viewType="console"
         sessions={fakeSessions}
+        isLoading={false}
+        responseTransformers={[]}
+        onDeleteSession={() => {}}
+      />
+    </div>
+  );
+};
+
+export const NewSessionContent = () => {
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+      <Sessions
+        viewType="console"
+        sessions={fakeSessions}
+        isLoading={false}
+        newSessionContent={
+          <div className="text-lg w-full text-center">
+            Type a question to get a response...
+          </div>
+        }
+        responseTransformers={[]}
+        onDeleteSession={() => {}}
+      />
+    </div>
+  );
+};
+
+export const DefaultSession = () => {
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+      <Sessions
+        viewType="console"
+        sessions={fakeSessions}
         activeSessionId="1"
         isLoading={false}
         responseTransformers={[]}
+        onDeleteSession={() => {}}
       />
     </div>
   );
@@ -50,9 +84,9 @@ export const Companion = () => {
       <Sessions
         viewType="companion"
         sessions={fakeSessions}
-        activeSessionId="1"
         isLoading={false}
         responseTransformers={[]}
+        onDeleteSession={() => {}}
       />
     </div>
   );
@@ -60,7 +94,7 @@ export const Companion = () => {
 
 export const ResponseTransformer = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -69,6 +103,7 @@ export const ResponseTransformer = () => {
         responseTransformers={[
           (response, next) => next(response.toUpperCase())
         ]}
+        onDeleteSession={() => {}}
       />
     </div>
   );
@@ -80,9 +115,9 @@ export const Loading = () => {
       <Sessions
         viewType="console"
         sessions={fakeSessions}
-        activeSessionId="1"
         isLoading={true}
         responseTransformers={[]}
+        onDeleteSession={() => {}}
       />
     </div>
   );
@@ -96,6 +131,7 @@ export const FileUploads = () => {
         sessions={fakeSessions}
         activeSessionId="1"
         allowedFiles={['.pdf', '.docx']}
+        onDeleteSession={() => {}}
       />
     </div>
   );
@@ -109,6 +145,20 @@ export const DefaultInputValue = () => {
         inputDefaultValue="Pre-populate the prompt via the default value property"
         sessions={fakeSessions}
         activeSessionId="1"
+        onDeleteSession={() => {}}
+      />
+    </div>
+  );
+};
+
+export const UndeleteableSessions = () => {
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+      <Sessions
+        viewType="console"
+        sessions={fakeSessions}
+        activeSessionId="1"
+        onDeleteSession={null}
       />
     </div>
   );

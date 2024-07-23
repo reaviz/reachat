@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useState } from 'react';
 import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
 import { ResponseTransformer, Session } from './types';
@@ -62,6 +62,11 @@ export interface SessionsProps {
   theme?: ChatTheme;
 
   /**
+   * Content to display when there are no sessions selected or a new session is started.
+   */
+  newSessionContent?: string | ReactNode;
+
+  /**
    * Callback function to handle when a session is selected.
    */
   onSelectSession?: (sessionId: string) => void;
@@ -100,6 +105,7 @@ export const Sessions: FC<SessionsProps> = ({
   onSendMessage,
   onStopMessage,
   onNewSession,
+  newSessionContent = '',
   allowedFiles,
   newSessionText = 'New Session',
   inputDefaultValue
@@ -155,29 +161,38 @@ export const Sessions: FC<SessionsProps> = ({
             newSessionText={newSessionText}
             activeSessionId={internalActiveSessionID}
             onSelectSession={handleSelectSession}
-            onDeleteSession={handleDeleteSession}
+            onDeleteSession={onDeleteSession ? handleDeleteSession : null}
             onCreateNewSession={handleCreateNewSession}
           />
-          {internalActiveSessionID && (
-            <div className="flex-1">
-              {sessions
-                .filter(session => session.id === internalActiveSessionID)
-                .map(session => (
-                  <SessionMessages
-                    key={session.id}
-                    session={session}
-                    responseTransformers={responseTransformers}
-                    inputPlaceholder={inputPlaceholder}
-                    inputDefaultValue={inputDefaultValue}
-                    isLoading={isLoading}
-                    allowedFiles={allowedFiles}
-                    theme={theme}
-                    onSendMessage={onSendMessage}
-                    onStopMessage={onStopMessage}
-                  />
-                ))}
-            </div>
-          )}
+          <div className="flex-1 h-full flex flex-col">
+            {internalActiveSessionID ? (
+              <>
+                {sessions
+                  .filter(session => session.id === internalActiveSessionID)
+                  .map(session => (
+                    <SessionMessages
+                      key={session.id}
+                      session={session}
+                      responseTransformers={responseTransformers}
+                      theme={theme}
+                    />
+                  ))}
+              </>
+            ) : (
+              <div className={cn(theme.empty)}>
+                {newSessionContent}
+              </div>
+            )}
+            <SessionInput
+              theme={theme}
+              inputDefaultValue={inputDefaultValue}
+              inputPlaceholder={inputPlaceholder}
+              isLoading={isLoading}
+              allowedFiles={allowedFiles}
+              onSendMessage={onSendMessage}
+              onStopMessage={onStopMessage}
+            />
+          </div>
         </>
       )}
     </div>

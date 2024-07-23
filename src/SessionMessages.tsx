@@ -6,11 +6,6 @@ import { ChatTheme } from './theme';
 
 interface SessionMessagesProps {
   /**
-   * Default value for the input field.
-   */
-  inputDefaultValue?: string;
-
-  /**
    * Session to display.
    */
   session: Session;
@@ -24,46 +19,15 @@ interface SessionMessagesProps {
    * Theme to use for the session messages.
    */
   theme?: ChatTheme;
-
-  /**
-   * Allowed file types for upload.
-   */
-  allowedFiles?: string[];
-
-  /**
- * Indicates whether the sessions are currently loading.
- */
-  isLoading?: boolean;
-
-  /**
-   * Placeholder text for the input field.
-   */
-  inputPlaceholder?: string;
-
-  /**
-   * Callback function to handle sending a new message.
-   */
-  onSendMessage?: (message: string) => void;
-
-  /**
-   * Callback function to handle stopping the current action.
-   */
-  onStopMessage?: () => void;
 }
 
 export const SessionMessages: React.FC<SessionMessagesProps> = ({
   session,
   responseTransformers,
-  inputPlaceholder,
   theme,
-  isLoading,
-  allowedFiles,
-  inputDefaultValue,
-  onSendMessage,
-  onStopMessage
 }) => {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col flex-1">
       <h2 className="text-2xl font-bold">{session.title}</h2>
       <div className="mt-2 flex-1">
         {session.conversations.map((conversation) => (
@@ -75,15 +39,6 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
           />
         ))}
       </div>
-      <SessionInput
-        theme={theme}
-        inputDefaultValue={inputDefaultValue}
-        inputPlaceholder={inputPlaceholder}
-        isLoading={isLoading}
-        allowedFiles={allowedFiles}
-        onSendMessage={onSendMessage}
-        onStopMessage={onStopMessage}
-      />
     </div>
 
   );
