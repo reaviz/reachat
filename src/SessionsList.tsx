@@ -32,7 +32,7 @@ export const SessionsList: FC<SessionsListProps> = ({
           className={cn(theme.list.create)}
           onClick={onCreateNewSession}
         >
-          Create New Session
+          New Session
         </Button>
       </ListItem>
       {sessions?.map((session) => (
