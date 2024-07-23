@@ -34,6 +34,7 @@
   "browser": "dist/index.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
+    "@radix-ui/react-slot": "^1.1.0",
     "framer-motion": "^10.16.16",
     "reablocks": "^8.4.1",
     "react-markdown": "^9.0.1",

@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
+import { FC, PropsWithChildren, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
 import { ResponseTransformer, Session } from './types';
@@ -8,7 +8,7 @@ import { SessionInput } from './SessionInput';
 import { ChatTheme, chatTheme } from './theme';
 import { SessionsContext } from './SessionsContext';
 
-export interface SessionsProps {
+export interface SessionsProps extends PropsWithChildren {
   /**
    * The type of prompt to display. Companion prompts are smaller and are
    * meant to be displayed alongside other content. Full prompts are larger
