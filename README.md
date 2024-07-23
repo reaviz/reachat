@@ -1,5 +1,30 @@
-# reachat
-💬 Building Blocks for LLM UI
+<div align="center">
+  <img width="650" src=".storybook/logo.png">
+  <br />
+  Building Blocks for LLM UI
+  <br /><br />
+  <a href="https://github.com/reaviz/reachat/actions/workflows/build.yml">
+    <img src="https://github.com/reaviz/reachat/actions/workflows/build.yml/badge.svg" />
+  </a>
+  &nbsp;
+  <a href="https://npm.im/reachat" target="_blank">
+    <img src="https://img.shields.io/npm/v/reachat.svg" />
+  </a>&nbsp;
+  <a href="https://npm.im/reachat" target="_blank">
+    <img src="https://badgen.net/npm/dw/reachat" />
+  </a>&nbsp;
+  <a href="https://github.com/reaviz/reachat/blob/master/LICENSE">
+    <img src="https://badgen.now.sh/badge/license/apache2" />
+  </a>&nbsp;
+  <a href="https://github.com/reaviz/reachat">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/reaviz/reachat?style=social" />
+  </a>&nbsp;
+  <a href="https://discord.gg/tt8wGExq35" target="_blank">
+    <img src="https://img.shields.io/discord/773948315037073409?label=discord" />
+  </a>
+</div>
+
+---
 
 ## Features
 - Markdown

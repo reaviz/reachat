@@ -1,11 +1,11 @@
 import { create } from '@storybook/theming/create';
-// import ReablocksLogo from '../docs/assets/logo.svg';
+import ReachatLogo from './logo.svg';
 
 export default create({
   base: 'dark',
-  brandTitle: 'reablocks',
-  brandUrl: 'https://github.com/reaviz/reablocks',
-  // brandImage: ReablocksLogo,
+  brandTitle: 'reachat',
+  brandUrl: 'https://github.com/reaviz/reachat',
+  brandImage: ReachatLogo,
   colorPrimary: '#0C77FF',
   appContentBg: '#11111F',
   appPreviewBg: '#11111F',
