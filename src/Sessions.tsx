@@ -151,50 +151,46 @@ export const Sessions: FC<SessionsProps> = ({
       'p-4': viewType === 'companion',
       'flex w-full gap-5 h-full': viewType === 'console'
     })}>
-      {isLoading ? (
-        <div className="text-center text-gray-500">Loading...</div>
-      ) : (
-        <>
-          <SessionsList
-            sessions={sessions}
+      <>
+        <SessionsList
+          sessions={sessions}
+          theme={theme}
+          newSessionText={newSessionText}
+          activeSessionId={internalActiveSessionID}
+          onSelectSession={handleSelectSession}
+          onDeleteSession={onDeleteSession ? handleDeleteSession : null}
+          onCreateNewSession={handleCreateNewSession}
+        />
+        <div className="flex-1 h-full flex flex-col">
+          {internalActiveSessionID ? (
+            <>
+              {sessions
+                .filter(session => session.id === internalActiveSessionID)
+                .map(session => (
+                  <SessionMessages
+                    key={session.id}
+                    session={session}
+                    responseTransformers={responseTransformers}
+                    theme={theme}
+                  />
+                ))}
+            </>
+          ) : (
+            <div className={cn(theme.empty)}>
+              {newSessionContent}
+            </div>
+          )}
+          <SessionInput
             theme={theme}
-            newSessionText={newSessionText}
-            activeSessionId={internalActiveSessionID}
-            onSelectSession={handleSelectSession}
-            onDeleteSession={onDeleteSession ? handleDeleteSession : null}
-            onCreateNewSession={handleCreateNewSession}
+            inputDefaultValue={inputDefaultValue}
+            inputPlaceholder={inputPlaceholder}
+            isLoading={isLoading}
+            allowedFiles={allowedFiles}
+            onSendMessage={onSendMessage}
+            onStopMessage={onStopMessage}
           />
-          <div className="flex-1 h-full flex flex-col">
-            {internalActiveSessionID ? (
-              <>
-                {sessions
-                  .filter(session => session.id === internalActiveSessionID)
-                  .map(session => (
-                    <SessionMessages
-                      key={session.id}
-                      session={session}
-                      responseTransformers={responseTransformers}
-                      theme={theme}
-                    />
-                  ))}
-              </>
-            ) : (
-              <div className={cn(theme.empty)}>
-                {newSessionContent}
-              </div>
-            )}
-            <SessionInput
-              theme={theme}
-              inputDefaultValue={inputDefaultValue}
-              inputPlaceholder={inputPlaceholder}
-              isLoading={isLoading}
-              allowedFiles={allowedFiles}
-              onSendMessage={onSendMessage}
-              onStopMessage={onStopMessage}
-            />
-          </div>
-        </>
-      )}
+        </div>
+      </>
     </div>
   );
 };
