@@ -1,3 +1,4 @@
+import { Button } from 'reablocks';
 import { FC, useState, KeyboardEvent } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -53,20 +54,21 @@ export const SessionInput: FC<SessionInputProps> = ({ onSendMessage, isLoading, 
         disabled={isLoading}
       />
       <div className="mt-2 flex space-x-2">
-        <button
+        <Button
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
           onClick={handleSendMessage}
+          fullWidth
           disabled={isLoading}
         >
           Send
-        </button>
+        </Button>
         {isLoading && (
-          <button
+          <Button
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
             onClick={onStopMessage}
           >
             Stop
-          </button>
+          </Button>
         )}
       </div>
     </div>

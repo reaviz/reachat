@@ -3,8 +3,15 @@ import { Meta, StoryFn } from '@storybook/react';
 import { Sessions, SessionsProps, Session } from '../src';
 
 export default {
-  title: 'Components/Sessions',
+  title: 'Examples',
   component: Sessions,
+  decorators: [
+    (Story) => (
+      <div style={{ width: '750px' }}>
+        <Story />
+      </div>
+    ),
+  ],
 } as Meta;
 
 const Template: StoryFn<SessionsProps> = (args) => <Sessions {...args} />;
@@ -32,10 +39,33 @@ const fakeSessions: Session[] = [
   },
 ];
 
-export const Default = Template.bind({});
+export const Console = Template.bind({});
+Console.args = {
+  viewType: 'console',
+  sessions: fakeSessions,
+  activeSessionId: '1',
+  isLoading: false,
+  onSelectSession: (sessionId: string) => console.log(`Selected session: ${sessionId}`),
+  onDeleteSession: (sessionId: string) => console.log(`Deleted session: ${sessionId}`),
+  onSendMessage: (message: string) => console.log(`Sent message: ${message}`),
+  responseTransformers: []
+};
 
-Default.args = {
-  viewType: 'full',
+export const Companion = Template.bind({});
+Companion.args = {
+  viewType: 'companion',
+  sessions: fakeSessions,
+  activeSessionId: '1',
+  isLoading: false,
+  onSelectSession: (sessionId: string) => console.log(`Selected session: ${sessionId}`),
+  onDeleteSession: (sessionId: string) => console.log(`Deleted session: ${sessionId}`),
+  onSendMessage: (message: string) => console.log(`Sent message: ${message}`),
+  responseTransformers: []
+};
+
+export const ResponseTransformer = Template.bind({});
+ResponseTransformer.args = {
+  viewType: 'console',
   sessions: fakeSessions,
   activeSessionId: '1',
   isLoading: false,

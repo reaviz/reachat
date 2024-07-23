@@ -1,7 +1,7 @@
-export interface SessionsTheme {
+export interface ChatTheme {
   base: string;
 }
 
-const baseTheme: SessionsTheme = {
+export const chatTheme: ChatTheme = {
   base: ''
 };

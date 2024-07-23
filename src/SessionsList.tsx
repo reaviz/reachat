@@ -1,10 +1,12 @@
 import { FC } from 'react';
 import { SessionListItem } from './SessionListItem';
 import { Session } from './types';
+import { List, ListItem, Button } from 'reablocks';
 
 interface SessionsListProps {
   sessions: Session[];
   activeSessionId?: string;
+  className?: string;
   onSelectSession?: (sessionId: string) => void;
   onDeleteSession?: (sessionId: string) => void;
   onCreateNewSession?: () => void;
@@ -12,20 +14,24 @@ interface SessionsListProps {
 
 export const SessionsList: FC<SessionsListProps> = ({
   sessions,
+  className,
   activeSessionId,
   onSelectSession,
   onDeleteSession,
   onCreateNewSession
 }) => {
   return (
-    <div className="sessions-list">
-      <button
-        className="w-full mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-        onClick={onCreateNewSession}
-      >
-        Create New Session
-      </button>
-      {sessions.map((session) => (
+    <List className={className}>
+      <ListItem>
+        <Button
+          fullWidth
+          className="mb-4 px-4 py-2"
+          onClick={onCreateNewSession}
+        >
+          Create New Session
+        </Button>
+      </ListItem>
+      {sessions?.map((session) => (
         <SessionListItem
           key={session.id}
           session={session}
@@ -34,6 +40,6 @@ export const SessionsList: FC<SessionsListProps> = ({
           onDeleteSession={onDeleteSession}
         />
       ))}
-    </div>
+    </List>
   );
 };

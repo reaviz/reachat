@@ -1,9 +1,11 @@
 import { FC } from 'react';
+import { useHotkeys } from 'reakeys';
+import { cn, useComponentTheme } from 'reablocks';
 import { ResponseTransformer, Session } from './types';
 import { SessionsList } from './SessionsList';
 import { SessionMessages } from './SessionMessages';
 import { SessionInput } from './SessionInput';
-import { useHotkeys } from 'reakeys';
+import { ChatTheme, chatTheme } from './theme';
 
 export interface SessionsProps {
   /**
@@ -11,7 +13,7 @@ export interface SessionsProps {
    * meant to be displayed alongside other content. Full prompts are larger
    * and are meant to be displayed on their own.
    */
-  viewType: 'companion' | 'full';
+  viewType: 'companion' | 'console';
 
   /**
    * The list of sessions to display.
@@ -37,6 +39,11 @@ export interface SessionsProps {
    * Array of transformer functions to apply to the response.
    */
   responseTransformers?: ResponseTransformer[];
+
+  /**
+   * Custom theme for the chat.
+   */
+  theme?: ChatTheme;
 
   /**
    * Callback function to handle when a session is selected.
@@ -70,19 +77,22 @@ export interface SessionsProps {
 }
 
 export const Sessions: FC<SessionsProps> = ({
-  viewType,
+  viewType = 'console',
   sessions,
   onSelectSession,
   onDeleteSession,
   isLoading,
   activeSessionId,
   responseTransformers = [],
+  theme = chatTheme,
   inputPlaceholder = 'Type your message here...',
   onSendMessage,
   onStopMessage,
   onNewSession,
   onCreateNewSession
 }) => {
+  // const theme: ChatTheme = useComponentTheme('chat', customTheme);
+
   useHotkeys([
     {
       name: 'Create new session',
@@ -96,11 +106,14 @@ export const Sessions: FC<SessionsProps> = ({
   ]);
 
   return (
-    <div className={`sessions-container ${viewType === 'companion' ? 'p-4' : 'p-8'}`}>
+    <div className={cn(theme.base, {
+      'p-4': viewType === 'companion',
+      'flex w-full gap-5': viewType === 'console'
+    })}>
       {isLoading ? (
         <div className="text-center text-gray-500">Loading...</div>
       ) : (
-        <div>
+        <>
           <SessionsList
             sessions={sessions}
             activeSessionId={activeSessionId}
@@ -109,7 +122,7 @@ export const Sessions: FC<SessionsProps> = ({
             onCreateNewSession={onCreateNewSession}
           />
           {activeSessionId && (
-            <div className="active-session mt-4">
+            <div className="flex-1">
               {sessions
                 .filter(session => session.id === activeSessionId)
                 .map(session => (
@@ -129,7 +142,7 @@ export const Sessions: FC<SessionsProps> = ({
                 ))}
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

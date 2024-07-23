@@ -1,4 +1,5 @@
-import  { FC } from 'react';
+import { FC } from 'react';
+import { ListItem, Button } from 'reablocks';
 import { Session } from './types';
 
 interface SessionListItemProps {
@@ -13,21 +14,27 @@ export const SessionListItem: FC<SessionListItemProps> = ({
   isActive,
   onSelectSession,
   onDeleteSession
-}) => {
-  return (
-    <div
-      className={`session border p-4 mb-4 rounded ${isActive ? 'bg-blue-100' : 'bg-white'} cursor-pointer`}
-      onClick={() => onSelectSession && onSelectSession(session.id)}
-    >
-      <h2 className="text-xl font-bold">{session.title}</h2>
-      {onDeleteSession && (
-        <button
-          className="mt-2 text-red-500 hover:text-red-700"
-          onClick={(e) => { e.stopPropagation(); onDeleteSession(session.id); }}
-        >
-          Delete
-        </button>
-      )}
-    </div>
-  );
-};
+}) => (
+  <ListItem
+    active={isActive}
+    className="mb-4"
+    onClick={() => onSelectSession && onSelectSession(session.id)}
+    end={
+      <>
+        {onDeleteSession && (
+          <Button
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteSession(session.id);
+            }}
+          >
+            Delete
+          </Button>
+        )}
+      </>
+    }
+  >
+    {session.title}
+  </ListItem>
+);
