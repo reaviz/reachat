@@ -1,6 +1,7 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
 import { Sessions, Session } from '../src';
+import { Card } from 'reablocks';
 
 export default {
   title: 'Examples',
@@ -32,7 +33,7 @@ const fakeSessions: Session[] = [
 
 export const Console = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -46,7 +47,7 @@ export const Console = () => {
 
 export const NewSessionContent = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -65,7 +66,7 @@ export const NewSessionContent = () => {
 
 export const DefaultSession = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -80,7 +81,7 @@ export const DefaultSession = () => {
 
 export const Companion = () => {
   return (
-    <div style={{ width: 350 }}>
+    <Card style={{ width: 350 }} disablePadding>
       <Sessions
         viewType="companion"
         sessions={fakeSessions}
@@ -88,13 +89,13 @@ export const Companion = () => {
         responseTransformers={[]}
         onDeleteSession={() => {}}
       />
-    </div>
+    </Card>
   );
 };
 
 export const ResponseTransformer = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -111,7 +112,7 @@ export const ResponseTransformer = () => {
 
 export const Loading = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -125,7 +126,7 @@ export const Loading = () => {
 
 export const FileUploads = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -139,7 +140,7 @@ export const FileUploads = () => {
 
 export const DefaultInputValue = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         inputDefaultValue="Pre-populate the prompt via the default value property"
@@ -153,7 +154,7 @@ export const DefaultInputValue = () => {
 
 export const UndeleteableSessions = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
