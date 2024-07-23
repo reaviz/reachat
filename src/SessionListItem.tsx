@@ -1,6 +1,7 @@
 import { FC } from 'react';
-import { ListItem, Button } from 'reablocks';
+import { ListItem, IconButton } from 'reablocks';
 import { Session } from './types';
+import TrashIcon from '@/assets/trash.svg?react';
 
 interface SessionListItemProps {
   session: Session;
@@ -23,15 +24,16 @@ export const SessionListItem: FC<SessionListItemProps> = ({
     end={
       <>
         {onDeleteSession && (
-          <Button
+          <IconButton
             size="small"
+            variant="text"
             onClick={(e) => {
               e.stopPropagation();
               onDeleteSession(session.id);
             }}
           >
-            Delete
-          </Button>
+            <TrashIcon className="w-4 h-4" />
+          </IconButton>
         )}
       </>
     }

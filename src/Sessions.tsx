@@ -91,6 +91,7 @@ export const Sessions: FC<SessionsProps> = ({
   onNewSession,
   onCreateNewSession
 }) => {
+  // TODO: Make this hook more dynamic
   // const theme: ChatTheme = useComponentTheme('chat', customTheme);
 
   useHotkeys([
@@ -108,7 +109,7 @@ export const Sessions: FC<SessionsProps> = ({
   return (
     <div className={cn(theme.base, {
       'p-4': viewType === 'companion',
-      'flex w-full gap-5': viewType === 'console'
+      'flex w-full gap-5 h-full': viewType === 'console'
     })}>
       {isLoading ? (
         <div className="text-center text-gray-500">Loading...</div>
@@ -127,19 +128,16 @@ export const Sessions: FC<SessionsProps> = ({
               {sessions
                 .filter(session => session.id === activeSessionId)
                 .map(session => (
-                  <div key={session.id}>
-                    <h2 className="text-2xl font-bold">{session.title}</h2>
-                    <SessionMessages
-                      conversations={session.conversations}
-                      responseTransformers={responseTransformers}
-                    />
-                    <SessionInput
-                      inputPlaceholder={inputPlaceholder}
-                      isLoading={isLoading}
-                      onSendMessage={onSendMessage}
-                      onStopMessage={onStopMessage}
-                    />
-                  </div>
+                  <SessionMessages
+                    key={session.id}
+                    session={session}
+                    responseTransformers={responseTransformers}
+                    inputPlaceholder={inputPlaceholder}
+                    isLoading={isLoading}
+                    theme={theme}
+                    onSendMessage={onSendMessage}
+                    onStopMessage={onStopMessage}
+                  />
                 ))}
             </div>
           )}

@@ -1,8 +1,13 @@
 import { Button } from 'reablocks';
-import { FC, useState, KeyboardEvent } from 'react';
+import { FC, useState, KeyboardEvent, ReactElement } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
+import SendIcon from '@/assets/send.svg?react';
+import StopIcon from '@/assets/stop.svg?react';
+import { ChatTheme } from './theme';
 
 interface SessionInputProps {
+  theme?: ChatTheme;
+
   /**
    * Indicates whether the sessions are currently loading.
    */
@@ -12,6 +17,16 @@ interface SessionInputProps {
    * Placeholder text for the input field.
    */
   inputPlaceholder?: string;
+
+  /**
+   * Icon to show for send.
+   */
+  sendIcon?: ReactElement;
+
+  /**
+   * Icon to show for send.
+   */
+  stopIcon?: ReactElement;
 
   /**
    * Callback function to handle sending a new message.
@@ -24,7 +39,15 @@ interface SessionInputProps {
   onStopMessage?: () => void;
 }
 
-export const SessionInput: FC<SessionInputProps> = ({ onSendMessage, isLoading, inputPlaceholder, onStopMessage }) => {
+export const SessionInput: FC<SessionInputProps> = ({
+  theme,
+  onSendMessage,
+  isLoading,
+  inputPlaceholder,
+  onStopMessage,
+  sendIcon = <SendIcon />,
+  stopIcon = <StopIcon />
+}) => {
   const [message, setMessage] = useState<string>('');
 
   const handleSendMessage = () => {
@@ -42,7 +65,7 @@ export const SessionInput: FC<SessionInputProps> = ({ onSendMessage, isLoading, 
   };
 
   return (
-    <div className="session-input mt-4">
+    <div className="flex mt-4">
       <TextareaAutosize
         className="w-full p-2 border rounded"
         minRows={3}
@@ -53,24 +76,23 @@ export const SessionInput: FC<SessionInputProps> = ({ onSendMessage, isLoading, 
         placeholder={inputPlaceholder}
         disabled={isLoading}
       />
-      <div className="mt-2 flex space-x-2">
+      <Button
+        title="Send"
+        className="px-4 py-2 text-white"
+        onClick={handleSendMessage}
+        disabled={isLoading}
+      >
+        {sendIcon}
+      </Button>
+      {isLoading && (
         <Button
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-          onClick={handleSendMessage}
-          fullWidth
-          disabled={isLoading}
+          title="Stop"
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
+          onClick={onStopMessage}
         >
-          Send
+          {stopIcon}
         </Button>
-        {isLoading && (
-          <Button
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
-            onClick={onStopMessage}
-          >
-            Stop
-          </Button>
-        )}
-      </div>
+      )}
     </div>
   );
 };

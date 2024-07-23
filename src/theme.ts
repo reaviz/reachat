@@ -3,13 +3,21 @@ export interface ChatTheme {
   list: {
     base: string;
     create: string;
+  };
+  messages: {
+    base: string;
+    input: string;
   }
 }
 
 export const chatTheme: ChatTheme = {
-  base: '',
+  base: 'text-white',
   list: {
     base: '',
-    create: ''
+    create: 'mb-4'
+  },
+  messages: {
+    base: '',
+    input: ''
   }
 };

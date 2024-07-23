@@ -25,10 +25,11 @@ export const SessionsList: FC<SessionsListProps> = ({
 }) => {
   return (
     <List className={cn(theme.list.base, className)}>
-      <ListItem disableGutters>
+      <ListItem disableGutters disablePadding>
         <Button
           fullWidth
-          className={cn('mb-4', theme.list.create)}
+          disableMargins
+          className={cn(theme.list.create)}
           onClick={onCreateNewSession}
         >
           Create New Session
