@@ -3,8 +3,19 @@ import { ResponseTransformer } from './types';
 import ReactMarkdown from 'react-markdown';
 
 interface SessionMessageProps {
+  /**
+   * Question to display.
+   */
   question: string;
+
+  /**
+   * Response to display.
+   */
   response: string;
+
+  /**
+   * Response transformers to apply to the response.
+   */
   responseTransformers?: ResponseTransformer[];
 }
 

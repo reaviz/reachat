@@ -5,9 +5,24 @@ import { SessionInput } from './SessionInput';
 import { ChatTheme } from './theme';
 
 interface SessionMessagesProps {
+  /**
+   * Session to display.
+   */
   session: Session;
+
+  /**
+   * Response transformers to apply to the response.
+   */
   responseTransformers?: ResponseTransformer[];
+
+  /**
+   * Theme to use for the session messages.
+   */
   theme?: ChatTheme;
+
+  /**
+   * Allowed file types for upload.
+   */
   allowedFiles?: string[];
 
   /**
@@ -35,6 +50,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   session,
   responseTransformers,
   inputPlaceholder,
+  theme,
   isLoading,
   allowedFiles,
   onSendMessage,
@@ -54,6 +70,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
         ))}
       </div>
       <SessionInput
+        theme={theme}
         inputPlaceholder={inputPlaceholder}
         isLoading={isLoading}
         allowedFiles={allowedFiles}

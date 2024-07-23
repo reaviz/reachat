@@ -1,12 +1,19 @@
 import { FC, useState, KeyboardEvent, ReactElement, useRef, ChangeEvent } from 'react';
-import { Button, Textarea } from 'reablocks';
+import { Button, Textarea, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import AttachIcon from '@/assets/paperclip.svg?react';
 import { ChatTheme } from './theme';
 
 interface SessionInputProps {
+  /**
+   * Theme to use for the input.
+   */
   theme?: ChatTheme;
+
+  /**
+   * Allowed file types for upload.
+   */
   allowedFiles?: string[];
 
   /**
@@ -87,7 +94,7 @@ export const SessionInput: FC<SessionInputProps> = ({
   };
 
   return (
-    <div className="flex mt-4">
+    <div className={cn(theme.input.base)}>
       {allowedFiles?.length > 0 && (
         <>
           <input
@@ -99,7 +106,7 @@ export const SessionInput: FC<SessionInputProps> = ({
           />
           <Button
             title="Upload"
-            className="px-4 py-2 text-white rounded"
+            className={cn(theme.input.upload)}
             onClick={() => fileInputRef.current?.click()}
           >
             {attachIcon}
@@ -107,7 +114,7 @@ export const SessionInput: FC<SessionInputProps> = ({
         </>
       )}
       <Textarea
-        containerClassName="w-full"
+        containerClassName={cn(theme.input.input)}
         minRows={3}
         autoFocus
         value={message}
@@ -118,7 +125,7 @@ export const SessionInput: FC<SessionInputProps> = ({
       />
       <Button
         title="Send"
-        className="px-4 py-2 text-white"
+        className={cn(theme.input.send)}
         onClick={handleSendMessage}
         disabled={isLoading}
       >
@@ -127,7 +134,7 @@ export const SessionInput: FC<SessionInputProps> = ({
       {isLoading && (
         <Button
           title="Stop"
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
+          className={cn(theme.input.stop)}
           onClick={onStopMessage}
         >
           {stopIcon}
