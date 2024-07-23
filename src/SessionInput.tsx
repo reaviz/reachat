@@ -1,6 +1,5 @@
-import { Button } from 'reablocks';
+import { Button, Textarea } from 'reablocks';
 import { FC, useState, KeyboardEvent, ReactElement } from 'react';
-import TextareaAutosize from 'react-textarea-autosize';
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatTheme } from './theme';
@@ -66,8 +65,8 @@ export const SessionInput: FC<SessionInputProps> = ({
 
   return (
     <div className="flex mt-4">
-      <TextareaAutosize
-        className="w-full p-2 border rounded"
+      <Textarea
+        containerClassName="w-full"
         minRows={3}
         autoFocus
         value={message}
