@@ -101,6 +101,17 @@ export const SessionInput: FC<SessionInputProps> = ({
 
   return (
     <div className={cn(theme.input.base)}>
+      <Textarea
+        containerClassName={cn(theme.input.input)}
+        minRows={3}
+        autoFocus
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        defaultValue={inputDefaultValue}
+        onKeyPress={handleKeyPress}
+        placeholder={inputPlaceholder}
+        disabled={isLoading}
+      />
       {allowedFiles?.length > 0 && (
         <>
           <input
@@ -119,17 +130,6 @@ export const SessionInput: FC<SessionInputProps> = ({
           </Button>
         </>
       )}
-      <Textarea
-        containerClassName={cn(theme.input.input)}
-        minRows={3}
-        autoFocus
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        defaultValue={inputDefaultValue}
-        onKeyPress={handleKeyPress}
-        placeholder={inputPlaceholder}
-        disabled={isLoading}
-      />
       <Button
         title="Send"
         className={cn(theme.input.send)}
