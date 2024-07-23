@@ -116,6 +116,7 @@ export const Sessions: FC<SessionsProps> = ({
         <>
           <SessionsList
             sessions={sessions}
+            theme={theme}
             activeSessionId={activeSessionId}
             onSelectSession={onSelectSession}
             onDeleteSession={onDeleteSession}

@@ -31,6 +31,7 @@ module.exports = {
     }
   }],
   'rules': {
+    'arrow-body-style': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/display-name': 'off',
     'no-unused-vars': [0],
@@ -42,7 +43,6 @@ module.exports = {
     'no-relative-import-paths/no-relative-import-paths': [
       'warn',
       { 'allowSameFolder': true, 'prefix': '@', 'rootDir': 'src' }
-    ],
-    'arrow-body-style': ['warn', 'as-needed'],
+    ]
   }
 };

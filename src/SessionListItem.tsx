@@ -16,6 +16,7 @@ export const SessionListItem: FC<SessionListItemProps> = ({
   onDeleteSession
 }) => (
   <ListItem
+    disableGutters
     active={isActive}
     className="mb-4"
     onClick={() => onSelectSession && onSelectSession(session.id)}
