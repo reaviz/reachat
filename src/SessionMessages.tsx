@@ -6,6 +6,11 @@ import { ChatTheme } from './theme';
 
 interface SessionMessagesProps {
   /**
+   * Default value for the input field.
+   */
+  inputDefaultValue?: string;
+
+  /**
    * Session to display.
    */
   session: Session;
@@ -53,6 +58,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   theme,
   isLoading,
   allowedFiles,
+  inputDefaultValue,
   onSendMessage,
   onStopMessage
 }) => {
@@ -71,6 +77,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
       </div>
       <SessionInput
         theme={theme}
+        inputDefaultValue={inputDefaultValue}
         inputPlaceholder={inputPlaceholder}
         isLoading={isLoading}
         allowedFiles={allowedFiles}

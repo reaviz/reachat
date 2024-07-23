@@ -100,3 +100,16 @@ export const FileUploads = () => {
     </div>
   );
 };
+
+export const DefaultInputValue = () => {
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+      <Sessions
+        viewType="console"
+        inputDefaultValue="Pre-populate the prompt via the default value property"
+        sessions={fakeSessions}
+        activeSessionId="1"
+      />
+    </div>
+  );
+};

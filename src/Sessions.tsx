@@ -42,6 +42,11 @@ export interface SessionsProps {
   inputPlaceholder?: string;
 
   /**
+   * Default value for the input field.
+   */
+  inputDefaultValue?: string;
+
+  /**
    * Text for the new session button.
    */
   newSessionText?: string;
@@ -96,7 +101,8 @@ export const Sessions: FC<SessionsProps> = ({
   onStopMessage,
   onNewSession,
   allowedFiles,
-  newSessionText = 'New Session'
+  newSessionText = 'New Session',
+  inputDefaultValue
 }) => {
   // TODO: Make this hook more dynamic
   // const theme: ChatTheme = useComponentTheme('chat', customTheme);
@@ -162,6 +168,7 @@ export const Sessions: FC<SessionsProps> = ({
                     session={session}
                     responseTransformers={responseTransformers}
                     inputPlaceholder={inputPlaceholder}
+                    inputDefaultValue={inputDefaultValue}
                     isLoading={isLoading}
                     allowedFiles={allowedFiles}
                     theme={theme}

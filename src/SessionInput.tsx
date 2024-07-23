@@ -7,6 +7,11 @@ import { ChatTheme } from './theme';
 
 interface SessionInputProps {
   /**
+   * Default value for the input field.
+   */
+  inputDefaultValue?: string;
+
+  /**
    * Theme to use for the input.
    */
   theme?: ChatTheme;
@@ -65,6 +70,7 @@ export const SessionInput: FC<SessionInputProps> = ({
   inputPlaceholder,
   onStopMessage,
   onFileUpload,
+  inputDefaultValue,
   sendIcon = <SendIcon />,
   stopIcon = <StopIcon />,
   attachIcon = <AttachIcon />
@@ -119,6 +125,7 @@ export const SessionInput: FC<SessionInputProps> = ({
         autoFocus
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        defaultValue={inputDefaultValue}
         onKeyPress={handleKeyPress}
         placeholder={inputPlaceholder}
         disabled={isLoading}
