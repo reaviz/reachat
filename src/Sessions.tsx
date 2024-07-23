@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, ReactNode, useEffect, useMemo, useState } from 'react';
+import { FC, PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
 import { ResponseTransformer, Session } from './types';
@@ -109,7 +109,8 @@ export const Sessions: FC<SessionsProps> = ({
   newSessionContent = '',
   allowedFiles,
   newSessionText = 'New Session',
-  inputDefaultValue
+  inputDefaultValue,
+  children
 }) => {
   // TODO: Make this hook more dynamic
   // const theme: ChatTheme = useComponentTheme('chat', customTheme);
@@ -120,20 +121,20 @@ export const Sessions: FC<SessionsProps> = ({
     setInternalActiveSessionID(activeSessionId);
   }, [activeSessionId]);
 
-  function handleSelectSession(sessionId: string) {
+  const handleSelectSession = useCallback((sessionId: string) => {
     setInternalActiveSessionID(sessionId);
     onSelectSession?.(sessionId);
-  }
+  }, [onSelectSession]);
 
-  function handleDeleteSession(sessionId: string) {
+  const handleDeleteSession = useCallback((sessionId: string) => {
     setInternalActiveSessionID(undefined);
     onDeleteSession?.(sessionId);
-  }
+  }, [onDeleteSession]);
 
-  function handleCreateNewSession() {
+  const handleCreateNewSession = useCallback(() => {
     setInternalActiveSessionID(undefined);
     onNewSession?.();
-  }
+  }, [onNewSession]);
 
   useHotkeys([
     {
@@ -147,10 +148,25 @@ export const Sessions: FC<SessionsProps> = ({
     }
   ]);
 
+  const activeSession = useMemo(() =>
+    sessions.find(session => session.id === internalActiveSessionID),
+  [sessions, internalActiveSessionID]);
+
   const contextValue = useMemo(() => ({
     sessions,
-    activeSessionId
-  }), [sessions, activeSessionId]);
+    activeSession,
+    activeSessionId: internalActiveSessionID,
+    selectSession: handleSelectSession,
+    deleteSession: handleDeleteSession,
+    createSession: handleCreateNewSession
+  }), [
+    sessions,
+    activeSession,
+    internalActiveSessionID,
+    handleSelectSession,
+    handleDeleteSession,
+    handleCreateNewSession
+  ]);
 
   return (
     <SessionsContext.Provider value={contextValue}>
@@ -169,19 +185,13 @@ export const Sessions: FC<SessionsProps> = ({
             onCreateNewSession={handleCreateNewSession}
           />
           <div className="flex-1 h-full flex flex-col">
-            {internalActiveSessionID ? (
-              <>
-                {sessions
-                  .filter(session => session.id === internalActiveSessionID)
-                  .map(session => (
-                    <SessionMessages
-                      key={session.id}
-                      session={session}
-                      responseTransformers={responseTransformers}
-                      theme={theme}
-                    />
-                  ))}
-              </>
+            {activeSession ? (
+              <SessionMessages
+                key={activeSession.id}
+                session={activeSession}
+                responseTransformers={responseTransformers}
+                theme={theme}
+              />
             ) : (
               <div className={cn(theme.empty)}>
                 {newSessionContent}

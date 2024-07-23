@@ -17,7 +17,8 @@ export interface Conversation {
   question: string;
   response?: string;
   sources?: ConversationSource[];
-  user?: User;
+  files: string[]; // TODO
+  user?: User; // TODO
 }
 
 export interface Session {
