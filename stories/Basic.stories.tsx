@@ -1,6 +1,6 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
-import { Sessions, SessionsProps, Session } from '../src';
+import { Meta } from '@storybook/react';
+import { Sessions, Session } from '../src';
 
 export default {
   title: 'Examples',
@@ -38,9 +38,6 @@ export const Console = () => {
         sessions={fakeSessions}
         activeSessionId="1"
         isLoading={false}
-        onSelectSession={() => {}}
-        onDeleteSession={() => {}}
-        onSendMessage={() => {}}
         responseTransformers={[]}
       />
     </div>
@@ -55,9 +52,6 @@ export const Companion = () => {
         sessions={fakeSessions}
         activeSessionId="1"
         isLoading={false}
-        onSelectSession={() => {}}
-        onDeleteSession={() => {}}
-        onSendMessage={() => {}}
         responseTransformers={[]}
       />
     </div>
@@ -72,12 +66,23 @@ export const ResponseTransformer = () => {
         sessions={fakeSessions}
         activeSessionId="1"
         isLoading={false}
-        onSelectSession={() => {}}
-        onDeleteSession={() => {}}
-        onSendMessage={() => {}}
         responseTransformers={[
           (response, next) => next(response.toUpperCase())
         ]}
+      />
+    </div>
+  );
+};
+
+export const Loading = () => {
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+      <Sessions
+        viewType="console"
+        sessions={fakeSessions}
+        activeSessionId="1"
+        isLoading={true}
+        responseTransformers={[]}
       />
     </div>
   );

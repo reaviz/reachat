@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
 import { ResponseTransformer, Session } from './types';
@@ -36,6 +36,11 @@ export interface SessionsProps {
   inputPlaceholder?: string;
 
   /**
+   * Text for the new session button.
+   */
+  newSessionText?: string;
+
+  /**
    * Array of transformer functions to apply to the response.
    */
   responseTransformers?: ResponseTransformer[];
@@ -69,11 +74,6 @@ export interface SessionsProps {
    * Callback function to handle creating a new session.
    */
   onNewSession?: () => void;
-
-  /**
-   * Callback function to handle creating a new session.
-   */
-  onCreateNewSession?: () => void;
 }
 
 export const Sessions: FC<SessionsProps> = ({
@@ -89,10 +89,31 @@ export const Sessions: FC<SessionsProps> = ({
   onSendMessage,
   onStopMessage,
   onNewSession,
-  onCreateNewSession
+  newSessionText = 'New Session'
 }) => {
   // TODO: Make this hook more dynamic
   // const theme: ChatTheme = useComponentTheme('chat', customTheme);
+
+  const [internalActiveSessionID, setInternalActiveSessionID] = useState<string | undefined>(activeSessionId);
+
+  useEffect(() => {
+    setInternalActiveSessionID(activeSessionId);
+  }, [activeSessionId]);
+
+  function handleSelectSession(sessionId: string) {
+    setInternalActiveSessionID(sessionId);
+    onSelectSession?.(sessionId);
+  }
+
+  function handleDeleteSession(sessionId: string) {
+    setInternalActiveSessionID(undefined);
+    onDeleteSession?.(sessionId);
+  }
+
+  function handleCreateNewSession() {
+    setInternalActiveSessionID(undefined);
+    onNewSession?.();
+  }
 
   useHotkeys([
     {
@@ -101,7 +122,7 @@ export const Sessions: FC<SessionsProps> = ({
       keys: 'meta+shift+s',
       callback: event => {
         event.preventDefault();
-        onNewSession?.();
+        handleCreateNewSession();
       }
     }
   ]);
@@ -118,15 +139,16 @@ export const Sessions: FC<SessionsProps> = ({
           <SessionsList
             sessions={sessions}
             theme={theme}
-            activeSessionId={activeSessionId}
-            onSelectSession={onSelectSession}
-            onDeleteSession={onDeleteSession}
-            onCreateNewSession={onCreateNewSession}
+            newSessionText={newSessionText}
+            activeSessionId={internalActiveSessionID}
+            onSelectSession={handleSelectSession}
+            onDeleteSession={handleDeleteSession}
+            onCreateNewSession={handleCreateNewSession}
           />
-          {activeSessionId && (
+          {internalActiveSessionID && (
             <div className="flex-1">
               {sessions
-                .filter(session => session.id === activeSessionId)
+                .filter(session => session.id === internalActiveSessionID)
                 .map(session => (
                   <SessionMessages
                     key={session.id}

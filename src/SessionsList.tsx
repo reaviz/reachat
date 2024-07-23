@@ -9,6 +9,7 @@ interface SessionsListProps {
   activeSessionId?: string;
   className?: string;
   theme?: ChatTheme;
+  newSessionText?: string;
   onSelectSession?: (sessionId: string) => void;
   onDeleteSession?: (sessionId: string) => void;
   onCreateNewSession?: () => void;
@@ -18,6 +19,7 @@ export const SessionsList: FC<SessionsListProps> = ({
   sessions,
   theme,
   className,
+  newSessionText = 'New Session',
   activeSessionId,
   onSelectSession,
   onDeleteSession,
@@ -32,7 +34,7 @@ export const SessionsList: FC<SessionsListProps> = ({
           className={cn(theme.list.create)}
           onClick={onCreateNewSession}
         >
-          New Session
+          {newSessionText}
         </Button>
       </ListItem>
       {sessions?.map((session) => (
