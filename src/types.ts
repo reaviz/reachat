@@ -17,7 +17,6 @@ export interface Conversation {
   question: string;
   response?: string;
   sources?: ConversationSource[];
-  status?: 'sent' | 'received' | 'read';
   user?: User;
 }
 

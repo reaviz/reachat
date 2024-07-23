@@ -10,6 +10,7 @@ interface SessionsListProps {
   className?: string;
   theme?: ChatTheme;
   newSessionText?: string;
+  isLoading?: boolean;
   onSelectSession?: (sessionId: string) => void;
   onDeleteSession?: (sessionId: string) => void;
   onCreateNewSession?: () => void;
@@ -23,7 +24,8 @@ export const SessionsList: FC<SessionsListProps> = ({
   activeSessionId,
   onSelectSession,
   onDeleteSession,
-  onCreateNewSession
+  onCreateNewSession,
+  isLoading
 }) => {
   return (
     <List className={cn(theme.list.base, className)}>
@@ -33,6 +35,7 @@ export const SessionsList: FC<SessionsListProps> = ({
           disableMargins
           className={cn(theme.list.create)}
           onClick={onCreateNewSession}
+          disabled={isLoading}
         >
           {newSessionText}
         </Button>

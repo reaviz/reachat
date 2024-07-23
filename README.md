@@ -40,6 +40,28 @@
 - Tailwind for Themeing
 - Polygot LLM Support - Vercel, OpenAI, Claude, Gemini
 
+## API
+Explore ideas for Slots:
+
+```tsx
+const { activeSession, setActiveSession } = useChat();
+
+<Sessions>
+  <EmptySessions />
+  <SessionsList>
+    {sessions.map(sesh => {
+      <SessionListItem>
+        {sesh.name}
+        clone btn
+      </SessionListItem>
+    })}
+  </SessionsList>
+  <SessionMessages>
+
+  </SessionMessages>
+</Sessions>
+```
+
 ## Installation
 TODO
 

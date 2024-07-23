@@ -20,7 +20,7 @@ export const SessionListItem: FC<SessionListItemProps> = ({
     disableGutters
     active={isActive}
     className="mb-4"
-    onClick={() => onSelectSession && onSelectSession(session.id)}
+    onClick={() => onSelectSession?.(session.id)}
     end={
       <>
         {onDeleteSession && (
