@@ -139,7 +139,6 @@ export const Sessions: FC<SessionsProps> = ({
           <SessionsList
             sessions={sessions}
             theme={theme}
-            isLoading={isLoading}
             newSessionText={newSessionText}
             activeSessionId={internalActiveSessionID}
             onSelectSession={handleSelectSession}
