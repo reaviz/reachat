@@ -64,3 +64,6 @@ TODO
 - https://github.com/turboderp/exui - very fast and vram efficient
 - https://github.com/PromtEngineer/localGPT - Focuses on PDF files
 - https://github.com/shinomakoi/AI-Messenger - Supports EXLv2 and LLava
+
+## Credits
+- Icons from [https://lucide.dev/](https://lucide.dev/)
