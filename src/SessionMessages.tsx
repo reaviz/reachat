@@ -8,6 +8,7 @@ interface SessionMessagesProps {
   session: Session;
   responseTransformers?: ResponseTransformer[];
   theme?: ChatTheme;
+  allowedFiles?: string[];
 
   /**
  * Indicates whether the sessions are currently loading.
@@ -35,6 +36,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   responseTransformers,
   inputPlaceholder,
   isLoading,
+  allowedFiles,
   onSendMessage,
   onStopMessage
 }) => {
@@ -54,6 +56,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
       <SessionInput
         inputPlaceholder={inputPlaceholder}
         isLoading={isLoading}
+        allowedFiles={allowedFiles}
         onSendMessage={onSendMessage}
         onStopMessage={onStopMessage}
       />

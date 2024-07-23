@@ -16,6 +16,12 @@ export interface SessionsProps {
   viewType: 'companion' | 'console';
 
   /**
+   * The list of allowed file types. If null or not defined, not file upload
+   * will be allowed.
+   */
+  allowedFiles?: string[];
+
+  /**
    * The list of sessions to display.
    */
   sessions: Session[];
@@ -89,6 +95,7 @@ export const Sessions: FC<SessionsProps> = ({
   onSendMessage,
   onStopMessage,
   onNewSession,
+  allowedFiles,
   newSessionText = 'New Session'
 }) => {
   // TODO: Make this hook more dynamic
@@ -156,6 +163,7 @@ export const Sessions: FC<SessionsProps> = ({
                     responseTransformers={responseTransformers}
                     inputPlaceholder={inputPlaceholder}
                     isLoading={isLoading}
+                    allowedFiles={allowedFiles}
                     theme={theme}
                     onSendMessage={onSendMessage}
                     onStopMessage={onStopMessage}

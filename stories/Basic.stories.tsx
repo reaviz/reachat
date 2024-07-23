@@ -87,3 +87,16 @@ export const Loading = () => {
     </div>
   );
 };
+
+export const FileUploads = () => {
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
+      <Sessions
+        viewType="console"
+        sessions={fakeSessions}
+        activeSessionId="1"
+        allowedFiles={['.pdf', '.docx']}
+      />
+    </div>
+  );
+};
