@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
 import { ResponseTransformer, Session } from './types';
@@ -6,6 +6,7 @@ import { SessionsList } from './SessionsList';
 import { SessionMessages } from './SessionMessages';
 import { SessionInput } from './SessionInput';
 import { ChatTheme, chatTheme } from './theme';
+import { SessionsContext } from './SessionsContext';
 
 export interface SessionsProps {
   /**
@@ -146,51 +147,58 @@ export const Sessions: FC<SessionsProps> = ({
     }
   ]);
 
+  const contextValue = useMemo(() => ({
+    sessions,
+    activeSessionId
+  }), [sessions, activeSessionId]);
+
   return (
-    <div className={cn(theme.base, {
-      'p-4': viewType === 'companion',
-      'flex w-full gap-5 h-full': viewType === 'console'
-    })}>
-      <>
-        <SessionsList
-          sessions={sessions}
-          theme={theme}
-          newSessionText={newSessionText}
-          activeSessionId={internalActiveSessionID}
-          onSelectSession={handleSelectSession}
-          onDeleteSession={onDeleteSession ? handleDeleteSession : null}
-          onCreateNewSession={handleCreateNewSession}
-        />
-        <div className="flex-1 h-full flex flex-col">
-          {internalActiveSessionID ? (
-            <>
-              {sessions
-                .filter(session => session.id === internalActiveSessionID)
-                .map(session => (
-                  <SessionMessages
-                    key={session.id}
-                    session={session}
-                    responseTransformers={responseTransformers}
-                    theme={theme}
-                  />
-                ))}
-            </>
-          ) : (
-            <div className={cn(theme.empty)}>
-              {newSessionContent}
-            </div>
-          )}
-          <SessionInput
+    <SessionsContext.Provider value={contextValue}>
+      <div className={cn(theme.base, {
+        'p-4': viewType === 'companion',
+        'flex w-full gap-5 h-full': viewType === 'console'
+      })}>
+        <>
+          <SessionsList
+            sessions={sessions}
             theme={theme}
-            inputDefaultValue={inputDefaultValue}
-            inputPlaceholder={inputPlaceholder}
-            isLoading={isLoading}
-            allowedFiles={allowedFiles}
-            onSendMessage={onSendMessage}
-            onStopMessage={onStopMessage}
+            newSessionText={newSessionText}
+            activeSessionId={internalActiveSessionID}
+            onSelectSession={handleSelectSession}
+            onDeleteSession={onDeleteSession ? handleDeleteSession : null}
+            onCreateNewSession={handleCreateNewSession}
           />
-        </div>
-      </>
-    </div>
+          <div className="flex-1 h-full flex flex-col">
+            {internalActiveSessionID ? (
+              <>
+                {sessions
+                  .filter(session => session.id === internalActiveSessionID)
+                  .map(session => (
+                    <SessionMessages
+                      key={session.id}
+                      session={session}
+                      responseTransformers={responseTransformers}
+                      theme={theme}
+                    />
+                  ))}
+              </>
+            ) : (
+              <div className={cn(theme.empty)}>
+                {newSessionContent}
+              </div>
+            )}
+            <SessionInput
+              theme={theme}
+              inputDefaultValue={inputDefaultValue}
+              inputPlaceholder={inputPlaceholder}
+              isLoading={isLoading}
+              allowedFiles={allowedFiles}
+              onSendMessage={onSendMessage}
+              onStopMessage={onStopMessage}
+            />
+          </div>
+        </>
+      </div>
+    </SessionsContext.Provider>
   );
 };
