@@ -48,8 +48,8 @@ export const chatTheme: ChatTheme = {
     content: 'mt-2 flex-1 overflow-auto',
     header: 'flex justify-between items-center',
     message: {
-      base: '',
-      question: '',
+      base: 'mb-6 flex flex-col border-gray-400 border p-5 rounded',
+      question: 'font-semibold text-gray-400 mb-1',
       response: ''
     }
   },

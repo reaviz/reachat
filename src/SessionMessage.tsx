@@ -1,6 +1,8 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { ResponseTransformer } from './types';
 import ReactMarkdown from 'react-markdown';
+import { SessionsContext } from './SessionsContext';
+import { cn } from 'reablocks';
 
 interface SessionMessageProps {
   /**
@@ -24,6 +26,8 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   response,
   responseTransformers = []
 }) => {
+  const { theme } = useContext(SessionsContext);
+
   const transformResponse = (response: string): string => {
     const applyTransformers = (index: number, response: string): string => {
       if (index >= responseTransformers.length) return response;
@@ -34,13 +38,13 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   };
 
   return (
-    <div className="conversation mb-2">
-      <div className="question font-semibold">
+    <div className={cn(theme.messages.message.base)}>
+      <div className={cn(theme.messages.message.question)}>
         <ReactMarkdown>
           {transformResponse(question)}
         </ReactMarkdown>
       </div>
-      <div className="response text-gray-700">
+      <div className={cn(theme.messages.message.response)}>
         <ReactMarkdown>
           {transformResponse(response)}
         </ReactMarkdown>
