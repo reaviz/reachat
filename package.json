@@ -39,7 +39,8 @@
     "framer-motion": "^10.16.16",
     "reablocks": "^8.4.1",
     "react-markdown": "^9.0.1",
-    "reakeys": "^2.0.3"
+    "reakeys": "^2.0.3",
+    "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
     "@storybook/addon-docs": "^8.1.1",

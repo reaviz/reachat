@@ -6,15 +6,15 @@ export interface User {
 
 export interface ConversationSource {
   id: string;
-  url: string;
+  url?: string;
   title: string;
 }
 
 export interface Conversation {
   id: string;
   createdAt: Date;
-  updatedAt: Date;
   question: string;
+  updatedAt?: Date;
   response?: string;
   sources?: ConversationSource[];
   files?: string[]; // TODO
@@ -27,8 +27,4 @@ export interface Session {
   createdAt?: Date;
   updatedAt?: Date;
   conversations: Conversation[];
-}
-
-export interface ResponseTransformer {
-  (response: string, next: (transformedResponse: string) => string): string;
 }

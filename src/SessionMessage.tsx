@@ -3,10 +3,12 @@ import { ResponseTransformer } from './types';
 import ReactMarkdown from 'react-markdown';
 import { SessionsContext } from './SessionsContext';
 import { IconButton, cn } from 'reablocks';
+import remarkGfm from 'remark-gfm';
 import CopyIcon from '@/assets/copy.svg?react';
 import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
 import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
 import RefreshIcon from '@/assets/refresh.svg?react';
+import { PluggableList } from 'react-markdown/lib';
 
 interface SessionMessageProps {
   /**
@@ -18,11 +20,6 @@ interface SessionMessageProps {
    * Response to display.
    */
   response: string;
-
-  /**
-   * Response transformers to apply to the response.
-   */
-  responseTransformers?: ResponseTransformer[];
 
   /**
    * Icon to show for copy.
@@ -58,30 +55,26 @@ interface SessionMessageProps {
    * Callback function to handle refreshing.
    */
   onRefresh?: () => void;
+
+  /**
+   * Remark plugins to apply to the request/response.
+   */
+  remarkPlugins?: PluggableList[];
 }
 
 export const SessionMessage: FC<SessionMessageProps> = ({
   question,
   response,
-  responseTransformers = [],
   copyIcon = <CopyIcon />,
   thumbsUpIcon = <ThumbUpIcon />,
   thumbsDownIcon = <ThumbsDownIcon />,
   refreshIcon = <RefreshIcon />,
+  remarkPlugins = [remarkGfm],
   onUpvote,
   onDownvote,
   onRefresh
 }) => {
   const { theme } = useContext(SessionsContext);
-
-  const transformResponse = (response: string): string => {
-    const applyTransformers = (index: number, response: string): string => {
-      if (index >= responseTransformers.length) return response;
-      const transformer = responseTransformers[index];
-      return transformer(response, (transformedResponse) => applyTransformers(index + 1, transformedResponse));
-    };
-    return applyTransformers(0, response);
-  };
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -94,61 +87,63 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   return (
     <div className={cn(theme.messages.message.base)}>
       <div className={cn(theme.messages.message.question)}>
-        <ReactMarkdown>
-          {transformResponse(question)}
+        <ReactMarkdown remarkPlugins={remarkPlugins as PluggableList}>
+          {question}
         </ReactMarkdown>
       </div>
       <div className={cn(theme.messages.message.response)}>
-        <ReactMarkdown>
-          {transformResponse(response)}
+        <ReactMarkdown remarkPlugins={remarkPlugins as PluggableList}>
+          {response}
         </ReactMarkdown>
       </div>
-      <div className={cn(theme.messages.message.footer.base)}>
-        {copyIcon && (
-          <IconButton
-            variant="text"
-            disablePadding
-            title="Copy question and response"
-            className={cn(theme.messages.message.footer.copy)}
-            onClick={() => handleCopy(`${question}\n${response}`)}
-          >
-            {copyIcon}
-          </IconButton>
-        )}
-        {thumbsUpIcon && (
-          <IconButton
-            variant="text"
-            disablePadding
-            title="Upvote"
-            className={cn(theme.messages.message.footer.upvote)}
-            onClick={onUpvote}
-          >
-            {thumbsUpIcon}
-          </IconButton>
-        )}
-        {thumbsDownIcon && (
-          <IconButton
-            variant="text"
-            disablePadding
-            title="Downvote"
-            className={cn(theme.messages.message.footer.downvote)}
-            onClick={onDownvote}
-          >
-            {thumbsDownIcon}
-          </IconButton>
-        )}
-        {refreshIcon && (
-          <IconButton
-            variant="text"
-            disablePadding
-            title="Refresh"
-            className={cn(theme.messages.message.footer.refresh)}
-            onClick={onRefresh}
-          >
-            {refreshIcon}
-          </IconButton>
-        )}
-      </div>
+      {(copyIcon || thumbsDownIcon || thumbsUpIcon || refreshIcon) && (
+        <div className={cn(theme.messages.message.footer.base)}>
+          {copyIcon && (
+            <IconButton
+              variant="text"
+              disablePadding
+              title="Copy question and response"
+              className={cn(theme.messages.message.footer.copy)}
+              onClick={() => handleCopy(`${question}\n${response}`)}
+            >
+              {copyIcon}
+            </IconButton>
+          )}
+          {thumbsUpIcon && (
+            <IconButton
+              variant="text"
+              disablePadding
+              title="Upvote"
+              className={cn(theme.messages.message.footer.upvote)}
+              onClick={onUpvote}
+            >
+              {thumbsUpIcon}
+            </IconButton>
+          )}
+          {thumbsDownIcon && (
+            <IconButton
+              variant="text"
+              disablePadding
+              title="Downvote"
+              className={cn(theme.messages.message.footer.downvote)}
+              onClick={onDownvote}
+            >
+              {thumbsDownIcon}
+            </IconButton>
+          )}
+          {refreshIcon && (
+            <IconButton
+              variant="text"
+              disablePadding
+              title="Refresh"
+              className={cn(theme.messages.message.footer.refresh)}
+              onClick={onRefresh}
+            >
+              {refreshIcon}
+            </IconButton>
+          )}
+        </div>
+      )}
     </div>
   );
 };

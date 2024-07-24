@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
-import { ResponseTransformer, Session } from './types';
+import { Session } from './types';
 import { SessionsList } from './SessionsList';
 import { SessionMessages } from './SessionMessages';
 import { SessionInput } from './SessionInput';
@@ -53,11 +53,6 @@ export interface SessionsProps extends PropsWithChildren {
   newSessionText?: string;
 
   /**
-   * Array of transformer functions to apply to the response.
-   */
-  responseTransformers?: ResponseTransformer[];
-
-  /**
    * Custom theme for the chat.
    */
   theme?: ChatTheme;
@@ -100,7 +95,6 @@ export const Sessions: FC<SessionsProps> = ({
   onDeleteSession,
   isLoading,
   activeSessionId,
-  responseTransformers = [],
   theme = chatTheme,
   inputPlaceholder = 'Type your message here...',
   onSendMessage,
@@ -188,7 +182,6 @@ export const Sessions: FC<SessionsProps> = ({
               <SessionMessages
                 key={activeSession.id}
                 session={activeSession}
-                responseTransformers={responseTransformers}
               />
             ) : (
               <div className={cn(theme.empty)}>

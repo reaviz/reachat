@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { SessionMessage } from './SessionMessage';
-import { ResponseTransformer, Session } from './types';
+import { Session } from './types';
 import { SessionsContext } from './SessionsContext';
 import { cn, DateFormat } from 'reablocks';
 
@@ -9,16 +9,10 @@ interface SessionMessagesProps {
    * Session to display.
    */
   session: Session;
-
-  /**
-   * Response transformers to apply to the response.
-   */
-  responseTransformers?: ResponseTransformer[];
 }
 
 export const SessionMessages: React.FC<SessionMessagesProps> = ({
-  session,
-  responseTransformers
+  session
 }) => {
   const { theme } = useContext(SessionsContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -43,7 +37,6 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             key={conversation.id}
             question={conversation.question}
             response={conversation.response || ''}
-            responseTransformers={responseTransformers}
           />
         ))}
       </div>

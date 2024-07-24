@@ -39,7 +39,6 @@ export const Console = () => {
         viewType="console"
         sessions={fakeSessions}
         isLoading={false}
-        responseTransformers={[]}
         onDeleteSession={() => {}}
       />
     </div>
@@ -58,7 +57,6 @@ export const NewSessionContent = () => {
             Type a question to get a response...
           </div>
         }
-        responseTransformers={[]}
         onDeleteSession={() => {}}
       />
     </div>
@@ -73,7 +71,6 @@ export const DefaultSession = () => {
         sessions={fakeSessions}
         activeSessionId="1"
         isLoading={false}
-        responseTransformers={[]}
         onDeleteSession={() => {}}
       />
     </div>
@@ -87,27 +84,9 @@ export const Companion = () => {
         viewType="companion"
         sessions={fakeSessions}
         isLoading={false}
-        responseTransformers={[]}
         onDeleteSession={() => {}}
       />
     </Card>
-  );
-};
-
-export const ResponseTransformer = () => {
-  return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
-      <Sessions
-        viewType="console"
-        sessions={fakeSessions}
-        activeSessionId="1"
-        isLoading={false}
-        responseTransformers={[
-          (response, next) => next(response.toUpperCase())
-        ]}
-        onDeleteSession={() => {}}
-      />
-    </div>
   );
 };
 
@@ -118,7 +97,6 @@ export const Loading = () => {
         viewType="console"
         sessions={fakeSessions}
         isLoading={true}
-        responseTransformers={[]}
         onDeleteSession={() => {}}
       />
     </div>
@@ -196,7 +174,6 @@ export const SessionGrouping = () => {
         viewType="console"
         sessions={sessionsWithVariousDates}
         isLoading={false}
-        responseTransformers={[]}
         onDeleteSession={() => {}}
       />
     </div>
@@ -230,7 +207,6 @@ export const HundredSessions = () => {
         viewType="console"
         sessions={hundredSessions}
         isLoading={false}
-        responseTransformers={[]}
         onDeleteSession={() => {}}
       />
     </div>
@@ -263,7 +239,6 @@ export const HundredConversations = () => {
         sessions={sessionWithHundredConversations}
         activeSessionId="session-100"
         isLoading={false}
-        responseTransformers={[]}
         onDeleteSession={() => {}}
       />
     </div>
@@ -289,7 +264,82 @@ export const LongSessionNames = () => {
         viewType="console"
         sessions={sessionsWithLongNames}
         isLoading={false}
-        responseTransformers={[]}
+        onDeleteSession={() => {}}
+      />
+    </div>
+  );
+};
+
+export const MarkdownShowcase = () => {
+  const markdownQuestion = `
+  **What is the purpose of life?**
+  `;
+
+  const markdownResponse = `
+  **The purpose of life is a philosophical question concerning the significance of life or existence in general.**
+
+  Here is a table to illustrate different perspectives:
+
+  | Perspective       | Description                                                                 |
+  |-------------------|-----------------------------------------------------------------------------|
+  | Religious         | Belief in a higher power or divine purpose.                                 |
+  | Philosophical     | Various theories including existentialism, nihilism, and absurdism.         |
+  | Scientific        | Understanding life through biology, evolution, and the universe.            |
+  | Personal          | Individual goals, happiness, and fulfillment.                               |
+
+  \`\`\`python
+  def purpose_of_life():
+      return 42
+  \`\`\`
+
+  \`\`\`json
+  {
+    "perspectives": [
+      {
+        "type": "Religious",
+        "description": "Belief in a higher power or divine purpose."
+      },
+      {
+        "type": "Philosophical",
+        "description": "Various theories including existentialism, nihilism, and absurdism."
+      },
+      {
+        "type": "Scientific",
+        "description": "Understanding life through biology, evolution, and the universe."
+      },
+      {
+        "type": "Personal",
+        "description": "Individual goals, happiness, and fulfillment."
+      }
+    ]
+  }
+  \`\`\`
+
+  The answer to the ultimate question of life, the universe, and everything is **42**.
+
+  [Perspective](https://en.wikipedia.org/wiki/Philosophical_question)
+  `;
+
+  const sessionWithMarkdown: Session[] = [{
+    id: 'session-markdown',
+    title: 'Markdown Showcase',
+    createdAt: subHours(new Date(), 1),
+    updatedAt: new Date(),
+    conversations: [{
+      id: 'conversation-1',
+      question: markdownQuestion,
+      response: markdownResponse,
+      createdAt: new Date()
+    }]
+  }];
+
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+      <Sessions
+        viewType="console"
+        sessions={sessionWithMarkdown}
+        activeSessionId="session-markdown"
+        isLoading={false}
         onDeleteSession={() => {}}
       />
     </div>
