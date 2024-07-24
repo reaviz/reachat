@@ -1,5 +1,5 @@
 import { FC, ReactElement } from 'react';
-import { ListItem, IconButton, cn } from 'reablocks';
+import { ListItem, IconButton, cn, Ellipsis } from 'reablocks';
 import { Session } from './types';
 import TrashIcon from '@/assets/trash.svg?react';
 import { ChatTheme } from './theme';
@@ -67,6 +67,6 @@ export const SessionListItem: FC<SessionListItemProps> = ({
       </>
     }
   >
-    {session.title}
+    <Ellipsis value={session.title} limit={100} />
   </ListItem>
 );

@@ -269,3 +269,29 @@ export const HundredConversations = () => {
     </div>
   );
 };
+
+export const LongSessionNames = () => {
+  const generateFakeSessionsWithLongNames = (count: number) => {
+    return Array.from({ length: count }, (_, index) => ({
+      id: `session-${index + 1}`,
+      title: `Session ${index + 1}: This is a very long session name to test how the UI handles overflow and text wrapping in the session list. It should be truncated or wrapped appropriately to ensure a good user experience.`,
+      createdAt: subHours(new Date(), count - index),
+      updatedAt: new Date(),
+      conversations: []
+    }));
+  };
+
+  const sessionsWithLongNames = generateFakeSessionsWithLongNames(10);
+
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+      <Sessions
+        viewType="console"
+        sessions={sessionsWithLongNames}
+        isLoading={false}
+        responseTransformers={[]}
+        onDeleteSession={() => {}}
+      />
+    </div>
+  );
+};
