@@ -7,6 +7,7 @@ import { SessionMessages } from './SessionMessages';
 import { SessionInput } from './SessionInput';
 import { ChatTheme, chatTheme } from './theme';
 import { SessionsContext } from './SessionsContext';
+import { PluggableList } from 'react-markdown/lib';
 
 export interface SessionsProps extends PropsWithChildren {
   /**
@@ -63,6 +64,11 @@ export interface SessionsProps extends PropsWithChildren {
   newSessionContent?: string | ReactNode;
 
   /**
+   * Remark plugins to apply to the request/response.
+   */
+  remarkPlugins?: PluggableList[];
+
+  /**
    * Callback function to handle when a session is selected.
    */
   onSelectSession?: (sessionId: string) => void;
@@ -104,6 +110,7 @@ export const Sessions: FC<SessionsProps> = ({
   allowedFiles,
   newSessionText = 'New Session',
   inputDefaultValue,
+  remarkPlugins,
   children
 }) => {
   // TODO: Make this hook more dynamic
@@ -149,6 +156,7 @@ export const Sessions: FC<SessionsProps> = ({
   const contextValue = useMemo(() => ({
     sessions,
     activeSession,
+    remarkPlugins,
     theme,
     activeSessionId: internalActiveSessionID,
     selectSession: handleSelectSession,
@@ -156,6 +164,7 @@ export const Sessions: FC<SessionsProps> = ({
     createSession: handleCreateNewSession
   }), [
     theme,
+    remarkPlugins,
     sessions,
     activeSession,
     internalActiveSessionID,

@@ -38,6 +38,7 @@
     "date-fns": "^3.6.0",
     "framer-motion": "^10.16.16",
     "highlight.js": "^11.10.0",
+    "mdast-util-find-and-replace": "^3.0.1",
     "reablocks": "^8.4.1",
     "react-markdown": "^9.0.1",
     "reakeys": "^2.0.3",

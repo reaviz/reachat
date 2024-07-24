@@ -54,11 +54,6 @@ interface SessionMessageProps {
    * Callback function to handle refreshing.
    */
   onRefresh?: () => void;
-
-  /**
-   * Remark plugins to apply to the request/response.
-   */
-  remarkPlugins?: PluggableList[];
 }
 
 export const SessionMessage: FC<SessionMessageProps> = ({
@@ -68,12 +63,14 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   thumbsUpIcon = <ThumbUpIcon />,
   thumbsDownIcon = <ThumbsDownIcon />,
   refreshIcon = <RefreshIcon />,
-  remarkPlugins = [remarkGfm],
   onUpvote,
   onDownvote,
   onRefresh
 }) => {
-  const { theme } = useContext(SessionsContext);
+  const {
+    theme,
+    remarkPlugins = [remarkGfm]
+  } = useContext(SessionsContext);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {

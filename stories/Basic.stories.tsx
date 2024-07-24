@@ -1,8 +1,8 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
-import { Sessions, Session } from '../src';
+import { Sessions, Session, remarkCve } from '../src';
 import { Card } from 'reablocks';
-import { subDays, subWeeks, subMonths, subYears, subMinutes, subHours } from 'date-fns';
+import { subDays, subMinutes, subHours } from 'date-fns';
 
 export default {
   title: 'Examples',
@@ -345,3 +345,51 @@ export const MarkdownShowcase = () => {
     </div>
   );
 };
+
+export const CVEExample = () => {
+  const markdownQuestion = `# Security Report
+
+  Please review the following CVEs:
+
+  - CVE-2021-34527
+  - CVE-2021-44228
+  - CVE-2021-45046
+  `;
+
+  const markdownResponse = `## Analysis
+
+  The listed CVEs are critical vulnerabilities that need immediate attention.
+
+  - CVE-2021-34527
+  - CVE-2021-44228
+  - CVE-2021-45046
+  `;
+
+  const sessionWithMarkdown: Session[] = [{
+    id: 'session-cve',
+    title: 'CVE Showcase',
+    createdAt: subHours(new Date(), 1),
+    updatedAt: new Date(),
+    conversations: [{
+      id: 'conversation-1',
+      question: markdownQuestion,
+      response: markdownResponse,
+      createdAt: new Date()
+    }]
+  }];
+
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+      <Sessions
+        viewType="console"
+        sessions={sessionWithMarkdown}
+        activeSessionId="session-cve"
+        isLoading={false}
+        onDeleteSession={() => {}}
+        remarkPlugins={[remarkCve as any]}
+      />
+    </div>
+  );
+};
+
+
