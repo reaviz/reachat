@@ -2,6 +2,8 @@ import { FC, PropsWithChildren } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { PluggableList } from 'react-markdown/lib';
 import remarkGfm from 'remark-gfm';
+import { CodeHighlighter } from './CodeHighlighter';
+import { cn } from 'reablocks';
 
 interface MarkdownWrapperProps extends PropsWithChildren {
   /**
@@ -15,7 +17,17 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
   remarkPlugins = [remarkGfm]
 }) => {
   return (
-    <ReactMarkdown remarkPlugins={remarkPlugins as PluggableList}>
+    <ReactMarkdown
+      remarkPlugins={remarkPlugins as PluggableList}
+      components={{
+        code: props => (
+          <CodeHighlighter
+            {...props}
+            className={cn('mt-3 rounded')}
+          />
+        )
+      }}
+    >
       {children as string}
     </ReactMarkdown>
   );
