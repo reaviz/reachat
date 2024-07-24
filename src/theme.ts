@@ -19,6 +19,10 @@ export interface ChatTheme {
       base: string;
       question: string;
       response: string;
+      footer: {
+        base: string;
+        copy: string;
+      };
     };
   };
   input: {
@@ -50,7 +54,11 @@ export const chatTheme: ChatTheme = {
     message: {
       base: 'mb-6 flex flex-col border-gray-400 border p-5 rounded',
       question: 'font-semibold text-gray-400 mb-1',
-      response: ''
+      response: '',
+      footer: {
+        base: 'mt-2',
+        copy: '[&>svg]:w-4 [&>svg]:h-4 opacity-50'
+      }
     }
   },
   input: {

@@ -1,8 +1,9 @@
-import { FC, useContext } from 'react';
+import { FC, ReactElement, useContext } from 'react';
 import { ResponseTransformer } from './types';
 import ReactMarkdown from 'react-markdown';
 import { SessionsContext } from './SessionsContext';
-import { cn } from 'reablocks';
+import { IconButton, cn } from 'reablocks';
+import CopyIcon from '@/assets/copy.svg?react';
 
 interface SessionMessageProps {
   /**
@@ -19,12 +20,18 @@ interface SessionMessageProps {
    * Response transformers to apply to the response.
    */
   responseTransformers?: ResponseTransformer[];
+
+  /**
+   * Icon to show for copy.
+   */
+  copyIcon?: ReactElement;
 }
 
 export const SessionMessage: FC<SessionMessageProps> = ({
   question,
   response,
-  responseTransformers = []
+  responseTransformers = [],
+  copyIcon = <CopyIcon />
 }) => {
   const { theme } = useContext(SessionsContext);
 
@@ -35,6 +42,14 @@ export const SessionMessage: FC<SessionMessageProps> = ({
       return transformer(response, (transformedResponse) => applyTransformers(index + 1, transformedResponse));
     };
     return applyTransformers(0, response);
+  };
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      console.log('Text copied to clipboard');
+    }).catch(err => {
+      console.error('Could not copy text: ', err);
+    });
   };
 
   return (
@@ -48,6 +63,17 @@ export const SessionMessage: FC<SessionMessageProps> = ({
         <ReactMarkdown>
           {transformResponse(response)}
         </ReactMarkdown>
+      </div>
+      <div className={cn(theme.messages.message.footer.base)}>
+        <IconButton
+          variant="text"
+          disablePadding
+          title="Copy question and response"
+          className={cn(theme.messages.message.footer.copy)}
+          onClick={() => handleCopy(`${question}\n${response}`)}
+        >
+          {copyIcon}
+        </IconButton>
       </div>
     </div>
   );
