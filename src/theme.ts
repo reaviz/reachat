@@ -12,6 +12,8 @@ export interface ChatTheme {
   };
   messages: {
     base: string;
+    title: string;
+    content: string;
     message: {
       base: string;
       question: string;
@@ -40,7 +42,9 @@ export const chatTheme: ChatTheme = {
     }
   },
   messages: {
-    base: '',
+    base: 'flex flex-col flex-1',
+    title: 'text-2xl font-bold',
+    content: 'mt-2 flex-1',
     message: {
       base: '',
       question: '',

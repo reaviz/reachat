@@ -1,8 +1,6 @@
 import { FC, Fragment, useContext, useMemo } from 'react';
 import { SessionListItem } from './SessionListItem';
-import { Session } from './types';
 import { List, ListItem, Button, cn } from 'reablocks';
-import { ChatTheme } from './theme';
 import { groupSessionsByDate } from './utils';
 import { SessionsContext } from './SessionsContext';
 

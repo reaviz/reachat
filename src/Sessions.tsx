@@ -189,7 +189,6 @@ export const Sessions: FC<SessionsProps> = ({
                 key={activeSession.id}
                 session={activeSession}
                 responseTransformers={responseTransformers}
-                theme={theme}
               />
             ) : (
               <div className={cn(theme.empty)}>

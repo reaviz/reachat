@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { SessionMessage } from './SessionMessage';
 import { ResponseTransformer, Session } from './types';
-import { SessionInput } from './SessionInput';
-import { ChatTheme } from './theme';
+import { SessionsContext } from './SessionsContext';
+import { cn, DateFormat } from 'reablocks';
 
 interface SessionMessagesProps {
   /**
@@ -14,22 +14,23 @@ interface SessionMessagesProps {
    * Response transformers to apply to the response.
    */
   responseTransformers?: ResponseTransformer[];
-
-  /**
-   * Theme to use for the session messages.
-   */
-  theme?: ChatTheme;
 }
 
 export const SessionMessages: React.FC<SessionMessagesProps> = ({
   session,
-  responseTransformers,
-  theme,
+  responseTransformers
 }) => {
+  const { theme } = useContext(SessionsContext);
+
   return (
-    <div className="flex flex-col flex-1">
-      <h2 className="text-2xl font-bold">{session.title}</h2>
-      <div className="mt-2 flex-1">
+    <div className={cn(theme.messages.base)}>
+      <header>
+        <h2 className={cn(theme.messages.title)}>
+          {session.title}
+        </h2>
+        <DateFormat date={session.createdAt} />
+      </header>
+      <div className={cn(theme.messages.content)}>
         {session.conversations.map((conversation) => (
           <SessionMessage
             key={conversation.id}
@@ -40,6 +41,5 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
         ))}
       </div>
     </div>
-
   );
 };
