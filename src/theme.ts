@@ -22,6 +22,9 @@ export interface ChatTheme {
       footer: {
         base: string;
         copy: string;
+        upvote: string;
+        downvote: string;
+        refresh: string;
       };
     };
   };
@@ -56,8 +59,11 @@ export const chatTheme: ChatTheme = {
       question: 'font-semibold text-gray-400 mb-1',
       response: '',
       footer: {
-        base: 'mt-2',
-        copy: '[&>svg]:w-4 [&>svg]:h-4 opacity-50'
+        base: 'mt-3 flex gap-3',
+        copy: '[&>svg]:w-4 [&>svg]:h-4 opacity-50',
+        upvote: '[&>svg]:w-4 [&>svg]:h-4 opacity-50',
+        downvote: '[&>svg]:w-4 [&>svg]:h-4 opacity-50',
+        refresh: '[&>svg]:w-4 [&>svg]:h-4 opacity-50'
       }
     }
   },

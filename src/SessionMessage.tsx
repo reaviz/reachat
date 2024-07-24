@@ -4,6 +4,9 @@ import ReactMarkdown from 'react-markdown';
 import { SessionsContext } from './SessionsContext';
 import { IconButton, cn } from 'reablocks';
 import CopyIcon from '@/assets/copy.svg?react';
+import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
+import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
+import RefreshIcon from '@/assets/refresh.svg?react';
 
 interface SessionMessageProps {
   /**
@@ -25,13 +28,49 @@ interface SessionMessageProps {
    * Icon to show for copy.
    */
   copyIcon?: ReactElement;
+
+  /**
+   * Icon to show for thumbs up.
+   */
+  thumbsUpIcon?: ReactElement;
+
+  /**
+   * Icon to show for thumbs down.
+   */
+  thumbsDownIcon?: ReactElement;
+
+  /**
+   * Icon to show for refresh.
+   */
+  refreshIcon?: ReactElement;
+
+  /**
+   * Callback function to handle upvoting.
+   */
+  onUpvote?: () => void;
+
+  /**
+   * Callback function to handle downvoting.
+   */
+  onDownvote?: () => void;
+
+  /**
+   * Callback function to handle refreshing.
+   */
+  onRefresh?: () => void;
 }
 
 export const SessionMessage: FC<SessionMessageProps> = ({
   question,
   response,
   responseTransformers = [],
-  copyIcon = <CopyIcon />
+  copyIcon = <CopyIcon />,
+  thumbsUpIcon = <ThumbUpIcon />,
+  thumbsDownIcon = <ThumbsDownIcon />,
+  refreshIcon = <RefreshIcon />,
+  onUpvote,
+  onDownvote,
+  onRefresh
 }) => {
   const { theme } = useContext(SessionsContext);
 
@@ -65,15 +104,50 @@ export const SessionMessage: FC<SessionMessageProps> = ({
         </ReactMarkdown>
       </div>
       <div className={cn(theme.messages.message.footer.base)}>
-        <IconButton
-          variant="text"
-          disablePadding
-          title="Copy question and response"
-          className={cn(theme.messages.message.footer.copy)}
-          onClick={() => handleCopy(`${question}\n${response}`)}
-        >
-          {copyIcon}
-        </IconButton>
+        {copyIcon && (
+          <IconButton
+            variant="text"
+            disablePadding
+            title="Copy question and response"
+            className={cn(theme.messages.message.footer.copy)}
+            onClick={() => handleCopy(`${question}\n${response}`)}
+          >
+            {copyIcon}
+          </IconButton>
+        )}
+        {thumbsUpIcon && (
+          <IconButton
+            variant="text"
+            disablePadding
+            title="Upvote"
+            className={cn(theme.messages.message.footer.upvote)}
+            onClick={onUpvote}
+          >
+            {thumbsUpIcon}
+          </IconButton>
+        )}
+        {thumbsDownIcon && (
+          <IconButton
+            variant="text"
+            disablePadding
+            title="Downvote"
+            className={cn(theme.messages.message.footer.downvote)}
+            onClick={onDownvote}
+          >
+            {thumbsDownIcon}
+          </IconButton>
+        )}
+        {refreshIcon && (
+          <IconButton
+            variant="text"
+            disablePadding
+            title="Refresh"
+            className={cn(theme.messages.message.footer.refresh)}
+            onClick={onRefresh}
+          >
+            {refreshIcon}
+          </IconButton>
+        )}
       </div>
     </div>
   );
