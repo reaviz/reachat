@@ -1,6 +1,4 @@
 import { FC, ReactElement, useContext } from 'react';
-import { ResponseTransformer } from './types';
-import ReactMarkdown from 'react-markdown';
 import { SessionsContext } from './SessionsContext';
 import { IconButton, cn } from 'reablocks';
 import remarkGfm from 'remark-gfm';
@@ -9,6 +7,7 @@ import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
 import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
 import RefreshIcon from '@/assets/refresh.svg?react';
 import { PluggableList } from 'react-markdown/lib';
+import { Markdown } from './Markdown';
 
 interface SessionMessageProps {
   /**
@@ -87,14 +86,14 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   return (
     <div className={cn(theme.messages.message.base)}>
       <div className={cn(theme.messages.message.question)}>
-        <ReactMarkdown remarkPlugins={remarkPlugins as PluggableList}>
+        <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
           {question}
-        </ReactMarkdown>
+        </Markdown>
       </div>
       <div className={cn(theme.messages.message.response)}>
-        <ReactMarkdown remarkPlugins={remarkPlugins as PluggableList}>
+        <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
           {response}
-        </ReactMarkdown>
+        </Markdown>
       </div>
       {(copyIcon || thumbsDownIcon || thumbsUpIcon || refreshIcon) && (
         <div className={cn(theme.messages.message.footer.base)}>
