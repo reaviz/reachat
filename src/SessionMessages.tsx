@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { SessionMessage } from './SessionMessage';
 import { ResponseTransformer, Session } from './types';
 import { SessionsContext } from './SessionsContext';
@@ -21,6 +21,13 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   responseTransformers
 }) => {
   const { theme } = useContext(SessionsContext);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+    }
+  }, [session]);
 
   return (
     <div className={cn(theme.messages.base)}>
@@ -30,7 +37,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
         </h2>
         <DateFormat date={session.createdAt} />
       </header>
-      <div className={cn(theme.messages.content)}>
+      <div className={cn(theme.messages.content)} ref={contentRef}>
         {session.conversations.map((conversation) => (
           <SessionMessage
             key={conversation.id}
