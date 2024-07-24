@@ -1,25 +1,12 @@
-import { FC } from 'react';
+import { FC, Fragment, useContext, useMemo } from 'react';
 import { SessionListItem } from './SessionListItem';
 import { Session } from './types';
 import { List, ListItem, Button, cn } from 'reablocks';
 import { ChatTheme } from './theme';
+import { groupSessionsByDate } from './utils';
+import { SessionsContext } from './SessionsContext';
 
 interface SessionsListProps {
-  /**
-   * Sessions to display.
-   */
-  sessions: Session[];
-
-  /**
-   * ID of the currently active session.
-   */
-  activeSessionId?: string;
-
-  /**
-   * Theme to use for the sessions list.
-   */
-  theme?: ChatTheme;
-
   /**
    * Text to show for the new session button.
    */
@@ -42,14 +29,14 @@ interface SessionsListProps {
 }
 
 export const SessionsList: FC<SessionsListProps> = ({
-  sessions,
-  theme,
   newSessionText = 'New Session',
-  activeSessionId,
   onSelectSession,
   onDeleteSession,
   onCreateNewSession
 }) => {
+  const { theme, activeSessionId, sessions } = useContext(SessionsContext);
+  const groups = useMemo(() => groupSessionsByDate(sessions), [sessions]);
+
   return (
     <List className={cn(theme.sessions.base)}>
       <ListItem disableGutters disablePadding>
@@ -62,15 +49,22 @@ export const SessionsList: FC<SessionsListProps> = ({
           {newSessionText}
         </Button>
       </ListItem>
-      {sessions?.map((session) => (
-        <SessionListItem
-          key={session.id}
-          session={session}
-          theme={theme}
-          isActive={session.id === activeSessionId}
-          onSelectSession={onSelectSession}
-          onDeleteSession={onDeleteSession}
-        />
+      {Object.keys(groups).map(k => (
+        <Fragment key={k}>
+          <ListItem disableGutters disablePadding className={cn(theme.sessions.group)}>
+            {k}
+          </ListItem>
+          {groups[k].map(s => (
+            <SessionListItem
+              key={s.id}
+              session={s}
+              theme={theme}
+              isActive={s.id === activeSessionId}
+              onSelectSession={onSelectSession}
+              onDeleteSession={onDeleteSession}
+            />
+          ))}
+        </Fragment>
       ))}
     </List>
   );

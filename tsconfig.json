@@ -4,7 +4,8 @@
     "module": "ESNext",
     "types": [
       "vite/client",
-      "vitest/globals"
+      "vitest/globals",
+      "vite-plugin-svgr/client"
     ],
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",

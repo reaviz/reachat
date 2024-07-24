@@ -4,6 +4,7 @@ export interface ChatTheme {
   sessions: {
     base: string;
     create: string;
+    group: string;
     session: {
       base: string;
       delete: string;
@@ -30,10 +31,11 @@ export const chatTheme: ChatTheme = {
   base: 'text-white',
   empty: 'text-center flex-1',
   sessions: {
-    base: '',
+    base: 'overflow-auto',
+    group: 'text-xs text-gray-400 mt-4',
     create: 'mb-4',
     session: {
-      base: 'mb-4',
+      base: '',
       delete: 'w-4 h-4'
     }
   },

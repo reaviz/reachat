@@ -45,6 +45,7 @@ export const SessionListItem: FC<SessionListItemProps> = ({
   deleteIcon = <TrashIcon className={cn(theme.sessions.session.delete)} />
 }) => (
   <ListItem
+    dense
     disableGutters
     active={isActive}
     className={cn(theme.sessions.session.base)}

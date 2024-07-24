@@ -17,15 +17,15 @@ export interface Conversation {
   question: string;
   response?: string;
   sources?: ConversationSource[];
-  files: string[]; // TODO
+  files?: string[]; // TODO
   user?: User; // TODO
 }
 
 export interface Session {
   id: string;
-  title: string;
-  createdAt: Date;
-  updatedAt: Date;
+  title?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   conversations: Conversation[];
 }
 

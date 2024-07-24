@@ -35,6 +35,7 @@
   "typings": "dist/index.d.ts",
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
+    "date-fns": "^3.6.0",
     "framer-motion": "^10.16.16",
     "reablocks": "^8.4.1",
     "react-markdown": "^9.0.1",
@@ -87,7 +88,6 @@
     "vite-plugin-checker": "^0.6.4",
     "vite-plugin-css-injected-by-js": "^3.5.0",
     "vite-plugin-dts": "^3.7.3",
-    "vite-plugin-static-copy": "^1.0.4",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.4.0"

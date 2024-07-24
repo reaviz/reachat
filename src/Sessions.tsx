@@ -155,11 +155,13 @@ export const Sessions: FC<SessionsProps> = ({
   const contextValue = useMemo(() => ({
     sessions,
     activeSession,
+    theme,
     activeSessionId: internalActiveSessionID,
     selectSession: handleSelectSession,
     deleteSession: handleDeleteSession,
     createSession: handleCreateNewSession
   }), [
+    theme,
     sessions,
     activeSession,
     internalActiveSessionID,
@@ -176,10 +178,7 @@ export const Sessions: FC<SessionsProps> = ({
       })}>
         <>
           <SessionsList
-            sessions={sessions}
-            theme={theme}
             newSessionText={newSessionText}
-            activeSessionId={internalActiveSessionID}
             onSelectSession={handleSelectSession}
             onDeleteSession={onDeleteSession ? handleDeleteSession : null}
             onCreateNewSession={handleCreateNewSession}

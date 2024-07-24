@@ -9,7 +9,6 @@ import { resolve } from 'path';
 import external from 'rollup-plugin-peer-deps-external';
 import dts from 'vite-plugin-dts';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'path';
 
 export default defineConfig(({ mode }) =>
@@ -26,18 +25,6 @@ export default defineConfig(({ mode }) =>
         }),
         checker({
           typescript: true
-        }),
-        viteStaticCopy({
-          targets: [
-            {
-              src: 'src/**/*.story.tsx',
-              dest: 'stories/'
-            },
-            {
-              src: 'docs/blocks/**/*.story.tsx',
-              dest: 'blocks/'
-            }
-          ]
         })
       ],
       test: {
