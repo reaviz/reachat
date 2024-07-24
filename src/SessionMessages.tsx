@@ -24,7 +24,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
 
   return (
     <div className={cn(theme.messages.base)}>
-      <header>
+      <header className={cn(theme.messages.header)}>
         <h2 className={cn(theme.messages.title)}>
           {session.title}
         </h2>

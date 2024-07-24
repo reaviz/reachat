@@ -14,6 +14,7 @@ export interface ChatTheme {
     base: string;
     title: string;
     content: string;
+    header: string;
     message: {
       base: string;
       question: string;
@@ -42,9 +43,10 @@ export const chatTheme: ChatTheme = {
     }
   },
   messages: {
-    base: 'flex flex-col flex-1',
+    base: 'flex flex-col flex-1 overflow-hidden',
     title: 'text-2xl font-bold',
-    content: 'mt-2 flex-1',
+    content: 'mt-2 flex-1 overflow-auto',
+    header: 'flex justify-between items-center',
     message: {
       base: '',
       question: '',

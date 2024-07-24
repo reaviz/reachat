@@ -2,7 +2,7 @@ import React from 'react';
 import { Meta } from '@storybook/react';
 import { Sessions, Session } from '../src';
 import { Card } from 'reablocks';
-import { subDays, subWeeks, subMonths, subYears } from 'date-fns';
+import { subDays, subWeeks, subMonths, subYears, subMinutes, subHours } from 'date-fns';
 
 export default {
   title: 'Examples',
@@ -229,6 +229,39 @@ export const HundredSessions = () => {
       <Sessions
         viewType="console"
         sessions={hundredSessions}
+        isLoading={false}
+        responseTransformers={[]}
+        onDeleteSession={() => {}}
+      />
+    </div>
+  );
+};
+
+export const HundredConversations = () => {
+  const generateFakeConversations = (count: number) => {
+    return Array.from({ length: count }, (_, index) => ({
+      id: `conv-${index + 1}`,
+      question: `Question ${index + 1}: What is the meaning of life, the universe, and everything?`,
+      response: `Answer ${index + 1}: According to The Hitchhiker's Guide to the Galaxy, it's 42. But in reality, that's a complex philosophical question that has puzzled humanity for centuries.`,
+      createdAt: subMinutes(new Date(), count - index),
+      updatedAt: subMinutes(new Date(), count - index)
+    }));
+  };
+
+  const sessionWithHundredConversations: Session[] = [{
+    id: 'session-100',
+    title: 'Session with 100 Conversations',
+    createdAt: subHours(new Date(), 5),
+    updatedAt: new Date(),
+    conversations: generateFakeConversations(100)
+  }];
+
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+      <Sessions
+        viewType="console"
+        sessions={sessionWithHundredConversations}
+        activeSessionId="session-100"
         isLoading={false}
         responseTransformers={[]}
         onDeleteSession={() => {}}
