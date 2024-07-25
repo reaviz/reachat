@@ -19,7 +19,9 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
 
   useEffect(() => {
     if (contentRef.current) {
-      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+      // Scroll to the bottom of the content in animation queue
+      requestAnimationFrame(() =>
+        contentRef.current.scrollTop = contentRef.current.scrollHeight);
     }
   }, [session]);
 
