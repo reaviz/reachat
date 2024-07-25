@@ -1,0 +1,57 @@
+import { Meta } from '@storybook/addon-docs';
+
+<Meta title="Docs/Themeing" />
+
+# Themeing
+
+You can theme reachat by passing a custom `theme` to the `Session` component.
+
+```tsx
+export default function App() {
+  return <Sessions theme={theme} />;
+}
+```
+
+The theme interface is as follows:
+
+```ts
+export interface ChatTheme {
+  base: string;
+  empty: string;
+  sessions: {
+    base: string;
+    create: string;
+    group: string;
+    session: {
+      base: string;
+      delete: string;
+    };
+  };
+  messages: {
+    base: string;
+    title: string;
+    content: string;
+    header: string;
+    showMore: string;
+    message: {
+      base: string;
+      question: string;
+      response: string;
+      footer: {
+        base: string;
+        copy: string;
+        upvote: string;
+        downvote: string;
+        refresh: string;
+      };
+    };
+  };
+  input: {
+    base: string;
+    upload: string;
+    input: string;
+    send: string;
+    stop: string;
+  };
+}
+```

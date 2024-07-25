@@ -27,6 +27,9 @@ const preview: Preview = {
           'Docs',
           [
             'Intro',
+            'Getting Started',
+            'Themeing',
+            'API',
             'Changelog',
             'Support',
           ],
