@@ -42,7 +42,7 @@ export const chatTheme: ChatTheme = {
   base: 'text-white',
   empty: 'text-center flex-1',
   sessions: {
-    base: 'overflow-auto min-w-[150px] w-[30%] max-w-[300px]',
+    base: 'overflow-auto min-w-[150px] w-[30%] max-w-[300px] bg-[#11111F] p-5 rounded',
     group: 'text-xs text-gray-400 mt-4',
     create: 'mb-4',
     session: {

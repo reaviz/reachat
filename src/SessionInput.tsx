@@ -103,7 +103,7 @@ export const SessionInput: FC<SessionInputProps> = ({
     <div className={cn(theme.input.base)}>
       <Textarea
         containerClassName={cn(theme.input.input)}
-        minRows={3}
+        minRows={1}
         autoFocus
         value={message}
         onChange={(e) => setMessage(e.target.value)}

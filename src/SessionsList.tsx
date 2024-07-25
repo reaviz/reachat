@@ -1,6 +1,6 @@
 import { FC, Fragment, useContext, useMemo } from 'react';
 import { SessionListItem } from './SessionListItem';
-import { List, ListItem, Button, cn } from 'reablocks';
+import { List, ListItem, Button, cn, Divider } from 'reablocks';
 import { groupSessionsByDate } from './utils';
 import { SessionsContext } from './SessionsContext';
 
@@ -41,12 +41,14 @@ export const SessionsList: FC<SessionsListProps> = ({
         <Button
           fullWidth
           disableMargins
+          color="primary"
           className={cn(theme.sessions.create)}
           onClick={onCreateNewSession}
         >
           {newSessionText}
         </Button>
       </ListItem>
+      <Divider />
       {Object.keys(groups).map(k => (
         <Fragment key={k}>
           <ListItem disableGutters disablePadding className={cn(theme.sessions.group)}>

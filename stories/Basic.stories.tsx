@@ -35,7 +35,7 @@ const fakeSessions: Session[] = [
 
 export const Console = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -48,7 +48,7 @@ export const Console = () => {
 
 export const NewSessionContent = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -66,7 +66,7 @@ export const NewSessionContent = () => {
 
 export const DefaultSession = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -93,7 +93,7 @@ export const Companion = () => {
 
 export const Loading = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -106,7 +106,7 @@ export const Loading = () => {
 
 export const FileUploads = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -120,7 +120,7 @@ export const FileUploads = () => {
 
 export const DefaultInputValue = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         inputDefaultValue="Pre-populate the prompt via the default value property"
@@ -134,7 +134,7 @@ export const DefaultInputValue = () => {
 
 export const UndeleteableSessions = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={fakeSessions}
@@ -170,7 +170,7 @@ export const SessionGrouping = () => {
   ];
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={sessionsWithVariousDates}
@@ -203,7 +203,7 @@ export const HundredSessions = () => {
   const hundredSessions = generateFakeSessions(100);
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={hundredSessions}
@@ -234,7 +234,7 @@ export const HundredConversations = () => {
   }];
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={sessionWithHundredConversations}
@@ -260,7 +260,7 @@ export const LongSessionNames = () => {
   const sessionsWithLongNames = generateFakeSessionsWithLongNames(10);
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={sessionsWithLongNames}
@@ -335,7 +335,7 @@ export const MarkdownShowcase = () => {
   }];
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={sessionWithMarkdown}
@@ -380,7 +380,7 @@ export const CVEExample = () => {
   }];
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
       <Sessions
         viewType="console"
         sessions={sessionWithMarkdown}
@@ -473,7 +473,7 @@ export const OpenAIIntegration = () => {
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
       <Input fullWidth placeholder="OpenAI API Key" value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
-      <div style={{ position: 'absolute', top: 50, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: 'black', borderRadius: 5 }}>
+      <div style={{ position: 'absolute', top: 50, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
         <Sessions
           viewType="console"
           sessions={sessions}
