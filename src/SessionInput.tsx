@@ -80,7 +80,7 @@ export const SessionInput: FC<SessionInputProps> = ({
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      onSendMessage(message);
+      onSendMessage?.(message);
       setMessage('');
     }
   };
