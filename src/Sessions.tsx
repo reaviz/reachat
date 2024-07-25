@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { CSSProperties, FC, PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
 import { Session } from './types';
@@ -10,6 +10,16 @@ import { SessionsContext } from './SessionsContext';
 import { PluggableList } from 'react-markdown/lib';
 
 export interface SessionsProps extends PropsWithChildren {
+  /**
+   * The style to apply to the root element.
+   */
+  style?: CSSProperties;
+
+  /**
+   * The class name to apply to the root element.
+   */
+  className?: string;
+
   /**
    * The type of prompt to display. Companion prompts are smaller and are
    * meant to be displayed alongside other content. Full prompts are larger
@@ -111,7 +121,8 @@ export const Sessions: FC<SessionsProps> = ({
   newSessionText = 'New Session',
   inputDefaultValue,
   remarkPlugins,
-  children
+  style,
+  className
 }) => {
   // TODO: Make this hook more dynamic
   // const theme: ChatTheme = useComponentTheme('chat', customTheme);
@@ -175,10 +186,13 @@ export const Sessions: FC<SessionsProps> = ({
 
   return (
     <SessionsContext.Provider value={contextValue}>
-      <div className={cn(theme.base, {
-        'p-4': viewType === 'companion',
-        'flex w-full gap-5 h-full': viewType === 'console'
-      })}>
+      <div
+        className={cn(className, theme.base, {
+          'p-4': viewType === 'companion',
+          'flex w-full gap-5 h-full': viewType === 'console'
+        })}
+        style={style}
+      >
         <>
           <SessionsList
             newSessionText={newSessionText}
