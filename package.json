@@ -73,6 +73,7 @@
     "husky": "^9.0.11",
     "jsdom": "^24.0.0",
     "lint-staged": "^15.2.2",
+    "openai": "^4.53.0",
     "postcss": "^8.4.39",
     "postcss-nested": "^6.0.1",
     "postcss-preset-env": "^9.5.2",
