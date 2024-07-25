@@ -15,6 +15,7 @@ export interface ChatTheme {
     title: string;
     content: string;
     header: string;
+    showMore: string;
     message: {
       base: string;
       question: string;
@@ -54,6 +55,7 @@ export const chatTheme: ChatTheme = {
     title: 'text-2xl font-bold',
     content: 'mt-2 flex-1 overflow-auto',
     header: 'flex justify-between items-center',
+    showMore: 'mb-4',
     message: {
       base: 'mb-6 flex flex-col border-gray-400 border p-5 rounded',
       question: 'font-semibold text-gray-400 mb-1',
