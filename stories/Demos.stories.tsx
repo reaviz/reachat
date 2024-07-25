@@ -6,7 +6,7 @@ import { Card, Input } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 
 export default {
-  title: 'Examples',
+  title: 'Demos',
   component: Sessions
 } as Meta;
 

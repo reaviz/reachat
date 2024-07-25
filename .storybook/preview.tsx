@@ -20,7 +20,21 @@ const preview: Preview = {
   ],
   parameters: {
     layout: 'centered',
-    actions: { argTypesRegex: '^on.*' }
+    actions: { argTypesRegex: '^on.*' },
+    options: {
+      storySort: {
+        order: [
+          'Docs',
+          [
+            'Intro',
+            'Changelog',
+            'Support',
+          ],
+          'Demos',
+          '*'
+        ]
+      }
+    }
   }
 };
 
