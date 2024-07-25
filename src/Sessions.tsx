@@ -111,7 +111,7 @@ export const Sessions: FC<SessionsProps> = ({
   onDeleteSession,
   isLoading,
   activeSessionId,
-  theme = chatTheme,
+  theme: customTheme = chatTheme,
   inputPlaceholder = 'Type your message here...',
   onSendMessage,
   onStopMessage,
@@ -124,9 +124,7 @@ export const Sessions: FC<SessionsProps> = ({
   style,
   className
 }) => {
-  // TODO: Make this hook more dynamic
-  // const theme: ChatTheme = useComponentTheme('chat', customTheme);
-
+  const theme = useComponentTheme<ChatTheme>('chat', customTheme);
   const [internalActiveSessionID, setInternalActiveSessionID] = useState<string | undefined>(activeSessionId);
 
   useEffect(() => {
