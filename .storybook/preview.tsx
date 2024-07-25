@@ -1,5 +1,6 @@
 import { Preview } from '@storybook/react';
 import { ThemeProvider, theme } from 'reablocks';
+import { withThemeByClassName } from '@storybook/addon-themes';
 import './index.css';
 
 const preview: Preview = {
@@ -8,7 +9,14 @@ const preview: Preview = {
       <ThemeProvider theme={theme}>
         <Story />
       </ThemeProvider>
-    )
+    ),
+    withThemeByClassName({
+      themes: {
+        light: 'light',
+        dark: 'dark',
+      },
+      defaultTheme: 'dark',
+    }),
   ],
   parameters: {
     layout: 'centered',
