@@ -1,6 +1,6 @@
 import { FC, ReactElement, useContext } from 'react';
 import { SessionsContext } from './SessionsContext';
-import { IconButton, MotionItem, cn } from 'reablocks';
+import { IconButton, cn } from 'reablocks';
 import remarkGfm from 'remark-gfm';
 import CopyIcon from '@/assets/copy.svg?react';
 import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
@@ -81,7 +81,9 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   };
 
   return (
-    <MotionItem className={cn(theme.messages.message.base)}>
+    <div
+      className={cn(theme.messages.message.base)}
+    >
       <div className={cn(theme.messages.message.question)}>
         <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
           {question}
@@ -140,6 +142,6 @@ export const SessionMessage: FC<SessionMessageProps> = ({
           )}
         </div>
       )}
-    </MotionItem>
+    </div>
   );
 };

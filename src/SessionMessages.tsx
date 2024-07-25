@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { SessionMessage } from './SessionMessage';
 import { Session } from './types';
 import { SessionsContext } from './SessionsContext';
-import { cn, DateFormat, MotionGroup } from 'reablocks';
+import { cn, DateFormat } from 'reablocks';
 
 interface SessionMessagesProps {
   /**
@@ -26,14 +26,19 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   }, [session]);
 
   return (
-    <MotionGroup className={cn(theme.messages.base)}>
+    <div
+      className={cn(theme.messages.base)}
+    >
       <header className={cn(theme.messages.header)}>
         <h2 className={cn(theme.messages.title)}>
           {session.title}
         </h2>
         <DateFormat date={session.createdAt} />
       </header>
-      <div className={cn(theme.messages.content)} ref={contentRef}>
+      <div
+        className={cn(theme.messages.content)}
+        ref={contentRef}
+      >
         {session.conversations.map((conversation) => (
           <SessionMessage
             key={conversation.id}
@@ -42,6 +47,6 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
           />
         ))}
       </div>
-    </MotionGroup>
+    </div>
   );
 };
