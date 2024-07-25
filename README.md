@@ -31,44 +31,17 @@
 - Code block
 - CSV Table
 - JSON Block
-- Dynamic Links ( regex )
-- Source Support
-- Image Preview Support
 - File Upload Support
-- Typeahead
+- Conversation Pagination
+- Dynamic Grouping
 - Keyboard shortcuts
 - Tailwind for Themeing
-- Polygot LLM Support - Vercel, OpenAI, Claude, Gemini
-
-## API
-Explore ideas for Slots:
-
-```tsx
-const { activeSession, setActiveSession } = useChat();
-
-<Sessions>
-  <EmptySessions />
-  <SessionsList>
-    {sessions.map(sesh => {
-      <SessionListItem>
-        {sesh.name}
-        clone btn
-      </SessionListItem>
-    })}
-  </SessionsList>
-  <SessionMessages>
-
-  </SessionMessages>
-</Sessions>
-```
 
 ## Installation
-TODO
-
-## Themeing
-TODO
+- `npm i reachat`
 
 ## References
+- https://www.copilotkit.ai/
 - https://www.chatbotui.com/
 - https://llm-ui.com/
 - https://github.com/huggingface/chat-ui - Amazing clean UI with very good web search, my go to currently. (they added the ability to do it all locally very recently!)
