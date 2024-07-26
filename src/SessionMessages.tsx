@@ -1,14 +1,22 @@
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import React, {
+  PropsWithChildren,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef
+} from 'react';
+import { SessionEmpty } from './SessionEmpty';
 import { SessionMessage } from './SessionMessage';
-import { Session } from './types';
 import { SessionsContext } from './SessionsContext';
 import { Button, cn, DateFormat, useInfinityList } from 'reablocks';
+import { Slot } from '@radix-ui/react-slot';
 
-interface SessionMessagesProps {
+interface SessionMessagesProps extends PropsWithChildren {
   /**
-   * Session to display.
+   * Content to display when there are no sessions selected or a new session is started.
    */
-  session: Session;
+  newSessionContent?: string | ReactNode;
 
   /**
    * Limit the number of results returned. Clientside pagination.
@@ -22,34 +30,42 @@ interface SessionMessagesProps {
 }
 
 export const SessionMessages: React.FC<SessionMessagesProps> = ({
-  session,
+  children,
+  newSessionContent,
   limit = 10,
   showMoreText = 'Show more'
 }) => {
-  const { theme } = useContext(SessionsContext);
+  const { activeSession, theme } = useContext(SessionsContext);
+
+  if (!activeSession) {
+    return <SessionEmpty newSessionContent={newSessionContent} />;
+  }
+
   const contentRef = useRef<HTMLDivElement | null>(null);
+
+  const MessageComponent = children ? Slot : SessionMessage;
 
   useEffect(() => {
     if (contentRef.current) {
       // Scroll to the bottom of the content in animation queue
-      requestAnimationFrame(() =>
-        contentRef.current.scrollTop = contentRef.current.scrollHeight);
+      requestAnimationFrame(
+        () => (contentRef.current.scrollTop = contentRef.current.scrollHeight)
+      );
     }
-  }, [session]);
+  }, [activeSession]);
 
   function handleShowMore() {
     showNext(10);
-    requestAnimationFrame(() => contentRef.current.scrollTop = 0);
+    requestAnimationFrame(() => (contentRef.current.scrollTop = 0));
   }
 
   // Reverse the conversations so the last one is the first one
-  const reversedConvos = useMemo(() => [...session.conversations].reverse(), [session]);
+  const reversedConvos = useMemo(
+    () => [...activeSession.conversations].reverse(),
+    [activeSession]
+  );
 
-  const {
-    data,
-    hasMore,
-    showNext
-  } = useInfinityList({
+  const { data, hasMore, showNext } = useInfinityList({
     items: reversedConvos,
     limit
   });
@@ -58,20 +74,15 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   const reReversedConvo = useMemo(() => [...data].reverse(), [data]);
 
   // If we are not paging, just return the conversations
-  const convosToRender = limit ? reReversedConvo : session.conversations;
+  const convosToRender = limit ? reReversedConvo : activeSession.conversations;
 
   return (
     <div className={cn(theme.messages.base)}>
       <header className={cn(theme.messages.header)}>
-        <h2 className={cn(theme.messages.title)}>
-          {session.title}
-        </h2>
-        <DateFormat date={session.createdAt} />
+        <h2 className={cn(theme.messages.title)}>{activeSession.title}</h2>
+        <DateFormat date={activeSession.createdAt} />
       </header>
-      <div
-        className={cn(theme.messages.content)}
-        ref={contentRef}
-      >
+      <div className={cn(theme.messages.content)} ref={contentRef}>
         {hasMore && (
           <Button
             variant="outline"
@@ -82,12 +93,14 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             {showMoreText}
           </Button>
         )}
-        {convosToRender.map((conversation) => (
-          <SessionMessage
+        {convosToRender.map(conversation => (
+          <MessageComponent
             key={conversation.id}
             question={conversation.question}
-            response={conversation.response || ''}
-          />
+            response={conversation.response}
+          >
+            {children}
+          </MessageComponent>
         ))}
       </div>
     </div>

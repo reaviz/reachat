@@ -1,14 +1,13 @@
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, ReactNode, useContext } from 'react';
 import { ListItem, IconButton, cn, Ellipsis } from 'reablocks';
 import { Session } from './types';
 import TrashIcon from '@/assets/trash.svg?react';
-import { ChatTheme } from './theme';
+import { SessionsContext } from './SessionsContext';
+import { Slot } from '@radix-ui/react-slot';
 
 interface SessionListItemProps {
-  /**
-   * Theme to use for the session list item.
-   */
-  theme?: ChatTheme;
+  asChild?: boolean;
+  children?: ReactNode;
 
   /**
    * Session to display.
@@ -16,57 +15,46 @@ interface SessionListItemProps {
   session: Session;
 
   /**
-   * Indicates whether this session is currently active
-   */
-  isActive: boolean;
-
-  /**
    * Icon to show for delete.
    */
   deleteIcon?: ReactElement;
-
-  /**
-   * Callback function to handle session selection, receives the session ID
-   */
-  onSelectSession?: (sessionId: string) => void;
-
-  /**
-   * Callback function to handle session deletion, receives the session ID
-   */
-  onDeleteSession?: (sessionId: string) => void;
 }
 
 export const SessionListItem: FC<SessionListItemProps> = ({
+  children,
+  asChild,
   session,
-  isActive,
-  theme,
-  onSelectSession,
-  onDeleteSession,
-  deleteIcon = <TrashIcon className={cn(theme.sessions.session.delete)} />
-}) => (
-  <ListItem
-    dense
-    disableGutters
-    active={isActive}
-    className={cn(theme.sessions.session.base)}
-    onClick={() => onSelectSession?.(session.id)}
-    end={
-      <>
-        {onDeleteSession && (
-          <IconButton
-            size="small"
-            variant="text"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDeleteSession(session.id);
-            }}
-          >
-            {deleteIcon}
-          </IconButton>
-        )}
-      </>
-    }
-  >
-    <Ellipsis value={session.title} limit={100} />
-  </ListItem>
-);
+  deleteIcon = <TrashIcon />
+}) => {
+  const { activeSessionId, selectSession, deleteSession, theme } =
+    useContext(SessionsContext);
+  const Comp = asChild ? Slot : ListItem;
+  return (
+    <Comp
+      dense
+      disableGutters
+      active={session.id === activeSessionId}
+      className={cn(theme.sessions.session.base)}
+      onClick={() => selectSession?.(session.id)}
+      end={
+        <>
+          {deleteSession && (
+            <IconButton
+              size="small"
+              variant="text"
+              onClick={e => {
+                e.stopPropagation();
+                deleteSession(session.id);
+              }}
+              className={cn(theme.sessions.session.delete)}
+            >
+              {deleteIcon}
+            </IconButton>
+          )}
+        </>
+      }
+    >
+      {asChild ? children : <Ellipsis value={session.title} limit={100} />}
+    </Comp>
+  );
+};

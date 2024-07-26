@@ -1,20 +1,23 @@
-import { FC, useState, KeyboardEvent, ReactElement, useRef, ChangeEvent } from 'react';
+import {
+  FC,
+  useState,
+  KeyboardEvent,
+  ReactElement,
+  useRef,
+  ChangeEvent,
+  useContext
+} from 'react';
 import { Button, Textarea, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import AttachIcon from '@/assets/paperclip.svg?react';
-import { ChatTheme } from './theme';
+import { SessionsContext } from './SessionsContext';
 
 interface SessionInputProps {
   /**
    * Default value for the input field.
    */
   inputDefaultValue?: string;
-
-  /**
-   * Theme to use for the input.
-   */
-  theme?: ChatTheme;
 
   /**
    * Allowed file types for upload.
@@ -63,7 +66,6 @@ interface SessionInputProps {
 }
 
 export const SessionInput: FC<SessionInputProps> = ({
-  theme,
   allowedFiles,
   onSendMessage,
   isLoading,
@@ -75,6 +77,7 @@ export const SessionInput: FC<SessionInputProps> = ({
   stopIcon = <StopIcon />,
   attachIcon = <AttachIcon />
 }) => {
+  const { theme } = useContext(SessionsContext);
   const [message, setMessage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -106,7 +109,7 @@ export const SessionInput: FC<SessionInputProps> = ({
         minRows={1}
         autoFocus
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={e => setMessage(e.target.value)}
         defaultValue={inputDefaultValue}
         onKeyPress={handleKeyPress}
         placeholder={inputPlaceholder}
