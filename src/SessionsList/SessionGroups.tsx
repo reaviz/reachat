@@ -10,5 +10,5 @@ export interface SessionGroupsProps {
 export const SessionGroups: FC<SessionGroupsProps> = ({ children }) => {
   const { sessions } = useContext(SessionsContext);
   const groups = useMemo(() => groupSessionsByDate(sessions), [sessions]);
-  return children(groups);
+  return <>{children(groups)}</>;
 };
