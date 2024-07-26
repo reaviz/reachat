@@ -48,7 +48,7 @@ export const chatTheme: ChatTheme = {
     create: 'mb-4',
     session: {
       base: '',
-      delete: 'w-4 h-4'
+      delete: '[&>svg]:w-4 [&>svg]:h-4 opacity-50'
     }
   },
   messages: {
