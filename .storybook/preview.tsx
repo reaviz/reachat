@@ -1,6 +1,7 @@
 import { Preview } from '@storybook/react';
 import { ThemeProvider, theme } from 'reablocks';
 import { withThemeByClassName } from '@storybook/addon-themes';
+import sbTheme from './theme';
 import './index.css';
 
 const preview: Preview = {
@@ -21,6 +22,9 @@ const preview: Preview = {
   parameters: {
     layout: 'centered',
     actions: { argTypesRegex: '^on.*' },
+    docs: {
+      theme: sbTheme
+    },
     options: {
       storySort: {
         order: [
