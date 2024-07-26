@@ -36,13 +36,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   showMoreText = 'Show more'
 }) => {
   const { activeSession, theme } = useContext(SessionsContext);
-
-  if (!activeSession) {
-    return <SessionEmpty newSessionContent={newSessionContent} />;
-  }
-
   const contentRef = useRef<HTMLDivElement | null>(null);
-
   const MessageComponent = children ? Slot : SessionMessage;
 
   useEffect(() => {
@@ -61,7 +55,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
 
   // Reverse the conversations so the last one is the first one
   const reversedConvos = useMemo(
-    () => [...activeSession.conversations].reverse(),
+    () => [...activeSession?.conversations ?? []].reverse(),
     [activeSession]
   );
 
@@ -74,7 +68,11 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   const reReversedConvo = useMemo(() => [...data].reverse(), [data]);
 
   // If we are not paging, just return the conversations
-  const convosToRender = limit ? reReversedConvo : activeSession.conversations;
+  const convosToRender = limit ? reReversedConvo : activeSession?.conversations;
+
+  if (!activeSession) {
+    return <SessionEmpty newSessionContent={newSessionContent} />;
+  }
 
   return (
     <div className={cn(theme.messages.base)}>
