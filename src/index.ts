@@ -5,6 +5,7 @@ export * from './Sessions';
 export * from './SessionMessage';
 export * from './SessionListItem';
 export * from './SessionsList';
+export * from './SessionGroups';
 export * from './SessionsGroup';
 export * from './types';
 export * from './theme';

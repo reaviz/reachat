@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, FC } from 'react';
 import OpenAI from 'openai';
 import { Meta } from '@storybook/react';
 import {
@@ -17,6 +17,7 @@ import {
 import { Card, Input } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 import { groupSessionsByDate } from '@/utils';
+import { SessionGroups } from '@/SessionGroups';
 
 export default {
   title: 'Demos',
@@ -71,7 +72,6 @@ const fakeSessions: Session[] = [
 ];
 
 export const Console = () => {
-  const groups = groupSessionsByDate(fakeSessions);
   return (
     <div
       style={{
@@ -94,13 +94,15 @@ export const Console = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          {Object.keys(groups).map(k => (
-            <SessionsGroup heading={k}>
-              {groups[k].map(s => (
-                <SessionListItem key={s.id} session={s} />
-              ))}
-            </SessionsGroup>
-          ))}
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => <SessionListItem key={s.id} session={s} />)}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
         </SessionsList>
         <div className="flex-1 h-full flex flex-col">
           <SessionMessages />
@@ -111,7 +113,7 @@ export const Console = () => {
   );
 };
 
-const CustomSessionMessage: React.FC<SessionMessageProps> = ({
+const CustomSessionMessage: FC<SessionMessageProps> = ({
   question,
   response
 }) => (
@@ -124,8 +126,7 @@ const CustomSessionMessage: React.FC<SessionMessageProps> = ({
   </div>
 );
 
-export const Slots = () => {
-  const groups = groupSessionsByDate(fakeSessions);
+export const CustomComponents = () => {
   return (
     <div
       style={{
@@ -143,13 +144,15 @@ export const Slots = () => {
       <Sessions sessions={fakeSessions} viewType="console">
         <SessionsList>
           <NewSessionButton />
-          {Object.keys(groups).map(k => (
-            <SessionsGroup heading={k}>
-              {groups[k].map(s => (
-                <SessionListItem key={s.id} session={s} />
-              ))}
-            </SessionsGroup>
-          ))}
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => <SessionListItem key={s.id} session={s} />)}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
         </SessionsList>
         <div className="flex-1 h-full flex flex-col">
           <SessionMessages>

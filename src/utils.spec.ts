@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { groupSessionsByDate } from './utils';
 import { Session } from './types';
-import { subDays, subWeeks, subMonths, subYears } from 'date-fns';
+import { subDays } from 'date-fns';
 
 describe('groupSessionsByDate', () => {
   const createSession = (daysAgo: number): Session => ({
@@ -24,17 +24,22 @@ describe('groupSessionsByDate', () => {
 
     const grouped = groupSessionsByDate(sessions);
 
-    expect(Object.keys(grouped)).toEqual(['Today', 'Yesterday', 'Last Week', 'Last Month', expect.stringMatching(/^[A-Z][a-z]+$/), 'Last Year']);
-    expect(grouped['Today'].length).toBe(1);
-    expect(grouped['Yesterday'].length).toBe(1);
-    expect(grouped['Last Week'].length).toBe(1);
-    expect(grouped['Last Month'].length).toBe(1);
-    expect(Object.values(grouped).flat().length).toBe(sessions.length);
+    expect(grouped).toHaveLength(6);
+    expect(grouped[0].heading).toBe('Today');
+    expect(grouped[1].heading).toBe('Yesterday');
+    expect(grouped[2].heading).toBe('Last Week');
+    expect(grouped[3].heading).toBe('Last Month');
+    expect(grouped[4].heading).toMatch(/^[A-Z][a-z]+$/);
+    expect(grouped[5].heading).toBe('Last Year');
+
+    expect(grouped[0].sessions).toHaveLength(1);
+    expect(grouped[1].sessions).toHaveLength(1);
+    expect(grouped.flatMap(g => g.sessions)).toHaveLength(sessions.length);
   });
 
   it('handles empty input', () => {
     const grouped = groupSessionsByDate([]);
-    expect(Object.keys(grouped)).toHaveLength(0);
+    expect(grouped).toHaveLength(0);
   });
 
   it('groups multiple sessions in the same category', () => {
@@ -47,8 +52,11 @@ describe('groupSessionsByDate', () => {
 
     const grouped = groupSessionsByDate(sessions);
 
-    expect(grouped['Today'].length).toBe(2);
-    expect(grouped['Yesterday'].length).toBe(2);
+    expect(grouped).toHaveLength(2);
+    expect(grouped[0].heading).toBe('Today');
+    expect(grouped[0].sessions).toHaveLength(2);
+    expect(grouped[1].heading).toBe('Yesterday');
+    expect(grouped[1].sessions).toHaveLength(2);
   });
 
   it('sorts groups in the correct order', () => {
@@ -60,10 +68,24 @@ describe('groupSessionsByDate', () => {
     ];
 
     const grouped = groupSessionsByDate(sessions);
-    const groupOrder = Object.keys(grouped);
 
-    expect(groupOrder[0]).toBe('Today');
-    expect(groupOrder[1]).toBe('Yesterday');
-    expect(groupOrder[groupOrder.length - 1]).toBe('Last Year');
+    expect(grouped[0].heading).toBe('Today');
+    expect(grouped[1].heading).toBe('Yesterday');
+    expect(grouped[grouped.length - 1].heading).toBe('Last Year');
+  });
+
+  it('sorts sessions within each group by createdAt in descending order', () => {
+    const now = new Date();
+    const sessions: Session[] = [
+      { ...createSession(0), createdAt: new Date(now.getTime() - 1000) },
+      { ...createSession(0), createdAt: now },
+      { ...createSession(1), createdAt: new Date(now.getTime() - 24 * 60 * 60 * 1000 - 1000) },
+      { ...createSession(1), createdAt: new Date(now.getTime() - 24 * 60 * 60 * 1000) },
+    ];
+
+    const grouped = groupSessionsByDate(sessions);
+
+    expect(grouped[0].sessions[0].createdAt).toEqual(now);
+    expect(grouped[1].sessions[0].createdAt).toEqual(new Date(now.getTime() - 24 * 60 * 60 * 1000));
   });
 });
