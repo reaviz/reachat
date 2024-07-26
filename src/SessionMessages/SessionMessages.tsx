@@ -78,7 +78,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
     <div className={cn(theme.messages.base)}>
       <header className={cn(theme.messages.header)}>
         <h2 className={cn(theme.messages.title)}>{activeSession.title}</h2>
-        <DateFormat date={activeSession.createdAt} />
+        <DateFormat className={cn(theme.messages.date)} date={activeSession.createdAt} />
       </header>
       <div className={cn(theme.messages.content)} ref={contentRef}>
         {hasMore && (

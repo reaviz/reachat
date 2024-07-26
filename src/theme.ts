@@ -13,6 +13,7 @@ export interface ChatTheme {
   messages: {
     base: string;
     title: string;
+    date: string;
     content: string;
     header: string;
     showMore: string;
@@ -53,6 +54,7 @@ export const chatTheme: ChatTheme = {
   messages: {
     base: 'flex flex-col flex-1 overflow-hidden',
     title: 'text-2xl font-bold',
+    date: 'text-sm',
     content: 'mt-2 flex-1 overflow-auto',
     header: 'flex justify-between items-center',
     showMore: 'mb-4',
