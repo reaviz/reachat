@@ -49,6 +49,7 @@ theme via Tailwind.
   - Tables
   - JSON
   - Embeds
+  - remark plugin support
 - File Uploads
 - Animations
 - Conversation Pagination
