@@ -141,7 +141,7 @@ export const CustomComponents = () => {
         borderRadius: 5
       }}
     >
-      <Sessions sessions={fakeSessions} onDeleteSession={deleteSession}>
+      <Sessions sessions={fakeSessions}>
         <SessionsList>
           <NewSessionButton>
             <button className="text-blue-500">New Session</button>
