@@ -16,7 +16,6 @@ import { SessionsContext } from './SessionsContext';
 import { PluggableList } from 'react-markdown/lib';
 
 export interface SessionsProps extends PropsWithChildren {
-  children?: ReactNode;
   /**
    * The style to apply to the root element.
    */
@@ -32,7 +31,7 @@ export interface SessionsProps extends PropsWithChildren {
    * meant to be displayed alongside other content. Full prompts are larger
    * and are meant to be displayed on their own.
    */
-  viewType: 'companion' | 'console';
+  viewType?: 'companion' | 'console';
 
   /**
    * The list of allowed file types. If null or not defined, not file upload

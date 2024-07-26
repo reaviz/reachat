@@ -89,7 +89,6 @@ export const Console = () => {
       <Sessions
         sessions={fakeSessions}
         viewType="console"
-        isLoading={false}
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
@@ -141,7 +140,7 @@ export const CustomComponents = () => {
         borderRadius: 5
       }}
     >
-      <Sessions sessions={fakeSessions} viewType="console">
+      <Sessions sessions={fakeSessions}>
         <SessionsList>
           <NewSessionButton />
           <Divider />
