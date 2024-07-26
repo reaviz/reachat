@@ -165,6 +165,86 @@ export const CustomComponents = () => {
   );
 };
 
+export const Embeds = () => {
+  const fakeSessionsWithEmbeds: Session[] = [
+    {
+      id: '1',
+      title: 'Session with Embeds',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: '1',
+          question: 'Can you show me a video about React?',
+          response: `
+  ## Watch this video
+
+  https://youtu.be/enTFE2c68FQ
+
+  https://www.youtube.com/watch?v=enTFE2c68FQ
+
+  These links showcase a video about React basics. You can click on either link to watch the video.`,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: '2',
+          question: 'Do you have another video recommendation?',
+          response: `
+  Certainly! Here's another great video about web development:
+
+  ## Check out this tutorial
+
+  https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+  This video covers some interesting web development concepts.`,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ]
+    }
+  ];
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Sessions
+        sessions={fakeSessionsWithEmbeds}
+        viewType="console"
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => <SessionListItem key={s.id} session={s} />)}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput />
+        </div>
+      </Sessions>
+    </div>
+  );
+};
+
 // export const NewSessionContent = () => {
 //   return (
 //     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>

@@ -48,6 +48,7 @@ theme via Tailwind.
   - Code Highlighting
   - Tables
   - JSON
+  - Embeds
 - File Uploads
 - Animations
 - Conversation Pagination

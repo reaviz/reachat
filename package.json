@@ -42,7 +42,8 @@
     "reablocks": "^8.4.3",
     "react-markdown": "^9.0.1",
     "reakeys": "^2.0.3",
-    "remark-gfm": "^4.0.0"
+    "remark-gfm": "^4.0.0",
+    "remark-youtube": "^1.3.2"
   },
   "devDependencies": {
     "@storybook/addon-docs": "^8.2.6",

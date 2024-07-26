@@ -8,6 +8,7 @@ import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
 import RefreshIcon from '@/assets/refresh.svg?react';
 import { PluggableList } from 'react-markdown/lib';
 import { Markdown } from '@/Markdown';
+import remarkYoutube from 'remark-youtube';
 
 export interface SessionMessageProps {
   /**
@@ -67,7 +68,7 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   onDownvote,
   onRefresh
 }) => {
-  const { theme, remarkPlugins = [remarkGfm] } = useContext(SessionsContext);
+  const { theme, remarkPlugins = [remarkGfm, remarkYoutube] } = useContext(SessionsContext);
 
   const handleCopy = (text: string) => {
     navigator.clipboard
