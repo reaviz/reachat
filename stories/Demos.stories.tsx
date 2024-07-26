@@ -15,7 +15,7 @@ import {
   SessionMessageProps,
   SessionInput
 } from '../src';
-import { Card, Input } from 'reablocks';
+import { Card, Divider, Input } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 import { groupSessionsByDate } from '@/utils';
 
@@ -144,6 +144,7 @@ export const CustomComponents = () => {
       <Sessions sessions={fakeSessions} viewType="console">
         <SessionsList>
           <NewSessionButton />
+          <Divider />
           <SessionGroups>
             {groups =>
               groups.map(({ heading, sessions }) => (
