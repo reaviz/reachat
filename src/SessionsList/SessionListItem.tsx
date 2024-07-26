@@ -1,8 +1,8 @@
 import { FC, ReactElement, ReactNode, useContext } from 'react';
 import { ListItem, IconButton, cn, Ellipsis } from 'reablocks';
-import { Session } from './types';
+import { Session } from '@/types';
 import TrashIcon from '@/assets/trash.svg?react';
-import { SessionsContext } from './SessionsContext';
+import { SessionsContext } from '@/SessionsContext';
 import { Slot } from '@radix-ui/react-slot';
 
 interface SessionListItemProps {

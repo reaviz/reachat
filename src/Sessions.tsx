@@ -11,9 +11,6 @@ import {
 import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
 import { Session } from './types';
-import { SessionsList } from './SessionsList';
-import { SessionMessages } from './SessionMessages';
-import { SessionInput } from './SessionInput';
 import { ChatTheme, chatTheme } from './theme';
 import { SessionsContext } from './SessionsContext';
 import { PluggableList } from 'react-markdown/lib';

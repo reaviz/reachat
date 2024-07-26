@@ -11,13 +11,13 @@ import {
   NewSessionButton,
   SessionMessages,
   SessionMessage,
+  SessionGroups,
   SessionMessageProps,
   SessionInput
 } from '../src';
 import { Card, Input } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 import { groupSessionsByDate } from '@/utils';
-import { SessionGroups } from '@/SessionGroups';
 
 export default {
   title: 'Demos',

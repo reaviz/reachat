@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren, ReactElement, useContext } from 'react';
-import { SessionsContext } from './SessionsContext';
+import { SessionsContext } from '@/SessionsContext';
 import { IconButton, cn } from 'reablocks';
 import remarkGfm from 'remark-gfm';
 import CopyIcon from '@/assets/copy.svg?react';
@@ -7,7 +7,7 @@ import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
 import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
 import RefreshIcon from '@/assets/refresh.svg?react';
 import { PluggableList } from 'react-markdown/lib';
-import { Markdown } from './Markdown';
+import { Markdown } from '@/Markdown';
 
 export interface SessionMessageProps {
   /**

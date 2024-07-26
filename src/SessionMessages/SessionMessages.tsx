@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { SessionEmpty } from './SessionEmpty';
 import { SessionMessage } from './SessionMessage';
-import { SessionsContext } from './SessionsContext';
+import { SessionsContext } from '@/SessionsContext';
 import { Button, cn, DateFormat, useInfinityList } from 'reablocks';
 import { Slot } from '@radix-ui/react-slot';
 

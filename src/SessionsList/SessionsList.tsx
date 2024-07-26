@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren, useContext } from 'react';
 import { List, cn } from 'reablocks';
-import { SessionsContext } from './SessionsContext';
+import { SessionsContext } from '@/SessionsContext';
 
 export const SessionsList: FC<PropsWithChildren> = ({ children }) => {
   const { theme } = useContext(SessionsContext);

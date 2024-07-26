@@ -1,5 +1,5 @@
 import { FC, ReactNode, useContext } from 'react';
-import { SessionsContext } from './SessionsContext';
+import { SessionsContext } from '@/SessionsContext';
 import { cn } from 'reablocks';
 
 interface SessionEmptyProps {

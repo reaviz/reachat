@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren, useContext } from 'react';
-import { SessionsContext } from './SessionsContext';
+import { SessionsContext } from '@/SessionsContext';
 import { ListItem, cn } from 'reablocks';
 
 interface SessionsGroupProps extends PropsWithChildren {

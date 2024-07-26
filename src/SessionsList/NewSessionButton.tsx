@@ -1,6 +1,6 @@
 import { Button, cn } from 'reablocks';
 import { FC, PropsWithChildren, useContext } from 'react';
-import { SessionsContext } from './SessionsContext';
+import { SessionsContext } from '@/SessionsContext';
 import { Slot } from '@radix-ui/react-slot';
 
 interface NewSessionButtonProps extends PropsWithChildren {
