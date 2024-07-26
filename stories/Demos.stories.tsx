@@ -15,9 +15,8 @@ import {
   SessionMessageProps,
   SessionInput
 } from '../src';
-import { Card, Divider, Input } from 'reablocks';
+import { Card, Divider, IconButton, Input, ListItem } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
-import { groupSessionsByDate } from '@/utils';
 
 export default {
   title: 'Demos',
@@ -97,7 +96,9 @@ export const Console = () => {
             {groups =>
               groups.map(({ heading, sessions }) => (
                 <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => <SessionListItem key={s.id} session={s} />)}
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
                 </SessionsGroup>
               ))
             }
@@ -140,15 +141,19 @@ export const CustomComponents = () => {
         borderRadius: 5
       }}
     >
-      <Sessions sessions={fakeSessions}>
+      <Sessions sessions={fakeSessions} onDeleteSession={deleteSession}>
         <SessionsList>
-          <NewSessionButton />
+          <NewSessionButton>
+            <button className="text-blue-500">New Session</button>
+          </NewSessionButton>
           <Divider />
           <SessionGroups>
             {groups =>
               groups.map(({ heading, sessions }) => (
                 <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => <SessionListItem key={s.id} session={s} />)}
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
                 </SessionsGroup>
               ))
             }
@@ -230,7 +235,9 @@ export const Embeds = () => {
             {groups =>
               groups.map(({ heading, sessions }) => (
                 <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => <SessionListItem key={s.id} session={s} />)}
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
                 </SessionsGroup>
               ))
             }

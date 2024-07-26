@@ -6,7 +6,6 @@ import { SessionsContext } from '@/SessionsContext';
 import { Slot } from '@radix-ui/react-slot';
 
 interface SessionListItemProps {
-  asChild?: boolean;
   children?: ReactNode;
 
   /**
@@ -22,13 +21,12 @@ interface SessionListItemProps {
 
 export const SessionListItem: FC<SessionListItemProps> = ({
   children,
-  asChild,
   session,
   deleteIcon = <TrashIcon />
 }) => {
   const { activeSessionId, selectSession, deleteSession, theme } =
     useContext(SessionsContext);
-  const Comp = asChild ? Slot : ListItem;
+  const Comp = children ? Slot : ListItem;
   return (
     <Comp
       dense
@@ -54,7 +52,7 @@ export const SessionListItem: FC<SessionListItemProps> = ({
         </>
       }
     >
-      {asChild ? children : <Ellipsis value={session.title} limit={100} />}
+      {children || <Ellipsis value={session.title} limit={100} />}
     </Comp>
   );
 };

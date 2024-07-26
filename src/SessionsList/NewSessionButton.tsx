@@ -4,17 +4,15 @@ import { SessionsContext } from '@/SessionsContext';
 import { Slot } from '@radix-ui/react-slot';
 
 interface NewSessionButtonProps extends PropsWithChildren {
-  asChild?: boolean;
   newSessionText?: string;
 }
 
 export const NewSessionButton: FC<NewSessionButtonProps> = ({
   children,
-  asChild,
   newSessionText = 'New Session'
 }) => {
   const { theme, createSession } = useContext(SessionsContext);
-  const Comp = asChild ? Slot : Button;
+  const Comp = children ? Slot : Button;
   return (
     <Comp
       fullWidth
@@ -23,7 +21,7 @@ export const NewSessionButton: FC<NewSessionButtonProps> = ({
       className={cn(theme.sessions.create)}
       onClick={createSession}
     >
-      {asChild ? children : newSessionText}
+      {children || newSessionText}
     </Comp>
   );
 };
