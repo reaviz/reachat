@@ -26,39 +26,55 @@
 
 ---
 
-## Features
-- Markdown
-- Code block
-- CSV Table
-- JSON Block
-- File Upload Support
+reachat is a UI library for building chat experiences. No more manually coding
+all the components required to build LLM uis manually. Customize each component and
+theme via Tailwind.
+
+## 🚀 Quick Links
+- Checkout the [docs and demos](https://reachat.dev)
+- Checkout the [storybook demos](https://storybook.reachat.dev)
+- Learn about updates from the [changelog](CHANGELOG.md)
+
+## 💎 Other Projects
+
+- [Reaflow](https://reaflow.dev?utm=reagraph) - Open-source library for workflow and diagram graphs.
+- [Reablocks](https://reablocks.dev?utm=reagraph) - Open-source component library for React based on Tailwind.
+- [Reaviz](https://reaviz.dev?utm=reagraph) - Open-source library for data visualizations for React. 
+- [Reagraph](https://reagraph.dev?utm=reaviz) - Open-source library for large webgl based network graphs.
+
+## 🪄 Features
+- Markdown Rendering
+  - GFM Styling
+  - Code Highlighting
+  - Tables
+  - JSON
+- File Uploads
+- Animations
 - Conversation Pagination
-- Dynamic Grouping
+- Smart/Dynamic Grouping of Sessions
 - Keyboard shortcuts
 - Tailwind for Themeing
 
-## Installation
-- `npm i reachat`
+## 📦 Install
 
-## References
-- https://www.copilotkit.ai/
-- https://www.chatbotui.com/
-- https://llm-ui.com/
-- https://github.com/huggingface/chat-ui - Amazing clean UI with very good web search, my go to currently. (they added the ability to do it all locally very recently!)
-- https://github.com/oobabooga/text-generation-webui - Best overall, supports any model format and has many extensions
-- https://github.com/ParisNeo/lollms-webui/ - Has PDF, stable diffusion and web search integration
-- https://github.com/h2oai/h2ogpt - Has PDF, Web search, best for files ingestion (supports many file formats)
-- https://github.com/SillyTavern/SillyTavern - Best for custom characters and roleplay
-- https://github.com/NimbleBoxAI/ChainFury - Has great UI and web search (experimental)
-- https://github.com/nomic-ai/gpt4all - Basic UI that replicated ChatGPT
-- https://github.com/imartinez/privateGPT - Basic UI that replicated ChatGPT with PDF integration
-- https://github.com/LostRuins/koboldcpp - Easy to install and simple interface
-- LM Studio - Clean UI, focuses on GGUF format
-- https://github.com/lobehub/lobe-chat - Nice rich UI with the ability to load extensions for web search, TTS and more
-- https://github.com/ollama-webui/ollama-webui - ChatGPT like UI with easy way to download models
-- https://github.com/turboderp/exui - very fast and vram efficient
-- https://github.com/PromtEngineer/localGPT - Focuses on PDF files
-- https://github.com/shinomakoi/AI-Messenger - Supports EXLv2 and LLava
+To use reachat in your project, install it via npm/yarn:
 
-## Credits
-- Icons from [https://lucide.dev/](https://lucide.dev/)
+```
+npm i reachat --save
+```
+
+## 🔭 Development
+
+If you want to run reachat locally, its super easy!
+
+- Clone the repository
+- `npm i`
+- `npm start`
+- Browser opens to Storybook page
+
+## ❤️ Contributors & Credits
+
+Thanks to all our contributors!
+
+<a href="https://github.com/reaviz/reaviz/graphs/contributors"><img src="https://opencollective.com/reaviz/contributors.svg?width=890" /></a>
+
