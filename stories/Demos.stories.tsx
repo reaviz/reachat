@@ -86,7 +86,12 @@ export const Console = () => {
         borderRadius: 5
       }}
     >
-      <Sessions sessions={fakeSessions} viewType="console">
+      <Sessions
+        sessions={fakeSessions}
+        viewType="console"
+        isLoading={false}
+        onDeleteSession={() => alert('delete!')}
+      >
         <SessionsList>
           <NewSessionButton />
           {Object.keys(groups).map(k => (
@@ -156,19 +161,6 @@ export const Slots = () => {
     </div>
   );
 };
-
-// export const Console = () => {
-//   return (
-//     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
-//       <Sessions
-//         viewType="console"
-//         sessions={fakeSessions}
-//         isLoading={false}
-//         onDeleteSession={() => {}}
-//       />
-//     </div>
-//   );
-// };
 
 // export const NewSessionContent = () => {
 //   return (
