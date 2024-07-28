@@ -1,9 +1,31 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, FC } from 'react';
 import OpenAI from 'openai';
 import { Meta } from '@storybook/react';
-import { Sessions, Session, remarkCve } from '../src';
-import { Card, Input } from 'reablocks';
+import {
+  Sessions,
+  Session,
+  remarkCve,
+  SessionsList,
+  SessionsGroup,
+  SessionListItem,
+  NewSessionButton,
+  SessionMessages,
+  SessionGroups,
+  SessionMessageProps,
+  SessionInput,
+  SessionListItemProps
+} from '../src';
+import {
+  Card,
+  Divider,
+  IconButton,
+  Input,
+  List,
+  ListItem,
+  Menu
+} from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
+import MenuIcon from '@/assets/menu.svg?react';
 
 export default {
   title: 'Demos',
@@ -17,9 +39,21 @@ const fakeSessions: Session[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
     conversations: [
-      { id: '1', question: 'What is React?', response: 'React is a JavaScript library for building user interfaces.', createdAt: new Date(), updatedAt: new Date() },
-      { id: '2', question: 'What is JSX?', response: 'JSX is a syntax extension for JavaScript.', createdAt: new Date(), updatedAt: new Date() },
-    ],
+      {
+        id: '1',
+        question: 'What is React?',
+        response: 'React is a JavaScript library for building user interfaces.',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: '2',
+        question: 'What is JSX?',
+        response: 'JSX is a syntax extension for JavaScript.',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ]
   },
   {
     id: '2',
@@ -27,159 +61,460 @@ const fakeSessions: Session[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
     conversations: [
-      { id: '1', question: 'What is TypeScript?', response: 'TypeScript is a typed superset of JavaScript.', createdAt: new Date(), updatedAt: new Date() },
-      { id: '2', question: 'What is a component?', response: 'A component is a reusable piece of UI.', createdAt: new Date(), updatedAt: new Date() },
-    ],
-  },
+      {
+        id: '1',
+        question: 'What is TypeScript?',
+        response: 'TypeScript is a typed superset of JavaScript.',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: '2',
+        question: 'What is a component?',
+        response: 'A component is a reusable piece of UI.',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ]
+  }
 ];
 
 export const Console = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
-        viewType="console"
         sessions={fakeSessions}
-        isLoading={false}
-        onDeleteSession={() => {}}
-      />
+        viewType="console"
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput />
+        </div>
+      </Sessions>
+    </div>
+  );
+};
+
+export const Embeds = () => {
+  const fakeSessionsWithEmbeds: Session[] = [
+    {
+      id: '1',
+      title: 'Session with Embeds',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: '1',
+          question: 'Can you show me a video about React?',
+          response: `
+  ## Watch this video
+
+  https://youtu.be/enTFE2c68FQ
+
+  https://www.youtube.com/watch?v=enTFE2c68FQ
+
+  These links showcase a video about React basics. You can click on either link to watch the video.`,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: '2',
+          question: 'Do you have another video recommendation?',
+          response: `
+  Certainly! Here's another great video about web development:
+
+  ## Check out this tutorial
+
+  https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+  This video covers some interesting web development concepts.`,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ]
+    }
+  ];
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Sessions
+        sessions={fakeSessionsWithEmbeds}
+        viewType="console"
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };
 
 export const NewSessionContent = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
         sessions={fakeSessions}
-        isLoading={false}
-        newSessionContent={
-          <div className="text-lg w-full text-center">
-            Type a question to get a response...
-          </div>
-        }
-        onDeleteSession={() => {}}
-      />
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages
+            newSessionContent={
+              <div className="text-lg w-full text-center">
+                Type a question to get a response...
+              </div>
+            }
+          />
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };
 
 export const DefaultSession = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
         sessions={fakeSessions}
         activeSessionId="1"
-        isLoading={false}
-        onDeleteSession={() => {}}
-      />
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };
 
-export const Companion = () => {
-  return (
-    <Card style={{ width: 350 }} disablePadding>
-      <Sessions
-        viewType="companion"
-        sessions={fakeSessions}
-        isLoading={false}
-        onDeleteSession={() => {}}
-      />
-    </Card>
-  );
-};
+// export const Companion = () => {
+//   return (
+//     <Card style={{ width: 350 }} disablePadding>
+//       <Sessions
+//         viewType="companion"
+//         sessions={fakeSessions}
+//         isLoading={false}
+//         onDeleteSession={() => {}}
+//       />
+//     </Card>
+//   );
+// };
 
 export const Loading = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
         sessions={fakeSessions}
-        isLoading={true}
-        onDeleteSession={() => {}}
-      />
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput isLoading />
+        </div>
+      </Sessions>
     </div>
   );
 };
 
 export const FileUploads = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
         sessions={fakeSessions}
         activeSessionId="1"
-        allowedFiles={['.pdf', '.docx']}
-        onDeleteSession={() => {}}
-      />
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput allowedFiles={['.pdf', '.docx']} />
+        </div>
+      </Sessions>
     </div>
   );
 };
 
 export const DefaultInputValue = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
-        inputDefaultValue="Pre-populate the prompt via the default value property"
         sessions={fakeSessions}
         activeSessionId="1"
-        onDeleteSession={() => {}}
-      />
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput inputDefaultValue="Pre-populate the prompt via the default value property" />
+        </div>
+      </Sessions>
     </div>
   );
 };
 
 export const UndeleteableSessions = () => {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
-      <Sessions
-        viewType="console"
-        sessions={fakeSessions}
-        activeSessionId="1"
-        onDeleteSession={null}
-      />
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Sessions viewType="console" sessions={fakeSessions} activeSessionId="1">
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} deletable={false} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };
 
-export const SessionGrouping = () => {
-  const createSessionWithDate = (id: string, title: string, daysAgo: number): Session => ({
-    id,
-    title,
-    createdAt: subDays(new Date(), daysAgo),
-    updatedAt: subDays(new Date(), daysAgo),
-    conversations: [
-      { id: `${id}-1`, question: 'Sample question', response: 'Sample response', createdAt: subDays(new Date(), daysAgo), updatedAt: subDays(new Date(), daysAgo) },
-    ],
-  });
+// export const SessionGrouping = () => {
+//   const createSessionWithDate = (id: string, title: string, daysAgo: number): Session => ({
+//     id,
+//     title,
+//     createdAt: subDays(new Date(), daysAgo),
+//     updatedAt: subDays(new Date(), daysAgo),
+//     conversations: [
+//       { id: `${id}-1`, question: 'Sample question', response: 'Sample response', createdAt: subDays(new Date(), daysAgo), updatedAt: subDays(new Date(), daysAgo) },
+//     ],
+//   });
 
-  const sessionsWithVariousDates: Session[] = [
-    createSessionWithDate('1', 'Today Session', 0),
-    createSessionWithDate('2', 'Yesterday Session', 1),
-    createSessionWithDate('2', 'Yesterday Session 2', 1),
-    createSessionWithDate('3', 'Last Week Session', 6),
-    createSessionWithDate('4', 'Two Weeks Ago Session', 14),
-    createSessionWithDate('5', 'Last Month Session', 32),
-    createSessionWithDate('6', 'Two Months Ago Session', 65),
-    createSessionWithDate('7', 'Six Months Ago Session', 180),
-    createSessionWithDate('8', 'Last Year Session', 370),
-    createSessionWithDate('9', 'Two Years Ago Session', 740),
-  ];
+//   const sessionsWithVariousDates: Session[] = [
+//     createSessionWithDate('1', 'Today Session', 0),
+//     createSessionWithDate('2', 'Yesterday Session', 1),
+//     createSessionWithDate('2', 'Yesterday Session 2', 1),
+//     createSessionWithDate('3', 'Last Week Session', 6),
+//     createSessionWithDate('4', 'Two Weeks Ago Session', 14),
+//     createSessionWithDate('5', 'Last Month Session', 32),
+//     createSessionWithDate('6', 'Two Months Ago Session', 65),
+//     createSessionWithDate('7', 'Six Months Ago Session', 180),
+//     createSessionWithDate('8', 'Last Year Session', 370),
+//     createSessionWithDate('9', 'Two Years Ago Session', 740),
+//   ];
 
-  return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
-      <Sessions
-        viewType="console"
-        sessions={sessionsWithVariousDates}
-        isLoading={false}
-        onDeleteSession={() => {}}
-      />
-    </div>
-  );
-};
+//   return (
+//     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+//       <Sessions
+//         viewType="console"
+//         sessions={sessionsWithVariousDates}
+//         isLoading={false}
+//         onDeleteSession={() => {}}
+//       />
+//     </div>
+//   );
+// };
 
 export const HundredSessions = () => {
   const generateFakeSessions = (count: number): Session[] => {
@@ -203,13 +538,39 @@ export const HundredSessions = () => {
   const hundredSessions = generateFakeSessions(100);
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
-      <Sessions
-        viewType="console"
-        sessions={hundredSessions}
-        isLoading={false}
-        onDeleteSession={() => {}}
-      />
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Sessions viewType="console" sessions={hundredSessions}>
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };
@@ -225,23 +586,54 @@ export const HundredConversations = () => {
     }));
   };
 
-  const sessionWithHundredConversations: Session[] = [{
-    id: 'session-100',
-    title: 'Session with 100 Conversations',
-    createdAt: subHours(new Date(), 5),
-    updatedAt: new Date(),
-    conversations: generateFakeConversations(100)
-  }];
+  const sessionWithHundredConversations: Session[] = [
+    {
+      id: 'session-100',
+      title: 'Session with 100 Conversations',
+      createdAt: subHours(new Date(), 5),
+      updatedAt: new Date(),
+      conversations: generateFakeConversations(100)
+    }
+  ];
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
         sessions={sessionWithHundredConversations}
         activeSessionId="session-100"
-        isLoading={false}
-        onDeleteSession={() => {}}
-      />
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };
@@ -260,13 +652,43 @@ export const LongSessionNames = () => {
   const sessionsWithLongNames = generateFakeSessionsWithLongNames(10);
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
         sessions={sessionsWithLongNames}
-        isLoading={false}
-        onDeleteSession={() => {}}
-      />
+        activeSessionId="session-10"
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };
@@ -321,28 +743,61 @@ export const MarkdownShowcase = () => {
   [Perspective](https://en.wikipedia.org/wiki/Philosophical_question)
   `;
 
-  const sessionWithMarkdown: Session[] = [{
-    id: 'session-markdown',
-    title: 'Markdown Showcase',
-    createdAt: subHours(new Date(), 1),
-    updatedAt: new Date(),
-    conversations: [{
-      id: 'conversation-1',
-      question: markdownQuestion,
-      response: markdownResponse,
-      createdAt: new Date()
-    }]
-  }];
+  const sessionWithMarkdown: Session[] = [
+    {
+      id: 'session-markdown',
+      title: 'Markdown Showcase',
+      createdAt: subHours(new Date(), 1),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: 'conversation-1',
+          question: markdownQuestion,
+          response: markdownResponse,
+          createdAt: new Date()
+        }
+      ]
+    }
+  ];
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
         sessions={sessionWithMarkdown}
         activeSessionId="session-markdown"
-        isLoading={false}
-        onDeleteSession={() => {}}
-      />
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };
@@ -366,29 +821,62 @@ export const CVEExample = () => {
   - CVE-2021-45046
   `;
 
-  const sessionWithMarkdown: Session[] = [{
-    id: 'session-cve',
-    title: 'CVE Showcase',
-    createdAt: subHours(new Date(), 1),
-    updatedAt: new Date(),
-    conversations: [{
-      id: 'conversation-1',
-      question: markdownQuestion,
-      response: markdownResponse,
-      createdAt: new Date()
-    }]
-  }];
+  const sessionWithMarkdown: Session[] = [
+    {
+      id: 'session-cve',
+      title: 'CVE Showcase',
+      createdAt: subHours(new Date(), 1),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: 'conversation-1',
+          question: markdownQuestion,
+          response: markdownResponse,
+          createdAt: new Date()
+        }
+      ]
+    }
+  ];
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
         sessions={sessionWithMarkdown}
         activeSessionId="session-cve"
-        isLoading={false}
-        onDeleteSession={() => {}}
         remarkPlugins={[remarkCve as any]}
-      />
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };
@@ -410,70 +898,106 @@ export const OpenAIIntegration = () => {
     }
   }, [apiKey]);
 
-  const handleNewMessage = useCallback(async (message: string, sessionId: string = '1') => {
-    setIsLoading(true);
-    try {
-      const response = await openai.current.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: message }],
-      });
+  const handleNewMessage = useCallback(
+    async (message: string, sessionId: string = '1') => {
+      setIsLoading(true);
+      try {
+        const response = await openai.current.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [{ role: 'user', content: message }]
+        });
 
-      const aiResponse = response.choices[0]?.message?.content || 'Sorry, I couldn\'t generate a response.';
+        const aiResponse =
+          response.choices[0]?.message?.content ||
+          "Sorry, I couldn't generate a response.";
 
-      setSessions(prevSessions => {
-        const sessionIndex = prevSessions.findIndex(s => s.id === sessionId);
-        if (sessionIndex === -1) {
-          // Create a new session
-          return [...prevSessions, {
-            id: sessionId,
-            title: message.slice(0, 30),
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            conversations: [{
-              id: Date.now().toString(),
-              question: message,
-              response: aiResponse,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            }]
-          }];
-        } else {
-          // Add to existing session
-          const updatedSessions = [...prevSessions];
-          updatedSessions[sessionIndex] = {
-            ...updatedSessions[sessionIndex],
-            updatedAt: new Date(),
-            conversations: [
-              ...updatedSessions[sessionIndex].conversations,
+        setSessions(prevSessions => {
+          const sessionIndex = prevSessions.findIndex(s => s.id === sessionId);
+          if (sessionIndex === -1) {
+            // Create a new session
+            return [
+              ...prevSessions,
               {
-                id: Date.now().toString(),
-                question: message,
-                response: aiResponse,
+                id: sessionId,
+                title: message.slice(0, 30),
                 createdAt: new Date(),
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                conversations: [
+                  {
+                    id: Date.now().toString(),
+                    question: message,
+                    response: aiResponse,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                  }
+                ]
               }
-            ]
-          };
-          return updatedSessions;
-        }
-      });
+            ];
+          } else {
+            // Add to existing session
+            const updatedSessions = [...prevSessions];
+            updatedSessions[sessionIndex] = {
+              ...updatedSessions[sessionIndex],
+              updatedAt: new Date(),
+              conversations: [
+                ...updatedSessions[sessionIndex].conversations,
+                {
+                  id: Date.now().toString(),
+                  question: message,
+                  response: aiResponse,
+                  createdAt: new Date(),
+                  updatedAt: new Date()
+                }
+              ]
+            };
+            return updatedSessions;
+          }
+        });
 
-      setActiveSessionId(sessionId);;
-    } catch (error) {
-      console.error('Error calling OpenAI API:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [openai]);
+        setActiveSessionId(sessionId);
+      } catch (error) {
+        console.error('Error calling OpenAI API:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [openai]
+  );
 
   const handleDeleteSession = useCallback((sessionId: string) => {
     setSessions(prevSessions => prevSessions.filter(s => s.id !== sessionId));
   }, []);
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20 }}>
-      <Input fullWidth placeholder="OpenAI API Key" value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
-      <div style={{ position: 'absolute', top: 50, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20
+      }}
+    >
+      <Input
+        fullWidth
+        placeholder="OpenAI API Key"
+        value={apiKey}
+        onChange={e => setApiKey(e.target.value)}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          top: 50,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          padding: 20,
+          margin: 20,
+          background: '#02020F',
+          borderRadius: 5
+        }}
+      >
         <Sessions
           viewType="console"
           sessions={sessions}
@@ -481,8 +1005,120 @@ export const OpenAIIntegration = () => {
           onDeleteSession={handleDeleteSession}
           onSendMessage={handleNewMessage}
           activeSessionId={activeSessionId}
-        />
+        >
+          <SessionsList>
+            <NewSessionButton />
+            <SessionGroups>
+              {groups =>
+                groups.map(({ heading, sessions }) => (
+                  <SessionsGroup heading={heading} key={heading}>
+                    {sessions.map(s => (
+                      <SessionListItem key={s.id} session={s} />
+                    ))}
+                  </SessionsGroup>
+                ))
+              }
+            </SessionGroups>
+          </SessionsList>
+          <div className="flex-1 h-full flex flex-col">
+            <SessionMessages />
+            <SessionInput />
+          </div>
+        </Sessions>
       </div>
+    </div>
+  );
+};
+
+const CustomSessionMessage: FC<SessionMessageProps> = ({
+  question,
+  response
+}) => (
+  <div className="p-4 border border-blue-500 rounded mb-4">
+    <span className="text-lg font-semibold text-blue-500">
+      This is my question: {question}
+    </span>
+    <br />
+    This is the response: {response}
+  </div>
+);
+
+const CustomSessionListItem: FC<SessionListItemProps> = ({ session }) => {
+  const [open, setOpen] = useState(false);
+  const btnRef = useRef(null);
+  return (
+    <>
+      <ListItem
+        end={
+          <IconButton
+            ref={btnRef}
+            size="small"
+            variant="text"
+            onClick={e => {
+              e.stopPropagation();
+              setOpen(true);
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+        }
+      >
+        <span className="truncate">{session.title}</span>
+      </ListItem>
+      <Menu open={open} onClose={() => setOpen(false)} reference={btnRef}>
+        <Card disablePadding>
+          <List>
+            <ListItem onClick={() => alert('rename')}>Rename</ListItem>
+            <ListItem onClick={() => alert('delete')}>Delete</ListItem>
+          </List>
+        </Card>
+      </Menu>
+    </>
+  );
+};
+
+export const CustomComponents = () => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Sessions sessions={fakeSessions}>
+        <SessionsList>
+          <NewSessionButton>
+            <button className="text-blue-500">New Session</button>
+          </NewSessionButton>
+          <Divider />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s}>
+                      <CustomSessionListItem session={s} />
+                    </SessionListItem>
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages>
+            <CustomSessionMessage />
+          </SessionMessages>
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };

@@ -1,10 +1,16 @@
-import { CSSProperties, FC, PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  CSSProperties,
+  FC,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
 import { Session } from './types';
-import { SessionsList } from './SessionsList';
-import { SessionMessages } from './SessionMessages';
-import { SessionInput } from './SessionInput';
 import { ChatTheme, chatTheme } from './theme';
 import { SessionsContext } from './SessionsContext';
 import { PluggableList } from 'react-markdown/lib';
@@ -25,7 +31,7 @@ export interface SessionsProps extends PropsWithChildren {
    * meant to be displayed alongside other content. Full prompts are larger
    * and are meant to be displayed on their own.
    */
-  viewType: 'companion' | 'console';
+  viewType?: 'companion' | 'console';
 
   /**
    * The list of allowed file types. If null or not defined, not file upload
@@ -69,11 +75,6 @@ export interface SessionsProps extends PropsWithChildren {
   theme?: ChatTheme;
 
   /**
-   * Content to display when there are no sessions selected or a new session is started.
-   */
-  newSessionContent?: string | ReactNode;
-
-  /**
    * Remark plugins to apply to the request/response.
    */
   remarkPlugins?: PluggableList[];
@@ -105,6 +106,7 @@ export interface SessionsProps extends PropsWithChildren {
 }
 
 export const Sessions: FC<SessionsProps> = ({
+  children,
   viewType = 'console',
   sessions,
   onSelectSession,
@@ -116,7 +118,6 @@ export const Sessions: FC<SessionsProps> = ({
   onSendMessage,
   onStopMessage,
   onNewSession,
-  newSessionContent = '',
   allowedFiles,
   newSessionText = 'New Session',
   inputDefaultValue,
@@ -125,21 +126,29 @@ export const Sessions: FC<SessionsProps> = ({
   className
 }) => {
   const theme = useComponentTheme<ChatTheme>('chat', customTheme);
-  const [internalActiveSessionID, setInternalActiveSessionID] = useState<string | undefined>(activeSessionId);
+  const [internalActiveSessionID, setInternalActiveSessionID] = useState<
+    string | undefined
+  >(activeSessionId);
 
   useEffect(() => {
     setInternalActiveSessionID(activeSessionId);
   }, [activeSessionId]);
 
-  const handleSelectSession = useCallback((sessionId: string) => {
-    setInternalActiveSessionID(sessionId);
-    onSelectSession?.(sessionId);
-  }, [onSelectSession]);
+  const handleSelectSession = useCallback(
+    (sessionId: string) => {
+      setInternalActiveSessionID(sessionId);
+      onSelectSession?.(sessionId);
+    },
+    [onSelectSession]
+  );
 
-  const handleDeleteSession = useCallback((sessionId: string) => {
-    setInternalActiveSessionID(undefined);
-    onDeleteSession?.(sessionId);
-  }, [onDeleteSession]);
+  const handleDeleteSession = useCallback(
+    (sessionId: string) => {
+      setInternalActiveSessionID(undefined);
+      onDeleteSession?.(sessionId);
+    },
+    [onDeleteSession]
+  );
 
   const handleCreateNewSession = useCallback(() => {
     setInternalActiveSessionID(undefined);
@@ -158,29 +167,33 @@ export const Sessions: FC<SessionsProps> = ({
     }
   ]);
 
-  const activeSession = useMemo(() =>
-    sessions.find(session => session.id === internalActiveSessionID),
-  [sessions, internalActiveSessionID]);
+  const activeSession = useMemo(
+    () => sessions.find(session => session.id === internalActiveSessionID),
+    [sessions, internalActiveSessionID]
+  );
 
-  const contextValue = useMemo(() => ({
-    sessions,
-    activeSession,
-    remarkPlugins,
-    theme,
-    activeSessionId: internalActiveSessionID,
-    selectSession: handleSelectSession,
-    deleteSession: handleDeleteSession,
-    createSession: handleCreateNewSession
-  }), [
-    theme,
-    remarkPlugins,
-    sessions,
-    activeSession,
-    internalActiveSessionID,
-    handleSelectSession,
-    handleDeleteSession,
-    handleCreateNewSession
-  ]);
+  const contextValue = useMemo(
+    () => ({
+      sessions,
+      activeSession,
+      remarkPlugins,
+      theme,
+      activeSessionId: internalActiveSessionID,
+      selectSession: handleSelectSession,
+      deleteSession: handleDeleteSession,
+      createSession: handleCreateNewSession
+    }),
+    [
+      theme,
+      remarkPlugins,
+      sessions,
+      activeSession,
+      internalActiveSessionID,
+      handleSelectSession,
+      handleDeleteSession,
+      handleCreateNewSession
+    ]
+  );
 
   return (
     <SessionsContext.Provider value={contextValue}>
@@ -191,35 +204,7 @@ export const Sessions: FC<SessionsProps> = ({
         })}
         style={style}
       >
-        <>
-          <SessionsList
-            newSessionText={newSessionText}
-            onSelectSession={handleSelectSession}
-            onDeleteSession={onDeleteSession ? handleDeleteSession : null}
-            onCreateNewSession={handleCreateNewSession}
-          />
-          <div className="flex-1 h-full flex flex-col">
-            {activeSession ? (
-              <SessionMessages
-                key={activeSession.id}
-                session={activeSession}
-              />
-            ) : (
-              <div className={cn(theme.empty)}>
-                {newSessionContent}
-              </div>
-            )}
-            <SessionInput
-              theme={theme}
-              inputDefaultValue={inputDefaultValue}
-              inputPlaceholder={inputPlaceholder}
-              isLoading={isLoading}
-              allowedFiles={allowedFiles}
-              onSendMessage={onSendMessage}
-              onStopMessage={onStopMessage}
-            />
-          </div>
-        </>
+        {children}
       </div>
     </SessionsContext.Provider>
   );

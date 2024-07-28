@@ -1,8 +1,9 @@
 import { format, isToday, isYesterday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
 import { Session } from './types';
 
-interface GroupedSessions {
-  [key: string]: Session[];
+export interface GroupedSessions {
+  heading: string;
+  sessions: Session[];
 }
 
 const sortOrder = [
@@ -25,8 +26,8 @@ const sortOrder = [
   'Last Year'
 ];
 
-export function groupSessionsByDate(sessions: Session[]): GroupedSessions {
-  const grouped: GroupedSessions = {};
+export function groupSessionsByDate(sessions: Session[]): GroupedSessions[] {
+  const grouped: any = {};
 
   sessions.forEach(session => {
     const createdAt = new Date(session.createdAt);
@@ -65,13 +66,10 @@ export function groupSessionsByDate(sessions: Session[]): GroupedSessions {
     sortOrder.indexOf(a) - sortOrder.indexOf(b)
   );
 
-  const sortedGrouped: GroupedSessions = {};
-  sortedGroups.forEach(key => {
-    // Sort sessions within each group by createdAt date (most recent first)
-    sortedGrouped[key] = grouped[key].sort((a, b) =>
+  return sortedGroups.map(heading => ({
+    heading,
+    sessions: grouped[heading].sort((a, b) =>
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-  });
-
-  return sortedGrouped;
+    )
+  }));
 }

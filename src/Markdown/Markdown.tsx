@@ -31,6 +31,7 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
         th: props => <TableHeaderCell {...props} className="px-4 py-2 text-left font-bold border-b border-gray-500" />,
         td: props => <TableDataCell {...props} className="px-4 py-2" />,
         a: props => <a {...props} className="text-blue-700 underline" />,
+        p: props => <p {...props} className="mb-2" />
       }}
     >
       {children as string}

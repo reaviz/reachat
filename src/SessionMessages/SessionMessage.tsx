@@ -1,5 +1,5 @@
-import { FC, ReactElement, useContext } from 'react';
-import { SessionsContext } from './SessionsContext';
+import { FC, PropsWithChildren, ReactElement, useContext } from 'react';
+import { SessionsContext } from '@/SessionsContext';
 import { IconButton, cn } from 'reablocks';
 import remarkGfm from 'remark-gfm';
 import CopyIcon from '@/assets/copy.svg?react';
@@ -7,18 +7,19 @@ import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
 import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
 import RefreshIcon from '@/assets/refresh.svg?react';
 import { PluggableList } from 'react-markdown/lib';
-import { Markdown } from './Markdown';
+import { Markdown } from '@/Markdown';
+import remarkYoutube from 'remark-youtube';
 
-interface SessionMessageProps {
+export interface SessionMessageProps {
   /**
    * Question to display.
    */
-  question: string;
+  question?: string;
 
   /**
    * Response to display.
    */
-  response: string;
+  response?: string;
 
   /**
    * Icon to show for copy.
@@ -57,8 +58,8 @@ interface SessionMessageProps {
 }
 
 export const SessionMessage: FC<SessionMessageProps> = ({
-  question,
-  response,
+  question = '',
+  response = '',
   copyIcon = <CopyIcon />,
   thumbsUpIcon = <ThumbUpIcon />,
   thumbsDownIcon = <ThumbsDownIcon />,
@@ -67,23 +68,21 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   onDownvote,
   onRefresh
 }) => {
-  const {
-    theme,
-    remarkPlugins = [remarkGfm]
-  } = useContext(SessionsContext);
+  const { theme, remarkPlugins = [remarkGfm, remarkYoutube] } = useContext(SessionsContext);
 
   const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      console.log('Text copied to clipboard');
-    }).catch(err => {
-      console.error('Could not copy text: ', err);
-    });
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        console.log('Text copied to clipboard');
+      })
+      .catch(err => {
+        console.error('Could not copy text: ', err);
+      });
   };
 
   return (
-    <div
-      className={cn(theme.messages.message.base)}
-    >
+    <div className={cn(theme.messages.message.base)}>
       <div className={cn(theme.messages.message.question)}>
         <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
           {question}
