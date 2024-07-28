@@ -1,9 +1,9 @@
-import { FC, PropsWithChildren, useContext } from 'react';
+import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
 import { SessionsContext } from '@/SessionsContext';
 import { ListItem, cn } from 'reablocks';
 
 interface SessionsGroupProps extends PropsWithChildren {
-  heading?: string;
+  heading?: string | ReactNode;
 }
 
 export const SessionsGroup: FC<SessionsGroupProps> = ({

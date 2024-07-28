@@ -1,13 +1,11 @@
-import { FC, ReactElement, ReactNode, useContext } from 'react';
+import { FC, PropsWithChildren, ReactElement, useContext } from 'react';
 import { ListItem, IconButton, cn, Ellipsis } from 'reablocks';
 import { Session } from '@/types';
 import TrashIcon from '@/assets/trash.svg?react';
 import { SessionsContext } from '@/SessionsContext';
 import { Slot } from '@radix-ui/react-slot';
 
-export interface SessionListItemProps {
-  children?: ReactNode;
-
+export interface SessionListItemProps extends PropsWithChildren {
   /**
    * Session to display.
    */
@@ -33,6 +31,7 @@ export const SessionListItem: FC<SessionListItemProps> = ({
   const { activeSessionId, selectSession, deleteSession, theme } =
     useContext(SessionsContext);
   const Comp = children ? Slot : ListItem;
+
   return (
     <Comp
       dense

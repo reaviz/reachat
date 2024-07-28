@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, ReactElement, useContext } from 'react';
+import { FC, ReactElement, useContext } from 'react';
 import { SessionsContext } from '@/SessionsContext';
 import { IconButton, cn } from 'reablocks';
 import remarkGfm from 'remark-gfm';

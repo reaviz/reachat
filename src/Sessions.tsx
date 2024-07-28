@@ -34,12 +34,6 @@ export interface SessionsProps extends PropsWithChildren {
   viewType?: 'companion' | 'console';
 
   /**
-   * The list of allowed file types. If null or not defined, not file upload
-   * will be allowed.
-   */
-  allowedFiles?: string[];
-
-  /**
    * The list of sessions to display.
    */
   sessions: Session[];
@@ -48,26 +42,6 @@ export interface SessionsProps extends PropsWithChildren {
    * The ID of the currently active session.
    */
   activeSessionId?: string;
-
-  /**
-   * Indicates whether the sessions are currently loading.
-   */
-  isLoading?: boolean;
-
-  /**
-   * Placeholder text for the input field.
-   */
-  inputPlaceholder?: string;
-
-  /**
-   * Default value for the input field.
-   */
-  inputDefaultValue?: string;
-
-  /**
-   * Text for the new session button.
-   */
-  newSessionText?: string;
 
   /**
    * Custom theme for the chat.
@@ -90,16 +64,6 @@ export interface SessionsProps extends PropsWithChildren {
   onDeleteSession?: (sessionId: string) => void;
 
   /**
-   * Callback function to handle sending a new message.
-   */
-  onSendMessage?: (message: string) => void;
-
-  /**
-   * Callback function to handle stopping the current action.
-   */
-  onStopMessage?: () => void;
-
-  /**
    * Callback function to handle creating a new session.
    */
   onNewSession?: () => void;
@@ -111,16 +75,9 @@ export const Sessions: FC<SessionsProps> = ({
   sessions,
   onSelectSession,
   onDeleteSession,
-  isLoading,
   activeSessionId,
   theme: customTheme = chatTheme,
-  inputPlaceholder = 'Type your message here...',
-  onSendMessage,
-  onStopMessage,
   onNewSession,
-  allowedFiles,
-  newSessionText = 'New Session',
-  inputDefaultValue,
   remarkPlugins,
   style,
   className
