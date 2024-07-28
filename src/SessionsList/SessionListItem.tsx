@@ -14,6 +14,11 @@ interface SessionListItemProps {
   session: Session;
 
   /**
+   * Indicates whether the session is deletable.
+   */
+  deletable?: boolean;
+
+  /**
    * Icon to show for delete.
    */
   deleteIcon?: ReactElement;
@@ -22,6 +27,7 @@ interface SessionListItemProps {
 export const SessionListItem: FC<SessionListItemProps> = ({
   children,
   session,
+  deletable = true,
   deleteIcon = <TrashIcon />
 }) => {
   const { activeSessionId, selectSession, deleteSession, theme } =
@@ -36,7 +42,7 @@ export const SessionListItem: FC<SessionListItemProps> = ({
       onClick={() => selectSession?.(session.id)}
       end={
         <>
-          {deleteSession && (
+          {deletable && (
             <IconButton
               size="small"
               variant="text"
