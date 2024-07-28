@@ -712,7 +712,11 @@ export const LongSessionNames = () => {
         borderRadius: 5
       }}
     >
-      <Sessions viewType="console" sessions={sessionsWithLongNames}>
+      <Sessions
+        viewType="console"
+        sessions={sessionsWithLongNames}
+        activeSessionId="session-10"
+      >
         <SessionsList>
           <NewSessionButton />
           <SessionGroups>
