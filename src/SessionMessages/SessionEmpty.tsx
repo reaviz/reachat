@@ -1,14 +1,13 @@
-import { FC, ReactNode, useContext } from 'react';
+import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
 import { SessionsContext } from '@/SessionsContext';
 import { cn } from 'reablocks';
 
-interface SessionEmptyProps {
-  newSessionContent?: string | ReactNode;
+interface SessionEmptyProps extends PropsWithChildren {
 }
 
 export const SessionEmpty: FC<SessionEmptyProps> = ({
-  newSessionContent = ''
+  children
 }) => {
   const { theme } = useContext(SessionsContext);
-  return <div className={cn(theme.empty)}>{newSessionContent}</div>;
+  return <div className={cn(theme.empty)}>{children}</div>;
 };

@@ -434,7 +434,7 @@ export const DefaultInputValue = () => {
         </SessionsList>
         <div className="flex-1 h-full flex flex-col">
           <SessionMessages />
-          <SessionInput inputDefaultValue="Pre-populate the prompt via the default value property" />
+          <SessionInput defaultValue="Pre-populate the prompt via the default value property" />
         </div>
       </Sessions>
     </div>
@@ -909,7 +909,7 @@ export const OpenAIIntegration = () => {
 
         const aiResponse =
           response.choices[0]?.message?.content ||
-          "Sorry, I couldn't generate a response.";
+          'Sorry, I couldnt generate a response.';
 
         setSessions(prevSessions => {
           const sessionIndex = prevSessions.findIndex(s => s.id === sessionId);

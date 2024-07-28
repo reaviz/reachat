@@ -17,7 +17,7 @@ interface SessionInputProps {
   /**
    * Default value for the input field.
    */
-  inputDefaultValue?: string;
+  defaultValue?: string;
 
   /**
    * Allowed file types for upload.
@@ -32,7 +32,7 @@ interface SessionInputProps {
   /**
    * Placeholder text for the input field.
    */
-  inputPlaceholder?: string;
+  placeholder?: string;
 
   /**
    * Icon to show for send.
@@ -69,10 +69,10 @@ export const SessionInput: FC<SessionInputProps> = ({
   allowedFiles,
   onSendMessage,
   isLoading,
-  inputPlaceholder,
+  placeholder,
   onStopMessage,
   onFileUpload,
-  inputDefaultValue,
+  defaultValue,
   sendIcon = <SendIcon />,
   stopIcon = <StopIcon />,
   attachIcon = <AttachIcon />
@@ -110,9 +110,9 @@ export const SessionInput: FC<SessionInputProps> = ({
         autoFocus
         value={message}
         onChange={e => setMessage(e.target.value)}
-        defaultValue={inputDefaultValue}
+        defaultValue={defaultValue}
         onKeyPress={handleKeyPress}
-        placeholder={inputPlaceholder}
+        placeholder={placeholder}
         disabled={isLoading}
       />
       {allowedFiles?.length > 0 && (
