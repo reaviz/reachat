@@ -5,7 +5,7 @@ import TrashIcon from '@/assets/trash.svg?react';
 import { SessionsContext } from '@/SessionsContext';
 import { Slot } from '@radix-ui/react-slot';
 
-interface SessionListItemProps {
+export interface SessionListItemProps {
   children?: ReactNode;
 
   /**

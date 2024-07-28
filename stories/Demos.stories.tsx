@@ -12,10 +12,20 @@ import {
   SessionMessages,
   SessionGroups,
   SessionMessageProps,
-  SessionInput
+  SessionInput,
+  SessionListItemProps
 } from '../src';
-import { Divider, Input } from 'reablocks';
+import {
+  Card,
+  Divider,
+  IconButton,
+  Input,
+  List,
+  ListItem,
+  Menu
+} from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
+import MenuIcon from '@/assets/menu.svg?react';
 
 export default {
   title: 'Demos',
@@ -105,63 +115,6 @@ export const Console = () => {
         </SessionsList>
         <div className="flex-1 h-full flex flex-col">
           <SessionMessages />
-          <SessionInput />
-        </div>
-      </Sessions>
-    </div>
-  );
-};
-
-const CustomSessionMessage: FC<SessionMessageProps> = ({
-  question,
-  response
-}) => (
-  <div className="p-4 border border-blue-500 rounded mb-4">
-    <span className="text-lg font-semibold text-blue-500">
-      This is my question: {question}
-    </span>
-    <br />
-    This is the response: {response}
-  </div>
-);
-
-export const CustomComponents = () => {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        background: '#02020F',
-        borderRadius: 5
-      }}
-    >
-      <Sessions sessions={fakeSessions}>
-        <SessionsList>
-          <NewSessionButton>
-            <button className="text-blue-500">New Session</button>
-          </NewSessionButton>
-          <Divider />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
-        </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages>
-            <CustomSessionMessage />
-          </SessionMessages>
           <SessionInput />
         </div>
       </Sessions>
@@ -1073,6 +1026,99 @@ export const OpenAIIntegration = () => {
           </div>
         </Sessions>
       </div>
+    </div>
+  );
+};
+
+const CustomSessionMessage: FC<SessionMessageProps> = ({
+  question,
+  response
+}) => (
+  <div className="p-4 border border-blue-500 rounded mb-4">
+    <span className="text-lg font-semibold text-blue-500">
+      This is my question: {question}
+    </span>
+    <br />
+    This is the response: {response}
+  </div>
+);
+
+const CustomSessionListItem: FC<SessionListItemProps> = ({ session }) => {
+  const [open, setOpen] = useState(false);
+  const btnRef = useRef(null);
+  return (
+    <>
+      <ListItem
+        end={
+          <IconButton
+            ref={btnRef}
+            size="small"
+            variant="text"
+            onClick={e => {
+              e.stopPropagation();
+              setOpen(true);
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+        }
+      >
+        <span className="truncate">{session.title}</span>
+      </ListItem>
+      <Menu open={open} onClose={() => setOpen(false)} reference={btnRef}>
+        <Card disablePadding>
+          <List>
+            <ListItem onClick={() => alert('rename')}>Rename</ListItem>
+            <ListItem onClick={() => alert('delete')}>Delete</ListItem>
+          </List>
+        </Card>
+      </Menu>
+    </>
+  );
+};
+
+export const CustomComponents = () => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Sessions sessions={fakeSessions}>
+        <SessionsList>
+          <NewSessionButton>
+            <button className="text-blue-500">New Session</button>
+          </NewSessionButton>
+          <Divider />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s}>
+                      <CustomSessionListItem session={s} />
+                    </SessionListItem>
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages>
+            <CustomSessionMessage />
+          </SessionMessages>
+          <SessionInput />
+        </div>
+      </Sessions>
     </div>
   );
 };
