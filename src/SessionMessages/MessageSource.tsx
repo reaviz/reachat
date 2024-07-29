@@ -14,7 +14,9 @@ export const MessageSource: FC<MessageSourceProps> = ({ title, url, image, limit
     <figure
       className={cn(theme.messages.message.sources.source.base)}
       onClick={() => {
-        window.open(url, '_blank');
+        if (url) {
+          window.open(url, '_blank');
+        }
       }}
     >
       {image && <img src={image} alt={title} className={cn(theme.messages.message.sources.source.image)} />}
