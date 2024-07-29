@@ -658,6 +658,18 @@ export const MarkdownShowcase = () => {
   const markdownResponse = `
   **The purpose of life is a philosophical question concerning the significance of life or existence in general.**
 
+  1. Burning of fossil fuels (coal, oil, and natural gas)
+  2. Deforestation and land-use changes
+  3. Industrial processes
+  4. Agriculture and livestock farming
+
+  or
+
+  - Burning
+  - Deforestation
+  - Industrial
+  - Agriculture
+
   Here is a table to illustrate different perspectives:
 
   | Perspective       | Description                                                                 |
@@ -1131,6 +1143,84 @@ export const EmptyState = () => {
               </div>
             }
           />
+          <SessionInput />
+        </div>
+      </Sessions>
+    </div>
+  );
+};
+
+export const ConversationWithSources = () => {
+  const sessionWithSources: Session[] = [
+    {
+      id: 'session-sources',
+      title: 'Session with Sources',
+      createdAt: subHours(new Date(), 1),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: 'conversation-1',
+          question: 'What are the main causes of climate change?',
+          response: `Climate change is primarily caused by human activities that release greenhouse gases into the atmosphere. The main causes include:
+
+1. Burning of fossil fuels (coal, oil, and natural gas)
+2. Deforestation and land-use changes
+3. Industrial processes
+4. Agriculture and livestock farming
+
+These activities increase the concentration of greenhouse gases in the atmosphere, leading to the greenhouse effect and global warming.`,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          sources: [
+            {
+              title: 'NASA: Causes of Climate Change',
+              url: 'https://climate.nasa.gov/causes/'
+            },
+            {
+              title: 'IPCC: Climate Change 2021: The Physical Science Basis',
+              url: 'https://www.ipcc.ch/report/ar6/wg1/'
+            }
+          ]
+        }
+      ]
+    }
+  ];
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Sessions
+        viewType="console"
+        sessions={sessionWithSources}
+        activeSessionId="session-sources"
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages />
           <SessionInput />
         </div>
       </Sessions>

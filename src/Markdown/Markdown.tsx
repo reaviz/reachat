@@ -34,7 +34,10 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
         th: props => <TableHeaderCell {...props} className={cn(theme.messages.message.markdown.th)} />,
         td: props => <TableDataCell {...props} className={cn(theme.messages.message.markdown.td)} />,
         a: props => <a {...props} className={cn(theme.messages.message.markdown.a)} />,
-        p: props => <p {...props} className={cn(theme.messages.message.markdown.p)} />
+        p: props => <p {...props} className={cn(theme.messages.message.markdown.p)} />,
+        li: props => <li {...props} className={cn(theme.messages.message.markdown.li)} />,
+        ul: props => <ul {...props} className={cn(theme.messages.message.markdown.ul)} />,
+        ol: props => <ol {...props} className={cn(theme.messages.message.markdown.ol)} />
       }}
     >
       {children as string}

@@ -31,6 +31,9 @@ export interface ChatTheme {
         th: string;
         td: string;
         code: string;
+        li: string;
+        ul: string;
+        ol: string;
       };
       footer: {
         base: string;
@@ -82,7 +85,10 @@ export const chatTheme: ChatTheme = {
         table: 'table-auto w-full m-2',
         th: 'px-4 py-2 text-left font-bold border-b border-gray-500',
         td: 'px-4 py-2',
-        code: 'm-2 rounded'
+        code: 'm-2 rounded',
+        li: 'mb-2 ml-6',
+        ul: 'mb-4 list-disc',
+        ol: 'mb-4 list-decimal'
       },
       footer: {
         base: 'mt-3 flex gap-3',
