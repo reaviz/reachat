@@ -24,6 +24,13 @@ export interface ChatTheme {
       base: string;
       question: string;
       response: string;
+      files: {
+        base: string;
+        file: {
+          base: string;
+          name: string;
+        };
+      };
       sources: {
         base: string;
         source: {
@@ -88,6 +95,13 @@ export const chatTheme: ChatTheme = {
       base: 'mb-6 flex flex-col p-5 rounded',
       question: 'font-semibold text-gray-400 mb-1',
       response: '',
+      files: {
+        base: 'mb-2 flex gap-3',
+        file: {
+          base: 'flex gap-2 border border-gray-700 p-2 rounded cursor-pointer',
+          name: 'text-sm'
+        }
+      },
       sources: {
         base: 'my-4 flex gap-3',
         source: {

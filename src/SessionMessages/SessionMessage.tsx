@@ -11,6 +11,7 @@ import { Markdown } from '@/Markdown';
 import remarkYoutube from 'remark-youtube';
 import { Conversation } from '@/types';
 import { MessageSource } from './MessageSource';
+import { MessageFile } from './MessageFile';
 
 export interface SessionMessageProps extends Conversation {
   /**
@@ -57,6 +58,7 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   thumbsDownIcon = <ThumbsDownIcon />,
   refreshIcon = <RefreshIcon />,
   sources,
+  files,
   onUpvote,
   onDownvote,
   onRefresh
@@ -76,6 +78,13 @@ export const SessionMessage: FC<SessionMessageProps> = ({
 
   return (
     <Card className={cn(theme.messages.message.base)}>
+      {files?.length > 0 && (
+        <div className={cn(theme.messages.message.files.base)}>
+          {files.map((file, index) => (
+            <MessageFile key={index} {...file} />
+          ))}
+        </div>
+      )}
       <div className={cn(theme.messages.message.question)}>
         <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
           {question}
@@ -87,11 +96,11 @@ export const SessionMessage: FC<SessionMessageProps> = ({
         </Markdown>
       </div>
       {sources && sources.length > 0 && (
-        <figure className={cn(theme.messages.message.sources.base)}>
+        <div className={cn(theme.messages.message.sources.base)}>
           {sources.map((source, index) => (
             <MessageSource key={index} {...source} />
           ))}
-        </figure>
+        </div>
       )}
       {(copyIcon || thumbsDownIcon || thumbsUpIcon || refreshIcon) && (
         <div className={cn(theme.messages.message.footer.base)}>

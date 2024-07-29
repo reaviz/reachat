@@ -11,7 +11,7 @@ export const MessageSource: FC<MessageSourceProps> = ({ title, url, image, limit
   const { theme } = useContext(SessionsContext);
 
   return (
-    <div
+    <figure
       className={cn(theme.messages.message.sources.source.base)}
       onClick={() => {
         window.open(url, '_blank');
@@ -32,6 +32,6 @@ export const MessageSource: FC<MessageSourceProps> = ({ title, url, image, limit
           )}
         </figcaption>
       )}
-    </div>
+    </figure>
   );
 };

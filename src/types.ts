@@ -15,6 +15,28 @@ export interface ConversationSource {
   image?: string;
 }
 
+export interface ConversationFile {
+  /**
+   * Name of the file
+   */
+  name: string;
+
+  /**
+   * Type of the file
+   */
+  type?: string;
+
+  /**
+   * Size of the file
+   */
+  size?: number;
+
+  /**
+   * URL of the file
+   */
+  url?: string;
+}
+
 export interface Conversation {
   /**
    * Unique identifier for the conversation
@@ -49,7 +71,7 @@ export interface Conversation {
   /**
    * Array of file paths or identifiers associated with the conversation
    */
-  files?: string[];
+  files?: ConversationFile[];
 }
 
 export interface Session {

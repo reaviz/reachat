@@ -291,6 +291,28 @@ export const Loading = () => {
 };
 
 export const FileUploads = () => {
+  const sessionsWithFiles: Session[] = [
+    {
+      id: '1',
+      title: 'Session with Files',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: '1',
+          question: 'Here are some files I uploaded',
+          response: 'Ive received your files. Let me know if you have any questions about them.',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          files: [
+            { name: 'document.pdf', size: 1024000, type: 'application/pdf' },
+            { name: 'report.docx', size: 512000, type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }
+          ]
+        }
+      ]
+    }
+  ];
+
   return (
     <div
       style={{
@@ -307,7 +329,7 @@ export const FileUploads = () => {
     >
       <Sessions
         viewType="console"
-        sessions={fakeSessions}
+        sessions={sessionsWithFiles}
         activeSessionId="1"
         onDeleteSession={() => alert('delete!')}
       >
