@@ -20,12 +20,18 @@ export interface SessionListItemProps extends PropsWithChildren {
    * Icon to show for delete.
    */
   deleteIcon?: ReactElement;
+
+  /**
+   * Limit for the ellipsis.
+   */
+  limit?: number;
 }
 
 export const SessionListItem: FC<SessionListItemProps> = ({
   children,
   session,
   deletable = true,
+  limit = 100,
   deleteIcon = <TrashIcon />
 }) => {
   const { activeSessionId, selectSession, deleteSession, theme } =
@@ -57,7 +63,7 @@ export const SessionListItem: FC<SessionListItemProps> = ({
         </>
       }
     >
-      {children || <Ellipsis value={session.title} limit={100} />}
+      {children || <Ellipsis value={session.title} limit={limit} />}
     </Comp>
   );
 };

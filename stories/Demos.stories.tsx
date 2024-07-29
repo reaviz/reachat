@@ -297,19 +297,6 @@ export const DefaultSession = () => {
   );
 };
 
-// export const Companion = () => {
-//   return (
-//     <Card style={{ width: 350 }} disablePadding>
-//       <Sessions
-//         viewType="companion"
-//         sessions={fakeSessions}
-//         isLoading={false}
-//         onDeleteSession={() => {}}
-//       />
-//     </Card>
-//   );
-// };
-
 export const Loading = () => {
   return (
     <div

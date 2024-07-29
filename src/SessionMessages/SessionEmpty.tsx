@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
+import { FC, PropsWithChildren, useContext } from 'react';
 import { SessionsContext } from '@/SessionsContext';
 import { cn } from 'reablocks';
 

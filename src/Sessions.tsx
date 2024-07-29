@@ -156,8 +156,8 @@ export const Sessions: FC<SessionsProps> = ({
     <SessionsContext.Provider value={contextValue}>
       <div
         className={cn(className, theme.base, {
-          'p-4': viewType === 'companion',
-          'flex w-full gap-5 h-full': viewType === 'console'
+          [theme.companion]: viewType === 'companion',
+          [theme.console]: viewType === 'console'
         })}
         style={style}
       >

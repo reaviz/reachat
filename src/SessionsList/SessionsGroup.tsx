@@ -3,6 +3,9 @@ import { SessionsContext } from '@/SessionsContext';
 import { ListItem, cn } from 'reablocks';
 
 interface SessionsGroupProps extends PropsWithChildren {
+  /**
+   * Heading for the session group.
+   */
   heading?: string | ReactNode;
 }
 

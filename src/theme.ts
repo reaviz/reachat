@@ -1,5 +1,7 @@
 export interface ChatTheme {
   base: string;
+  console: string;
+  companion: string;
   empty: string;
   sessions: {
     base: string;
@@ -41,6 +43,8 @@ export interface ChatTheme {
 
 export const chatTheme: ChatTheme = {
   base: 'text-white',
+  console: 'flex w-full gap-5 h-full',
+  companion: 'p-4',
   empty: 'text-center flex-1',
   sessions: {
     base: 'overflow-auto min-w-[150px] w-[30%] max-w-[300px] bg-[#11111F] p-5 rounded',
