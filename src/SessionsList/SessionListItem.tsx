@@ -43,7 +43,7 @@ export const SessionListItem: FC<SessionListItemProps> = ({
       dense
       disableGutters
       active={session.id === activeSessionId}
-      className={cn(theme.sessions.session.base)}
+      className={cn(theme.sessions.session.base, { [theme.sessions.session.active]: session.id === activeSessionId })}
       onClick={() => selectSession?.(session.id)}
       end={
         <>

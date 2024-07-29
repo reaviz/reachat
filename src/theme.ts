@@ -9,6 +9,7 @@ export interface ChatTheme {
     group: string;
     session: {
       base: string;
+      active: string;
       delete: string;
     };
   };
@@ -60,6 +61,7 @@ export const chatTheme: ChatTheme = {
     create: 'mb-4',
     session: {
       base: '',
+      active: ' text-primary',
       delete: '[&>svg]:w-4 [&>svg]:h-4 opacity-50'
     }
   },
