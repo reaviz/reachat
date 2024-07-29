@@ -115,3 +115,38 @@ export const CustomComponents = () => {
   );
 };
 ```
+
+### Using SessionContext
+The `SessionContext` hook provides access to the current session state and methods to
+interact with it. Here's how you can use it:
+
+```tsx
+import { useSessionContext } from 'reachat';
+
+const CustomSendButton = () => {
+  const { sendMessage } = useSessionContext();
+  const handleSend = () => {
+    sendMessage('Hello, AI!');
+    return <button onClick={handleSend}>Send Custom Message</button>;
+  };
+};
+```
+
+The `SessionContext` hook provides the following properties and methods:
+
+```ts
+export interface SessionContextProps {
+  sessions: Session[];
+  activeSessionId: string | null;
+  theme?: ChatTheme;
+  isLoading?: boolean;
+  activeSession?: Session | null;
+  remarkPlugins?: PluggableList[];
+  selectSession?: (sessionId: string) => void;
+  deleteSession?: (sessionId: string) => void;
+  createSession?: () => void;
+}
+```
+
+By using these overrides and the `SessionContext` hook, you can create a fully customized chat
+experience while still leveraging the core functionality of reachat.
