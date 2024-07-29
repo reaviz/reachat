@@ -57,6 +57,7 @@ theme via Tailwind.
 - Conversation Pagination
 - Smart/Dynamic Grouping of Sessions
 - Keyboard shortcuts
+- Animations via Framer Motion
 - Tailwind for Themeing
 - Customizable via Slots
 

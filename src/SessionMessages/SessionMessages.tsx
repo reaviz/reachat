@@ -4,13 +4,38 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useRef
+  useRef,
+  useState
 } from 'react';
 import { SessionEmpty } from './SessionEmpty';
 import { SessionMessage } from './SessionMessage';
 import { SessionsContext } from '@/SessionsContext';
-import { Button, cn, DateFormat, useInfinityList } from 'reablocks';
+import { Button, cn, DateFormat, Ellipsis, useInfinityList } from 'reablocks';
 import { Slot } from '@radix-ui/react-slot';
+import { AnimatePresence, motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.07
+    }
+  }
+};
+
+const messageVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4
+    }
+  }
+};
 
 interface SessionMessagesProps extends PropsWithChildren {
   /**
@@ -38,6 +63,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   const { activeSession, theme, isLoading } = useContext(SessionsContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const MessageComponent = children ? Slot : SessionMessage;
+  const [isAnimating, setIsAnimating] = useState(true);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -46,7 +72,9 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
         () => (contentRef.current.scrollTop = contentRef.current.scrollHeight)
       );
     }
-  }, [activeSession]);
+    // If we update the active session or load the page initially ( onAnimationComplete )
+    // let's scroll to the bottom of the page.
+  }, [activeSession, isAnimating]);
 
   function handleShowMore() {
     showNext(10);
@@ -77,7 +105,9 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   return (
     <div className={cn(theme.messages.base)}>
       <header className={cn(theme.messages.header)}>
-        <h2 className={cn(theme.messages.title)}>{activeSession.title}</h2>
+        <h2 className={cn(theme.messages.title)}>
+          <Ellipsis limit={125} value={activeSession.title} />
+        </h2>
         <DateFormat className={cn(theme.messages.date)} date={activeSession.createdAt} />
       </header>
       <div className={cn(theme.messages.content)} ref={contentRef}>
@@ -91,15 +121,31 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             {showMoreText}
           </Button>
         )}
-        {convosToRender.map((conversation, index) => (
-          <MessageComponent
-            key={conversation.id}
-            {...conversation}
-            isLoading={isLoading && index === convosToRender.length - 1}
+        <AnimatePresence>
+          <motion.div
+            variants={containerVariants}
+            key={activeSession?.id}
+            initial="hidden"
+            animate="visible"
+            onAnimationComplete={() => {
+              setIsAnimating(false);
+            }}
           >
-            {children}
-          </MessageComponent>
-        ))}
+            {convosToRender.map((conversation, index) => (
+              <motion.div
+                key={conversation.id}
+                variants={messageVariants}
+              >
+                <MessageComponent
+                  {...conversation}
+                  isLoading={isLoading && index === convosToRender.length - 1}
+                >
+                  {children}
+                </MessageComponent>
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

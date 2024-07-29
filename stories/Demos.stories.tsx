@@ -177,7 +177,7 @@ export const Embeds = () => {
     >
       <Sessions
         sessions={fakeSessionsWithEmbeds}
-        viewType="console"
+        activeSessionId="1"
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
