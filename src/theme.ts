@@ -24,6 +24,15 @@ export interface ChatTheme {
       base: string;
       question: string;
       response: string;
+      sources: {
+        base: string;
+        source: {
+          base: string;
+          image: string;
+          title: string;
+          url: string;
+        };
+      };
       markdown: {
         p: string;
         a: string;
@@ -79,6 +88,15 @@ export const chatTheme: ChatTheme = {
       base: 'mb-6 flex flex-col p-5 rounded',
       question: 'font-semibold text-gray-400 mb-1',
       response: '',
+      sources: {
+        base: 'my-4 flex gap-3',
+        source: {
+          base: 'flex gap-2 border border-gray-700 p-2 rounded cursor-pointer',
+          image: 'w-6 h-6 rounded-md',
+          title: 'text-md block',
+          url: 'text-sm text-blue-700 underline'
+        }
+      },
       markdown: {
         p: 'mb-2',
         a: 'text-blue-700 underline',

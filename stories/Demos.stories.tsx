@@ -1092,8 +1092,6 @@ export const CustomComponents = () => {
   );
 };
 
-// ... existing imports ...
-
 export const EmptyState = () => {
   return (
     <div
@@ -1150,7 +1148,7 @@ export const EmptyState = () => {
   );
 };
 
-export const ConversationWithSources = () => {
+export const ConversationSources = () => {
   const sessionWithSources: Session[] = [
     {
       id: 'session-sources',
@@ -1174,10 +1172,11 @@ These activities increase the concentration of greenhouse gases in the atmospher
           sources: [
             {
               title: 'NASA: Causes of Climate Change',
+              image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1224px-NASA_logo.svg.png',
               url: 'https://climate.nasa.gov/causes/'
             },
             {
-              title: 'IPCC: Climate Change 2021: The Physical Science Basis',
+              title: 'IPCC: Climate Change 2021: The Physical Science Basis and Global Warming Is the Last War We will Fight',
               url: 'https://www.ipcc.ch/report/ar6/wg1/'
             }
           ]

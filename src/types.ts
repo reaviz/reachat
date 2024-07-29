@@ -1,10 +1,5 @@
 export interface ConversationSource {
   /**
-   * Unique identifier for the conversation source
-   */
-  id: string;
-
-  /**
    * URL of the source, if applicable
    */
   url?: string;
@@ -12,7 +7,12 @@ export interface ConversationSource {
   /**
    * Title or description of the source
    */
-  title: string;
+  title?: string;
+
+  /**
+   * Image URL of the source, if applicable.
+   */
+  image?: string;
 }
 
 export interface Conversation {

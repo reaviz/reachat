@@ -94,8 +94,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
         {convosToRender.map(conversation => (
           <MessageComponent
             key={conversation.id}
-            question={conversation.question}
-            response={conversation.response}
+            {...conversation}
           >
             {children}
           </MessageComponent>

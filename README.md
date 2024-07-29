@@ -48,14 +48,17 @@ theme via Tailwind.
   - Code Highlighting
   - Tables
   - JSON
-  - Embeds
+  - Lists
+  - Embeds ( Youtube )
   - remark plugin support
 - File Uploads
+- Message Sources
 - Animations
 - Conversation Pagination
 - Smart/Dynamic Grouping of Sessions
 - Keyboard shortcuts
 - Tailwind for Themeing
+- Customizable via Slots
 
 ## 📦 Install
 

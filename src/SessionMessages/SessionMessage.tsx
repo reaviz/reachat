@@ -9,18 +9,10 @@ import RefreshIcon from '@/assets/refresh.svg?react';
 import { PluggableList } from 'react-markdown/lib';
 import { Markdown } from '@/Markdown';
 import remarkYoutube from 'remark-youtube';
+import { Conversation } from '@/types';
+import { MessageSource } from './MessageSource';
 
-export interface SessionMessageProps {
-  /**
-   * Question to display.
-   */
-  question?: string;
-
-  /**
-   * Response to display.
-   */
-  response?: string;
-
+export interface SessionMessageProps extends Conversation {
   /**
    * Icon to show for copy.
    */
@@ -64,6 +56,7 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   thumbsUpIcon = <ThumbUpIcon />,
   thumbsDownIcon = <ThumbsDownIcon />,
   refreshIcon = <RefreshIcon />,
+  sources,
   onUpvote,
   onDownvote,
   onRefresh
@@ -93,6 +86,13 @@ export const SessionMessage: FC<SessionMessageProps> = ({
           {response}
         </Markdown>
       </div>
+      {sources && sources.length > 0 && (
+        <figure className={cn(theme.messages.message.sources.base)}>
+          {sources.map((source, index) => (
+            <MessageSource key={index} {...source} />
+          ))}
+        </figure>
+      )}
       {(copyIcon || thumbsDownIcon || thumbsUpIcon || refreshIcon) && (
         <div className={cn(theme.messages.message.footer.base)}>
           {copyIcon && (
