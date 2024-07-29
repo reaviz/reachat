@@ -71,7 +71,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   const convosToRender = limit ? reReversedConvo : activeSession?.conversations;
 
   if (!activeSession) {
-    return <SessionEmpty newSessionContent={newSessionContent} />;
+    return <SessionEmpty>{newSessionContent}</SessionEmpty>;
   }
 
   return (
