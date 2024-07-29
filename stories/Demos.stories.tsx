@@ -123,10 +123,7 @@ export const Console = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -205,10 +202,7 @@ export const Embeds = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -249,10 +243,7 @@ export const DefaultSession = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -319,10 +310,7 @@ export const Loading = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -390,10 +378,11 @@ export const FileUploads = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
           <SessionMessages />
           <SessionInput allowedFiles={['.pdf', '.docx']} />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -434,10 +423,7 @@ export const DefaultInputValue = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput defaultValue="Pre-populate the prompt via the default value property" />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -473,10 +459,7 @@ export const UndeleteableSessions = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -550,10 +533,7 @@ export const SessionGrouping = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -609,10 +589,7 @@ export const HundredSessions = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -672,10 +649,7 @@ export const HundredConversations = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -727,10 +701,7 @@ export const LongSessionNames = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -848,10 +819,7 @@ export const MarkdownShowcase = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -927,10 +895,7 @@ export const CVEExample = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
@@ -1075,10 +1040,7 @@ export const OpenAIIntegration = () => {
               }
             </SessionGroups>
           </SessionsList>
-          <div className="flex-1 h-full flex flex-col">
-            <SessionMessages />
-            <SessionInput />
-          </div>
+          <SessionMessagePanel />
         </Sessions>
       </div>
     </div>
@@ -1333,10 +1295,7 @@ These activities increase the concentration of greenhouse gases in the atmospher
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput />
-        </div>
+        <SessionMessagePanel />
       </Sessions>
     </div>
   );
