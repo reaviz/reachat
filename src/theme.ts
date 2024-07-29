@@ -73,7 +73,7 @@ export const chatTheme: ChatTheme = {
     header: 'flex justify-between items-start gap-2',
     showMore: 'mb-4',
     message: {
-      base: 'mb-6 flex flex-col border-gray-400 border p-5 rounded',
+      base: 'mb-6 flex flex-col p-5 rounded',
       question: 'font-semibold text-gray-400 mb-1',
       response: '',
       markdown: {
