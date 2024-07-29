@@ -11,8 +11,9 @@ import { SessionEmpty } from './SessionEmpty';
 import { SessionMessage } from './SessionMessage';
 import { SessionsContext } from '@/SessionsContext';
 import { Button, cn, DateFormat, Ellipsis, useInfinityList } from 'reablocks';
-import { Slot } from '@radix-ui/react-slot';
+import { Slot, Slottable } from '@radix-ui/react-slot';
 import { AnimatePresence, motion } from 'framer-motion';
+import { SessionMessagesHeader } from './SessionMessagesHeader';
 
 const containerVariants = {
   hidden: {},
@@ -83,7 +84,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
 
   // Reverse the conversations so the last one is the first one
   const reversedConvos = useMemo(
-    () => [...activeSession?.conversations ?? []].reverse(),
+    () => [...(activeSession?.conversations ?? [])].reverse(),
     [activeSession]
   );
 
@@ -103,50 +104,39 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   }
 
   return (
-    <div className={cn(theme.messages.base)}>
-      <header className={cn(theme.messages.header)}>
-        <h2 className={cn(theme.messages.title)}>
-          <Ellipsis limit={125} value={activeSession.title} />
-        </h2>
-        <DateFormat className={cn(theme.messages.date)} date={activeSession.createdAt} />
-      </header>
-      <div className={cn(theme.messages.content)} ref={contentRef}>
-        {hasMore && (
-          <Button
-            variant="outline"
-            className={cn(theme.messages.showMore)}
-            fullWidth
-            onClick={handleShowMore}
-          >
-            {showMoreText}
-          </Button>
-        )}
-        <AnimatePresence>
-          <motion.div
-            variants={containerVariants}
-            key={activeSession?.id}
-            initial="hidden"
-            animate="visible"
-            onAnimationComplete={() => {
-              setIsAnimating(false);
-            }}
-          >
-            {convosToRender.map((conversation, index) => (
-              <motion.div
-                key={conversation.id}
-                variants={messageVariants}
+    <div className={cn(theme.messages.content)} ref={contentRef}>
+      {hasMore && (
+        <Button
+          variant="outline"
+          className={cn(theme.messages.showMore)}
+          fullWidth
+          onClick={handleShowMore}
+        >
+          {showMoreText}
+        </Button>
+      )}
+      <AnimatePresence>
+        <motion.div
+          variants={containerVariants}
+          key={activeSession?.id}
+          initial="hidden"
+          animate="visible"
+          onAnimationComplete={() => {
+            setIsAnimating(false);
+          }}
+        >
+          {convosToRender.map((conversation, index) => (
+            <motion.div key={conversation.id} variants={messageVariants}>
+              <MessageComponent
+                {...conversation}
+                isLoading={isLoading && index === convosToRender.length - 1}
               >
-                <MessageComponent
-                  {...conversation}
-                  isLoading={isLoading && index === convosToRender.length - 1}
-                >
-                  {children}
-                </MessageComponent>
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+                <Slottable>{children}</Slottable>
+              </MessageComponent>
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };

@@ -1,4 +1,11 @@
-import { useState, useCallback, useRef, useEffect, FC } from 'react';
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  FC,
+  useContext
+} from 'react';
 import OpenAI from 'openai';
 import { Meta } from '@storybook/react';
 import {
@@ -12,10 +19,14 @@ import {
   SessionMessages,
   SessionGroups,
   SessionInput,
-  SessionListItemProps
+  SessionListItemProps,
+  SessionMessagePanel,
+  SessionMessagesHeader,
+  SessionsContext
 } from '../src';
 import {
   Card,
+  DateFormat,
   Divider,
   IconButton,
   Input,
@@ -310,7 +321,7 @@ export const Loading = () => {
         </SessionsList>
         <div className="flex-1 h-full flex flex-col">
           <SessionMessages />
-          <SessionInput  />
+          <SessionInput />
         </div>
       </Sessions>
     </div>
@@ -328,12 +339,17 @@ export const FileUploads = () => {
         {
           id: '1',
           question: 'Here are some files I uploaded',
-          response: 'Ive received your files. Let me know if you have any questions about them.',
+          response:
+            'Ive received your files. Let me know if you have any questions about them.',
           createdAt: new Date(),
           updatedAt: new Date(),
           files: [
             { name: 'document.pdf', size: 1024000, type: 'application/pdf' },
-            { name: 'report.docx', size: 512000, type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }
+            {
+              name: 'report.docx',
+              size: 512000,
+              type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            }
           ]
         }
       ]
@@ -467,14 +483,24 @@ export const UndeleteableSessions = () => {
 };
 
 export const SessionGrouping = () => {
-  const createSessionWithDate = (id: string, title: string, daysAgo: number): Session => ({
+  const createSessionWithDate = (
+    id: string,
+    title: string,
+    daysAgo: number
+  ): Session => ({
     id,
     title,
     createdAt: subDays(new Date(), daysAgo),
     updatedAt: subDays(new Date(), daysAgo),
     conversations: [
-      { id: `${id}-1`, question: 'Sample question', response: 'Sample response', createdAt: subDays(new Date(), daysAgo), updatedAt: subDays(new Date(), daysAgo) },
-    ],
+      {
+        id: `${id}-1`,
+        question: 'Sample question',
+        response: 'Sample response',
+        createdAt: subDays(new Date(), daysAgo),
+        updatedAt: subDays(new Date(), daysAgo)
+      }
+    ]
   });
 
   const sessionsWithVariousDates: Session[] = [
@@ -487,11 +513,23 @@ export const SessionGrouping = () => {
     createSessionWithDate('6', 'Two Months Ago Session', 65),
     createSessionWithDate('7', 'Six Months Ago Session', 180),
     createSessionWithDate('8', 'Last Year Session', 370),
-    createSessionWithDate('9', 'Two Years Ago Session', 740),
+    createSessionWithDate('9', 'Two Years Ago Session', 740)
   ];
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
         sessions={sessionsWithVariousDates}
@@ -1047,11 +1085,21 @@ export const OpenAIIntegration = () => {
   );
 };
 
-const CustomSessionMessage: FC<any> = ({
-  question,
-  response
-}) => (
-  <div className="p-4 border border-blue-500 rounded mb-4">
+const CustomMessagesHeader: FC = () => {
+  const { activeSession } = useContext(SessionsContext);
+
+  return (
+    <div>
+      <h6 className="text-gray-400">
+        <DateFormat date={activeSession.createdAt} format="MMMM dd, yyyy" />
+      </h6>
+      <h1 className="text-2xl font-semibold">{activeSession?.title}</h1>
+    </div>
+  );
+};
+
+const CustomSessionMessage: FC<any> = ({ question, response }) => (
+  <div className="p-4 border border-blue-300 rounded mb-4">
     <span className="text-lg font-semibold text-blue-500">
       This is my question: {question}
     </span>
@@ -1060,12 +1108,17 @@ const CustomSessionMessage: FC<any> = ({
   </div>
 );
 
-const CustomSessionListItem: FC<SessionListItemProps> = ({ session }) => {
+const CustomSessionListItem: FC<SessionListItemProps> = ({
+  session,
+  children,
+  ...rest
+}) => {
   const [open, setOpen] = useState(false);
   const btnRef = useRef(null);
   return (
     <>
       <ListItem
+        {...rest}
         end={
           <IconButton
             ref={btnRef}
@@ -1082,7 +1135,12 @@ const CustomSessionListItem: FC<SessionListItemProps> = ({ session }) => {
       >
         <span className="truncate">{session.title}</span>
       </ListItem>
-      <Menu open={open} onClose={() => setOpen(false)} reference={btnRef}>
+      <Menu
+        open={open}
+        onClose={() => setOpen(false)}
+        reference={btnRef}
+        appendToBody={false}
+      >
         <Card disablePadding>
           <List>
             <ListItem onClick={() => alert('rename')}>Rename</ListItem>
@@ -1129,12 +1187,15 @@ export const CustomComponents = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
+        <SessionMessagePanel>
+          <SessionMessagesHeader>
+            <CustomMessagesHeader />
+          </SessionMessagesHeader>
           <SessionMessages>
             <CustomSessionMessage />
           </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -1174,7 +1235,9 @@ export const EmptyState = () => {
                 ))}
                 {groups.length === 0 && (
                   <div className="flex flex-1 items-center justify-center">
-                    <p className="text-gray-500">No sessions yet. Start a new session!</p>
+                    <p className="text-gray-500">
+                      No sessions yet. Start a new session!
+                    </p>
                   </div>
                 )}
               </>
@@ -1185,7 +1248,9 @@ export const EmptyState = () => {
           <SessionMessages
             newSessionContent={
               <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">No messages yet. Start a new conversation!</p>
+                <p className="text-gray-500">
+                  No messages yet. Start a new conversation!
+                </p>
               </div>
             }
           />
@@ -1220,11 +1285,13 @@ These activities increase the concentration of greenhouse gases in the atmospher
           sources: [
             {
               title: 'NASA: Causes of Climate Change',
-              image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1224px-NASA_logo.svg.png',
+              image:
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1224px-NASA_logo.svg.png',
               url: 'https://climate.nasa.gov/causes/'
             },
             {
-              title: 'IPCC: Climate Change 2021: The Physical Science Basis and Global Warming Is the Last War We will Fight',
+              title:
+                'IPCC: Climate Change 2021: The Physical Science Basis and Global Warming Is the Last War We will Fight',
               url: 'https://www.ipcc.ch/report/ar6/wg1/'
             }
           ]
