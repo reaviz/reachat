@@ -4,6 +4,9 @@ import { SessionsContext } from '@/SessionsContext';
 import { Ellipsis, cn } from 'reablocks';
 
 interface MessageSourceProps extends ConversationSource {
+  /**
+   * Limit for the title.
+   */
   limit?: number;
 }
 
