@@ -204,55 +204,6 @@ export const Embeds = () => {
   );
 };
 
-export const NewSessionContent = () => {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        background: '#02020F',
-        borderRadius: 5
-      }}
-    >
-      <Sessions
-        viewType="console"
-        sessions={fakeSessions}
-        onDeleteSession={() => alert('delete!')}
-      >
-        <SessionsList>
-          <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
-        </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages
-            newSessionContent={
-              <div className="text-lg w-full text-center">
-                Type a question to get a response...
-              </div>
-            }
-          />
-          <SessionInput />
-        </div>
-      </Sessions>
-    </div>
-  );
-};
-
 export const DefaultSession = () => {
   return (
     <div
@@ -1122,6 +1073,64 @@ export const CustomComponents = () => {
           <SessionMessages>
             <CustomSessionMessage />
           </SessionMessages>
+          <SessionInput />
+        </div>
+      </Sessions>
+    </div>
+  );
+};
+
+// ... existing imports ...
+
+export const EmptyState = () => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Sessions
+        viewType="console"
+        sessions={[]}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups => (
+              <>
+                {groups.map(({ heading, sessions }) => (
+                  <SessionsGroup heading={heading} key={heading}>
+                    {sessions.map(s => (
+                      <SessionListItem key={s.id} session={s} />
+                    ))}
+                  </SessionsGroup>
+                ))}
+                {groups.length === 0 && (
+                  <div className="flex flex-1 items-center justify-center">
+                    <p className="text-gray-500">No sessions yet. Start a new session!</p>
+                  </div>
+                )}
+              </>
+            )}
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages
+            newSessionContent={
+              <div className="flex items-center justify-center h-full">
+                <p className="text-gray-500">No messages yet. Start a new conversation!</p>
+              </div>
+            }
+          />
           <SessionInput />
         </div>
       </Sessions>
