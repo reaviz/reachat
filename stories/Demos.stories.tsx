@@ -11,7 +11,6 @@ import {
   NewSessionButton,
   SessionMessages,
   SessionGroups,
-  SessionMessageProps,
   SessionInput,
   SessionListItemProps
 } from '../src';
@@ -999,7 +998,7 @@ export const OpenAIIntegration = () => {
   );
 };
 
-const CustomSessionMessage: FC<SessionMessageProps> = ({
+const CustomSessionMessage: FC<any> = ({
   question,
   response
 }) => (
