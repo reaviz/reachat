@@ -2,7 +2,6 @@ import {
   CSSProperties,
   FC,
   PropsWithChildren,
-  ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -54,6 +53,11 @@ export interface SessionsProps extends PropsWithChildren {
   remarkPlugins?: PluggableList[];
 
   /**
+   * Whether to display a loading state.
+   */
+  isLoading?: boolean;
+
+  /**
    * Callback function to handle when a session is selected.
    */
   onSelectSession?: (sessionId: string) => void;
@@ -75,6 +79,7 @@ export const Sessions: FC<SessionsProps> = ({
   sessions,
   onSelectSession,
   onDeleteSession,
+  isLoading,
   activeSessionId,
   theme: customTheme = chatTheme,
   onNewSession,
@@ -135,12 +140,14 @@ export const Sessions: FC<SessionsProps> = ({
       activeSession,
       remarkPlugins,
       theme,
+      isLoading,
       activeSessionId: internalActiveSessionID,
       selectSession: handleSelectSession,
       deleteSession: handleDeleteSession,
       createSession: handleCreateNewSession
     }),
     [
+      isLoading,
       theme,
       remarkPlugins,
       sessions,

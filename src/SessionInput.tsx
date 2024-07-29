@@ -25,11 +25,6 @@ interface SessionInputProps {
   allowedFiles?: string[];
 
   /**
-   * Indicates whether the sessions are currently loading.
-   */
-  isLoading?: boolean;
-
-  /**
    * Placeholder text for the input field.
    */
   placeholder?: string;
@@ -68,7 +63,6 @@ interface SessionInputProps {
 export const SessionInput: FC<SessionInputProps> = ({
   allowedFiles,
   onSendMessage,
-  isLoading,
   placeholder,
   onStopMessage,
   onFileUpload,
@@ -77,7 +71,7 @@ export const SessionInput: FC<SessionInputProps> = ({
   stopIcon = <StopIcon />,
   attachIcon = <AttachIcon />
 }) => {
-  const { theme } = useContext(SessionsContext);
+  const { theme, isLoading } = useContext(SessionsContext);
   const [message, setMessage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -133,14 +127,6 @@ export const SessionInput: FC<SessionInputProps> = ({
           </Button>
         </>
       )}
-      <Button
-        title="Send"
-        className={cn(theme.input.send)}
-        onClick={handleSendMessage}
-        disabled={isLoading}
-      >
-        {sendIcon}
-      </Button>
       {isLoading && (
         <Button
           title="Stop"
@@ -150,6 +136,14 @@ export const SessionInput: FC<SessionInputProps> = ({
           {stopIcon}
         </Button>
       )}
+      <Button
+        title="Send"
+        className={cn(theme.input.send)}
+        onClick={handleSendMessage}
+        disabled={isLoading}
+      >
+        {sendIcon}
+      </Button>
     </div>
   );
 };

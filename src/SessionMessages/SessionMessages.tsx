@@ -35,7 +35,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   limit = 10,
   showMoreText = 'Show more'
 }) => {
-  const { activeSession, theme } = useContext(SessionsContext);
+  const { activeSession, theme, isLoading } = useContext(SessionsContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const MessageComponent = children ? Slot : SessionMessage;
 
@@ -91,10 +91,11 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             {showMoreText}
           </Button>
         )}
-        {convosToRender.map(conversation => (
+        {convosToRender.map((conversation, index) => (
           <MessageComponent
             key={conversation.id}
             {...conversation}
+            isLoading={isLoading && index === convosToRender.length - 1}
           >
             {children}
           </MessageComponent>

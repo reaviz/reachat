@@ -24,6 +24,7 @@ export interface ChatTheme {
       base: string;
       question: string;
       response: string;
+      cursor: string;
       files: {
         base: string;
         file: {
@@ -95,6 +96,7 @@ export const chatTheme: ChatTheme = {
       base: 'mb-6 flex flex-col p-5 rounded',
       question: 'font-semibold text-gray-400 mb-1',
       response: '',
+      cursor: 'inline-block w-1 h-4 bg-current',
       files: {
         base: 'mb-2 flex gap-3',
         file: {

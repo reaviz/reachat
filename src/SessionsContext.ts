@@ -7,6 +7,7 @@ export interface SessionContextProps {
   sessions: Session[];
   activeSessionId: string | null;
   theme?: ChatTheme;
+  isLoading?: boolean;
   activeSession?: Session | null;
   remarkPlugins?: PluggableList[];
   selectSession?: (sessionId: string) => void;

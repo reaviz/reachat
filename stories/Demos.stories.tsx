@@ -248,6 +248,31 @@ export const DefaultSession = () => {
 };
 
 export const Loading = () => {
+  const sessionsWithPartialConversation: Session[] = [
+    {
+      id: '1',
+      title: 'Session with Partial Conversation',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: '1',
+          question: 'What is the capital of France?',
+          response: 'The capital of France is Paris.',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: '2',
+          question: 'What is the largest planet in our solar system?',
+          response: null, // No response yet
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ]
+    }
+  ];
+
   return (
     <div
       style={{
@@ -263,8 +288,10 @@ export const Loading = () => {
       }}
     >
       <Sessions
+        isLoading
         viewType="console"
-        sessions={fakeSessions}
+        sessions={sessionsWithPartialConversation}
+        activeSessionId="1"
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
@@ -283,7 +310,7 @@ export const Loading = () => {
         </SessionsList>
         <div className="flex-1 h-full flex flex-col">
           <SessionMessages />
-          <SessionInput isLoading />
+          <SessionInput  />
         </div>
       </Sessions>
     </div>

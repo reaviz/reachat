@@ -12,6 +12,7 @@ import remarkYoutube from 'remark-youtube';
 import { Conversation } from '@/types';
 import { MessageSource } from './MessageSource';
 import { MessageFile } from './MessageFile';
+import { motion } from 'framer-motion';
 
 export interface SessionMessageProps extends Conversation {
   /**
@@ -33,6 +34,11 @@ export interface SessionMessageProps extends Conversation {
    * Icon to show for refresh.
    */
   refreshIcon?: ReactElement;
+
+  /**
+   * Whether to display a loading state.
+   */
+  isLoading?: boolean;
 
   /**
    * Callback function to handle upvoting.
@@ -57,6 +63,7 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   thumbsUpIcon = <ThumbUpIcon />,
   thumbsDownIcon = <ThumbsDownIcon />,
   refreshIcon = <RefreshIcon />,
+  isLoading,
   sources,
   files,
   onUpvote,
@@ -94,6 +101,13 @@ export const SessionMessage: FC<SessionMessageProps> = ({
         <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
           {response}
         </Markdown>
+        {isLoading && (
+          <motion.div
+            className={cn(theme.messages.message.cursor)}
+            animate={{ opacity: [1, 0] }}
+            transition={{ duration: 0.7, repeat: Infinity, repeatType: 'reverse' }}
+          />
+        )}
       </div>
       {sources && sources.length > 0 && (
         <div className={cn(theme.messages.message.sources.base)}>
