@@ -50,8 +50,14 @@ module.exports = {
         level3: colorPalette.gray[900],
         level4: colorPalette.gray[800],
       },
-      panel: colorPalette['black-pearl'],
-      surface: colorPalette['charade'],
+      panel: {
+        DEFAULT: colorPalette['black-pearl'],
+        accent: colorPalette['charade']
+      },
+      surface: {
+        DEFAULT: colorPalette['charade'],
+
+      },
       typography: {
         DEFAULT: colorPalette['athens-gray'],
       },
