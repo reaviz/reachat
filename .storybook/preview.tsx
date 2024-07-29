@@ -33,6 +33,7 @@ const preview: Preview = {
             'Intro',
             'Getting Started',
             'Themeing',
+            'Customization',
             'API',
             'Changelog',
             'Support',
