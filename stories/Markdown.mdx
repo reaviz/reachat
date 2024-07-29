@@ -1,0 +1,58 @@
+import { Meta } from '@storybook/addon-docs';
+import diagram from './architecture.png';
+
+<Meta title="Docs/Markdown Plugins" />
+
+## Markdown Plugins
+reachat uses [remark](https://github.com/remarkjs/remark) to parse and render markdown.
+You can use the `remarkPlugins` prop to add custom plugins to the markdown parser.
+
+We provide a example plugin for identifying and rendering CVE links. Below is a sample response:
+
+```md
+Please review the following CVEs:
+
+- CVE-2021-34527
+- CVE-2021-44228
+- CVE-2021-45046
+```
+
+We can leverage the `remarkPlugins` prop to add custom plugins to the markdown parser. Below
+is an example of the plugin code:
+
+```ts
+import { findAndReplace } from 'mdast-util-find-and-replace';
+
+const CVE_REGEX = /(CVE-(19|20)\d{2}-\d{4,7})/gi;
+
+export function remarkCve() {
+  return (tree, _file) => {
+    findAndReplace(tree, [[
+      CVE_REGEX,
+      replaceCve as unknown as any
+    ]]);
+  };
+
+  function replaceCve(value, id) {
+    return [
+      {
+        type: 'link',
+        url: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${id}`,
+        children: [
+          { children: [{ type: 'text', value: value.trim() }] }
+        ]
+      }
+    ];
+  }
+}
+```
+
+After you integrate this into your app, the above markdown will render as follows:
+
+```md
+Please review the following CVEs:
+
+- [CVE-2021-34527](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34527)
+- [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228)
+- [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046)
+```

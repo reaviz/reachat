@@ -34,6 +34,7 @@ const preview: Preview = {
             'Getting Started',
             'Themeing',
             'Customization',
+            'Markdown Plugins',
             'API',
             'Changelog',
             'Support',
