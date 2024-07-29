@@ -5,3 +5,4 @@ export * from './SessionsList';
 export * from './types';
 export * from './theme';
 export * from './Markdown';
+export * from './SessionsContext';
