@@ -23,6 +23,14 @@ export interface ChatTheme {
       base: string;
       question: string;
       response: string;
+      markdown: {
+        p: string;
+        a: string;
+        table: string;
+        th: string;
+        td: string;
+        code: string;
+      };
       footer: {
         base: string;
         copy: string;
@@ -66,6 +74,14 @@ export const chatTheme: ChatTheme = {
       base: 'mb-6 flex flex-col border-gray-400 border p-5 rounded',
       question: 'font-semibold text-gray-400 mb-1',
       response: '',
+      markdown: {
+        p: 'mb-2',
+        a: 'text-blue-700 underline',
+        table: 'table-auto w-full m-2',
+        th: 'px-4 py-2 text-left font-bold border-b border-gray-500',
+        td: 'px-4 py-2',
+        code: 'm-2 rounded'
+      },
       footer: {
         base: 'mt-3 flex gap-3',
         copy: '[&>svg]:w-4 [&>svg]:h-4 opacity-50',

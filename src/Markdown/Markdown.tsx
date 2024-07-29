@@ -1,10 +1,11 @@
-import { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren, useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { PluggableList } from 'react-markdown/lib';
 import remarkGfm from 'remark-gfm';
 import { CodeHighlighter } from './CodeHighlighter';
 import { cn } from 'reablocks';
 import { TableComponent, TableHeaderCell, TableDataCell } from './Table';
+import { SessionsContext } from '@/SessionsContext';
 
 interface MarkdownWrapperProps extends PropsWithChildren {
   /**
@@ -17,6 +18,8 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
   children,
   remarkPlugins = [remarkGfm]
 }) => {
+  const { theme } = useContext(SessionsContext);
+
   return (
     <ReactMarkdown
       remarkPlugins={remarkPlugins as PluggableList}
@@ -24,14 +27,14 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
         code: props => (
           <CodeHighlighter
             {...props}
-            className="m-2 rounded"
+            className={cn(theme.messages.message.markdown.code)}
           />
         ),
-        table: props => <TableComponent {...props} className="table-auto w-full m-2" />,
-        th: props => <TableHeaderCell {...props} className="px-4 py-2 text-left font-bold border-b border-gray-500" />,
-        td: props => <TableDataCell {...props} className="px-4 py-2" />,
-        a: props => <a {...props} className="text-blue-700 underline" />,
-        p: props => <p {...props} className="mb-2" />
+        table: props => <TableComponent {...props} className={cn(theme.messages.message.markdown.table)} />,
+        th: props => <TableHeaderCell {...props} className={cn(theme.messages.message.markdown.th)} />,
+        td: props => <TableDataCell {...props} className={cn(theme.messages.message.markdown.td)} />,
+        a: props => <a {...props} className={cn(theme.messages.message.markdown.a)} />,
+        p: props => <p {...props} className={cn(theme.messages.message.markdown.p)} />
       }}
     >
       {children as string}
