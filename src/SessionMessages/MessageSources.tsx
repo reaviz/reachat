@@ -10,11 +10,6 @@ interface MessageSourcesProps extends PropsWithChildren {
    * Sources to render.
    */
   sources: ConversationSource[];
-
-  /**
-   * Children to render as MessageSource slot.
-   */
-  children?: ReactNode;
 }
 
 export const MessageSources: FC<MessageSourcesProps> = ({

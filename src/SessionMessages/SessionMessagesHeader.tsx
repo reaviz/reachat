@@ -7,7 +7,9 @@ export const SessionMessagesHeader: FC<PropsWithChildren> = ({ children }) => {
   const { activeSession, theme } = useContext(SessionsContext);
   const Comp = children ? Slot : 'header';
 
-  if (!activeSession) return null;
+  if (!activeSession) {
+    return null;
+  }
 
   return (
     <Comp className={cn(theme.messages.header)}>

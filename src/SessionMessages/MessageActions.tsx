@@ -63,11 +63,6 @@ export interface MessageActionsProps extends PropsWithChildren {
    * Callback function to handle refreshing.
    */
   onRefresh?: () => void;
-
-  /**
-   * Children to render as MessageAction slot.
-   */
-  children?: ReactNode;
 }
 
 export const MessageActions: FC<MessageActionsProps> = ({

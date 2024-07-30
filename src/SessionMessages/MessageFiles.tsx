@@ -10,11 +10,6 @@ interface MessageFilesProps extends PropsWithChildren {
    * Files to render.
    */
   files: ConversationFile[];
-
-  /**
-   * Children to render as MessageFile slot.
-   */
-  children?: ReactNode;
 }
 
 export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {

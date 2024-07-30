@@ -12,11 +12,6 @@ export interface MessageQuestionProps extends PropsWithChildren {
    * Question to render.
    */
   question: string;
-
-  /**
-   * Children to render as MessageQuestion slot.
-   */
-  children?: ReactNode;
 }
 
 export const MessageQuestion: FC<MessageQuestionProps> = ({

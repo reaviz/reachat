@@ -2,13 +2,13 @@ import { SessionsContext } from '@/SessionsContext';
 import { Slot } from '@radix-ui/react-slot';
 import { motion } from 'framer-motion';
 import { cn } from 'reablocks';
-import { FC, ReactNode, useContext } from 'react';
+import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
 import { Markdown } from '@/Markdown';
 import { PluggableList } from 'react-markdown/lib';
 import remarkGfm from 'remark-gfm';
 import remarkYoutube from 'remark-youtube';
 
-export interface MessageResponseProps {
+export interface MessageResponseProps extends PropsWithChildren {
   /**
    * Response to render.
    */
@@ -18,11 +18,6 @@ export interface MessageResponseProps {
    * Whether the response is loading.
    */
   isLoading?: boolean;
-
-  /**
-   * Children to render as MessageResponse slot.
-   */
-  children?: ReactNode;
 }
 
 export const MessageResponse: FC<MessageResponseProps> = ({

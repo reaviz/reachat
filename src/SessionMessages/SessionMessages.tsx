@@ -7,10 +7,8 @@ import React, {
   useState
 } from 'react';
 import { SessionEmpty } from './SessionEmpty';
-import { SessionMessage } from './SessionMessage';
 import { SessionsContext } from '@/SessionsContext';
 import { Button, cn, useInfinityList } from 'reablocks';
-import { Slot } from '@radix-ui/react-slot';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Conversation } from '@/types';
 
@@ -22,7 +20,6 @@ const containerVariants = {
     }
   }
 };
-
 
 interface SessionMessagesProps {
   /**
@@ -54,7 +51,6 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
 }) => {
   const { activeSession, theme, isLoading } = useContext(SessionsContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const MessageComponent = children ? Slot : SessionMessage;
   const [isAnimating, setIsAnimating] = useState(true);
 
   useEffect(() => {
