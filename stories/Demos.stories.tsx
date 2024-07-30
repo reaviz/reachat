@@ -1176,6 +1176,7 @@ export const OpenAIIntegration = () => {
           viewType="console"
           sessions={sessions}
           isLoading={isLoading}
+          disabled={!apiKey}
           onDeleteSession={handleDeleteSession}
           onSendMessage={handleNewMessage}
           activeSessionId={activeSessionId}

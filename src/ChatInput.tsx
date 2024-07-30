@@ -71,7 +71,7 @@ export const ChatInput: FC<ChatInputProps> = ({
   stopIcon = <StopIcon />,
   attachIcon = <AttachIcon />
 }) => {
-  const { theme, isLoading } = useContext(ChatContext);
+  const { theme, isLoading, disabled } = useContext(ChatContext);
   const [message, setMessage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -107,7 +107,7 @@ export const ChatInput: FC<ChatInputProps> = ({
         defaultValue={defaultValue}
         onKeyPress={handleKeyPress}
         placeholder={placeholder}
-        disabled={isLoading}
+        disabled={isLoading || disabled}
       />
       {allowedFiles?.length > 0 && (
         <>
@@ -120,6 +120,7 @@ export const ChatInput: FC<ChatInputProps> = ({
           />
           <Button
             title="Upload"
+            disabled={isLoading || disabled}
             className={cn(theme.input.upload)}
             onClick={() => fileInputRef.current?.click()}
           >
@@ -132,6 +133,7 @@ export const ChatInput: FC<ChatInputProps> = ({
           title="Stop"
           className={cn(theme.input.stop)}
           onClick={onStopMessage}
+          disabled={disabled}
         >
           {stopIcon}
         </Button>
@@ -140,7 +142,7 @@ export const ChatInput: FC<ChatInputProps> = ({
         title="Send"
         className={cn(theme.input.send)}
         onClick={handleSendMessage}
-        disabled={isLoading}
+        disabled={isLoading || disabled}
       >
         {sendIcon}
       </Button>

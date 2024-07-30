@@ -14,7 +14,7 @@ export const NewSessionButton: FC<NewSessionButtonProps> = ({
   children,
   newSessionText = 'New Session'
 }) => {
-  const { theme, createSession } = useContext(ChatContext);
+  const { theme, createSession, disabled } = useContext(ChatContext);
   const Comp = children ? Slot : Button;
 
   return (
@@ -23,6 +23,7 @@ export const NewSessionButton: FC<NewSessionButtonProps> = ({
       disableMargins
       color="primary"
       className={cn(theme.sessions.create)}
+      disabled={disabled}
       onClick={createSession}
     >
       {children || newSessionText}

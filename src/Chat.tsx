@@ -58,6 +58,11 @@ export interface ChatProps extends PropsWithChildren {
   isLoading?: boolean;
 
   /**
+   * Whether to disable the chat.
+   */
+  disabled?: boolean;
+
+  /**
    * Callback function to handle when a session is selected.
    */
   onSelectSession?: (sessionId: string) => void;
@@ -84,6 +89,7 @@ export const Chat: FC<ChatProps> = ({
   theme: customTheme = chatTheme,
   onNewSession,
   remarkPlugins,
+  disabled,
   style,
   className
 }) => {
@@ -140,6 +146,7 @@ export const Chat: FC<ChatProps> = ({
       activeSession,
       remarkPlugins,
       theme,
+      disabled,
       isLoading,
       activeSessionId: internalActiveSessionID,
       selectSession: handleSelectSession,
@@ -148,6 +155,7 @@ export const Chat: FC<ChatProps> = ({
     }),
     [
       isLoading,
+      disabled,
       theme,
       remarkPlugins,
       sessions,

@@ -5,6 +5,7 @@ import { PluggableList } from 'react-markdown/lib';
 
 export interface ChatContextProps {
   sessions: Session[];
+  disabled?: boolean;
   activeSessionId: string | null;
   theme?: ChatTheme;
   isLoading?: boolean;
