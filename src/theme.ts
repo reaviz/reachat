@@ -51,6 +51,7 @@ export interface ChatTheme {
         li: string;
         ul: string;
         ol: string;
+        copy: string;
       };
       footer: {
         base: string;
@@ -114,6 +115,7 @@ export const chatTheme: ChatTheme = {
         }
       },
       markdown: {
+        copy: 'absolute right-0 top-0 [&>svg]:w-4 [&>svg]:h-4 opacity-50',
         p: 'mb-2',
         a: 'text-blue-700 underline',
         table: 'table-auto w-full m-2',

@@ -28,6 +28,7 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
           <CodeHighlighter
             {...props}
             className={cn(theme.messages.message.markdown.code)}
+            copyClassName={cn(theme.messages.message.markdown.copy)}
           />
         ),
         table: props => <TableComponent {...props} className={cn(theme.messages.message.markdown.table)} />,
