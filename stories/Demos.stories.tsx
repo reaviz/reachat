@@ -27,6 +27,8 @@ import {
 } from '../src';
 import {
   Card,
+  Chip,
+  cn,
   DateFormat,
   Divider,
   IconButton,
@@ -50,6 +52,7 @@ import {
   MessageResponseProps
 } from '@/SessionMessages/MessageResponse';
 import { MessageSources } from '@/SessionMessages/MessageSources';
+import { MessageFileProps } from '@/SessionMessages/MessageFile';
 
 export default {
   title: 'Demos',
@@ -1211,7 +1214,7 @@ export const OpenAIIntegration = () => {
   );
 };
 
-const CustomMessagesHeader: FC = () => {
+const CustomMessagesHeader: FC<any> = () => {
   const { activeSession } = useContext(SessionsContext);
 
   return (
@@ -1224,17 +1227,45 @@ const CustomMessagesHeader: FC = () => {
   );
 };
 
-const CustomMessageQuestion: FC<MessageQuestionProps> = ({ question }) => (
+const CustomMessageQuestion: FC<any> = ({ question }) => (
   <span className="text-lg font-semibold text-blue-500">
     This is my question: {question}
   </span>
 );
 
-const CustomMessageResponse: FC<MessageResponseProps> = ({ response }) => (
+const CustomMessageResponse: FC<any> = ({ response }) => (
   <blockquote className="border-l border-blue-500 pl-2">
     This is the response: {response}
   </blockquote>
 );
+
+const CustomMessageFile: FC<any> = ({ name, type }) => (
+  <Chip size="small" className="rounded-full border border-gray-700">
+    {name || type}
+  </Chip>
+);
+
+const CustomMessageSource: FC<any> = ({ title, url, image }) => {
+  const { theme } = useContext(SessionsContext);
+  return (
+    <Chip
+      size="small"
+      className="rounded-full border border-blue-500 border-opacity-50"
+      onClick={() => alert('take me to ' + url)}
+      start={
+        image && (
+          <img
+            src={image}
+            alt={title}
+            className={cn(theme.messages.message.sources.source.image)}
+          />
+        )
+      }
+    >
+      {title || url}
+    </Chip>
+  );
+};
 
 const CustomSessionListItem: FC<SessionListItemProps> = ({
   session,
@@ -1334,13 +1365,17 @@ export const CustomComponents = () => {
                   isLast={index === conversations.length - 1}
                 >
                   <MessageQuestion question={conversation.question}>
-                    <CustomMessageQuestion question={conversation.question} />
+                    <CustomMessageQuestion />
                   </MessageQuestion>
-                  <MessageFiles files={conversation.files} />
+                  <MessageFiles files={conversation.files}>
+                    <CustomMessageFile />
+                  </MessageFiles>
                   <MessageResponse response={conversation.response}>
-                    <CustomMessageResponse response={conversation.response} />
+                    <CustomMessageResponse />
                   </MessageResponse>
-                  <MessageSources sources={conversation.sources} />
+                  <MessageSources sources={conversation.sources}>
+                    <CustomMessageSource />
+                  </MessageSources>
                   <MessageActions
                     question={conversation.question}
                     response={conversation.response}
