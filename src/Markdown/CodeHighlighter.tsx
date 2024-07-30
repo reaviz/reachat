@@ -1,8 +1,8 @@
 import React, { FC, PropsWithChildren, ReactElement } from 'react';
 import { Button, cn } from 'reablocks';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import CopyIcon from '@/assets/copy.svg?react';
+import { dark } from './themes';
 
 export interface CodeHighlighterProps extends PropsWithChildren {
   /**
@@ -24,6 +24,11 @@ export interface CodeHighlighterProps extends PropsWithChildren {
    * Icon to show for copy.
    */
   copyIcon?: ReactElement;
+
+  /**
+   * The theme to use for the code block.
+   */
+  theme?: Record<string, string>;
 }
 
 export const CodeHighlighter: FC<CodeHighlighterProps> = ({
@@ -31,7 +36,8 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
   children,
   copyClassName,
   copyIcon = <CopyIcon />,
-  language
+  language,
+  theme = dark
 }) => {
   const match = language?.match(/language-(\w+)/);
   const lang = match ? match[1] : 'text';
@@ -62,7 +68,7 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
       )}
       <SyntaxHighlighter
         language={lang}
-        style={oneDark}
+        style={theme}
       >
         {children}
       </SyntaxHighlighter>
