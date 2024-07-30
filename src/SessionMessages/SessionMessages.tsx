@@ -1,5 +1,4 @@
 import React, {
-  PropsWithChildren,
   ReactNode,
   useContext,
   useEffect,
@@ -10,10 +9,10 @@ import React, {
 import { SessionEmpty } from './SessionEmpty';
 import { SessionMessage } from './SessionMessage';
 import { SessionsContext } from '@/SessionsContext';
-import { Button, cn, DateFormat, Ellipsis, useInfinityList } from 'reablocks';
-import { Slot, Slottable } from '@radix-ui/react-slot';
+import { Button, cn, useInfinityList } from 'reablocks';
+import { Slot } from '@radix-ui/react-slot';
 import { AnimatePresence, motion } from 'framer-motion';
-import { SessionMessagesHeader } from './SessionMessagesHeader';
+import { Conversation } from '@/types';
 
 const containerVariants = {
   hidden: {},
@@ -24,21 +23,8 @@ const containerVariants = {
   }
 };
 
-const messageVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.4
-    }
-  }
-};
 
-interface SessionMessagesProps extends PropsWithChildren {
+interface SessionMessagesProps {
   /**
    * Content to display when there are no sessions selected or a new session is started.
    */
@@ -53,6 +39,11 @@ interface SessionMessagesProps extends PropsWithChildren {
    * Text to display for the show more button.
    */
   showMoreText?: string;
+
+  /**
+   * Render function for the session messages.
+   */
+  children?: (conversations: Conversation[]) => ReactNode;
 }
 
 export const SessionMessages: React.FC<SessionMessagesProps> = ({
@@ -125,16 +116,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             setIsAnimating(false);
           }}
         >
-          {convosToRender.map((conversation, index) => (
-            <motion.div key={conversation.id} variants={messageVariants}>
-              <MessageComponent
-                {...conversation}
-                isLoading={isLoading && index === convosToRender.length - 1}
-              >
-                <Slottable>{children}</Slottable>
-              </MessageComponent>
-            </motion.div>
-          ))}
+          {children(convosToRender)}
         </motion.div>
       </AnimatePresence>
     </div>

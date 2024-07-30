@@ -22,7 +22,8 @@ import {
   SessionListItemProps,
   SessionMessagePanel,
   SessionMessagesHeader,
-  SessionsContext
+  SessionsContext,
+  SessionMessage
 } from '../src';
 import {
   Card,
@@ -32,10 +33,23 @@ import {
   Input,
   List,
   ListItem,
-  Menu
+  Menu,
+  RefreshIcon
 } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 import MenuIcon from '@/assets/menu.svg?react';
+import { motion } from 'framer-motion';
+import { MessageActions } from '@/SessionMessages/MessageActions';
+import { MessageFiles } from '@/SessionMessages/MessageFiles';
+import {
+  MessageQuestion,
+  MessageQuestionProps
+} from '@/SessionMessages/MessageQuestion';
+import {
+  MessageResponse,
+  MessageResponseProps
+} from '@/SessionMessages/MessageResponse';
+import { MessageSources } from '@/SessionMessages/MessageSources';
 
 export default {
   title: 'Demos',
@@ -123,7 +137,17 @@ export const Console = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -202,7 +226,17 @@ export const Embeds = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -243,7 +277,18 @@ export const DefaultSession = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -310,40 +355,54 @@ export const Loading = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map((conversation, index) => (
+                <SessionMessage
+                  conversation={conversation}
+                  isLast={index === conversations.length - 1}
+                />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
 };
 
-export const FileUploads = () => {
-  const sessionsWithFiles: Session[] = [
-    {
-      id: '1',
-      title: 'Session with Files',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      conversations: [
-        {
-          id: '1',
-          question: 'Here are some files I uploaded',
-          response:
-            'Ive received your files. Let me know if you have any questions about them.',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          files: [
-            { name: 'document.pdf', size: 1024000, type: 'application/pdf' },
-            {
-              name: 'report.docx',
-              size: 512000,
-              type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-            }
-          ]
-        }
-      ]
-    }
-  ];
+const sessionsWithFiles: Session[] = [
+  {
+    id: 'session-files',
+    title: 'Session with Files',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    conversations: [
+      {
+        id: '1',
+        question: 'Here are some files I uploaded',
+        response:
+          'Ive received your files. Let me know if you have any questions about them.',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        files: [
+          { name: 'document.pdf', size: 1024000, type: 'application/pdf' },
+          {
+            name: 'report.docx',
+            size: 512000,
+            type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          }
+        ]
+      }
+    ]
+  }
+];
 
+export const FileUploads = () => {
   return (
     <div
       style={{
@@ -361,7 +420,7 @@ export const FileUploads = () => {
       <Sessions
         viewType="console"
         sessions={sessionsWithFiles}
-        activeSessionId="1"
+        activeSessionId="session-files"
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
@@ -380,7 +439,13 @@ export const FileUploads = () => {
         </SessionsList>
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput allowedFiles={['.pdf', '.docx']} />
         </SessionMessagePanel>
       </Sessions>
@@ -423,7 +488,18 @@ export const DefaultInputValue = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -459,7 +535,18 @@ export const UndeleteableSessions = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -533,7 +620,18 @@ export const SessionGrouping = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -589,7 +687,18 @@ export const HundredSessions = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -649,7 +758,18 @@ export const HundredConversations = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -701,7 +821,18 @@ export const LongSessionNames = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -819,7 +950,18 @@ export const MarkdownShowcase = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -895,7 +1037,18 @@ export const CVEExample = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -1040,7 +1193,18 @@ export const OpenAIIntegration = () => {
               }
             </SessionGroups>
           </SessionsList>
-          <SessionMessagePanel />
+
+          <SessionMessagePanel>
+            <SessionMessagesHeader />
+            <SessionMessages>
+              {conversations =>
+                conversations.map(conversation => (
+                  <SessionMessage conversation={conversation} />
+                ))
+              }
+            </SessionMessages>
+            <SessionInput />
+          </SessionMessagePanel>
         </Sessions>
       </div>
     </div>
@@ -1060,14 +1224,16 @@ const CustomMessagesHeader: FC = () => {
   );
 };
 
-const CustomSessionMessage: FC<any> = ({ question, response }) => (
-  <div className="p-4 border border-blue-300 rounded mb-4">
-    <span className="text-lg font-semibold text-blue-500">
-      This is my question: {question}
-    </span>
-    <br />
+const CustomMessageQuestion: FC<MessageQuestionProps> = ({ question }) => (
+  <span className="text-lg font-semibold text-blue-500">
+    This is my question: {question}
+  </span>
+);
+
+const CustomMessageResponse: FC<MessageResponseProps> = ({ response }) => (
+  <blockquote className="border-l border-blue-500 pl-2">
     This is the response: {response}
-  </div>
+  </blockquote>
 );
 
 const CustomSessionListItem: FC<SessionListItemProps> = ({
@@ -1129,7 +1295,14 @@ export const CustomComponents = () => {
         borderRadius: 5
       }}
     >
-      <Sessions sessions={fakeSessions}>
+      <Sessions
+        sessions={[
+          ...fakeSessions,
+          ...sessionsWithFiles,
+          ...sessionWithSources
+        ]}
+        activeSessionId="1"
+      >
         <SessionsList>
           <NewSessionButton>
             <button className="text-blue-500">New Session</button>
@@ -1154,7 +1327,27 @@ export const CustomComponents = () => {
             <CustomMessagesHeader />
           </SessionMessagesHeader>
           <SessionMessages>
-            <CustomSessionMessage />
+            {conversations =>
+              conversations.map((conversation, index) => (
+                <SessionMessage
+                  conversation={conversation}
+                  isLast={index === conversations.length - 1}
+                >
+                  <MessageQuestion question={conversation.question}>
+                    <CustomMessageQuestion question={conversation.question} />
+                  </MessageQuestion>
+                  <MessageFiles files={conversation.files} />
+                  <MessageResponse response={conversation.response}>
+                    <CustomMessageResponse response={conversation.response} />
+                  </MessageResponse>
+                  <MessageSources sources={conversation.sources} />
+                  <MessageActions
+                    question={conversation.question}
+                    response={conversation.response}
+                  />
+                </SessionMessage>
+              ))
+            }
           </SessionMessages>
           <SessionInput />
         </SessionMessagePanel>
@@ -1223,18 +1416,17 @@ export const EmptyState = () => {
   );
 };
 
-export const ConversationSources = () => {
-  const sessionWithSources: Session[] = [
-    {
-      id: 'session-sources',
-      title: 'Session with Sources',
-      createdAt: subHours(new Date(), 1),
-      updatedAt: new Date(),
-      conversations: [
-        {
-          id: 'conversation-1',
-          question: 'What are the main causes of climate change?',
-          response: `Climate change is primarily caused by human activities that release greenhouse gases into the atmosphere. The main causes include:
+const sessionWithSources: Session[] = [
+  {
+    id: 'session-sources',
+    title: 'Session with Sources',
+    createdAt: subHours(new Date(), 1),
+    updatedAt: new Date(),
+    conversations: [
+      {
+        id: 'conversation-1',
+        question: 'What are the main causes of climate change?',
+        response: `Climate change is primarily caused by human activities that release greenhouse gases into the atmosphere. The main causes include:
 
 1. Burning of fossil fuels (coal, oil, and natural gas)
 2. Deforestation and land-use changes
@@ -1242,26 +1434,27 @@ export const ConversationSources = () => {
 4. Agriculture and livestock farming
 
 These activities increase the concentration of greenhouse gases in the atmosphere, leading to the greenhouse effect and global warming.`,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          sources: [
-            {
-              title: 'NASA: Causes of Climate Change',
-              image:
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1224px-NASA_logo.svg.png',
-              url: 'https://climate.nasa.gov/causes/'
-            },
-            {
-              title:
-                'IPCC: Climate Change 2021: The Physical Science Basis and Global Warming Is the Last War We will Fight',
-              url: 'https://www.ipcc.ch/report/ar6/wg1/'
-            }
-          ]
-        }
-      ]
-    }
-  ];
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        sources: [
+          {
+            title: 'NASA: Causes of Climate Change',
+            image:
+              'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1224px-NASA_logo.svg.png',
+            url: 'https://climate.nasa.gov/causes/'
+          },
+          {
+            title:
+              'IPCC: Climate Change 2021: The Physical Science Basis and Global Warming Is the Last War We will Fight',
+            url: 'https://www.ipcc.ch/report/ar6/wg1/'
+          }
+        ]
+      }
+    ]
+  }
+];
 
+export const ConversationSources = () => {
   return (
     <div
       style={{
@@ -1295,7 +1488,18 @@ These activities increase the concentration of greenhouse gases in the atmospher
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
