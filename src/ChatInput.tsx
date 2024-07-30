@@ -13,7 +13,7 @@ import StopIcon from '@/assets/stop.svg?react';
 import AttachIcon from '@/assets/paperclip.svg?react';
 import { ChatContext } from './ChatContext';
 
-interface SessionInputProps {
+interface ChatInputProps {
   /**
    * Default value for the input field.
    */
@@ -60,7 +60,7 @@ interface SessionInputProps {
   onFileUpload?: (file: File) => void;
 }
 
-export const ChatInput: FC<SessionInputProps> = ({
+export const ChatInput: FC<ChatInputProps> = ({
   allowedFiles,
   onSendMessage,
   placeholder,
