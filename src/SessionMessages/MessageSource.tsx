@@ -3,7 +3,7 @@ import { ConversationSource } from '@/types';
 import { SessionsContext } from '@/SessionsContext';
 import { Ellipsis, cn } from 'reablocks';
 
-interface MessageSourceProps extends ConversationSource {
+export interface MessageSourceProps extends ConversationSource {
   /**
    * Limit for the title.
    */

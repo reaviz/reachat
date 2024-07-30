@@ -1,4 +1,11 @@
-import { useState, useCallback, useRef, useEffect, FC } from 'react';
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  FC,
+  useContext
+} from 'react';
 import OpenAI from 'openai';
 import { Meta } from '@storybook/react';
 import {
@@ -12,19 +19,40 @@ import {
   SessionMessages,
   SessionGroups,
   SessionInput,
-  SessionListItemProps
+  SessionListItemProps,
+  SessionMessagePanel,
+  SessionMessagesHeader,
+  SessionsContext,
+  SessionMessage
 } from '../src';
 import {
   Card,
+  Chip,
+  cn,
+  DateFormat,
   Divider,
   IconButton,
   Input,
   List,
   ListItem,
-  Menu
+  Menu,
+  RefreshIcon
 } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 import MenuIcon from '@/assets/menu.svg?react';
+import { motion } from 'framer-motion';
+import { MessageActions } from '@/SessionMessages/MessageActions';
+import { MessageFiles } from '@/SessionMessages/MessageFiles';
+import {
+  MessageQuestion,
+  MessageQuestionProps
+} from '@/SessionMessages/MessageQuestion';
+import {
+  MessageResponse,
+  MessageResponseProps
+} from '@/SessionMessages/MessageResponse';
+import { MessageSources } from '@/SessionMessages/MessageSources';
+import { MessageFileProps } from '@/SessionMessages/MessageFile';
 
 export default {
   title: 'Demos',
@@ -112,10 +140,17 @@ export const Console = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -194,10 +229,17 @@ export const Embeds = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -238,10 +280,18 @@ export const DefaultSession = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -308,38 +358,54 @@ export const Loading = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput  />
-        </div>
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map((conversation, index) => (
+                <SessionMessage
+                  conversation={conversation}
+                  isLast={index === conversations.length - 1}
+                />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
 };
 
-export const FileUploads = () => {
-  const sessionsWithFiles: Session[] = [
-    {
-      id: '1',
-      title: 'Session with Files',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      conversations: [
-        {
-          id: '1',
-          question: 'Here are some files I uploaded',
-          response: 'Ive received your files. Let me know if you have any questions about them.',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          files: [
-            { name: 'document.pdf', size: 1024000, type: 'application/pdf' },
-            { name: 'report.docx', size: 512000, type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }
-          ]
-        }
-      ]
-    }
-  ];
+const sessionsWithFiles: Session[] = [
+  {
+    id: 'session-files',
+    title: 'Session with Files',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    conversations: [
+      {
+        id: '1',
+        question: 'Here are some files I uploaded',
+        response:
+          'Ive received your files. Let me know if you have any questions about them.',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        files: [
+          { name: 'document.pdf', size: 1024000, type: 'application/pdf' },
+          {
+            name: 'report.docx',
+            size: 512000,
+            type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          }
+        ]
+      }
+    ]
+  }
+];
 
+export const FileUploads = () => {
   return (
     <div
       style={{
@@ -357,7 +423,7 @@ export const FileUploads = () => {
       <Sessions
         viewType="console"
         sessions={sessionsWithFiles}
-        activeSessionId="1"
+        activeSessionId="session-files"
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
@@ -374,10 +440,17 @@ export const FileUploads = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput allowedFiles={['.pdf', '.docx']} />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -418,10 +491,18 @@ export const DefaultInputValue = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
-          <SessionInput defaultValue="Pre-populate the prompt via the default value property" />
-        </div>
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
+          <SessionInput />
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -457,24 +538,42 @@ export const UndeleteableSessions = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
 };
 
 export const SessionGrouping = () => {
-  const createSessionWithDate = (id: string, title: string, daysAgo: number): Session => ({
+  const createSessionWithDate = (
+    id: string,
+    title: string,
+    daysAgo: number
+  ): Session => ({
     id,
     title,
     createdAt: subDays(new Date(), daysAgo),
     updatedAt: subDays(new Date(), daysAgo),
     conversations: [
-      { id: `${id}-1`, question: 'Sample question', response: 'Sample response', createdAt: subDays(new Date(), daysAgo), updatedAt: subDays(new Date(), daysAgo) },
-    ],
+      {
+        id: `${id}-1`,
+        question: 'Sample question',
+        response: 'Sample response',
+        createdAt: subDays(new Date(), daysAgo),
+        updatedAt: subDays(new Date(), daysAgo)
+      }
+    ]
   });
 
   const sessionsWithVariousDates: Session[] = [
@@ -487,11 +586,23 @@ export const SessionGrouping = () => {
     createSessionWithDate('6', 'Two Months Ago Session', 65),
     createSessionWithDate('7', 'Six Months Ago Session', 180),
     createSessionWithDate('8', 'Last Year Session', 370),
-    createSessionWithDate('9', 'Two Years Ago Session', 740),
+    createSessionWithDate('9', 'Two Years Ago Session', 740)
   ];
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: 20, margin: 20, background: '#02020F', borderRadius: 5 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
       <Sessions
         viewType="console"
         sessions={sessionsWithVariousDates}
@@ -512,10 +623,18 @@ export const SessionGrouping = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -571,10 +690,18 @@ export const HundredSessions = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -634,10 +761,18 @@ export const HundredConversations = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -689,10 +824,18 @@ export const LongSessionNames = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -810,10 +953,18 @@ export const MarkdownShowcase = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -889,10 +1040,18 @@ export const CVEExample = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -1037,35 +1196,88 @@ export const OpenAIIntegration = () => {
               }
             </SessionGroups>
           </SessionsList>
-          <div className="flex-1 h-full flex flex-col">
-            <SessionMessages />
+
+          <SessionMessagePanel>
+            <SessionMessagesHeader />
+            <SessionMessages>
+              {conversations =>
+                conversations.map(conversation => (
+                  <SessionMessage conversation={conversation} />
+                ))
+              }
+            </SessionMessages>
             <SessionInput />
-          </div>
+          </SessionMessagePanel>
         </Sessions>
       </div>
     </div>
   );
 };
 
-const CustomSessionMessage: FC<any> = ({
-  question,
-  response
-}) => (
-  <div className="p-4 border border-blue-500 rounded mb-4">
-    <span className="text-lg font-semibold text-blue-500">
-      This is my question: {question}
-    </span>
-    <br />
-    This is the response: {response}
-  </div>
+const CustomMessagesHeader: FC<any> = () => {
+  const { activeSession } = useContext(SessionsContext);
+
+  return (
+    <div>
+      <h6 className="text-gray-400">
+        <DateFormat date={activeSession.createdAt} format="MMMM dd, yyyy" />
+      </h6>
+      <h1 className="text-2xl font-semibold">{activeSession?.title}</h1>
+    </div>
+  );
+};
+
+const CustomMessageQuestion: FC<any> = ({ question }) => (
+  <span className="text-lg font-semibold text-blue-500">
+    This is my question: {question}
+  </span>
 );
 
-const CustomSessionListItem: FC<SessionListItemProps> = ({ session }) => {
+const CustomMessageResponse: FC<any> = ({ response }) => (
+  <blockquote className="border-l border-blue-500 pl-2">
+    This is the response: {response}
+  </blockquote>
+);
+
+const CustomMessageFile: FC<any> = ({ name, type }) => (
+  <Chip size="small" className="rounded-full border border-gray-700">
+    {name || type}
+  </Chip>
+);
+
+const CustomMessageSource: FC<any> = ({ title, url, image }) => {
+  const { theme } = useContext(SessionsContext);
+  return (
+    <Chip
+      size="small"
+      className="rounded-full border border-blue-500 border-opacity-50"
+      onClick={() => alert('take me to ' + url)}
+      start={
+        image && (
+          <img
+            src={image}
+            alt={title}
+            className={cn(theme.messages.message.sources.source.image)}
+          />
+        )
+      }
+    >
+      {title || url}
+    </Chip>
+  );
+};
+
+const CustomSessionListItem: FC<SessionListItemProps> = ({
+  session,
+  children,
+  ...rest
+}) => {
   const [open, setOpen] = useState(false);
   const btnRef = useRef(null);
   return (
     <>
       <ListItem
+        {...rest}
         end={
           <IconButton
             ref={btnRef}
@@ -1082,7 +1294,12 @@ const CustomSessionListItem: FC<SessionListItemProps> = ({ session }) => {
       >
         <span className="truncate">{session.title}</span>
       </ListItem>
-      <Menu open={open} onClose={() => setOpen(false)} reference={btnRef}>
+      <Menu
+        open={open}
+        onClose={() => setOpen(false)}
+        reference={btnRef}
+        appendToBody={false}
+      >
         <Card disablePadding>
           <List>
             <ListItem onClick={() => alert('rename')}>Rename</ListItem>
@@ -1109,7 +1326,14 @@ export const CustomComponents = () => {
         borderRadius: 5
       }}
     >
-      <Sessions sessions={fakeSessions}>
+      <Sessions
+        sessions={[
+          ...fakeSessions,
+          ...sessionsWithFiles,
+          ...sessionWithSources
+        ]}
+        activeSessionId="1"
+      >
         <SessionsList>
           <NewSessionButton>
             <button className="text-blue-500">New Session</button>
@@ -1129,12 +1353,39 @@ export const CustomComponents = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
+        <SessionMessagePanel>
+          <SessionMessagesHeader>
+            <CustomMessagesHeader />
+          </SessionMessagesHeader>
           <SessionMessages>
-            <CustomSessionMessage />
+            {conversations =>
+              conversations.map((conversation, index) => (
+                <SessionMessage
+                  conversation={conversation}
+                  isLast={index === conversations.length - 1}
+                >
+                  <MessageQuestion question={conversation.question}>
+                    <CustomMessageQuestion />
+                  </MessageQuestion>
+                  <MessageFiles files={conversation.files}>
+                    <CustomMessageFile />
+                  </MessageFiles>
+                  <MessageResponse response={conversation.response}>
+                    <CustomMessageResponse />
+                  </MessageResponse>
+                  <MessageSources sources={conversation.sources}>
+                    <CustomMessageSource />
+                  </MessageSources>
+                  <MessageActions
+                    question={conversation.question}
+                    response={conversation.response}
+                  />
+                </SessionMessage>
+              ))
+            }
           </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );
@@ -1174,7 +1425,9 @@ export const EmptyState = () => {
                 ))}
                 {groups.length === 0 && (
                   <div className="flex flex-1 items-center justify-center">
-                    <p className="text-gray-500">No sessions yet. Start a new session!</p>
+                    <p className="text-gray-500">
+                      No sessions yet. Start a new session!
+                    </p>
                   </div>
                 )}
               </>
@@ -1185,7 +1438,9 @@ export const EmptyState = () => {
           <SessionMessages
             newSessionContent={
               <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">No messages yet. Start a new conversation!</p>
+                <p className="text-gray-500">
+                  No messages yet. Start a new conversation!
+                </p>
               </div>
             }
           />
@@ -1196,18 +1451,17 @@ export const EmptyState = () => {
   );
 };
 
-export const ConversationSources = () => {
-  const sessionWithSources: Session[] = [
-    {
-      id: 'session-sources',
-      title: 'Session with Sources',
-      createdAt: subHours(new Date(), 1),
-      updatedAt: new Date(),
-      conversations: [
-        {
-          id: 'conversation-1',
-          question: 'What are the main causes of climate change?',
-          response: `Climate change is primarily caused by human activities that release greenhouse gases into the atmosphere. The main causes include:
+const sessionWithSources: Session[] = [
+  {
+    id: 'session-sources',
+    title: 'Session with Sources',
+    createdAt: subHours(new Date(), 1),
+    updatedAt: new Date(),
+    conversations: [
+      {
+        id: 'conversation-1',
+        question: 'What are the main causes of climate change?',
+        response: `Climate change is primarily caused by human activities that release greenhouse gases into the atmosphere. The main causes include:
 
 1. Burning of fossil fuels (coal, oil, and natural gas)
 2. Deforestation and land-use changes
@@ -1215,24 +1469,27 @@ export const ConversationSources = () => {
 4. Agriculture and livestock farming
 
 These activities increase the concentration of greenhouse gases in the atmosphere, leading to the greenhouse effect and global warming.`,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          sources: [
-            {
-              title: 'NASA: Causes of Climate Change',
-              image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1224px-NASA_logo.svg.png',
-              url: 'https://climate.nasa.gov/causes/'
-            },
-            {
-              title: 'IPCC: Climate Change 2021: The Physical Science Basis and Global Warming Is the Last War We will Fight',
-              url: 'https://www.ipcc.ch/report/ar6/wg1/'
-            }
-          ]
-        }
-      ]
-    }
-  ];
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        sources: [
+          {
+            title: 'NASA: Causes of Climate Change',
+            image:
+              'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1224px-NASA_logo.svg.png',
+            url: 'https://climate.nasa.gov/causes/'
+          },
+          {
+            title:
+              'IPCC: Climate Change 2021: The Physical Science Basis and Global Warming Is the Last War We will Fight',
+            url: 'https://www.ipcc.ch/report/ar6/wg1/'
+          }
+        ]
+      }
+    ]
+  }
+];
 
+export const ConversationSources = () => {
   return (
     <div
       style={{
@@ -1266,10 +1523,18 @@ These activities increase the concentration of greenhouse gases in the atmospher
             }
           </SessionGroups>
         </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages />
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage conversation={conversation} />
+              ))
+            }
+          </SessionMessages>
           <SessionInput />
-        </div>
+        </SessionMessagePanel>
       </Sessions>
     </div>
   );

@@ -1,169 +1,74 @@
-import { FC, ReactElement, useContext } from 'react';
+import { FC, PropsWithChildren, useContext } from 'react';
 import { SessionsContext } from '@/SessionsContext';
-import { Card, IconButton, cn } from 'reablocks';
-import remarkGfm from 'remark-gfm';
+import { Card, cn } from 'reablocks';
 import CopyIcon from '@/assets/copy.svg?react';
 import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
 import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
 import RefreshIcon from '@/assets/refresh.svg?react';
-import { PluggableList } from 'react-markdown/lib';
-import { Markdown } from '@/Markdown';
-import remarkYoutube from 'remark-youtube';
 import { Conversation } from '@/types';
-import { MessageSource } from './MessageSource';
-import { MessageFile } from './MessageFile';
 import { motion } from 'framer-motion';
+import { MessageQuestion } from './MessageQuestion';
+import { MessageResponse } from './MessageResponse';
+import { MessageFiles } from './MessageFiles';
+import { MessageSources } from './MessageSources';
+import { MessageActions } from './MessageActions';
 
-export interface SessionMessageProps extends Conversation {
-  /**
-   * Icon to show for copy.
-   */
-  copyIcon?: ReactElement;
+const messageVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4
+    }
+  }
+};
 
+interface SessionMessageProps extends PropsWithChildren {
   /**
-   * Icon to show for thumbs up.
+   * Conversation to render.
    */
-  thumbsUpIcon?: ReactElement;
-
-  /**
-   * Icon to show for thumbs down.
-   */
-  thumbsDownIcon?: ReactElement;
-
-  /**
-   * Icon to show for refresh.
-   */
-  refreshIcon?: ReactElement;
-
-  /**
-   * Whether to display a loading state.
-   */
-  isLoading?: boolean;
-
-  /**
-   * Callback function to handle upvoting.
-   */
-  onUpvote?: () => void;
+  conversation: Conversation;
 
   /**
-   * Callback function to handle downvoting.
+   * Whether the message is the last one in the list.
    */
-  onDownvote?: () => void;
-
-  /**
-   * Callback function to handle refreshing.
-   */
-  onRefresh?: () => void;
+  isLast?: boolean;
 }
 
 export const SessionMessage: FC<SessionMessageProps> = ({
-  question = '',
-  response = '',
-  copyIcon = <CopyIcon />,
-  thumbsUpIcon = <ThumbUpIcon />,
-  thumbsDownIcon = <ThumbsDownIcon />,
-  refreshIcon = <RefreshIcon />,
-  isLoading,
-  sources,
-  files,
-  onUpvote,
-  onDownvote,
-  onRefresh
+  conversation,
+  isLast,
+  children
 }) => {
-  const { theme, remarkPlugins = [remarkGfm, remarkYoutube] } = useContext(SessionsContext);
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        console.log('Text copied to clipboard');
-      })
-      .catch(err => {
-        console.error('Could not copy text: ', err);
-      });
-  };
+  const { theme, isLoading } = useContext(SessionsContext);
 
   return (
-    <Card className={cn(theme.messages.message.base)}>
-      {files?.length > 0 && (
-        <div className={cn(theme.messages.message.files.base)}>
-          {files.map((file, index) => (
-            <MessageFile key={index} {...file} />
-          ))}
-        </div>
-      )}
-      <div className={cn(theme.messages.message.question)}>
-        <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
-          {question}
-        </Markdown>
-      </div>
-      <div className={cn(theme.messages.message.response)}>
-        <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
-          {response}
-        </Markdown>
-        {isLoading && (
-          <motion.div
-            className={cn(theme.messages.message.cursor)}
-            animate={{ opacity: [1, 0] }}
-            transition={{ duration: 0.7, repeat: Infinity, repeatType: 'reverse' }}
-          />
+    <motion.div key={conversation.id} variants={messageVariants}>
+      <Card className={cn(theme.messages.message.base)}>
+        {children || (
+          <>
+            <MessageFiles files={conversation.files} />
+            <MessageQuestion question={conversation.question} />
+            <MessageResponse
+              response={conversation.response}
+              isLoading={isLast && isLoading}
+            />
+            <MessageSources sources={conversation.sources} />
+            <MessageActions
+              question={conversation.question}
+              response={conversation.response}
+              copyIcon={<CopyIcon />}
+              thumbsUpIcon={<ThumbUpIcon />}
+              thumbsDownIcon={<ThumbsDownIcon />}
+              refreshIcon={<RefreshIcon />}
+            />
+          </>
         )}
-      </div>
-      {sources && sources.length > 0 && (
-        <div className={cn(theme.messages.message.sources.base)}>
-          {sources.map((source, index) => (
-            <MessageSource key={index} {...source} />
-          ))}
-        </div>
-      )}
-      {(copyIcon || thumbsDownIcon || thumbsUpIcon || refreshIcon) && (
-        <div className={cn(theme.messages.message.footer.base)}>
-          {copyIcon && (
-            <IconButton
-              variant="text"
-              disablePadding
-              title="Copy question and response"
-              className={cn(theme.messages.message.footer.copy)}
-              onClick={() => handleCopy(`${question}\n${response}`)}
-            >
-              {copyIcon}
-            </IconButton>
-          )}
-          {thumbsUpIcon && (
-            <IconButton
-              variant="text"
-              disablePadding
-              title="Upvote"
-              className={cn(theme.messages.message.footer.upvote)}
-              onClick={onUpvote}
-            >
-              {thumbsUpIcon}
-            </IconButton>
-          )}
-          {thumbsDownIcon && (
-            <IconButton
-              variant="text"
-              disablePadding
-              title="Downvote"
-              className={cn(theme.messages.message.footer.downvote)}
-              onClick={onDownvote}
-            >
-              {thumbsDownIcon}
-            </IconButton>
-          )}
-          {refreshIcon && (
-            <IconButton
-              variant="text"
-              disablePadding
-              title="Refresh"
-              className={cn(theme.messages.message.footer.refresh)}
-              onClick={onRefresh}
-            >
-              {refreshIcon}
-            </IconButton>
-          )}
-        </div>
-      )}
-    </Card>
+      </Card>
+    </motion.div>
   );
 };

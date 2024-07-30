@@ -4,11 +4,11 @@ import { SessionsContext } from '@/SessionsContext';
 import { Ellipsis, cn } from 'reablocks';
 import FileIcon from '@/assets/file.svg?react';
 
-interface MessageFileProps extends ConversationFile {
-   /**
+export interface MessageFileProps extends ConversationFile {
+  /**
    * Icon to show for delete.
    */
-   fileIcon?: ReactElement;
+  fileIcon?: ReactElement;
 
   /**
    * Limit for the name.
