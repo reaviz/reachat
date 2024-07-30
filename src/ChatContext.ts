@@ -3,7 +3,7 @@ import { Session } from './types';
 import { ChatTheme } from './theme';
 import { PluggableList } from 'react-markdown/lib';
 
-export interface SessionContextProps {
+export interface ChatContextProps {
   sessions: Session[];
   activeSessionId: string | null;
   theme?: ChatTheme;
@@ -15,7 +15,7 @@ export interface SessionContextProps {
   createSession?: () => void;
 }
 
-export const SessionsContext = createContext<SessionContextProps>({
+export const ChatContext = createContext<ChatContextProps>({
   sessions: [],
   activeSessionId: null
 });

@@ -1,4 +1,4 @@
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';
 import { motion } from 'framer-motion';
 import { cn } from 'reablocks';
@@ -26,7 +26,7 @@ export const MessageResponse: FC<MessageResponseProps> = ({
   children
 }) => {
   const { theme, remarkPlugins = [remarkGfm, remarkYoutube] } =
-    useContext(SessionsContext);
+    useContext(ChatContext);
   const Comp = children ? Slot : 'div';
   return (
     <Comp className={cn(theme.messages.message.response)}>

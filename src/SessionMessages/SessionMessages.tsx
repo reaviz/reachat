@@ -7,7 +7,7 @@ import React, {
   useState
 } from 'react';
 import { SessionEmpty } from './SessionEmpty';
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 import { Button, cn, useInfinityList } from 'reablocks';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Conversation } from '@/types';
@@ -49,7 +49,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   limit = 10,
   showMoreText = 'Show more'
 }) => {
-  const { activeSession, theme, isLoading } = useContext(SessionsContext);
+  const { activeSession, theme, isLoading } = useContext(ChatContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
 

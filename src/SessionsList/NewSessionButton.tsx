@@ -1,6 +1,6 @@
 import { Button, cn } from 'reablocks';
 import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';
 
 interface NewSessionButtonProps extends PropsWithChildren {
@@ -14,7 +14,7 @@ export const NewSessionButton: FC<NewSessionButtonProps> = ({
   children,
   newSessionText = 'New Session'
 }) => {
-  const { theme, createSession } = useContext(SessionsContext);
+  const { theme, createSession } = useContext(ChatContext);
   const Comp = children ? Slot : Button;
 
   return (

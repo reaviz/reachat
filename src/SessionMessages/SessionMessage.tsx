@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren, useContext } from 'react';
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 import { Card, cn } from 'reablocks';
 import CopyIcon from '@/assets/copy.svg?react';
 import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
@@ -44,7 +44,7 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   isLast,
   children
 }) => {
-  const { theme, isLoading } = useContext(SessionsContext);
+  const { theme, isLoading } = useContext(ChatContext);
 
   return (
     <motion.div key={conversation.id} variants={messageVariants}>

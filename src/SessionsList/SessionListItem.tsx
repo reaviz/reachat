@@ -2,7 +2,7 @@ import { FC, PropsWithChildren, ReactElement, useContext } from 'react';
 import { ListItem, IconButton, cn, Ellipsis } from 'reablocks';
 import { Session } from '@/types';
 import TrashIcon from '@/assets/trash.svg?react';
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';
 
 export interface SessionListItemProps extends PropsWithChildren {
@@ -35,7 +35,7 @@ export const SessionListItem: FC<SessionListItemProps> = ({
   deleteIcon = <TrashIcon />
 }) => {
   const { activeSessionId, selectSession, deleteSession, theme } =
-    useContext(SessionsContext);
+    useContext(ChatContext);
   const Comp = children ? Slot : ListItem;
 
   return (

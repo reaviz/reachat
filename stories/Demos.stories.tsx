@@ -9,7 +9,7 @@ import {
 import OpenAI from 'openai';
 import { Meta } from '@storybook/react';
 import {
-  Sessions,
+  Chat,
   Session,
   remarkCve,
   SessionsList,
@@ -18,11 +18,11 @@ import {
   NewSessionButton,
   SessionMessages,
   SessionGroups,
-  SessionInput,
+  ChatInput,
   SessionListItemProps,
   SessionMessagePanel,
   SessionMessagesHeader,
-  SessionsContext,
+  ChatContext,
   SessionMessage
 } from '../src';
 import {
@@ -36,7 +36,6 @@ import {
   List,
   ListItem,
   Menu,
-  RefreshIcon
 } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 import MenuIcon from '@/assets/menu.svg?react';
@@ -45,18 +44,16 @@ import { MessageActions } from '@/SessionMessages/MessageActions';
 import { MessageFiles } from '@/SessionMessages/MessageFiles';
 import {
   MessageQuestion,
-  MessageQuestionProps
 } from '@/SessionMessages/MessageQuestion';
 import {
   MessageResponse,
   MessageResponseProps
 } from '@/SessionMessages/MessageResponse';
 import { MessageSources } from '@/SessionMessages/MessageSources';
-import { MessageFileProps } from '@/SessionMessages/MessageFile';
 
 export default {
   title: 'Demos',
-  component: Sessions
+  component: Chat
 } as Meta;
 
 const fakeSessions: Session[] = [
@@ -121,7 +118,7 @@ export const Console = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         sessions={fakeSessions}
         viewType="console"
         onDeleteSession={() => alert('delete!')}
@@ -145,13 +142,13 @@ export const Console = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -210,7 +207,7 @@ export const Embeds = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         sessions={fakeSessionsWithEmbeds}
         activeSessionId="1"
         onDeleteSession={() => alert('delete!')}
@@ -234,13 +231,13 @@ export const Embeds = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -260,7 +257,7 @@ export const DefaultSession = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         viewType="console"
         sessions={fakeSessions}
         activeSessionId="1"
@@ -286,13 +283,13 @@ export const DefaultSession = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -337,7 +334,7 @@ export const Loading = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         isLoading
         viewType="console"
         sessions={sessionsWithPartialConversation}
@@ -365,15 +362,16 @@ export const Loading = () => {
             {conversations =>
               conversations.map((conversation, index) => (
                 <SessionMessage
+                  key={conversation.id}
                   conversation={conversation}
                   isLast={index === conversations.length - 1}
                 />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -420,7 +418,7 @@ export const FileUploads = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         viewType="console"
         sessions={sessionsWithFiles}
         activeSessionId="session-files"
@@ -445,13 +443,13 @@ export const FileUploads = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput allowedFiles={['.pdf', '.docx']} />
+          <ChatInput allowedFiles={['.pdf', '.docx']} />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -471,7 +469,7 @@ export const DefaultInputValue = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         viewType="console"
         sessions={fakeSessions}
         activeSessionId="1"
@@ -497,13 +495,13 @@ export const DefaultInputValue = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -523,7 +521,7 @@ export const UndeleteableSessions = () => {
         borderRadius: 5
       }}
     >
-      <Sessions viewType="console" sessions={fakeSessions} activeSessionId="1">
+      <Chat viewType="console" sessions={fakeSessions} activeSessionId="1">
         <SessionsList>
           <NewSessionButton />
           <SessionGroups>
@@ -544,13 +542,13 @@ export const UndeleteableSessions = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -603,7 +601,7 @@ export const SessionGrouping = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         viewType="console"
         sessions={sessionsWithVariousDates}
         isLoading={false}
@@ -629,13 +627,13 @@ export const SessionGrouping = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -675,7 +673,7 @@ export const HundredSessions = () => {
         borderRadius: 5
       }}
     >
-      <Sessions viewType="console" sessions={hundredSessions}>
+      <Chat viewType="console" sessions={hundredSessions}>
         <SessionsList>
           <NewSessionButton />
           <SessionGroups>
@@ -696,13 +694,13 @@ export const HundredSessions = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -742,7 +740,7 @@ export const HundredConversations = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         viewType="console"
         sessions={sessionWithHundredConversations}
         activeSessionId="session-100"
@@ -767,13 +765,13 @@ export const HundredConversations = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -805,7 +803,7 @@ export const LongSessionNames = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         viewType="console"
         sessions={sessionsWithLongNames}
         activeSessionId="session-10"
@@ -830,13 +828,13 @@ export const LongSessionNames = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -934,7 +932,7 @@ export const MarkdownShowcase = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         viewType="console"
         sessions={sessionWithMarkdown}
         activeSessionId="session-markdown"
@@ -959,13 +957,13 @@ export const MarkdownShowcase = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -1020,7 +1018,7 @@ export const CVEExample = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         viewType="console"
         sessions={sessionWithMarkdown}
         activeSessionId="session-cve"
@@ -1046,13 +1044,13 @@ export const CVEExample = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -1174,7 +1172,7 @@ export const OpenAIIntegration = () => {
           borderRadius: 5
         }}
       >
-        <Sessions
+        <Chat
           viewType="console"
           sessions={sessions}
           isLoading={isLoading}
@@ -1202,20 +1200,20 @@ export const OpenAIIntegration = () => {
             <SessionMessages>
               {conversations =>
                 conversations.map(conversation => (
-                  <SessionMessage conversation={conversation} />
+                  <SessionMessage key={conversation.id} conversation={conversation} />
                 ))
               }
             </SessionMessages>
-            <SessionInput />
+            <ChatInput />
           </SessionMessagePanel>
-        </Sessions>
+        </Chat>
       </div>
     </div>
   );
 };
 
 const CustomMessagesHeader: FC<any> = () => {
-  const { activeSession } = useContext(SessionsContext);
+  const { activeSession } = useContext(ChatContext);
 
   return (
     <div>
@@ -1246,7 +1244,7 @@ const CustomMessageFile: FC<any> = ({ name, type }) => (
 );
 
 const CustomMessageSource: FC<any> = ({ title, url, image }) => {
-  const { theme } = useContext(SessionsContext);
+  const { theme } = useContext(ChatContext);
   return (
     <Chip
       size="small"
@@ -1326,7 +1324,7 @@ export const CustomComponents = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         sessions={[
           ...fakeSessions,
           ...sessionsWithFiles,
@@ -1363,6 +1361,7 @@ export const CustomComponents = () => {
                 <SessionMessage
                   conversation={conversation}
                   isLast={index === conversations.length - 1}
+                  key={conversation.id}
                 >
                   <MessageQuestion question={conversation.question}>
                     <CustomMessageQuestion />
@@ -1384,9 +1383,9 @@ export const CustomComponents = () => {
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -1406,7 +1405,7 @@ export const EmptyState = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         viewType="console"
         sessions={[]}
         onDeleteSession={() => alert('delete!')}
@@ -1444,9 +1443,9 @@ export const EmptyState = () => {
               </div>
             }
           />
-          <SessionInput />
+          <ChatInput />
         </div>
-      </Sessions>
+      </Chat>
     </div>
   );
 };
@@ -1504,7 +1503,7 @@ export const ConversationSources = () => {
         borderRadius: 5
       }}
     >
-      <Sessions
+      <Chat
         viewType="console"
         sessions={sessionWithSources}
         activeSessionId="session-sources"
@@ -1529,13 +1528,13 @@ export const ConversationSources = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage conversation={conversation} />
+                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>
-          <SessionInput />
+          <ChatInput />
         </SessionMessagePanel>
-      </Sessions>
+      </Chat>
     </div>
   );
 };

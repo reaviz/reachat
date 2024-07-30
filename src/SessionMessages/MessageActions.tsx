@@ -1,4 +1,4 @@
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';
 import { cn, IconButton } from 'reablocks';
 import {
@@ -69,7 +69,7 @@ export const MessageActions: FC<MessageActionsProps> = ({
   children,
   ...props
 }) => {
-  const { theme } = useContext(SessionsContext);
+  const { theme } = useContext(ChatContext);
   const {
     question,
     response,

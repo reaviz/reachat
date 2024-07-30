@@ -1,4 +1,4 @@
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 import { ConversationSource } from '@/types';
 import { cn } from 'reablocks';
 import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
@@ -16,7 +16,7 @@ export const MessageSources: FC<MessageSourcesProps> = ({
   sources,
   children
 }) => {
-  const { theme } = useContext(SessionsContext);
+  const { theme } = useContext(ChatContext);
   const Comp = children ? Slot : MessageSource;
 
   if (!sources || sources.length === 0) {

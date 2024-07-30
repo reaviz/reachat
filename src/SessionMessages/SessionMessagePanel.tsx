@@ -1,9 +1,9 @@
 import { FC, PropsWithChildren, useContext } from 'react';
 import { cn } from 'reablocks';
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 
 export const SessionMessagePanel: FC<PropsWithChildren> = ({ children }) => {
-  const { theme } = useContext(SessionsContext);
+  const { theme } = useContext(ChatContext);
 
   return (
     <div className={cn(theme.messages.base)}>

@@ -11,7 +11,7 @@ import { Button, Textarea, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import AttachIcon from '@/assets/paperclip.svg?react';
-import { SessionsContext } from './SessionsContext';
+import { ChatContext } from './ChatContext';
 
 interface SessionInputProps {
   /**
@@ -60,7 +60,7 @@ interface SessionInputProps {
   onFileUpload?: (file: File) => void;
 }
 
-export const SessionInput: FC<SessionInputProps> = ({
+export const ChatInput: FC<SessionInputProps> = ({
   allowedFiles,
   onSendMessage,
   placeholder,
@@ -71,7 +71,7 @@ export const SessionInput: FC<SessionInputProps> = ({
   stopIcon = <StopIcon />,
   attachIcon = <AttachIcon />
 }) => {
-  const { theme, isLoading } = useContext(SessionsContext);
+  const { theme, isLoading } = useContext(ChatContext);
   const [message, setMessage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 

@@ -1,6 +1,6 @@
 import { FC, useContext } from 'react';
 import { ConversationSource } from '@/types';
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 import { Ellipsis, cn } from 'reablocks';
 
 export interface MessageSourceProps extends ConversationSource {
@@ -11,7 +11,7 @@ export interface MessageSourceProps extends ConversationSource {
 }
 
 export const MessageSource: FC<MessageSourceProps> = ({ title, url, image, limit = 50 }) => {
-  const { theme } = useContext(SessionsContext);
+  const { theme } = useContext(ChatContext);
 
   return (
     <figure

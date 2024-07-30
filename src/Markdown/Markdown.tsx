@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm';
 import { CodeHighlighter } from './CodeHighlighter';
 import { cn } from 'reablocks';
 import { TableComponent, TableHeaderCell, TableDataCell } from './Table';
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 
 interface MarkdownWrapperProps extends PropsWithChildren {
   /**
@@ -18,7 +18,7 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
   children,
   remarkPlugins = [remarkGfm]
 }) => {
-  const { theme } = useContext(SessionsContext);
+  const { theme } = useContext(ChatContext);
 
   return (
     <ReactMarkdown

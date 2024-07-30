@@ -11,10 +11,10 @@ import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
 import { Session } from './types';
 import { ChatTheme, chatTheme } from './theme';
-import { SessionsContext } from './SessionsContext';
+import { ChatContext } from './ChatContext';
 import { PluggableList } from 'react-markdown/lib';
 
-export interface SessionsProps extends PropsWithChildren {
+export interface ChatProps extends PropsWithChildren {
   /**
    * The style to apply to the root element.
    */
@@ -73,7 +73,7 @@ export interface SessionsProps extends PropsWithChildren {
   onNewSession?: () => void;
 }
 
-export const Sessions: FC<SessionsProps> = ({
+export const Chat: FC<ChatProps> = ({
   children,
   viewType = 'console',
   sessions,
@@ -160,7 +160,7 @@ export const Sessions: FC<SessionsProps> = ({
   );
 
   return (
-    <SessionsContext.Provider value={contextValue}>
+    <ChatContext.Provider value={contextValue}>
       <div
         className={cn(className, theme.base, {
           [theme.companion]: viewType === 'companion',
@@ -170,6 +170,6 @@ export const Sessions: FC<SessionsProps> = ({
       >
         {children}
       </div>
-    </SessionsContext.Provider>
+    </ChatContext.Provider>
   );
 };

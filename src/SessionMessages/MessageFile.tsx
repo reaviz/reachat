@@ -1,6 +1,6 @@
 import { FC, useContext, ReactElement } from 'react';
 import { ConversationFile } from '@/types';
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 import { Ellipsis, cn } from 'reablocks';
 import FileIcon from '@/assets/file.svg?react';
 
@@ -23,7 +23,7 @@ export const MessageFile: FC<MessageFileProps> = ({
   limit = 100,
   fileIcon = <FileIcon />
 }) => {
-  const { theme } = useContext(SessionsContext);
+  const { theme } = useContext(ChatContext);
 
   return (
     <figure

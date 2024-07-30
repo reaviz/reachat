@@ -1,4 +1,4 @@
-import { SessionsContext } from '@/SessionsContext';
+import { ChatContext } from '@/ChatContext';
 import { ConversationFile } from '@/types';
 import { cn } from 'reablocks';
 import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
@@ -13,7 +13,7 @@ interface MessageFilesProps extends PropsWithChildren {
 }
 
 export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
-  const { theme } = useContext(SessionsContext);
+  const { theme } = useContext(ChatContext);
   const Comp = children ? Slot : MessageFile;
 
   if (!files || files.length === 0) {
