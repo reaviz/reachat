@@ -24,10 +24,12 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
     <ReactMarkdown
       remarkPlugins={remarkPlugins as PluggableList}
       components={{
-        code: props => (
+        code: ({ className, ...props }) => (
           <CodeHighlighter
             {...props}
-            className={cn(theme.messages.message.markdown.code)}
+            // Ref: https://github.com/remarkjs/react-markdown?tab=readme-ov-file#use-custom-components-syntax-highlight
+            language={className}
+            className={cn(theme.messages.message.markdown.code, className)}
             copyClassName={cn(theme.messages.message.markdown.copy)}
           />
         ),

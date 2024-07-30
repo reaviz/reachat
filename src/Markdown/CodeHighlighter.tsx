@@ -1,7 +1,7 @@
-import React, { useRef, FC, useLayoutEffect, PropsWithChildren, ReactElement } from 'react';
-import hljs from 'highlight.js';
-import 'highlight.js/styles/atom-one-dark.css';
+import React, { FC, PropsWithChildren, ReactElement } from 'react';
 import { Button, cn } from 'reablocks';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import CopyIcon from '@/assets/copy.svg?react';
 
 export interface CodeHighlighterProps extends PropsWithChildren {
@@ -9,6 +9,11 @@ export interface CodeHighlighterProps extends PropsWithChildren {
    * The class name to apply to the code block.
    */
   className?: string;
+
+  /**
+   * The language of the code block.
+   */
+  language?: string;
 
   /**
    * The class name to apply to the copy button.
@@ -21,8 +26,15 @@ export interface CodeHighlighterProps extends PropsWithChildren {
   copyIcon?: ReactElement;
 }
 
-export const CodeHighlighter: FC<CodeHighlighterProps> = ({ className, children, copyClassName, copyIcon = <CopyIcon /> }) => {
-  const codeBlockRef = useRef<HTMLElement | null>(null);
+export const CodeHighlighter: FC<CodeHighlighterProps> = ({
+  className,
+  children,
+  copyClassName,
+  copyIcon = <CopyIcon />,
+  language
+}) => {
+  const match = language?.match(/language-(\w+)/);
+  const lang = match ? match[1] : 'text';
 
   const handleCopy = (text: string) => {
     navigator.clipboard
@@ -35,10 +47,6 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({ className, children,
       });
   };
 
-  useLayoutEffect(() => {
-    hljs.highlightElement(codeBlockRef.current);
-  }, []);
-
   return (
     <div className={cn('relative', className)}>
       {copyIcon && (
@@ -47,14 +55,17 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({ className, children,
           size="small"
           variant="text"
           title="Copy code"
-          onClick={() => handleCopy(codeBlockRef.current.textContent)}
+          onClick={() => handleCopy(children as string)}
         >
           {copyIcon}
         </Button>
       )}
-      <code ref={codeBlockRef}>
+      <SyntaxHighlighter
+        language={lang}
+        style={oneDark}
+      >
         {children}
-      </code>
+      </SyntaxHighlighter>
     </div>
   );
 };
