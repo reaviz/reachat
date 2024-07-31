@@ -43,6 +43,7 @@ theme via Tailwind.
 - [Reagraph](https://reagraph.dev?utm=reaviz) - Open-source library for large webgl based network graphs.
 
 ## 🪄 Features
+- Console and Companion Modes
 - Markdown Rendering
   - GFM Styling
   - Code Highlighting
@@ -58,6 +59,7 @@ theme via Tailwind.
 - Smart/Dynamic Grouping of Sessions
 - Keyboard shortcuts
 - Animations via Framer Motion
+- Responsive
 - Tailwind for Themeing
 - Customizable via Slots
 
