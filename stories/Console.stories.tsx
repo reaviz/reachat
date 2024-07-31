@@ -35,11 +35,11 @@ import {
 } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 import MenuIcon from '@/assets/menu.svg?react';
-import { MessageActions } from '@/SessionMessages/MessageActions';
-import { MessageFiles } from '@/SessionMessages/MessageFiles';
-import { MessageQuestion } from '@/SessionMessages/MessageQuestion';
-import { MessageResponse } from '@/SessionMessages/MessageResponse';
-import { MessageSources } from '@/SessionMessages/MessageSources';
+import { MessageActions } from '@/SessionMessages';
+import { MessageFiles } from '@/SessionMessages';
+import { MessageQuestion } from '@/SessionMessages';
+import { MessageResponse } from '@/SessionMessages';
+import { MessageSources } from '@/SessionMessages';
 import { fakeSessions, fakeSessionsWithEmbeds, sessionWithSources, sessionsWithFiles, sessionsWithPartialConversation } from './examples';
 
 export default {
