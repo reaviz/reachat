@@ -1,8 +1,6 @@
 import {
   useState,
-  useCallback,
   useRef,
-  useEffect,
   FC,
   useContext
 } from 'react';
