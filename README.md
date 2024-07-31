@@ -53,6 +53,7 @@ theme via Tailwind.
   - Embeds ( Youtube )
   - remark plugin support
 - File Uploads
+- Image Preview
 - Message Sources
 - Animations
 - Conversation Pagination

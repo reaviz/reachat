@@ -24,6 +24,7 @@ export const MessageFile: FC<MessageFileProps> = ({
   fileIcon = <FileIcon />
 }) => {
   const { theme } = useContext(ChatContext);
+  const isImage = type?.startsWith('image/');
 
   return (
     <figure
@@ -32,8 +33,16 @@ export const MessageFile: FC<MessageFileProps> = ({
         window.open(url, '_blank');
       }}
     >
-      {fileIcon}
-      {(name || type) && (
+      {isImage ? (
+        <>
+          <img src={url} className="h-10 w-10" />
+        </>
+      ) : (
+        <>
+          {fileIcon}
+        </>
+      )}
+      {name && (
         <figcaption>
           {name && (
             <span className={cn(theme.messages.message.files.file.name)}>

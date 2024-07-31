@@ -1057,6 +1057,7 @@ export const ConversationSources = () => {
     </div>
   );
 };
+
 const CustomMessagesHeader: FC<any> = () => {
   const { activeSession } = useContext(ChatContext);
 
@@ -1225,6 +1226,112 @@ export const CustomComponents = () => {
                     response={conversation.response}
                   />
                 </SessionMessage>
+              ))
+            }
+          </SessionMessages>
+          <ChatInput />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const ImageFiles = () => {
+  const staticImageFiles = [
+    {
+      id: '1',
+      name: 'landscape.jpg',
+      type: 'image/jpeg',
+      url: 'https://www.goodcode.us/static/austin-d1a2c5249336c31662b8ee6d4e169b2b.jpg'
+    },
+    {
+      id: '2',
+      name: 'portrait.jpg',
+      type: 'image/jpeg',
+      url: 'https://www.goodcode.us/static/andrew-173d57ca7681c7107c57b3fca0d88a99.jpeg'
+    },
+    {
+      id: '3',
+      name: 'abstract.png',
+      type: 'image/jpg',
+      url: 'https://www.goodcode.us/static/kyle-8e17430c6e35774780e01183c6d4086f.jpg'
+    },
+    {
+      id: '4',
+      name: 'nature.jpg',
+      type: 'image/jpeg',
+      url: 'https://www.goodcode.us/static/steph-1ffd4f0dd3c0100ad9019cae8d7954eb.jpg'
+    }
+  ];
+
+  const sessionWithImages: Session[] = [
+    {
+      id: 'session-images',
+      title: 'Multiple Image Files Showcase',
+      createdAt: subHours(new Date(), 1),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: 'conversation-1',
+          question: 'Analyze these images and describe what you see.',
+          response: 'I\'m sorry, but as an AI language model, I cannot actually see or analyze images. I can only process and respond to text input. If you\'d like me to describe or analyze images, you would need to provide detailed textual descriptions of the images.',
+          createdAt: new Date(),
+          files: staticImageFiles
+        },
+        {
+          id: 'conversation-2',
+          question: 'Analyze these images and describe what you see.',
+          response: 'I\'m sorry, but as an AI language model, I cannot actually see or analyze images. I can only process and respond to text input. If you\'d like me to describe or analyze images, you would need to provide detailed textual descriptions of the images.',
+          createdAt: new Date(),
+          files: [staticImageFiles[0]]
+        }
+      ]
+    }
+  ];
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="console"
+        sessions={sessionWithImages}
+        activeSessionId="session-images"
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
