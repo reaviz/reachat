@@ -44,7 +44,13 @@ import { MessageFiles } from '@/SessionMessages/MessageFiles';
 import { MessageQuestion } from '@/SessionMessages/MessageQuestion';
 import { MessageResponse } from '@/SessionMessages/MessageResponse';
 import { MessageSources } from '@/SessionMessages/MessageSources';
-import { fakeSessions, fakeSessionsWithEmbeds, sessionWithSources, sessionsWithFiles, sessionsWithPartialConversation } from './examples';
+import {
+  fakeSessions,
+  fakeSessionsWithEmbeds,
+  sessionWithSources,
+  sessionsWithFiles,
+  sessionsWithPartialConversation
+} from './examples';
 
 export default {
   title: 'Demos/Console',
@@ -1071,7 +1077,6 @@ export const OpenAIIntegration = () => {
           isLoading={isLoading}
           disabled={!apiKey}
           onDeleteSession={handleDeleteSession}
-          onSendMessage={handleNewMessage}
           activeSessionId={activeSessionId}
         >
           <SessionsList>
@@ -1101,7 +1106,7 @@ export const OpenAIIntegration = () => {
                 ))
               }
             </SessionMessages>
-            <ChatInput />
+            <ChatInput onSendMessage={handleNewMessage} />
           </SessionMessagePanel>
         </Chat>
       </div>
