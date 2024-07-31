@@ -13,7 +13,7 @@ import { Session } from './types';
 import { ChatTheme, chatTheme } from './theme';
 import { ChatContext } from './ChatContext';
 import { PluggableList } from 'react-markdown/lib';
-import { useMeasure } from 'react-use';
+import useDimensions from 'react-cool-dimensions';
 import { AnimatePresence } from 'framer-motion';
 
 export interface ChatProps extends PropsWithChildren {
@@ -99,11 +99,9 @@ export const Chat: FC<ChatProps> = ({
   const [internalActiveSessionID, setInternalActiveSessionID] = useState<
     string | undefined
   >(activeSessionId);
-  const [ref, { width }] = useMeasure();
-  const isCompact = useMemo(
-    () => viewType === 'companion' || (width && width < 767),
-    [viewType, width]
-  );
+
+  const { width, observe } = useDimensions();
+  const isCompact = viewType === 'companion' || (width && width < 767);
 
   useEffect(() => {
     setInternalActiveSessionID(activeSessionId);
@@ -180,7 +178,7 @@ export const Chat: FC<ChatProps> = ({
     <ChatContext.Provider value={contextValue}>
       <AnimatePresence initial={false}>
         <div
-          ref={ref}
+          ref={observe}
           className={cn(className, theme.base, {
             [theme.companion]: isCompact,
             [theme.console]: !isCompact
