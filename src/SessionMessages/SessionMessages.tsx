@@ -16,7 +16,8 @@ const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.07
+      staggerChildren: 0.07,
+      when: 'beforeChildren'
     }
   }
 };
@@ -49,7 +50,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   limit = 10,
   showMoreText = 'Show more'
 }) => {
-  const { activeSession, theme, isLoading } = useContext(ChatContext);
+  const { activeSession, theme } = useContext(ChatContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
 

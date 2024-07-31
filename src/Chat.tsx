@@ -13,6 +13,8 @@ import { Session } from './types';
 import { ChatTheme, chatTheme } from './theme';
 import { ChatContext } from './ChatContext';
 import { PluggableList } from 'react-markdown/lib';
+import useDimensions from 'react-cool-dimensions';
+import { AnimatePresence } from 'framer-motion';
 
 export interface ChatProps extends PropsWithChildren {
   /**
@@ -98,6 +100,9 @@ export const Chat: FC<ChatProps> = ({
     string | undefined
   >(activeSessionId);
 
+  const { width, observe } = useDimensions();
+  const isCompact = viewType === 'companion' || (width && width < 767);
+
   useEffect(() => {
     setInternalActiveSessionID(activeSessionId);
   }, [activeSessionId]);
@@ -148,6 +153,7 @@ export const Chat: FC<ChatProps> = ({
       theme,
       disabled,
       isLoading,
+      isCompact,
       activeSessionId: internalActiveSessionID,
       selectSession: handleSelectSession,
       deleteSession: handleDeleteSession,
@@ -155,6 +161,7 @@ export const Chat: FC<ChatProps> = ({
     }),
     [
       isLoading,
+      isCompact,
       disabled,
       theme,
       remarkPlugins,
@@ -169,15 +176,18 @@ export const Chat: FC<ChatProps> = ({
 
   return (
     <ChatContext.Provider value={contextValue}>
-      <div
-        className={cn(className, theme.base, {
-          [theme.companion]: viewType === 'companion',
-          [theme.console]: viewType === 'console'
-        })}
-        style={style}
-      >
-        {children}
-      </div>
+      <AnimatePresence initial={false}>
+        <div
+          ref={observe}
+          className={cn(className, theme.base, {
+            [theme.companion]: isCompact,
+            [theme.console]: !isCompact
+          })}
+          style={style}
+        >
+          {children}
+        </div>
+      </AnimatePresence>
     </ChatContext.Provider>
   );
 };
