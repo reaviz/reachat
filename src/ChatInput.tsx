@@ -43,41 +43,24 @@ interface ChatInputProps {
    * Icon to show for attach.
    */
   attachIcon?: ReactElement;
-
-  /**
-   * Callback function to handle sending a new message.
-   */
-  onSendMessage?: (message: string) => void;
-
-  /**
-   * Callback function to handle stopping the current action.
-   */
-  onStopMessage?: () => void;
-
-  /**
-   * Callback function to handle file upload.
-   */
-  onFileUpload?: (file: File) => void;
 }
 
 export const ChatInput: FC<ChatInputProps> = ({
   allowedFiles,
-  onSendMessage,
   placeholder,
-  onStopMessage,
-  onFileUpload,
   defaultValue,
   sendIcon = <SendIcon />,
   stopIcon = <StopIcon />,
   attachIcon = <AttachIcon />
 }) => {
-  const { theme, isLoading, disabled } = useContext(ChatContext);
+  const { theme, isLoading, disabled, sendMessage, stopMessage, fileUpload } =
+    useContext(ChatContext);
   const [message, setMessage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      onSendMessage?.(message);
+      sendMessage?.(message);
       setMessage('');
     }
   };
@@ -91,8 +74,8 @@ export const ChatInput: FC<ChatInputProps> = ({
 
   const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && onFileUpload) {
-      onFileUpload(file);
+    if (file && fileUpload) {
+      fileUpload(file);
     }
   };
 
@@ -132,7 +115,7 @@ export const ChatInput: FC<ChatInputProps> = ({
         <Button
           title="Stop"
           className={cn(theme.input.stop)}
-          onClick={onStopMessage}
+          onClick={stopMessage}
           disabled={disabled}
         >
           {stopIcon}

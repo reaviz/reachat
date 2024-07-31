@@ -15,6 +15,9 @@ export interface ChatContextProps {
   selectSession?: (sessionId: string) => void;
   deleteSession?: (sessionId: string) => void;
   createSession?: () => void;
+  sendMessage?: (message: string) => void;
+  stopMessage?: () => void;
+  fileUpload?: (file: File) => void;
 }
 
 export const ChatContext = createContext<ChatContextProps>({

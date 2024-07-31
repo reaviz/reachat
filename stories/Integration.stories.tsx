@@ -147,6 +147,7 @@ export const _OpenAI = () => {
           isLoading={isLoading}
           disabled={!apiKey}
           onDeleteSession={handleDeleteSession}
+          onSendMessage={handleNewMessage}
           activeSessionId={activeSessionId}
         >
           <SessionsList>
@@ -176,7 +177,7 @@ export const _OpenAI = () => {
                 ))
               }
             </SessionMessages>
-            <ChatInput onSendMessage={handleNewMessage} />
+            <ChatInput />
           </SessionMessagePanel>
         </Chat>
       </div>
