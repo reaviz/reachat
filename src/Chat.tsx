@@ -78,6 +78,21 @@ export interface ChatProps extends PropsWithChildren {
    * Callback function to handle creating a new session.
    */
   onNewSession?: () => void;
+
+  /**
+   * Callback function to handle sending a new message.
+   */
+  onSendMessage?: (message: string) => void;
+
+  /**
+   * Callback function to handle stopping the current action.
+   */
+  onStopMessage?: () => void;
+
+  /**
+   * Callback function to handle file upload.
+   */
+  onFileUpload?: (file: File) => void;
 }
 
 export const Chat: FC<ChatProps> = ({
@@ -86,6 +101,9 @@ export const Chat: FC<ChatProps> = ({
   sessions,
   onSelectSession,
   onDeleteSession,
+  onSendMessage,
+  onStopMessage,
+  onFileUpload,
   isLoading,
   activeSessionId,
   theme: customTheme = chatTheme,
@@ -97,7 +115,7 @@ export const Chat: FC<ChatProps> = ({
 }) => {
   const theme = useComponentTheme<ChatTheme>('chat', customTheme);
   const [internalActiveSessionID, setInternalActiveSessionID] = useState<
-    string | undefined
+    string | null
   >(activeSessionId);
 
   const { width, observe } = useDimensions();
@@ -157,7 +175,10 @@ export const Chat: FC<ChatProps> = ({
       activeSessionId: internalActiveSessionID,
       selectSession: handleSelectSession,
       deleteSession: handleDeleteSession,
-      createSession: handleCreateNewSession
+      createSession: handleCreateNewSession,
+      sendMessage: onSendMessage,
+      stopMessage: onStopMessage,
+      fileUpload: onFileUpload
     }),
     [
       isLoading,
@@ -170,7 +191,10 @@ export const Chat: FC<ChatProps> = ({
       internalActiveSessionID,
       handleSelectSession,
       handleDeleteSession,
-      handleCreateNewSession
+      handleCreateNewSession,
+      onSendMessage,
+      onStopMessage,
+      onFileUpload
     ]
   );
 

@@ -147,6 +147,7 @@ export const _OpenAI = () => {
           isLoading={isLoading}
           disabled={!apiKey}
           onDeleteSession={handleDeleteSession}
+          onSendMessage={handleNewMessage}
           activeSessionId={activeSessionId}
         >
           <SessionsList>
@@ -176,7 +177,7 @@ export const _OpenAI = () => {
                 ))
               }
             </SessionMessages>
-            <ChatInput onSendMessage={handleNewMessage} />
+            <ChatInput />
           </SessionMessagePanel>
         </Chat>
       </div>
@@ -209,7 +210,9 @@ export const VercelAI = () => {
 
         setSessions(prevSessions => {
           const newSessionId = sessionId || Date.now().toString();
-          const sessionIndex = prevSessions.findIndex(s => s.id === newSessionId);
+          const sessionIndex = prevSessions.findIndex(
+            s => s.id === newSessionId
+          );
 
           if (sessionIndex === -1) {
             // Create a new session
@@ -260,50 +263,59 @@ export const VercelAI = () => {
     [apiKey]
   );
 
-  const handleDeleteSession = useCallback((sessionId: string) => {
-    setSessions(prevSessions => prevSessions.filter(s => s.id !== sessionId));
-    if (activeSessionId === sessionId) {
-      setActiveSessionId(null);
-    }
-  }, [activeSessionId]);
+  const handleDeleteSession = useCallback(
+    (sessionId: string) => {
+      setSessions(prevSessions => prevSessions.filter(s => s.id !== sessionId));
+      if (activeSessionId === sessionId) {
+        setActiveSessionId(null);
+      }
+    },
+    [activeSessionId]
+  );
 
   const handleNewSession = useCallback(() => {
     setActiveSessionId(null);
   }, []);
 
   return (
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      padding: 20
-    }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20
+      }}
+    >
       <Input
         fullWidth
         placeholder="OpenAI API Key"
         value={apiKey}
         onChange={e => setApiKey(e.target.value)}
       />
-      <div style={{
-        position: 'absolute',
-        top: 50,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        background: '#02020F',
-        borderRadius: 5
-      }}>
+      <div
+        style={{
+          position: 'absolute',
+          top: 50,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          padding: 20,
+          margin: 20,
+          background: '#02020F',
+          borderRadius: 5
+        }}
+      >
         <Chat
           viewType="console"
           sessions={sessions}
           isLoading={isLoading}
           disabled={!apiKey}
+          onSendMessage={handleNewMessage}
           onDeleteSession={handleDeleteSession}
           activeSessionId={activeSessionId}
+          onSelectSession={setActiveSessionId}
         >
           <SessionsList>
             <NewSessionButton />
@@ -312,11 +324,7 @@ export const VercelAI = () => {
                 groups.map(({ heading, sessions }) => (
                   <SessionsGroup heading={heading} key={heading}>
                     {sessions.map(s => (
-                      <SessionListItem
-                        key={s.id}
-                        session={s}
-                        onClick={() => setActiveSessionId(s.id)}
-                      />
+                      <SessionListItem key={s.id} session={s} />
                     ))}
                   </SessionsGroup>
                 ))
@@ -336,7 +344,7 @@ export const VercelAI = () => {
                 ))
               }
             </SessionMessages>
-            <ChatInput onSendMessage={handleNewMessage} />
+            <ChatInput />
           </SessionMessagePanel>
         </Chat>
       </div>
