@@ -10,9 +10,15 @@ import {
   ChatInput,
   SessionMessagePanel,
   SessionMessagesHeader,
-  SessionMessage
+  SessionMessage,
+  Session
 } from '../src';
-import { fakeSessions, sessionWithSources, sessionsWithFiles } from './examples';
+import {
+  fakeSessions,
+  sessionWithSources,
+  sessionsWithFiles
+} from './examples';
+import { useState } from 'react';
 
 export default {
   title: 'Demos/Companion',
@@ -20,6 +26,12 @@ export default {
 } as Meta;
 
 export const Basic = () => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [sessions, setSessions] = useState<Session[]>([
+    ...fakeSessions,
+    ...sessionsWithFiles,
+    ...sessionWithSources
+  ]);
   return (
     <div
       style={{
@@ -31,12 +43,24 @@ export const Basic = () => {
       }}
     >
       <Chat
-        sessions={[
-          ...fakeSessions,
-          ...sessionsWithFiles,
-          ...sessionWithSources
-        ]}
         viewType="companion"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onNewSession={() => {
+          const newId = (sessions.length + 1).toLocaleString();
+          setSessions([
+            ...sessions,
+            {
+              id: newId,
+              title: `New Session #${newId}`,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              conversations: []
+            }
+          ]);
+          setActiveId(newId);
+        }}
+        onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
