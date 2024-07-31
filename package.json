@@ -54,6 +54,7 @@
     "react-dom": ">=18"
   },
   "devDependencies": {
+    "@ai-sdk/openai": "^0.0.40",
     "@storybook/addon-docs": "^8.2.6",
     "@storybook/addon-essentials": "^8.2.6",
     "@storybook/addon-mdx-gfm": "^8.2.6",
@@ -71,6 +72,7 @@
     "@typescript-eslint/parser": "^7.6.0",
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^1.4.0",
+    "ai": "^3.2.43",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
