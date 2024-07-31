@@ -5,6 +5,8 @@ export interface ChatTheme {
   empty: string;
   sessions: {
     base: string;
+    console: string;
+    companion: string;
     create: string;
     group: string;
     session: {
@@ -15,6 +17,10 @@ export interface ChatTheme {
   };
   messages: {
     base: string;
+    console: string;
+    companion: string;
+    back: string;
+    inner: string;
     title: string;
     date: string;
     content: string;
@@ -74,10 +80,12 @@ export interface ChatTheme {
 export const chatTheme: ChatTheme = {
   base: 'text-white',
   console: 'flex w-full gap-5 h-full',
-  companion: 'p-4',
+  companion: 'w-full h-full overflow-hidden',
   empty: 'text-center flex-1',
   sessions: {
-    base: 'overflow-auto min-w-[150px] w-[30%] max-w-[300px] bg-[#11111F] p-5 rounded',
+    base: 'overflow-auto',
+    console: 'min-w-[150px] w-[30%] max-w-[300px] bg-[#11111F] p-5 rounded',
+    companion: 'w-full h-full',
     group: 'text-xs text-gray-400 mt-4',
     create: 'mb-4',
     session: {
@@ -87,7 +95,11 @@ export const chatTheme: ChatTheme = {
     }
   },
   messages: {
-    base: 'flex flex-col flex-1 overflow-hidden',
+    base: '',
+    console: 'flex flex-col flex-1 overflow-hidden',
+    companion: 'flex w-full h-full',
+    back: 'self-start p-0 my-2',
+    inner: 'flex-1 h-full flex flex-col',
     title: 'text-2xl font-bold',
     date: 'text-sm whitespace-nowrap pt-2',
     content: 'mt-2 flex-1 overflow-auto',
@@ -99,14 +111,14 @@ export const chatTheme: ChatTheme = {
       response: '',
       cursor: 'inline-block w-1 h-4 bg-current',
       files: {
-        base: 'mb-2 flex gap-3',
+        base: 'mb-2 flex flex-wrap gap-3 ',
         file: {
-          base: 'flex gap-2 border border-gray-700 p-2 rounded cursor-pointer',
+          base: 'flex items-center gap-2 border border-gray-700 p-2 rounded cursor-pointer',
           name: 'text-sm'
         }
       },
       sources: {
-        base: 'my-4 flex gap-3',
+        base: 'my-4 flex flex-wrap gap-3',
         source: {
           base: 'flex gap-2 border border-gray-700 p-2 rounded cursor-pointer',
           image: 'w-6 h-6 rounded-md',

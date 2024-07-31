@@ -35,20 +35,14 @@ import {
   Input,
   List,
   ListItem,
-  Menu,
+  Menu
 } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 import MenuIcon from '@/assets/menu.svg?react';
-import { motion } from 'framer-motion';
 import { MessageActions } from '@/SessionMessages/MessageActions';
 import { MessageFiles } from '@/SessionMessages/MessageFiles';
-import {
-  MessageQuestion,
-} from '@/SessionMessages/MessageQuestion';
-import {
-  MessageResponse,
-  MessageResponseProps
-} from '@/SessionMessages/MessageResponse';
+import { MessageQuestion } from '@/SessionMessages/MessageQuestion';
+import { MessageResponse } from '@/SessionMessages/MessageResponse';
 import { MessageSources } from '@/SessionMessages/MessageSources';
 
 export default {
@@ -142,7 +136,62 @@ export const Console = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
+              ))
+            }
+          </SessionMessages>
+          <ChatInput />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const Companion = () => {
+  return (
+    <div
+      style={{
+        border: '1px solid blue',
+        width: 350,
+        height: 500,
+        padding: 16
+      }}
+    >
+      <Chat
+        sessions={[
+          ...fakeSessions,
+          ...sessionsWithFiles,
+          ...sessionWithSources
+        ]}
+        viewType="companion"
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -231,7 +280,10 @@ export const Embeds = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -283,7 +335,10 @@ export const DefaultSession = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -443,7 +498,10 @@ export const FileUploads = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -495,7 +553,10 @@ export const DefaultInputValue = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -542,7 +603,10 @@ export const UndeleteableSessions = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -627,7 +691,10 @@ export const SessionGrouping = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -694,7 +761,10 @@ export const HundredSessions = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -765,7 +835,10 @@ export const HundredConversations = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -828,7 +901,10 @@ export const LongSessionNames = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -957,7 +1033,10 @@ export const MarkdownShowcase = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -1044,7 +1123,10 @@ export const CVEExample = () => {
           <SessionMessages>
             {conversations =>
               conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
               ))
             }
           </SessionMessages>
@@ -1201,7 +1283,10 @@ export const OpenAIIntegration = () => {
             <SessionMessages>
               {conversations =>
                 conversations.map(conversation => (
-                  <SessionMessage key={conversation.id} conversation={conversation} />
+                  <SessionMessage
+                    key={conversation.id}
+                    conversation={conversation}
+                  />
                 ))
               }
             </SessionMessages>
@@ -1213,6 +1298,157 @@ export const OpenAIIntegration = () => {
   );
 };
 
+export const EmptyState = () => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="console"
+        sessions={[]}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups => (
+              <>
+                {groups.map(({ heading, sessions }) => (
+                  <SessionsGroup heading={heading} key={heading}>
+                    {sessions.map(s => (
+                      <SessionListItem key={s.id} session={s} />
+                    ))}
+                  </SessionsGroup>
+                ))}
+                {groups.length === 0 && (
+                  <div className="flex flex-1 items-center justify-center">
+                    <p className="text-gray-500">
+                      No sessions yet. Start a new session!
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
+          </SessionGroups>
+        </SessionsList>
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages
+            newSessionContent={
+              <div className="flex items-center justify-center h-full">
+                <p className="text-gray-500">
+                  No messages yet. Start a new conversation!
+                </p>
+              </div>
+            }
+          />
+          <ChatInput />
+        </div>
+      </Chat>
+    </div>
+  );
+};
+
+const sessionWithSources: Session[] = [
+  {
+    id: 'session-sources',
+    title: 'Session with Sources',
+    createdAt: subHours(new Date(), 1),
+    updatedAt: new Date(),
+    conversations: [
+      {
+        id: 'conversation-1',
+        question: 'What are the main causes of climate change?',
+        response: `Climate change is primarily caused by human activities that release greenhouse gases into the atmosphere. The main causes include:
+
+1. Burning of fossil fuels (coal, oil, and natural gas)
+2. Deforestation and land-use changes
+3. Industrial processes
+4. Agriculture and livestock farming
+
+These activities increase the concentration of greenhouse gases in the atmosphere, leading to the greenhouse effect and global warming.`,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        sources: [
+          {
+            title: 'NASA: Causes of Climate Change',
+            image:
+              'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1224px-NASA_logo.svg.png',
+            url: 'https://climate.nasa.gov/causes/'
+          },
+          {
+            title:
+              'IPCC: Climate Change 2021: The Physical Science Basis and Global Warming Is the Last War We will Fight',
+            url: 'https://www.ipcc.ch/report/ar6/wg1/'
+          }
+        ]
+      }
+    ]
+  }
+];
+
+export const ConversationSources = () => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        background: '#02020F',
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="console"
+        sessions={sessionWithSources}
+        activeSessionId="session-sources"
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups>
+            {groups =>
+              groups.map(({ heading, sessions }) => (
+                <SessionsGroup heading={heading} key={heading}>
+                  {sessions.map(s => (
+                    <SessionListItem key={s.id} session={s} />
+                  ))}
+                </SessionsGroup>
+              ))
+            }
+          </SessionGroups>
+        </SessionsList>
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map(conversation => (
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                />
+              ))
+            }
+          </SessionMessages>
+          <ChatInput />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
 const CustomMessagesHeader: FC<any> = () => {
   const { activeSession } = useContext(ChatContext);
 
@@ -1381,155 +1617,6 @@ export const CustomComponents = () => {
                     response={conversation.response}
                   />
                 </SessionMessage>
-              ))
-            }
-          </SessionMessages>
-          <ChatInput />
-        </SessionMessagePanel>
-      </Chat>
-    </div>
-  );
-};
-
-export const EmptyState = () => {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        background: '#02020F',
-        borderRadius: 5
-      }}
-    >
-      <Chat
-        viewType="console"
-        sessions={[]}
-        onDeleteSession={() => alert('delete!')}
-      >
-        <SessionsList>
-          <NewSessionButton />
-          <SessionGroups>
-            {groups => (
-              <>
-                {groups.map(({ heading, sessions }) => (
-                  <SessionsGroup heading={heading} key={heading}>
-                    {sessions.map(s => (
-                      <SessionListItem key={s.id} session={s} />
-                    ))}
-                  </SessionsGroup>
-                ))}
-                {groups.length === 0 && (
-                  <div className="flex flex-1 items-center justify-center">
-                    <p className="text-gray-500">
-                      No sessions yet. Start a new session!
-                    </p>
-                  </div>
-                )}
-              </>
-            )}
-          </SessionGroups>
-        </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
-          <SessionMessages
-            newSessionContent={
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">
-                  No messages yet. Start a new conversation!
-                </p>
-              </div>
-            }
-          />
-          <ChatInput />
-        </div>
-      </Chat>
-    </div>
-  );
-};
-
-const sessionWithSources: Session[] = [
-  {
-    id: 'session-sources',
-    title: 'Session with Sources',
-    createdAt: subHours(new Date(), 1),
-    updatedAt: new Date(),
-    conversations: [
-      {
-        id: 'conversation-1',
-        question: 'What are the main causes of climate change?',
-        response: `Climate change is primarily caused by human activities that release greenhouse gases into the atmosphere. The main causes include:
-
-1. Burning of fossil fuels (coal, oil, and natural gas)
-2. Deforestation and land-use changes
-3. Industrial processes
-4. Agriculture and livestock farming
-
-These activities increase the concentration of greenhouse gases in the atmosphere, leading to the greenhouse effect and global warming.`,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        sources: [
-          {
-            title: 'NASA: Causes of Climate Change',
-            image:
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1224px-NASA_logo.svg.png',
-            url: 'https://climate.nasa.gov/causes/'
-          },
-          {
-            title:
-              'IPCC: Climate Change 2021: The Physical Science Basis and Global Warming Is the Last War We will Fight',
-            url: 'https://www.ipcc.ch/report/ar6/wg1/'
-          }
-        ]
-      }
-    ]
-  }
-];
-
-export const ConversationSources = () => {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        background: '#02020F',
-        borderRadius: 5
-      }}
-    >
-      <Chat
-        viewType="console"
-        sessions={sessionWithSources}
-        activeSessionId="session-sources"
-      >
-        <SessionsList>
-          <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
-        </SessionsList>
-
-        <SessionMessagePanel>
-          <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map(conversation => (
-                <SessionMessage key={conversation.id} conversation={conversation} />
               ))
             }
           </SessionMessages>

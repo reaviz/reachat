@@ -9,6 +9,7 @@ export interface ChatContextProps {
   activeSessionId: string | null;
   theme?: ChatTheme;
   isLoading?: boolean;
+  isCompact?: boolean;
   activeSession?: Session | null;
   remarkPlugins?: PluggableList[];
   selectSession?: (sessionId: string) => void;
