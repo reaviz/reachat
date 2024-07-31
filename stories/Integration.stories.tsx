@@ -1,9 +1,4 @@
-import {
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-} from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import OpenAI from 'openai';
 import { Meta } from '@storybook/react';
 import {
@@ -20,9 +15,7 @@ import {
   SessionMessagesHeader,
   SessionMessage
 } from '../src';
-import {
-  Input,
-} from 'reablocks';
+import { Input } from 'reablocks';
 
 export default {
   title: 'Demos/Integrations',
@@ -152,7 +145,6 @@ export const _OpenAI = () => {
           isLoading={isLoading}
           disabled={!apiKey}
           onDeleteSession={handleDeleteSession}
-          onSendMessage={handleNewMessage}
           activeSessionId={activeSessionId}
         >
           <SessionsList>
@@ -182,7 +174,7 @@ export const _OpenAI = () => {
                 ))
               }
             </SessionMessages>
-            <ChatInput />
+            <ChatInput onSendMessage={handleNewMessage} />
           </SessionMessagePanel>
         </Chat>
       </div>
