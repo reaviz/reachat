@@ -11,7 +11,15 @@ export const SessionsList: FC<PropsWithChildren> = ({ children }) => {
     (!isCompact || isVisible) && (
       <motion.div
         initial={{ translateX: '-100%' }}
-        animate={{ translateX: '0%' }}
+        animate={{
+          translateX: '0%',
+          transition: {
+            type: 'tween',
+            ease: 'linear',
+            duration: 0.2,
+            when: 'beforeChildren'
+          }
+        }}
         exit={{ translateX: '-100%' }}
         className={cn(theme.sessions.base, {
           [theme.sessions.companion]: isCompact,

@@ -154,10 +154,11 @@ export const Companion = () => {
   return (
     <div
       style={{
-        border: '1px solid blue',
         width: 350,
         height: 500,
-        padding: 16
+        padding: 20,
+        background: '#02020F',
+        borderRadius: 5
       }}
     >
       <Chat
