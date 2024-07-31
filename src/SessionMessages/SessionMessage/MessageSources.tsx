@@ -1,7 +1,7 @@
 import { ChatContext } from '@/ChatContext';
 import { ConversationSource } from '@/types';
 import { cn } from 'reablocks';
-import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
+import { FC, PropsWithChildren, useContext } from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { MessageSource } from './MessageSource';
 

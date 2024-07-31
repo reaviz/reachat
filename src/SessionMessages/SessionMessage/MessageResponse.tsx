@@ -2,7 +2,7 @@ import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';
 import { motion } from 'framer-motion';
 import { cn } from 'reablocks';
-import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
+import { FC, PropsWithChildren, useContext } from 'react';
 import { Markdown } from '@/Markdown';
 import { PluggableList } from 'react-markdown/lib';
 import remarkGfm from 'remark-gfm';
