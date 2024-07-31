@@ -26,7 +26,7 @@ export default {
 } as Meta;
 
 export const Basic = () => {
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string>();
   const [sessions, setSessions] = useState<Session[]>([
     ...fakeSessions,
     ...sessionsWithFiles,
