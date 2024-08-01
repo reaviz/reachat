@@ -13,8 +13,8 @@ import { Session } from './types';
 import { ChatTheme, chatTheme } from './theme';
 import { ChatContext } from './ChatContext';
 import { PluggableList } from 'react-markdown/lib';
-import useDimensions from 'react-cool-dimensions';
 import { AnimatePresence } from 'framer-motion';
+import { useDimensions } from './utils/useDimensions';
 
 export interface ChatProps extends PropsWithChildren {
   /**

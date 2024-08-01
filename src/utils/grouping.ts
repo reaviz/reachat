@@ -1,5 +1,5 @@
 import { format, isToday, isYesterday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
-import { Session } from './types';
+import { Session } from '@/types';
 
 export interface GroupedSessions {
   heading: string;
