@@ -349,11 +349,7 @@ export const DefaultInputValue = () => {
               groups.map(({ heading, sessions }) => (
                 <SessionsGroup heading={heading} key={heading}>
                   {sessions.map(s => (
-                    <SessionListItem
-                      key={s.id}
-                      session={s}
-                      chatIcon={<ChatIcon className="mr-2" />}
-                    />
+                    <SessionListItem key={s.id} session={s} />
                   ))}
                 </SessionsGroup>
               ))
