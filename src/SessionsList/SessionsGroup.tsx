@@ -1,17 +1,23 @@
 import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
 import { ChatContext } from '@/ChatContext';
-import { ListItem, cn } from 'reablocks';
+import { Divider, ListItem, cn } from 'reablocks';
 
 interface SessionsGroupProps extends PropsWithChildren {
   /**
    * Heading for the session group.
    */
   heading?: string | ReactNode;
+
+  /**
+   * Divider to render between the children.
+   */
+  divider?: ReactNode;
 }
 
 export const SessionsGroup: FC<SessionsGroupProps> = ({
   heading,
-  children
+  children,
+  divider = <Divider variant="secondary" />
 }) => {
   const { theme } = useContext(ChatContext);
   return (
@@ -26,6 +32,7 @@ export const SessionsGroup: FC<SessionsGroupProps> = ({
         </ListItem>
       )}
       {children}
+      {divider}
     </>
   );
 };

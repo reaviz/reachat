@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren, useContext } from 'react';
 import { ChatContext } from '@/ChatContext';
-import { Card, cn } from 'reablocks';
+import { Card, cn, Divider } from 'reablocks';
 import CopyIcon from '@/assets/copy.svg?react';
 import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
 import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
@@ -69,6 +69,7 @@ export const SessionMessage: FC<SessionMessageProps> = ({
           </>
         )}
       </Card>
+      <Divider />
     </motion.div>
   );
 };
