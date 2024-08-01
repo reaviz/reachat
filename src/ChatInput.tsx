@@ -82,7 +82,8 @@ export const ChatInput: FC<ChatInputProps> = ({
   return (
     <div className={cn(theme.input.base)}>
       <Textarea
-        containerClassName={cn(theme.input.input)}
+        containerClassName={cn(theme.input.container)}
+        className={theme.input.input}
         minRows={1}
         autoFocus
         value={message}
