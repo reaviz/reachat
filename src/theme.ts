@@ -71,7 +71,6 @@ export interface ChatTheme {
   input: {
     base: string;
     upload: string;
-    container: string;
     input: string;
     actions: {
       base: string;
@@ -160,9 +159,8 @@ export const chatTheme: ChatTheme = {
   input: {
     base: 'flex mt-4 relative',
     upload: 'px-5 py-2 text-white size-10',
-    container:
-      'w-full text-typography border border-gray-700/70 rounded-3xl px-3 py-2 pr-16 after:!mx-10',
-    input: 'w-full',
+    input:
+      'w-full text-typography border border-gray-700/70 rounded-3xl px-3 py-2 pr-16 after:!mx-10 [&>textarea]:w-full',
     actions: {
       base: 'absolute flex gap-2 items-center right-5 top-[50%] -translate-y-1/2 z-10',
       send: 'px-3 py-3 text-white bg-gray-800 hover:bg-primary-hover rounded-full ',
