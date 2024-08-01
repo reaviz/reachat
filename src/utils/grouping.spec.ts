@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { groupSessionsByDate } from './utils';
-import { Session } from './types';
+import { groupSessionsByDate } from './grouping';
+import { Session } from '@/types';
 import { subDays } from 'date-fns';
 
 describe('groupSessionsByDate', () => {

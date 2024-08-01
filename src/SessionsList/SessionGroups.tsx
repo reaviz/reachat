@@ -1,5 +1,5 @@
 import { FC, ReactNode, useContext, useMemo } from 'react';
-import { GroupedSessions, groupSessionsByDate } from '@/utils';
+import { GroupedSessions, groupSessionsByDate } from '@/utils/grouping';
 import { ChatContext } from '@/ChatContext';
 
 export interface SessionGroupsProps {
