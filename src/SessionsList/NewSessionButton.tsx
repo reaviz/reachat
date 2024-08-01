@@ -10,17 +10,11 @@ interface NewSessionButtonProps extends PropsWithChildren {
    * Text for the new session button.
    */
   newSessionText?: string | ReactNode;
-
-  /**
-   * Divider to render between the new session button and SessionsGroup.
-   */
-  divider?: ReactNode;
 }
 
 export const NewSessionButton: FC<NewSessionButtonProps> = ({
   children,
-  newSessionText = 'New Session',
-  divider = <Divider variant="secondary" />
+  newSessionText = 'New Session'
 }) => {
   const { theme, createSession, disabled } = useContext(ChatContext);
   const Comp = children ? Slot : Button;
@@ -38,7 +32,6 @@ export const NewSessionButton: FC<NewSessionButtonProps> = ({
       >
         {children || newSessionText}
       </Comp>
-      {divider}
     </>
   );
 };

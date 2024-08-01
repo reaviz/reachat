@@ -90,7 +90,8 @@ export const chatTheme: ChatTheme = {
     console: 'min-w-[150px] w-[30%] max-w-[300px] bg-[#11111F] p-5 rounded-3xl',
     companion: 'w-full h-full',
     group: 'text-xs text-gray-400 mt-4 hover:bg-transparent mb-1',
-    create: 'mb-4 rounded-[10px]',
+    create:
+      'relative mb-4 rounded-[10px] after:-bottom-5 after:w-full after:absolute after:h-px after:content[""] after:bg-gradient-to-r after:from-transparent after:to-transparent after:via-blue-500',
     session: {
       base: 'my-1 rounded-[10px] p-2 text-typography hover:bg-gray-800/50 border border-transparent hover:border-gray-700/50',
       active:
