@@ -92,43 +92,46 @@ export const ChatInput: FC<ChatInputProps> = ({
         placeholder={placeholder}
         disabled={isLoading || disabled}
       />
-      {allowedFiles?.length > 0 && (
-        <>
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            accept={allowedFiles.join(',')}
-            onChange={handleFileUpload}
-          />
+      <div className={cn(theme.input.actions.base)}>
+        {allowedFiles?.length > 0 && (
+          <>
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept={allowedFiles.join(',')}
+              onChange={handleFileUpload}
+            />
+            <Button
+              title="Upload"
+              variant="text"
+              disabled={isLoading || disabled}
+              className={cn(theme.input.upload)}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {attachIcon}
+            </Button>
+          </>
+        )}
+        {isLoading && (
           <Button
-            title="Upload"
-            disabled={isLoading || disabled}
-            className={cn(theme.input.upload)}
-            onClick={() => fileInputRef.current?.click()}
+            title="Stop"
+            className={cn(theme.input.actions.stop)}
+            onClick={stopMessage}
+            disabled={disabled}
           >
-            {attachIcon}
+            {stopIcon}
           </Button>
-        </>
-      )}
-      {isLoading && (
+        )}
         <Button
-          title="Stop"
-          className={cn(theme.input.stop)}
-          onClick={stopMessage}
-          disabled={disabled}
+          title="Send"
+          className={cn(theme.input.actions.send)}
+          onClick={handleSendMessage}
+          disabled={isLoading || disabled}
         >
-          {stopIcon}
+          {sendIcon}
         </Button>
-      )}
-      <Button
-        title="Send"
-        className={cn(theme.input.send)}
-        onClick={handleSendMessage}
-        disabled={isLoading || disabled}
-      >
-        {sendIcon}
-      </Button>
+      </div>
     </div>
   );
 };

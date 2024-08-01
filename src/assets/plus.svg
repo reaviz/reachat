@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id="add">
+    <path id="Vector"
+      d="M13.1667 9.16658H9.16671V13.1666H7.83337V9.16658H3.83337V7.83325H7.83337V3.83325H9.16671V7.83325H13.1667V9.16658Z"
+      fill="currentColor" />
+  </g>
+</svg>

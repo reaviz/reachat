@@ -11,6 +11,9 @@ module.exports = {
   ],
   theme: {
   extend: {
+    borderRadius: {
+      '3xl': '20px',
+    },
     colors: {
       primary: {
         DEFAULT: colorPalette.blue[500],

@@ -1,9 +1,4 @@
-import {
-  useState,
-  useRef,
-  FC,
-  useContext
-} from 'react';
+import { useState, useRef, FC, useContext, Fragment } from 'react';
 import { Meta } from '@storybook/react';
 import {
   Chat,
@@ -40,7 +35,13 @@ import { MessageFiles } from '@/SessionMessages';
 import { MessageQuestion } from '@/SessionMessages';
 import { MessageResponse } from '@/SessionMessages';
 import { MessageSources } from '@/SessionMessages';
-import { fakeSessions, fakeSessionsWithEmbeds, sessionWithSources, sessionsWithFiles, sessionsWithPartialConversation } from './examples';
+import {
+  fakeSessions,
+  fakeSessionsWithEmbeds,
+  sessionWithSources,
+  sessionsWithFiles,
+  sessionsWithPartialConversation
+} from './examples';
 
 export default {
   title: 'Demos/Console',
@@ -448,14 +449,14 @@ export const SessionGrouping = () => {
   const sessionsWithVariousDates: Session[] = [
     createSessionWithDate('1', 'Today Session', 0),
     createSessionWithDate('2', 'Yesterday Session', 1),
-    createSessionWithDate('2', 'Yesterday Session 2', 1),
-    createSessionWithDate('3', 'Last Week Session', 6),
-    createSessionWithDate('4', 'Two Weeks Ago Session', 14),
-    createSessionWithDate('5', 'Last Month Session', 32),
-    createSessionWithDate('6', 'Two Months Ago Session', 65),
-    createSessionWithDate('7', 'Six Months Ago Session', 180),
-    createSessionWithDate('8', 'Last Year Session', 370),
-    createSessionWithDate('9', 'Two Years Ago Session', 740)
+    createSessionWithDate('3', 'Yesterday Session 2', 1),
+    createSessionWithDate('4', 'Last Week Session', 6),
+    createSessionWithDate('5', 'Two Weeks Ago Session', 14),
+    createSessionWithDate('6', 'Last Month Session', 32),
+    createSessionWithDate('7', 'Two Months Ago Session', 65),
+    createSessionWithDate('8', 'Six Months Ago Session', 180),
+    createSessionWithDate('9', 'Last Year Session', 370),
+    createSessionWithDate('10', 'Two Years Ago Session', 740)
   ];
 
   return (
@@ -505,7 +506,7 @@ export const SessionGrouping = () => {
               ))
             }
           </SessionMessages>
-          <ChatInput />
+          <ChatInput placeholder="Send a message" />
         </SessionMessagePanel>
       </Chat>
     </div>
@@ -1182,7 +1183,7 @@ export const CustomComponents = () => {
           <NewSessionButton>
             <button className="text-blue-500">New Session</button>
           </NewSessionButton>
-          <Divider />
+          <Divider variant="secondary" />
           <SessionGroups>
             {groups =>
               groups.map(({ heading, sessions }) => (
@@ -1274,14 +1275,16 @@ export const ImageFiles = () => {
         {
           id: 'conversation-1',
           question: 'Analyze these images and describe what you see.',
-          response: 'I\'m sorry, but as an AI language model, I cannot actually see or analyze images. I can only process and respond to text input. If you\'d like me to describe or analyze images, you would need to provide detailed textual descriptions of the images.',
+          response:
+            "I'm sorry, but as an AI language model, I cannot actually see or analyze images. I can only process and respond to text input. If you'd like me to describe or analyze images, you would need to provide detailed textual descriptions of the images.",
           createdAt: new Date(),
           files: staticImageFiles
         },
         {
           id: 'conversation-2',
           question: 'Analyze these images and describe what you see.',
-          response: 'I\'m sorry, but as an AI language model, I cannot actually see or analyze images. I can only process and respond to text input. If you\'d like me to describe or analyze images, you would need to provide detailed textual descriptions of the images.',
+          response:
+            "I'm sorry, but as an AI language model, I cannot actually see or analyze images. I can only process and respond to text input. If you'd like me to describe or analyze images, you would need to provide detailed textual descriptions of the images.",
           createdAt: new Date(),
           files: [staticImageFiles[0]]
         }

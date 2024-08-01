@@ -11,7 +11,7 @@ interface SessionsGroupProps extends PropsWithChildren {
 
 export const SessionsGroup: FC<SessionsGroupProps> = ({
   heading,
-  children
+  children,
 }) => {
   const { theme } = useContext(ChatContext);
   return (
