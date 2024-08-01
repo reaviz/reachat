@@ -61,10 +61,6 @@ export const SessionMessage: FC<SessionMessageProps> = ({
             <MessageActions
               question={conversation.question}
               response={conversation.response}
-              copyIcon={<CopyIcon />}
-              thumbsUpIcon={<ThumbUpIcon />}
-              thumbsDownIcon={<ThumbsDownIcon />}
-              refreshIcon={<RefreshIcon />}
             />
           </>
         )}
