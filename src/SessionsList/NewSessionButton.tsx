@@ -1,4 +1,4 @@
-import { Button, cn, Divider } from 'reablocks';
+import { Button, cn } from 'reablocks';
 import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
 import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';

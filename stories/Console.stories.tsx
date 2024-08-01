@@ -35,7 +35,6 @@ import { MessageFiles } from '@/SessionMessages';
 import { MessageQuestion } from '@/SessionMessages';
 import { MessageResponse } from '@/SessionMessages';
 import { MessageSources } from '@/SessionMessages';
-import ChatIcon from '@/assets/chat.svg?react';
 import {
   fakeSessions,
   fakeSessionsWithEmbeds,
@@ -1184,7 +1183,7 @@ export const CustomComponents = () => {
           <NewSessionButton>
             <button className="text-blue-500">New Session</button>
           </NewSessionButton>
-          <Divider />
+          <Divider variant="secondary" />
           <SessionGroups>
             {groups =>
               groups.map(({ heading, sessions }) => (

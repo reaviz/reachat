@@ -69,7 +69,9 @@ export const SessionMessage: FC<SessionMessageProps> = ({
           </>
         )}
       </Card>
-      <Divider />
+      {!isLast && (
+        <Divider />
+      )}
     </motion.div>
   );
 };
