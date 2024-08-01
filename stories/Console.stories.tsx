@@ -35,6 +35,7 @@ import { MessageFiles } from '@/SessionMessages';
 import { MessageQuestion } from '@/SessionMessages';
 import { MessageResponse } from '@/SessionMessages';
 import { MessageSources } from '@/SessionMessages';
+import ChatIcon from '@/assets/chat.svg?react';
 import {
   fakeSessions,
   fakeSessionsWithEmbeds,
@@ -348,7 +349,11 @@ export const DefaultInputValue = () => {
               groups.map(({ heading, sessions }) => (
                 <SessionsGroup heading={heading} key={heading}>
                   {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
+                    <SessionListItem
+                      key={s.id}
+                      session={s}
+                      chatIcon={<ChatIcon className="mr-2" />}
+                    />
                   ))}
                 </SessionsGroup>
               ))
