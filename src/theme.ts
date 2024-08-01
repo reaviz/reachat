@@ -90,8 +90,7 @@ export const chatTheme: ChatTheme = {
     console: 'min-w-[150px] w-[30%] max-w-[300px] bg-[#11111F] p-5 rounded-3xl',
     companion: 'w-full h-full',
     group: 'text-xs text-gray-400 mt-4 hover:bg-transparent mb-1',
-    create:
-      'relative mb-4 rounded-[10px]',
+    create: 'relative mb-4 rounded-[10px]',
     session: {
       base: 'my-1 rounded-[10px] p-2 text-typography hover:bg-gray-800/50 border border-transparent hover:border-gray-700/50',
       active:
@@ -160,9 +159,9 @@ export const chatTheme: ChatTheme = {
     base: 'flex mt-4 relative',
     upload: 'px-5 py-2 text-white size-10',
     input:
-      'w-full text-typography border border-gray-700/70 rounded-3xl px-3 py-2 pr-16 after:!mx-10 [&>textarea]:w-full',
+      'w-full text-typography border border-gray-700/70 rounded-3xl px-3 py-2 pr-16 after:!mx-10 [&>textarea]:w-full [&>textarea]:flex-none',
     actions: {
-      base: 'absolute flex gap-2 items-center right-5 top-[50%] -translate-y-1/2 z-10',
+      base: 'absolute flex gap-2 items-center right-5 inset-y-1/2 -translate-y-1/2 z-10',
       send: 'px-3 py-3 text-white bg-gray-800 hover:bg-primary-hover rounded-full ',
       stop: 'px-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 '
     }
