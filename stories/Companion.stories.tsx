@@ -34,11 +34,11 @@ export const Basic = () => {
   ]);
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         width: 350,
         height: 500,
         padding: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -100,11 +100,11 @@ export const Basic = () => {
 export const Empty = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         width: 350,
         height: 500,
         padding: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
