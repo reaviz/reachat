@@ -1,4 +1,4 @@
-import { useState, useRef, FC, useContext, Fragment } from 'react';
+import { useState, useRef, FC, useContext } from 'react';
 import { Meta } from '@storybook/react';
 import {
   Chat,
@@ -86,10 +86,11 @@ export const Basic = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -139,10 +140,11 @@ export const Embeds = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -194,10 +196,11 @@ export const DefaultSession = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -305,10 +308,11 @@ export const FileUploads = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -360,10 +364,11 @@ export const DefaultInputValue = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -410,10 +415,11 @@ export const UndeleteableSessions = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -498,10 +504,11 @@ export const SessionGrouping = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -568,10 +575,11 @@ export const HundredSessions = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -642,10 +650,11 @@ export const HundredConversations = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -708,10 +717,11 @@ export const LongSessionNames = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -840,10 +850,11 @@ export const MarkdownShowcase = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -930,10 +941,11 @@ export const CVEExample = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -1044,10 +1056,11 @@ export const ConversationSources = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -1330,10 +1343,11 @@ export const ImageFiles = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
