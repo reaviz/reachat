@@ -37,7 +37,7 @@ export const SessionMessagePanel: FC<PropsWithChildren> = ({ children }) => {
               className={cn(theme.messages.back)}
             >
               <BackIcon />
-               Back
+              Back
             </Button>
           )}
           {children}

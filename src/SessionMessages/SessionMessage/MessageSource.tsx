@@ -11,11 +11,13 @@ export interface MessageSourceProps extends ConversationSource {
 }
 
 export const MessageSource: FC<MessageSourceProps> = ({ title, url, image, limit = 50 }) => {
-  const { theme } = useContext(ChatContext);
+  const { theme, isCompact } = useContext(ChatContext);
 
   return (
     <figure
-      className={cn(theme.messages.message.sources.source.base)}
+      className={cn(theme.messages.message.sources.source.base, {
+        [theme.messages.message.sources.source.companion]: isCompact
+      })}
       onClick={() => {
         if (url) {
           window.open(url, '_blank');
