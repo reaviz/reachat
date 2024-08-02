@@ -86,5 +86,5 @@ If you want to run reachat locally, its super easy!
 
 Thanks to all our contributors!
 
-<a href="https://github.com/reaviz/reaviz/graphs/contributors"><img src="https://opencollective.com/reaviz/contributors.svg?width=890" /></a>
+<a href="https://github.com/reaviz/reachat/graphs/contributors"><img src="https://opencollective.com/reaviz/contributors.svg?width=890" /></a>
 
