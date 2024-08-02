@@ -109,7 +109,7 @@ export const chatTheme: ChatTheme = {
   },
   messages: {
     base: '',
-    console: 'flex flex-col flex-1 overflow-hidden',
+    console: 'flex flex-col mr-5 flex-1 overflow-hidden',
     companion: 'flex w-full h-full',
     back: 'self-start p-0 my-2',
     inner: 'flex-1 h-full flex flex-col',
