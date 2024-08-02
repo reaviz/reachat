@@ -124,10 +124,7 @@ export const chatTheme: ChatTheme = {
     header: 'flex justify-between items-start gap-2',
     showMore: 'mb-4',
     message: {
-      base: [
-        'mt-4 mb-4 flex flex-col p-0 rounded border-none bg-white',
-        'dark:bg-panel'
-      ].join(' '),
+      base: 'mt-4 mb-4 flex flex-col p-0 rounded border-none bg-transparent',
       question: [
         'font-semibold mb-4 px-4 py-4 pb-2 rounded-3xl rounded-br-none text-typography border bg-gray-200 border-gray-300 text-gray-900',
         'dark:bg-gray-900/60 dark:border-gray-700/50 dark:text-gray-100'
