@@ -30,6 +30,8 @@ import {
 } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 import MenuIcon from '@/assets/menu.svg?react';
+import Placeholder from '@/assets/placeholder.svg?react';
+import PlaceholderDark from '@/assets/placeholder-dark.svg?react';
 import { MessageActions } from '@/SessionMessages';
 import { MessageFiles } from '@/SessionMessages';
 import { MessageQuestion } from '@/SessionMessages';
@@ -1003,9 +1005,12 @@ export const Empty = () => {
         <div className="flex-1 h-full flex flex-col">
           <SessionMessages
             newSessionContent={
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">
-                  No messages yet. Start a new conversation!
+              <div className="flex flex-col gap-2 items-center justify-center h-full">
+                <Placeholder className="block dark:hidden" />
+                <PlaceholderDark className="hidden dark:block" />
+                <p className="text-gray-500 max-w-[400px] text-center">
+                  Welcome to Reachat, a UI library for effortlessly building and
+                  customizing chat experiences with Tailwind.
                 </p>
               </div>
             }

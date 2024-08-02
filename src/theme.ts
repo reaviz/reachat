@@ -42,6 +42,7 @@ export interface ChatTheme {
         base: string;
         source: {
           base: string;
+          companion: string;
           image: string;
           title: string;
           url: string;
@@ -82,7 +83,7 @@ export interface ChatTheme {
 
 export const chatTheme: ChatTheme = {
   base: 'dark:text-white text-gray-500',
-  console: 'flex w-full gap-5 h-full',
+  console: 'flex w-full gap-10 h-full',
   companion: 'w-full h-full overflow-hidden',
   empty: 'text-center flex-1',
   sessions: {
@@ -95,14 +96,15 @@ export const chatTheme: ChatTheme = {
     create: 'relative mb-4 rounded-[10px] text-white',
     session: {
       base: [
-        'my-1 rounded-[10px] p-2 text-gray-500 border border-transparent hover:bg-gray-300 hover:border-gray-400 [&_svg]:text-gray-500',
+        'group my-1 rounded-[10px] p-2 text-gray-500 border border-transparent hover:bg-gray-300 hover:border-gray-400 [&_svg]:text-gray-500',
         'dark:text-typography dark:text-gray-400 dark:hover:bg-gray-800/50 dark:hover:border-gray-700/50 dark:[&_svg]:text-gray-200'
       ].join(' '),
       active: [
         'border border-gray-300 hover:border-gray-400 text-gray-700 bg-gray-200 hover:bg-gray-300 ',
-        'dark:text-gray-500 dark:bg-gray-800/70 dark:border-gray-700/50 dark:text-white dark:border-gray-700/70 dark:hover:bg-gray-800/50'
+        'dark:text-gray-500 dark:bg-gray-800/70 dark:border-gray-700/50 dark:text-white dark:border-gray-700/70 dark:hover:bg-gray-800/50',
+        '[&_button]:!opacity-100'
       ].join(' '),
-      delete: '[&>svg]:w-4 [&>svg]:h-4 opacity-50'
+      delete: '[&>svg]:w-4 [&>svg]:h-4 opacity-0 group-hover:!opacity-50'
     }
   },
   messages: {
@@ -111,8 +113,10 @@ export const chatTheme: ChatTheme = {
     companion: 'flex w-full h-full',
     back: 'self-start p-0 my-2',
     inner: 'flex-1 h-full flex flex-col',
-    title: ['text-2xl font-bold text-gray-500', 'dark:text-gray-200'].join(' '),
-    date: 'text-sm whitespace-nowrap pt-2 text-gray-400',
+    title: ['text-base font-bold text-gray-500', 'dark:text-gray-200'].join(
+      ' '
+    ),
+    date: 'text-xs whitespace-nowrap pt-2 text-gray-400',
     content: [
       'mt-2 flex-1 overflow-auto [&_hr]:bg-gray-200',
       'dark:[&_hr]:bg-gray-800/60'
@@ -125,7 +129,7 @@ export const chatTheme: ChatTheme = {
         'dark:bg-panel'
       ].join(' '),
       question: [
-        'font-semibold mb-4 px-4 py-3 pb-1 rounded-3xl rounded-br-none text-typography border bg-gray-200 border-gray-300 text-gray-900',
+        'font-semibold mb-4 px-4 py-4 pb-2 rounded-3xl rounded-br-none text-typography border bg-gray-200 border-gray-300 text-gray-900',
         'dark:bg-gray-900/60 dark:border-gray-700/50 dark:text-gray-100'
       ].join(' '),
       response: ['text-gray-900', 'dark:text-gray-100'].join(' '),
@@ -134,7 +138,7 @@ export const chatTheme: ChatTheme = {
         base: 'mb-2 flex flex-wrap gap-3 ',
         file: {
           base: [
-            'flex items-center gap-2 border border-gray-300 p-2 rounded cursor-pointer',
+            'flex items-center gap-2 border border-gray-300 px-3 py-2 rounded-lg cursor-pointer',
             'dark:border-gray-700'
           ].join(' '),
           name: ['text-sm text-gray-500', 'dark:text-gray-200'].join(' ')
@@ -144,10 +148,11 @@ export const chatTheme: ChatTheme = {
         base: 'my-4 flex flex-wrap gap-3',
         source: {
           base: [
-            'flex gap-2 border border-gray-200 p-2 rounded cursor-pointer',
+            'flex gap-2 border border-gray-200 px-4 py-2 rounded-lg cursor-pointer',
             'dark:border-gray-700'
           ].join(' '),
-          image: 'w-6 h-6 rounded-md',
+          companion: 'flex-1 px-3 py-1.5',
+          image: 'max-w-10 max-h-10 rounded-md w-full h-fit self-center',
           title: 'text-md block',
           url: 'text-sm text-blue-400 underline'
         }
