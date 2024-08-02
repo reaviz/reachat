@@ -42,7 +42,7 @@ export default defineConfig(({ mode }) =>
         copyPublicDir: false,
         lib: {
           entry: resolve('src', 'index.ts'),
-          name: 'reablocks',
+          name: 'reachat',
           fileName: 'index'
         },
         rollupOptions: {

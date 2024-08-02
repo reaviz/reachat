@@ -51,6 +51,7 @@ export default {
 export const Basic = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -59,7 +60,6 @@ export const Basic = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -104,6 +104,7 @@ export const Basic = () => {
 export const Embeds = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -112,7 +113,6 @@ export const Embeds = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -157,6 +157,7 @@ export const Embeds = () => {
 export const DefaultSession = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -165,7 +166,6 @@ export const DefaultSession = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -212,6 +212,7 @@ export const DefaultSession = () => {
 export const Loading = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -220,7 +221,6 @@ export const Loading = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -269,6 +269,7 @@ export const Loading = () => {
 export const FileUploads = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -277,7 +278,6 @@ export const FileUploads = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -323,6 +323,7 @@ export const FileUploads = () => {
 export const DefaultInputValue = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -331,7 +332,6 @@ export const DefaultInputValue = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -378,6 +378,7 @@ export const DefaultInputValue = () => {
 export const UndeleteableSessions = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -386,7 +387,6 @@ export const UndeleteableSessions = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -461,6 +461,7 @@ export const SessionGrouping = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -469,7 +470,6 @@ export const SessionGrouping = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -536,6 +536,7 @@ export const HundredSessions = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -544,7 +545,6 @@ export const HundredSessions = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -606,6 +606,7 @@ export const HundredConversations = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -614,7 +615,6 @@ export const HundredConversations = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -672,6 +672,7 @@ export const LongSessionNames = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -680,7 +681,6 @@ export const LongSessionNames = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -804,6 +804,7 @@ export const MarkdownShowcase = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -812,7 +813,6 @@ export const MarkdownShowcase = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -893,6 +893,7 @@ export const CVEExample = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -901,7 +902,6 @@ export const CVEExample = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -948,6 +948,7 @@ export const CVEExample = () => {
 export const Empty = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -956,7 +957,6 @@ export const Empty = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -1008,6 +1008,7 @@ export const Empty = () => {
 export const ConversationSources = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -1016,7 +1017,6 @@ export const ConversationSources = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -1159,6 +1159,7 @@ const CustomSessionListItem: FC<SessionListItemProps> = ({
 export const CustomComponents = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -1167,7 +1168,6 @@ export const CustomComponents = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -1294,6 +1294,7 @@ export const ImageFiles = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -1302,7 +1303,6 @@ export const ImageFiles = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
