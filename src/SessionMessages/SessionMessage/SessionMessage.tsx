@@ -35,6 +35,7 @@ interface SessionMessageProps extends PropsWithChildren {
 
   /**
    * Whether the message is the last one in the list.
+   * This let's the chat know when to show the loading cursor.
    */
   isLast?: boolean;
 }

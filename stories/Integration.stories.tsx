@@ -169,10 +169,11 @@ export const _OpenAI = () => {
             <SessionMessagesHeader />
             <SessionMessages>
               {conversations =>
-                conversations.map(conversation => (
+                conversations.map((conversation, index) => (
                   <SessionMessage
                     key={conversation.id}
                     conversation={conversation}
+                    isLast={index === conversations.length - 1}
                   />
                 ))
               }
@@ -336,10 +337,11 @@ export const VercelAI = () => {
             <SessionMessagesHeader />
             <SessionMessages>
               {conversations =>
-                conversations.map(conversation => (
+                conversations.map((conversation, index) => (
                   <SessionMessage
                     key={conversation.id}
                     conversation={conversation}
+                    isLast={index === conversations.length - 1}
                   />
                 ))
               }

@@ -81,10 +81,11 @@ export const Basic = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -130,10 +131,11 @@ export const Empty = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
