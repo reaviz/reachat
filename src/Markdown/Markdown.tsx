@@ -31,6 +31,7 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
             language={className}
             className={cn(theme.messages.message.markdown.code, className)}
             copyClassName={cn(theme.messages.message.markdown.copy)}
+            toolbarClassName={cn(theme.messages.message.markdown.toolbar)}
           />
         ),
         table: props => <TableComponent {...props} className={cn(theme.messages.message.markdown.table)} />,

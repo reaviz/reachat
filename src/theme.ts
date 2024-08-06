@@ -54,6 +54,7 @@ export interface ChatTheme {
         th: string;
         td: string;
         code: string;
+        toolbar: string;
         li: string;
         ul: string;
         ol: string;
@@ -107,7 +108,7 @@ export const chatTheme: ChatTheme = {
     inner: 'flex-1 h-full flex flex-col',
     title: 'text-2xl font-bold',
     date: 'text-sm whitespace-nowrap pt-2',
-    content: 'mt-2 flex-1 overflow-auto',
+    content: 'mt-2 flex-1 overflow-y-auto overflow-x-hidden',
     header: 'flex justify-between items-start gap-2',
     showMore: 'mb-4',
     message: {
@@ -133,13 +134,14 @@ export const chatTheme: ChatTheme = {
         }
       },
       markdown: {
-        copy: 'absolute right-0 top-0 [&>svg]:w-4 [&>svg]:h-4 opacity-50',
+        copy: 'sticky py-1 [&>svg]:w-4 [&>svg]:h-4 opacity-50',
         p: 'mb-2',
         a: 'text-blue-700 underline',
         table: 'table-auto w-full m-2',
         th: 'px-4 py-2 text-left font-bold border-b border-gray-500',
         td: 'px-4 py-2',
-        code: 'm-2 rounded',
+        code: 'm-2 rounded-b relative',
+        toolbar: 'text-xs bg-gray-700/50 flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md',
         li: 'mb-2 ml-6',
         ul: 'mb-4 list-disc',
         ol: 'mb-4 list-decimal'

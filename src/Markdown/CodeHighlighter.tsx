@@ -21,6 +21,11 @@ export interface CodeHighlighterProps extends PropsWithChildren {
   copyClassName?: string;
 
   /**
+   * The class name to apply to the toolbar.
+   */
+  toolbarClassName?: string;
+
+  /**
    * Icon to show for copy.
    */
   copyIcon?: ReactElement;
@@ -37,6 +42,7 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
   copyClassName,
   copyIcon = <CopyIcon />,
   language,
+  toolbarClassName,
   theme = dark
 }) => {
   const match = language?.match(/language-(\w+)/);
@@ -55,17 +61,22 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
 
   return (
     <div className={cn('relative', className)}>
-      {copyIcon && (
-        <Button
-          className={cn(copyClassName)}
-          size="small"
-          variant="text"
-          title="Copy code"
-          onClick={() => handleCopy(children as string)}
-        >
-          {copyIcon}
-        </Button>
-      )}
+      <div className={cn(toolbarClassName)}>
+        <div>
+          {lang}
+        </div>
+        {copyIcon && (
+          <Button
+            className={cn(copyClassName)}
+            size="small"
+            variant="text"
+            title="Copy code"
+            onClick={() => handleCopy(children as string)}
+          >
+            {copyIcon}
+          </Button>
+        )}
+      </div>
       <SyntaxHighlighter
         language={lang}
         style={theme}
