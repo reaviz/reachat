@@ -1,4 +1,4 @@
-import { useState, useRef, FC, useContext, Fragment } from 'react';
+import { useState, useRef, FC, useContext } from 'react';
 import { Meta } from '@storybook/react';
 import {
   Chat,
@@ -30,6 +30,8 @@ import {
 } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
 import MenuIcon from '@/assets/menu.svg?react';
+import Placeholder from '@/assets/placeholder.svg?react';
+import PlaceholderDark from '@/assets/placeholder-dark.svg?react';
 import { MessageActions } from '@/SessionMessages';
 import { MessageFiles } from '@/SessionMessages';
 import { MessageQuestion } from '@/SessionMessages';
@@ -51,6 +53,7 @@ export default {
 export const Basic = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -59,7 +62,6 @@ export const Basic = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -86,10 +88,11 @@ export const Basic = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -104,6 +107,7 @@ export const Basic = () => {
 export const Embeds = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -112,7 +116,6 @@ export const Embeds = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -139,10 +142,11 @@ export const Embeds = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -157,6 +161,7 @@ export const Embeds = () => {
 export const DefaultSession = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -165,7 +170,6 @@ export const DefaultSession = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -194,10 +198,11 @@ export const DefaultSession = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -212,6 +217,7 @@ export const DefaultSession = () => {
 export const Loading = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -220,7 +226,6 @@ export const Loading = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -269,6 +274,7 @@ export const Loading = () => {
 export const FileUploads = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -277,7 +283,6 @@ export const FileUploads = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -305,10 +310,11 @@ export const FileUploads = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -323,6 +329,7 @@ export const FileUploads = () => {
 export const DefaultInputValue = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -331,7 +338,6 @@ export const DefaultInputValue = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -360,10 +366,11 @@ export const DefaultInputValue = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -378,6 +385,7 @@ export const DefaultInputValue = () => {
 export const UndeleteableSessions = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -386,7 +394,6 @@ export const UndeleteableSessions = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -410,10 +417,11 @@ export const UndeleteableSessions = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -461,6 +469,7 @@ export const SessionGrouping = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -469,7 +478,6 @@ export const SessionGrouping = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -498,10 +506,11 @@ export const SessionGrouping = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -536,6 +545,7 @@ export const HundredSessions = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -544,7 +554,6 @@ export const HundredSessions = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -568,10 +577,11 @@ export const HundredSessions = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -606,6 +616,7 @@ export const HundredConversations = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -614,7 +625,6 @@ export const HundredConversations = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -642,10 +652,11 @@ export const HundredConversations = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -672,6 +683,7 @@ export const LongSessionNames = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -680,7 +692,6 @@ export const LongSessionNames = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -708,10 +719,11 @@ export const LongSessionNames = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -804,6 +816,7 @@ export const MarkdownShowcase = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -812,7 +825,6 @@ export const MarkdownShowcase = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -840,10 +852,11 @@ export const MarkdownShowcase = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -893,6 +906,7 @@ export const CVEExample = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -901,7 +915,6 @@ export const CVEExample = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -930,10 +943,11 @@ export const CVEExample = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -948,6 +962,7 @@ export const CVEExample = () => {
 export const Empty = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -956,7 +971,6 @@ export const Empty = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -991,9 +1005,12 @@ export const Empty = () => {
         <div className="flex-1 h-full flex flex-col">
           <SessionMessages
             newSessionContent={
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">
-                  No messages yet. Start a new conversation!
+              <div className="flex flex-col gap-2 items-center justify-center h-full">
+                <Placeholder className="block dark:hidden" />
+                <PlaceholderDark className="hidden dark:block" />
+                <p className="text-gray-500 max-w-[400px] text-center">
+                  Welcome to Reachat, a UI library for effortlessly building and
+                  customizing chat experiences with Tailwind.
                 </p>
               </div>
             }
@@ -1008,6 +1025,7 @@ export const Empty = () => {
 export const ConversationSources = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -1016,7 +1034,6 @@ export const ConversationSources = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -1044,10 +1061,11 @@ export const ConversationSources = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -1159,6 +1177,7 @@ const CustomSessionListItem: FC<SessionListItemProps> = ({
 export const CustomComponents = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -1167,7 +1186,6 @@ export const CustomComponents = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -1294,6 +1312,7 @@ export const ImageFiles = () => {
 
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         position: 'absolute',
         top: 0,
@@ -1302,7 +1321,6 @@ export const ImageFiles = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -1330,10 +1348,11 @@ export const ImageFiles = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }

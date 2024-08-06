@@ -20,6 +20,9 @@ import {
 } from './examples';
 import { useState } from 'react';
 
+import Placeholder from '@/assets/placeholder.svg?react';
+import PlaceholderDark from '@/assets/placeholder-dark.svg?react';
+
 export default {
   title: 'Demos/Companion',
   component: Chat
@@ -34,11 +37,11 @@ export const Basic = () => {
   ]);
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         width: 350,
         height: 500,
         padding: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -81,10 +84,11 @@ export const Basic = () => {
           <SessionMessagesHeader />
           <SessionMessages>
             {conversations =>
-              conversations.map(conversation => (
+              conversations.map((conversation, index) => (
                 <SessionMessage
                   key={conversation.id}
                   conversation={conversation}
+                  isLast={index === conversations.length - 1}
                 />
               ))
             }
@@ -99,11 +103,11 @@ export const Basic = () => {
 export const Empty = () => {
   return (
     <div
+      className="dark:bg-gray-950 bg-white"
       style={{
         width: 350,
         height: 500,
         padding: 20,
-        background: '#02020F',
         borderRadius: 5
       }}
     >
@@ -126,20 +130,21 @@ export const Empty = () => {
             }
           </SessionGroups>
         </SessionsList>
-        <SessionMessagePanel>
-          <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map(conversation => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                />
-              ))
+        <div className="flex-1 h-full flex flex-col">
+          <SessionMessages
+            newSessionContent={
+              <div className="flex flex-col gap-2 items-center justify-center h-full">
+                <Placeholder className="h-[50%] block dark:hidden" />
+                <PlaceholderDark className="h-[50%] hidden dark:block" />
+                <p className="text-gray-500 max-w-[400px] text-center">
+                  Welcome to Reachat, a UI library for effortlessly building and
+                  customizing chat experiences with Tailwind.
+                </p>
+              </div>
             }
-          </SessionMessages>
-          <ChatInput />
-        </SessionMessagePanel>
+          />
+        </div>
+        <ChatInput />
       </Chat>
     </div>
   );

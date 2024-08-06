@@ -129,6 +129,7 @@ export const _OpenAI = () => {
         onChange={e => setApiKey(e.target.value)}
       />
       <div
+        className="dark:bg-gray-950 bg-white"
         style={{
           position: 'absolute',
           top: 50,
@@ -137,7 +138,6 @@ export const _OpenAI = () => {
           bottom: 0,
           padding: 20,
           margin: 20,
-          background: '#02020F',
           borderRadius: 5
         }}
       >
@@ -169,10 +169,11 @@ export const _OpenAI = () => {
             <SessionMessagesHeader />
             <SessionMessages>
               {conversations =>
-                conversations.map(conversation => (
+                conversations.map((conversation, index) => (
                   <SessionMessage
                     key={conversation.id}
                     conversation={conversation}
+                    isLast={index === conversations.length - 1}
                   />
                 ))
               }
@@ -295,6 +296,7 @@ export const VercelAI = () => {
         onChange={e => setApiKey(e.target.value)}
       />
       <div
+        className="dark:bg-gray-950 bg-white"
         style={{
           position: 'absolute',
           top: 50,
@@ -303,7 +305,6 @@ export const VercelAI = () => {
           bottom: 0,
           padding: 20,
           margin: 20,
-          background: '#02020F',
           borderRadius: 5
         }}
       >
@@ -336,10 +337,11 @@ export const VercelAI = () => {
             <SessionMessagesHeader />
             <SessionMessages>
               {conversations =>
-                conversations.map(conversation => (
+                conversations.map((conversation, index) => (
                   <SessionMessage
                     key={conversation.id}
                     conversation={conversation}
+                    isLast={index === conversations.length - 1}
                   />
                 ))
               }

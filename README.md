@@ -34,6 +34,8 @@ theme via Tailwind.
 - Checkout the [docs and demos](https://reachat.dev)
 - Checkout the [storybook demos](https://storybook.reachat.dev)
 - Learn about updates from the [changelog](CHANGELOG.md)
+- Download [Figma template](https://www.figma.com/community/file/1401162540082414292/reachat-landing-page-public)
+- Try the [sample repo](https://github.com/reaviz/reachat-example)
 
 ## 💎 Other Projects
 
@@ -85,5 +87,5 @@ If you want to run reachat locally, its super easy!
 
 Thanks to all our contributors!
 
-<a href="https://github.com/reaviz/reaviz/graphs/contributors"><img src="https://opencollective.com/reaviz/contributors.svg?width=890" /></a>
+<a href="https://github.com/reaviz/reachat/graphs/contributors"><img src="https://opencollective.com/reaviz/contributors.svg?width=890" /></a>
 
