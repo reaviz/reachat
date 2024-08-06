@@ -1,6 +1,6 @@
 {
   "name": "reachat",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Chat UI for Building LLMs",
   "scripts": {
     "build-storybook": "storybook build",
