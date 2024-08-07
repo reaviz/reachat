@@ -794,6 +794,10 @@ export const MarkdownShowcase = () => {
 
   The answer to the ultimate question of life, the universe, and everything is **42**.
 
+  \`\`\`math
+  L = \\frac{1}{2} \\rho v^2 S C_L
+  \`\`\`
+
   [Perspective](https://en.wikipedia.org/wiki/Philosophical_question)
   `;
 

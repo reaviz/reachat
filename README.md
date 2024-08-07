@@ -52,8 +52,9 @@ theme via Tailwind.
   - Tables
   - JSON
   - Lists
+  - Math
   - Embeds ( Youtube )
-  - remark plugin support
+  - remark/rhype plugin support
 - File Uploads
 - Image Preview
 - Message Sources

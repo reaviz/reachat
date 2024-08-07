@@ -6,23 +6,33 @@ import { CodeHighlighter } from './CodeHighlighter';
 import { cn } from 'reablocks';
 import { TableComponent, TableHeaderCell, TableDataCell } from './Table';
 import { ChatContext } from '@/ChatContext';
+import rehypeKatex from 'rehype-katex';
+import remarkMath from 'remark-math';
+import 'katex/dist/katex.min.css';
 
 interface MarkdownWrapperProps extends PropsWithChildren {
   /**
    * Remark plugins to apply to the markdown content.
    */
   remarkPlugins?: PluggableList[];
+
+  /**
+   * Rehype plugins to apply to the markdown content.
+   */
+  rehypePlugins?: PluggableList[];
 }
 
 export const Markdown: FC<MarkdownWrapperProps> = ({
   children,
-  remarkPlugins = [remarkGfm]
+  remarkPlugins = [remarkGfm, remarkMath],
+  rehypePlugins = [rehypeKatex]
 }) => {
   const { theme } = useContext(ChatContext);
 
   return (
     <ReactMarkdown
       remarkPlugins={remarkPlugins as PluggableList}
+      rehypePlugins={rehypePlugins as PluggableList}
       components={{
         code: ({ className, ...props }) => (
           <CodeHighlighter
