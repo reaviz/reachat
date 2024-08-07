@@ -84,7 +84,7 @@ export interface ChatTheme {
 
 export const chatTheme: ChatTheme = {
   base: 'dark:text-white text-gray-500',
-  console: 'flex w-full gap-10 h-full',
+  console: 'flex w-full gap-4 h-full',
   companion: 'w-full h-full overflow-hidden',
   empty: 'text-center flex-1',
   sessions: {
@@ -110,7 +110,7 @@ export const chatTheme: ChatTheme = {
   },
   messages: {
     base: '',
-    console: 'flex flex-col mr-5 flex-1 overflow-hidden',
+    console: 'flex flex-col mx-5 flex-1 overflow-hidden',
     companion: 'flex w-full h-full',
     back: 'self-start p-0 my-2',
     inner: 'flex-1 h-full flex flex-col',
