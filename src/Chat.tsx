@@ -11,7 +11,7 @@ import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
 import { Session } from './types';
 import { ChatTheme, chatTheme } from './theme';
-import { ChatContext } from './ChatContext';
+import { ChatContext, ChatViewType } from './ChatContext';
 import { PluggableList } from 'react-markdown/lib';
 import { AnimatePresence } from 'framer-motion';
 import { useDimensions } from './utils/useDimensions';
@@ -28,11 +28,13 @@ export interface ChatProps extends PropsWithChildren {
   className?: string;
 
   /**
-   * The type of prompt to display. Companion prompts are smaller and are
-   * meant to be displayed alongside other content. Full prompts are larger
-   * and are meant to be displayed on their own.
+   * The type of prompt to display.
+   *
+   * - Companion: Smaller prompt screen with session lists.
+   * - Console: Full screen experience.
+   * - Chat: Only chat, no sessions.
    */
-  viewType?: 'companion' | 'console';
+  viewType?: ChatViewType;
 
   /**
    * The list of sessions to display.
@@ -172,6 +174,7 @@ export const Chat: FC<ChatProps> = ({
       disabled,
       isLoading,
       isCompact,
+      viewType,
       activeSessionId: internalActiveSessionID,
       selectSession: handleSelectSession,
       deleteSession: handleDeleteSession,
@@ -183,6 +186,7 @@ export const Chat: FC<ChatProps> = ({
     [
       isLoading,
       isCompact,
+      viewType,
       disabled,
       theme,
       remarkPlugins,

@@ -3,6 +3,8 @@ import { Session } from './types';
 import { ChatTheme } from './theme';
 import { PluggableList } from 'react-markdown/lib';
 
+export type ChatViewType = 'chat' | 'companion' | 'console';
+
 export interface ChatContextProps {
   sessions: Session[];
   disabled?: boolean;
@@ -10,6 +12,7 @@ export interface ChatContextProps {
   theme?: ChatTheme;
   isLoading?: boolean;
   isCompact?: boolean;
+  viewType?: ChatViewType;
   activeSession?: Session | null;
   remarkPlugins?: PluggableList[];
   selectSession?: (sessionId: string) => void;
