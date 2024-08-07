@@ -7,10 +7,10 @@ import BackIcon from '@/assets/back.svg?react';
 export const SessionMessagePanel: FC<PropsWithChildren> = ({ children }) => {
   const { activeSessionId, theme, isCompact, selectSession, viewType } =
     useContext(ChatContext);
-  const isVisible = isCompact && activeSessionId;
+  const isVisible = (isCompact && activeSessionId) || viewType === 'chat' || !isCompact;
 
   return (
-    (!isCompact || isVisible) && (
+    isVisible && (
       <motion.div
         initial={{ translateX: '200%' }}
         animate={{
