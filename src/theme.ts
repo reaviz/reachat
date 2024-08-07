@@ -117,12 +117,12 @@ export const chatTheme: ChatTheme = {
     title: ['text-base font-bold text-gray-500', 'dark:text-gray-200'].join(
       ' '
     ),
-    date: 'text-xs whitespace-nowrap pt-2 text-gray-400',
+    date: 'text-xs whitespace-nowrap text-gray-400',
     content: [
       'mt-2 flex-1 overflow-auto [&_hr]:bg-gray-200',
       'dark:[&_hr]:bg-gray-800/60'
     ].join(' '),
-    header: 'flex justify-between items-start gap-2',
+    header: 'flex justify-between items-center gap-2',
     showMore: 'mb-4',
     message: {
       base: 'mt-4 mb-4 flex flex-col p-0 rounded border-none bg-transparent',
@@ -130,7 +130,7 @@ export const chatTheme: ChatTheme = {
         'font-semibold mb-4 px-4 py-4 pb-2 rounded-3xl rounded-br-none text-typography border bg-gray-200 border-gray-300 text-gray-900',
         'dark:bg-gray-900/60 dark:border-gray-700/50 dark:text-gray-100'
       ].join(' '),
-      response: ['text-gray-900', 'dark:text-gray-100'].join(' '),
+      response: ['data-[compact=false]:px-4 text-gray-900', 'dark:text-gray-100'].join(' '),
       cursor: 'inline-block w-1 h-4 bg-current',
       files: {
         base: 'mb-2 flex flex-wrap gap-3 ',
