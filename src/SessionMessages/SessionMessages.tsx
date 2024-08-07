@@ -110,7 +110,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
           initial="hidden"
           animate="visible"
           onAnimationComplete={() => {
-            setIsAnimating(false);
+            requestAnimationFrame(() => setIsAnimating(false));
           }}
         >
           {children(convosToRender)}
