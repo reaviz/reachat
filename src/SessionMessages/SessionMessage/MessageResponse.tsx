@@ -25,11 +25,17 @@ export const MessageResponse: FC<MessageResponseProps> = ({
   isLoading,
   children
 }) => {
-  const { theme, remarkPlugins = [remarkGfm, remarkYoutube] } =
-    useContext(ChatContext);
+  const {
+    theme,
+    isCompact,
+    remarkPlugins = [remarkGfm, remarkYoutube]
+  } = useContext(ChatContext);
   const Comp = children ? Slot : 'div';
   return (
-    <Comp className={cn(theme.messages.message.response)}>
+    <Comp
+      data-compact={isCompact}
+      className={cn(theme.messages.message.response)}
+    >
       {children || (
         <>
           <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
