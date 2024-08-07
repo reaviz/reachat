@@ -66,7 +66,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   }, [activeSession, isAnimating]);
 
   function handleShowMore() {
-    showNext(10);
+    showNext(limit);
     requestAnimationFrame(() => (contentRef.current.scrollTop = 0));
   }
 
@@ -78,7 +78,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
 
   const { data, hasMore, showNext } = useInfinityList({
     items: reversedConvos,
-    limit
+    size: limit
   });
 
   // Reverse the data to the last one last now
@@ -110,7 +110,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
           initial="hidden"
           animate="visible"
           onAnimationComplete={() => {
-            setIsAnimating(false);
+            requestAnimationFrame(() => setIsAnimating(false));
           }}
         >
           {children(convosToRender)}

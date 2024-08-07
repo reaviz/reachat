@@ -5,12 +5,12 @@ import { motion } from 'framer-motion';
 import BackIcon from '@/assets/back.svg?react';
 
 export const SessionMessagePanel: FC<PropsWithChildren> = ({ children }) => {
-  const { activeSessionId, theme, isCompact, selectSession } =
+  const { activeSessionId, theme, isCompact, selectSession, viewType } =
     useContext(ChatContext);
-  const isVisible = isCompact && activeSessionId;
+  const isVisible = (isCompact && activeSessionId) || viewType === 'chat' || !isCompact;
 
   return (
-    (!isCompact || isVisible) && (
+    isVisible && (
       <motion.div
         initial={{ translateX: '200%' }}
         animate={{
@@ -29,7 +29,7 @@ export const SessionMessagePanel: FC<PropsWithChildren> = ({ children }) => {
         })}
       >
         <div className={cn(theme.messages.inner)}>
-          {isCompact && (
+          {(isCompact && viewType !== 'chat') && (
             <Button
               variant="text"
               size="small"
