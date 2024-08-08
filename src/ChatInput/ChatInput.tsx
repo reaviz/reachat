@@ -12,8 +12,8 @@ import {
 import { Button, Textarea, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
-import AttachIcon from '@/assets/paperclip.svg?react';
-import { ChatContext } from './ChatContext';
+import { ChatContext } from '@/ChatContext';
+import { FileInput } from './FileInput';
 
 interface ChatInputProps {
   /**
@@ -60,12 +60,11 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
   defaultValue,
   sendIcon = <SendIcon />,
   stopIcon = <StopIcon />,
-  attachIcon = <AttachIcon />
+  attachIcon
 }, ref) => {
   const { theme, isLoading, disabled, sendMessage, stopMessage, fileUpload } =
     useContext(ChatContext);
   const [message, setMessage] = useState<string>('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useImperativeHandle(ref, () => ({
@@ -111,24 +110,13 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
       />
       <div className={cn(theme.input.actions.base)}>
         {allowedFiles?.length > 0 && (
-          <>
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              accept={allowedFiles.join(',')}
-              onChange={handleFileUpload}
-            />
-            <Button
-              title="Upload"
-              variant="text"
-              disabled={isLoading || disabled}
-              className={cn(theme.input.upload)}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {attachIcon}
-            </Button>
-          </>
+          <FileInput
+            allowedFiles={allowedFiles}
+            onFileUpload={handleFileUpload}
+            isLoading={isLoading}
+            disabled={disabled}
+            attachIcon={attachIcon}
+          />
         )}
         {isLoading && (
           <Button
