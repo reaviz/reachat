@@ -5,7 +5,9 @@ import {
   ReactElement,
   useRef,
   ChangeEvent,
-  useContext
+  useContext,
+  forwardRef,
+  useImperativeHandle
 } from 'react';
 import { Button, Textarea, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
@@ -45,18 +47,32 @@ interface ChatInputProps {
   attachIcon?: ReactElement;
 }
 
-export const ChatInput: FC<ChatInputProps> = ({
+export interface ChatInputRef {
+  /**
+   * Focus the input.
+   */
+  focus: () => void;
+}
+
+export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
   allowedFiles,
   placeholder,
   defaultValue,
   sendIcon = <SendIcon />,
   stopIcon = <StopIcon />,
   attachIcon = <AttachIcon />
-}) => {
+}, ref) => {
   const { theme, isLoading, disabled, sendMessage, stopMessage, fileUpload } =
     useContext(ChatContext);
   const [message, setMessage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current?.focus();
+    }
+  }));
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -82,15 +98,16 @@ export const ChatInput: FC<ChatInputProps> = ({
   return (
     <div className={cn(theme.input.base)}>
       <Textarea
+        inputRef={inputRef}
         containerClassName={cn(theme.input.input)}
         minRows={1}
         autoFocus
         value={message}
-        onChange={e => setMessage(e.target.value)}
         defaultValue={defaultValue}
         onKeyPress={handleKeyPress}
         placeholder={placeholder}
         disabled={isLoading || disabled}
+        onChange={e => setMessage(e.target.value)}
       />
       <div className={cn(theme.input.actions.base)}>
         {allowedFiles?.length > 0 && (
@@ -134,4 +151,4 @@ export const ChatInput: FC<ChatInputProps> = ({
       </div>
     </div>
   );
-};
+});
