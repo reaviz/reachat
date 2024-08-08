@@ -172,7 +172,7 @@ export const Chat: FC<ChatProps> = ({
     () => ({
       sessions,
       activeSession,
-      remarkPlugins,
+      remarkPlugins: remarkPlugins as PluggableList[],
       theme,
       disabled,
       isLoading,
