@@ -7,6 +7,7 @@ import { Markdown } from '@/Markdown';
 import { PluggableList } from 'react-markdown/lib';
 import remarkGfm from 'remark-gfm';
 import remarkYoutube from 'remark-youtube';
+import remarkMath from 'remark-math';
 
 export interface MessageResponseProps extends PropsWithChildren {
   /**
@@ -28,7 +29,7 @@ export const MessageResponse: FC<MessageResponseProps> = ({
   const {
     theme,
     isCompact,
-    remarkPlugins = [remarkGfm, remarkYoutube]
+    remarkPlugins = [remarkGfm, remarkYoutube, remarkMath]
   } = useContext(ChatContext);
   const Comp = children ? Slot : 'div';
   return (
