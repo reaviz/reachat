@@ -1,15 +1,10 @@
 import { FC, PropsWithChildren, useContext } from 'react';
 import { ChatContext } from '@/ChatContext';
 import { Card, cn, Divider } from 'reablocks';
-import CopyIcon from '@/assets/copy.svg?react';
-import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
-import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
-import RefreshIcon from '@/assets/refresh.svg?react';
 import { Conversation } from '@/types';
 import { motion } from 'framer-motion';
 import { MessageQuestion } from './MessageQuestion';
 import { MessageResponse } from './MessageResponse';
-import { MessageFiles } from './MessageFiles';
 import { MessageSources } from './MessageSources';
 import { MessageActions } from './MessageActions';
 
@@ -52,8 +47,7 @@ export const SessionMessage: FC<SessionMessageProps> = ({
       <Card className={cn(theme.messages.message.base)}>
         {children || (
           <>
-            <MessageFiles files={conversation.files} />
-            <MessageQuestion question={conversation.question} />
+            <MessageQuestion question={conversation.question} files={conversation.files} />
             <MessageResponse
               response={conversation.response}
               isLoading={isLast && isLoading}
