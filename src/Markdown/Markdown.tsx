@@ -1,13 +1,11 @@
 import { FC, PropsWithChildren, useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { PluggableList } from 'react-markdown/lib';
-import remarkGfm from 'remark-gfm';
 import { CodeHighlighter } from './CodeHighlighter';
 import { cn } from 'reablocks';
 import { TableComponent, TableHeaderCell, TableDataCell } from './Table';
 import { ChatContext } from '@/ChatContext';
 import rehypeKatex from 'rehype-katex';
-import remarkMath from 'remark-math';
 import 'katex/dist/katex.min.css';
 
 interface MarkdownWrapperProps extends PropsWithChildren {
@@ -24,7 +22,7 @@ interface MarkdownWrapperProps extends PropsWithChildren {
 
 export const Markdown: FC<MarkdownWrapperProps> = ({
   children,
-  remarkPlugins = [remarkGfm, remarkMath],
+  remarkPlugins,
   rehypePlugins = [rehypeKatex]
 }) => {
   const { theme } = useContext(ChatContext);

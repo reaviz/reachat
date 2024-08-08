@@ -15,6 +15,9 @@ import { ChatContext, ChatViewType } from './ChatContext';
 import { PluggableList } from 'react-markdown/lib';
 import { AnimatePresence } from 'framer-motion';
 import { useDimensions } from './utils/useDimensions';
+import remarkGfm from 'remark-gfm';
+import remarkYoutube from 'remark-youtube';
+import remarkMath from 'remark-math';
 
 export interface ChatProps extends PropsWithChildren {
   /**
@@ -110,7 +113,7 @@ export const Chat: FC<ChatProps> = ({
   activeSessionId,
   theme: customTheme = chatTheme,
   onNewSession,
-  remarkPlugins,
+  remarkPlugins = [remarkGfm, remarkYoutube, remarkMath],
   disabled,
   style,
   className

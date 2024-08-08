@@ -4,9 +4,6 @@ import { cn } from 'reablocks';
 import { FC, PropsWithChildren, useContext } from 'react';
 import { Markdown } from '@/Markdown';
 import { PluggableList } from 'react-markdown/lib';
-import remarkGfm from 'remark-gfm';
-import remarkYoutube from 'remark-youtube';
-import remarkMath from 'remark-math';
 
 export interface MessageQuestionProps extends PropsWithChildren {
   /**
@@ -19,7 +16,7 @@ export const MessageQuestion: FC<MessageQuestionProps> = ({
   question,
   children
 }) => {
-  const { theme, remarkPlugins = [remarkGfm, remarkYoutube, remarkMath] } =
+  const { theme, remarkPlugins } =
     useContext(ChatContext);
   const Comp = children ? Slot : 'div';
 
