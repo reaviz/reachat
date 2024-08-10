@@ -67,17 +67,7 @@ export const Compact = () => {
         onDeleteSession={() => alert('delete!')}
       >
         <SessionMessagePanel>
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -129,17 +119,7 @@ export const FullScreen = () => {
         onDeleteSession={() => alert('delete!')}
       >
         <SessionMessagePanel>
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>

@@ -72,31 +72,11 @@ export const Basic = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -126,31 +106,11 @@ export const Embeds = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -181,32 +141,12 @@ export const DefaultSession = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -238,32 +178,12 @@ export const Loading = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -294,31 +214,11 @@ export const FileUploads = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput allowedFiles={['.pdf', '.docx']} />
         </SessionMessagePanel>
       </Chat>
@@ -349,32 +249,12 @@ export const DefaultInputValue = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -415,17 +295,7 @@ export const UndeleteableSessions = () => {
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -489,32 +359,12 @@ export const SessionGrouping = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput placeholder="Send a message" />
         </SessionMessagePanel>
       </Chat>
@@ -560,32 +410,12 @@ export const HundredSessions = () => {
       <Chat viewType="console" sessions={hundredSessions}>
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -635,32 +465,12 @@ export const HundredConversations = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -678,8 +488,10 @@ export const LongSessionNames = () => {
       conversations: [
         {
           id: '1',
-          question: 'Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics?',
-          response: 'Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics?',
+          question:
+            'Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics?',
+          response:
+            'Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics?',
           createdAt: new Date(),
           updatedAt: new Date()
         }
@@ -710,32 +522,12 @@ export const LongSessionNames = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -847,32 +639,12 @@ export const MarkdownShowcase = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -938,32 +710,12 @@ export const CVEExample = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -1056,32 +808,12 @@ export const ConversationSources = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -1102,10 +834,15 @@ const CustomMessagesHeader: FC<any> = () => {
   );
 };
 
-const CustomMessageQuestion: FC<any> = ({ question }) => (
-  <span className="text-lg font-semibold text-blue-500">
-    This is my question: {question}
-  </span>
+const CustomMessageQuestion: FC<any> = ({ question, files }) => (
+  <>
+    <span className="text-lg font-semibold text-blue-500">
+      This is my question: {question}
+    </span>
+    <MessageFiles files={files}>
+      <CustomMessageFile />
+    </MessageFiles>
+  </>
 );
 
 const CustomMessageResponse: FC<any> = ({ response }) => (
@@ -1116,6 +853,7 @@ const CustomMessageResponse: FC<any> = ({ response }) => (
 
 const CustomMessageFile: FC<any> = ({ name, type }) => (
   <Chip size="small" className="rounded-full border border-gray-700">
+    <>{console.log('boop', name, type)}</>
     {name || type}
   </Chip>
 );
@@ -1240,12 +978,12 @@ export const CustomComponents = () => {
                   isLast={index === conversations.length - 1}
                   key={conversation.id}
                 >
-                  <MessageQuestion question={conversation.question}>
+                  <MessageQuestion
+                    question={conversation.question}
+                    files={conversation.files}
+                  >
                     <CustomMessageQuestion />
                   </MessageQuestion>
-                  <MessageFiles files={conversation.files}>
-                    <CustomMessageFile />
-                  </MessageFiles>
                   <MessageResponse response={conversation.response}>
                     <CustomMessageResponse />
                   </MessageResponse>
@@ -1343,32 +1081,12 @@ export const ImageFiles = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
