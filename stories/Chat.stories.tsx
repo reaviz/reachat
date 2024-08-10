@@ -1,15 +1,9 @@
 import { Meta } from '@storybook/react';
 import {
   Chat,
-  SessionsList,
-  SessionsGroup,
-  SessionListItem,
-  NewSessionButton,
   SessionMessages,
-  SessionGroups,
   ChatInput,
   SessionMessagePanel,
-  SessionMessagesHeader,
   SessionMessage,
   Session
 } from '../src';
