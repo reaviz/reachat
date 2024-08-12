@@ -5,15 +5,12 @@ import {
   Chat,
   Session,
   SessionsList,
-  SessionsGroup,
-  SessionListItem,
   NewSessionButton,
   SessionMessages,
   SessionGroups,
   ChatInput,
   SessionMessagePanel,
-  SessionMessagesHeader,
-  SessionMessage
+  SessionMessagesHeader
 } from '../src';
 import { Input } from 'reablocks';
 import { generateText } from 'ai';
@@ -152,32 +149,12 @@ export const _OpenAI = () => {
         >
           <SessionsList>
             <NewSessionButton />
-            <SessionGroups>
-              {groups =>
-                groups.map(({ heading, sessions }) => (
-                  <SessionsGroup heading={heading} key={heading}>
-                    {sessions.map(s => (
-                      <SessionListItem key={s.id} session={s} />
-                    ))}
-                  </SessionsGroup>
-                ))
-              }
-            </SessionGroups>
+            <SessionGroups />
           </SessionsList>
 
           <SessionMessagePanel>
             <SessionMessagesHeader />
-            <SessionMessages>
-              {conversations =>
-                conversations.map((conversation, index) => (
-                  <SessionMessage
-                    key={conversation.id}
-                    conversation={conversation}
-                    isLast={index === conversations.length - 1}
-                  />
-                ))
-              }
-            </SessionMessages>
+            <SessionMessages />
             <ChatInput />
           </SessionMessagePanel>
         </Chat>
@@ -320,32 +297,12 @@ export const VercelAI = () => {
         >
           <SessionsList>
             <NewSessionButton />
-            <SessionGroups>
-              {groups =>
-                groups.map(({ heading, sessions }) => (
-                  <SessionsGroup heading={heading} key={heading}>
-                    {sessions.map(s => (
-                      <SessionListItem key={s.id} session={s} />
-                    ))}
-                  </SessionsGroup>
-                ))
-              }
-            </SessionGroups>
+            <SessionGroups />
           </SessionsList>
 
           <SessionMessagePanel>
             <SessionMessagesHeader />
-            <SessionMessages>
-              {conversations =>
-                conversations.map((conversation, index) => (
-                  <SessionMessage
-                    key={conversation.id}
-                    conversation={conversation}
-                    isLast={index === conversations.length - 1}
-                  />
-                ))
-              }
-            </SessionMessages>
+            <SessionMessages />
             <ChatInput />
           </SessionMessagePanel>
         </Chat>

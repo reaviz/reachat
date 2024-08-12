@@ -20,37 +20,40 @@ export interface MessageQuestionProps extends PropsWithChildren {
 }
 
 export const MessageQuestion: FC<MessageQuestionProps> = ({
-  question,
-  files,
-  children
+  children,
+  ...props
 }) => {
-  const { theme, remarkPlugins } =
-    useContext(ChatContext);
+  const { theme, remarkPlugins } = useContext(ChatContext);
+  const { question, files } = props;
   const Comp = children ? Slot : 'div';
   const [expanded, setExpanded] = useState(false);
   const isLong = question.length > 500;
 
   return (
-    <Comp className={cn(theme.messages.message.question, {
-      [theme.messages.message.overlay]: isLong && !expanded
-    })}>
-      <MessageFiles files={files} />
+    <Comp
+      className={cn(theme.messages.message.question, {
+        [theme.messages.message.overlay]: isLong && !expanded
+      })}
+      {...props}
+    >
       {children || (
-        <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
-          {question}
-        </Markdown>
-      )}
-      {isLong && !expanded && (
-        <Button
-          variant="link"
-          size="small"
-          className={theme.messages.message.expand}
-          onClick={() => setExpanded(true)}
-        >
-          Show more
-        </Button>
+        <>
+          <MessageFiles files={files} />
+          <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
+            {question}
+          </Markdown>
+          {isLong && !expanded && (
+            <Button
+              variant="link"
+              size="small"
+              className={theme.messages.message.expand}
+              onClick={() => setExpanded(true)}
+            >
+              Show more
+            </Button>
+          )}
+        </>
       )}
     </Comp>
   );
 };
-

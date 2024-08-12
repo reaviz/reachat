@@ -2,15 +2,12 @@ import { Meta } from '@storybook/react';
 import {
   Chat,
   SessionsList,
-  SessionsGroup,
-  SessionListItem,
   NewSessionButton,
   SessionMessages,
   SessionGroups,
   ChatInput,
   SessionMessagePanel,
   SessionMessagesHeader,
-  SessionMessage,
   Session
 } from '../src';
 import {
@@ -68,31 +65,11 @@ export const Basic = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -118,17 +95,7 @@ export const Empty = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
         <div className="flex-1 h-full flex flex-col">
           <SessionMessages
