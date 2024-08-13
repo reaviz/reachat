@@ -1,3 +1,6 @@
+# 1.4.1
+- [fix] fix focus on session change
+
 # 1.4.0
 - [feature] simplify code setup
 
