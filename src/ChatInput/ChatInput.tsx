@@ -68,10 +68,10 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
-    if(inputRef && inputRef.current) {
-      inputRef.current.focus()
+    if(inputRef.current) {
+      inputRef.current.focus();
     }
-  }, [activeSessionId, inputRef])
+  }, [activeSessionId, inputRef]);
 
   useImperativeHandle(ref, () => ({
     focus: () => {
