@@ -6,7 +6,7 @@ import { cn } from 'reablocks';
 import { TableComponent, TableHeaderCell, TableDataCell } from './Table';
 import { ChatContext } from '@/ChatContext';
 import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
+import './Markdown.css';
 
 interface MarkdownWrapperProps extends PropsWithChildren {
   /**
