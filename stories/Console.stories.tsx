@@ -1186,30 +1186,11 @@ export const Working = () => {
       >
         <SessionsList>
           <NewSessionButton />
-          <SessionGroups>
-            {groups =>
-              groups.map(({ heading, sessions }) => (
-                <SessionsGroup heading={heading} key={heading}>
-                  {sessions.map(s => (
-                    <SessionListItem key={s.id} session={s} />
-                  ))}
-                </SessionsGroup>
-              ))
-            }
-          </SessionGroups>
+          <SessionGroups />
         </SessionsList>
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages>
-            {conversations =>
-              conversations.map(conversation => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                />
-              ))
-            }
-          </SessionMessages>
+          <SessionMessages />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
