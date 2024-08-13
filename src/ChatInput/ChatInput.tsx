@@ -1,5 +1,4 @@
 import {
-  FC,
   useState,
   KeyboardEvent,
   ReactElement,
@@ -7,7 +6,8 @@ import {
   ChangeEvent,
   useContext,
   forwardRef,
-  useImperativeHandle
+  useImperativeHandle,
+  useEffect
 } from 'react';
 import { Button, Textarea, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
@@ -62,10 +62,16 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
   stopIcon = <StopIcon />,
   attachIcon
 }, ref) => {
-  const { theme, isLoading, disabled, sendMessage, stopMessage, fileUpload } =
+  const { theme, isLoading, disabled, sendMessage, stopMessage, fileUpload, activeSessionId } =
     useContext(ChatContext);
   const [message, setMessage] = useState<string>('');
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if(inputRef && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [activeSessionId, inputRef])
 
   useImperativeHandle(ref, () => ({
     focus: () => {
@@ -97,7 +103,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
   return (
     <div className={cn(theme.input.base)}>
       <Textarea
-        inputRef={inputRef}
+        ref={inputRef}
         containerClassName={cn(theme.input.input)}
         minRows={1}
         autoFocus
