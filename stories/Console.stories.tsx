@@ -854,7 +854,6 @@ const CustomMessageResponse: FC<any> = ({ response }) => (
 
 const CustomMessageFile: FC<any> = ({ name, type }) => (
   <Chip size="small" className="rounded-full border border-gray-700">
-    <>{console.log('boop', name, type)}</>
     {name || type}
   </Chip>
 );
