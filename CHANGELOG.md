@@ -1,3 +1,6 @@
+# 1.4.2
+- [fix] fix katex failing next builds
+
 # 1.4.1
 - [fix] fix focus on session change
 
