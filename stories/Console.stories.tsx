@@ -43,7 +43,8 @@ import {
   fakeSessionsWithEmbeds,
   sessionWithSources,
   sessionsWithFiles,
-  sessionsWithPartialConversation
+  sessionsWithPartialConversation,
+  sessionWithMessageResponseRecommended
 } from './examples';
 
 export default {
@@ -1078,6 +1079,41 @@ export const ImageFiles = () => {
         viewType="console"
         sessions={sessionWithImages}
         activeSessionId="session-images"
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups />
+        </SessionsList>
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages />
+          <ChatInput />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const FollowUpResponses = () => {
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="console"
+        sessions={sessionWithMessageResponseRecommended}
+        activeSessionId="session-sources"
       >
         <SessionsList>
           <NewSessionButton />

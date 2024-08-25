@@ -62,6 +62,11 @@ export interface Conversation {
    * The AI's response to the user's question
    */
   response?: string;
+  /**
+   * The AI's follow-upresponse to the user's question
+   */
+
+  followUpResponse?: string;
 
   /**
    * Array of sources referenced in the conversation

@@ -6,3 +6,4 @@ export * from './MessageFiles';
 export * from './MessageQuestion';
 export * from './MessageResponse';
 export * from './MessageSources';
+export * from './MessageResponseRecommended';

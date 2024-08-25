@@ -33,6 +33,9 @@ export interface ChatTheme {
       cursor: string;
       overlay: string;
       expand: string;
+      recommended: string;
+      rimage: string;
+      markdownBorder: string;
       files: {
         base: string;
         file: {
@@ -132,10 +135,20 @@ export const chatTheme: ChatTheme = {
         'relative font-semibold mb-4 px-4 py-4 pb-2 rounded-3xl rounded-br-none text-typography border bg-gray-200 border-gray-300 text-gray-900',
         'dark:bg-gray-900/60 dark:border-gray-700/50 dark:text-gray-100'
       ].join(' '),
-      response: ['relative data-[compact=false]:px-4 text-gray-900', 'dark:text-gray-100'].join(' '),
-      overlay: `overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-gradient-to-b after:from-transparent dark:after:to-gray-900 after:to-gray-200`,
+      response: [
+        'relative data-[compact=false]:px-4 text-gray-900',
+        'dark:text-gray-100'
+      ].join(' '),
+      overlay:
+        "overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-gradient-to-b after:from-transparent dark:after:to-gray-900 after:to-gray-200",
       cursor: 'inline-block w-1 h-4 bg-current',
       expand: 'absolute bottom-1 right-1 z-10',
+      recommended: 'flex gap-4 justify-around',
+      rimage: ' max-w-[250px] max-h-[250px] object-cover cursor-pointer',
+      markdownBorder: [
+        'relative font-semibold mb-4 px-4 py-4 pb-2 rounded-4xl rounded-[10px] cursor-pointer text-typography border bg-gray-200 border-gray-300 text-gray-900',
+        'dark:bg-gray-900/60 dark:border-gray-700/50 dark:text-gray-100 '
+      ].join(' '),
       files: {
         base: 'mb-2 flex flex-wrap gap-3 ',
         file: {
@@ -167,7 +180,8 @@ export const chatTheme: ChatTheme = {
         th: 'px-4 py-2 text-left font-bold border-b border-gray-500',
         td: 'px-4 py-2',
         code: 'm-2 rounded-b relative',
-        toolbar: 'text-xs dark:bg-gray-700/50 flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md bg-gray-200 ',
+        toolbar:
+          'text-xs dark:bg-gray-700/50 flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md bg-gray-200 ',
         li: 'mb-2 ml-6',
         ul: 'mb-4 list-disc',
         ol: 'mb-4 list-decimal'

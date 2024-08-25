@@ -7,6 +7,7 @@ import { MessageQuestion } from './MessageQuestion';
 import { MessageResponse } from './MessageResponse';
 import { MessageSources } from './MessageSources';
 import { MessageActions } from './MessageActions';
+import { MessageResponseRecommended } from './MessageResponseRecommended';
 
 const messageVariants = {
   hidden: {
@@ -41,17 +42,31 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   children
 }) => {
   const { theme, isLoading } = useContext(ChatContext);
+  const hasFollowUpResponse = !!conversation.followUpResponse;
 
   return (
     <motion.div key={conversation.id} variants={messageVariants}>
       <Card className={cn(theme.messages.message.base)}>
         {children || (
           <>
-            <MessageQuestion question={conversation.question} files={conversation.files} />
-            <MessageResponse
-              response={conversation.response}
-              isLoading={isLast && isLoading}
+            <MessageQuestion
+              question={conversation.question}
+              files={conversation.files}
             />
+
+            {hasFollowUpResponse ? (
+              <MessageResponseRecommended
+                response={conversation.response}
+                followUpResponse={conversation.followUpResponse}
+                isLoading={isLast && isLoading}
+              />
+            ) : (
+              <MessageResponse
+                response={conversation.response}
+                isLoading={isLast && isLoading}
+              />
+            )}
+
             <MessageSources sources={conversation.sources} />
             <MessageActions
               question={conversation.question}
@@ -60,9 +75,7 @@ export const SessionMessage: FC<SessionMessageProps> = ({
           </>
         )}
       </Card>
-      {!isLast && (
-        <Divider />
-      )}
+      {!isLast && <Divider />}
     </motion.div>
   );
 };

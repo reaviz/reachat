@@ -208,7 +208,8 @@ export const sessionWithMessageResponseRecommended: Session[] = [
         createdAt: new Date(),
         response:
           'React benefits include a declarative coding style, component-based architecture, virtual DOM, and a large community and ecosystem.',
-        followUpResponse: `React's state management system, which allows components to maintain their own state and re-render only when necessary, makes it easier to build responsive and interactive UIs.`,
+        followUpResponse:
+          'React’s state management system enables components to maintain their own state and efficiently re-render only when necessary, making it easier to build responsive and interactive UIs.',
         updatedAt: new Date()
       }
     ]
