@@ -12,10 +12,11 @@ interface MessageFilesProps extends PropsWithChildren {
   files: ConversationFile[];
 }
 
+
 export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
   const { theme } = useContext(ChatContext);
   const Comp = children ? Slot : MessageFile;
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState<boolean>(false);
 
   if (!files || files.length === 0) {
     return null;
@@ -25,17 +26,6 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
   const imageFiles = files.filter(file => file.type.startsWith('image/'));
   const otherFiles = files.filter(file => !file.type.startsWith('image/'));
 
-  // return (
-  //   files.length > 0 && (
-  //     <div className={cn(theme.messages.message.files.base)}>
-  //       {files.map((file, index) => (
-  //         <Comp key={index} {...file}>
-  //           {children}
-  //         </Comp>
-  //       ))}
-  //     </div>
-  //   )
-  // );
   return (
     <>
       {imageFiles.length > 3 ? (
@@ -46,14 +36,19 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
                 {children}
               </Comp>
             ) : (
-              <img key={index} src={file.url} alt={file.name} className="masonry-item" />
+              <div
+                key={index}
+                className={index === 0 ? "grid-item-large" : "grid-item-small"}
+              >
+                <img src={file.url} alt={file.name} className="masonry-item" />
+                {index === 2 && imageFiles.length > 3 && !expanded && (
+                  <div className="masonry-button-overlay" onClick={() => setExpanded(true)}>
+                    +{imageFiles.length - 3}
+                  </div>
+                )}
+              </div>
             )
           ))}
-          {imageFiles.length > 3 && !expanded && (
-            <div className="masonry-button-overlay" onClick={() => setExpanded(true)}>
-              +{imageFiles.length - 3}
-            </div>
-          )}
         </div>
       ) : (
         <div className={cn(theme.messages.message.files.base)}>

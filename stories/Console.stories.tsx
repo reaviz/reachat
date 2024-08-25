@@ -1030,12 +1030,6 @@ export const ImageFiles = () => {
       name: 'nature.jpg',
       type: 'image/jpeg',
       url: 'https://www.goodcode.us/static/steph-1ffd4f0dd3c0100ad9019cae8d7954eb.jpg'
-    },
-    {
-      id: '5',
-      name: 'nature2.jpg',
-      type: 'image/jpeg',
-      url: 'https://www.goodcode.us/static/steph-1ffd4f0dd3c0100ad9019cae8d7954eb.jpg'
     }
   ];
 
