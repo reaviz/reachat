@@ -176,3 +176,41 @@ export const sessionsWithPartialConversation: Session[] = [
     ]
   }
 ];
+
+export const sessionWithMessageResponseRecommended: Session[] = [
+  {
+    id: 'session-1',
+    title: 'Session with Image',
+    createdAt: subHours(new Date(), 1),
+    updatedAt: new Date(),
+    conversations: [
+      {
+        id: 'conversation-1',
+        question: 'What are the benefits of using React?',
+        createdAt: new Date(),
+        response:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1024px-React-icon.svg.png',
+        followUpResponse:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1024px-React-icon.svg.png',
+        updatedAt: new Date()
+      }
+    ]
+  },
+  {
+    id: 'session-2',
+    title: 'Session with Text',
+    createdAt: subHours(new Date(), 1),
+    updatedAt: new Date(),
+    conversations: [
+      {
+        id: 'conversation-2',
+        question: 'What are the benefits of using React?',
+        createdAt: new Date(),
+        response:
+          'React benefits include a declarative coding style, component-based architecture, virtual DOM, and a large community and ecosystem.',
+        followUpResponse: `React's state management system, which allows components to maintain their own state and re-render only when necessary, makes it easier to build responsive and interactive UIs.`,
+        updatedAt: new Date()
+      }
+    ]
+  }
+];
