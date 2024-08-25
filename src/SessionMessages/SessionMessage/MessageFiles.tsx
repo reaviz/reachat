@@ -36,7 +36,7 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
                 {children}
               </Comp>
             ) : (
-              <div
+              <figure
                 key={index}
                 className={index === 0 ? "grid-item-large" : "grid-item-small"}
               >
@@ -46,13 +46,13 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
                     +{imageFiles.length - 3}
                   </div>
                 )}
-              </div>
+              </figure>
             )
           ))}
         </div>
       ) : (
         <div className={cn(theme.messages.message.files.base)}>
-          {files.map((file, index) => (
+          {imageFiles.map((file, index) => (
             <Comp key={index} {...file}>
               {children}
             </Comp>
