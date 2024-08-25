@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+  gap: 10px;
+  grid-template-rows: masonry;
+}
+
+.masonry-item {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.masonry-button-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
