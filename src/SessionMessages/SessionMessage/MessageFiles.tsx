@@ -36,7 +36,7 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
   return (
     <>
       {imageFiles.length > 3 ? (
-        <div className={cn(theme.messages.message.files.base, expanded ? '' : 'masonry-grid')}>
+        <div className={cn(theme.messages.message.files.base, expanded ? '' : 'grid grid-cols-3 gap-2 w-1/2')}>
           {imageFiles.slice(0, expanded ? imageFiles.length : 3).map((file, index) => (
             expanded ? (
               <Comp key={index} {...file}>
@@ -45,12 +45,12 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
             ) : (
               <figure
                 key={index}
-                className={index === 0 ? "grid-item-large" : "grid-item-small"}
+                className={index === 0 ? "col-span-2 row-span-2" : "relative"}
               >
-                <img src={file.url} alt={file.name} className="masonry-item" />
+                <img src={file.url} alt={file.name} className="relative w-full h-full object-cover rounded-lg" />
                 {index === 2 && imageFiles.length > 3 && !expanded && (
-                  <div className="masonry-button-overlay" onClick={() => setExpanded(true)}>
-                    +{imageFiles.length - 3}
+                  <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 rounded-lg cursor-pointer" onClick={() => setExpanded(true)}>
+                    +{(imageFiles.length - 3).toLocaleString()}
                   </div>
                 )}
               </figure>
