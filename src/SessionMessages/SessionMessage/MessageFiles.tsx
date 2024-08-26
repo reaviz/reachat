@@ -22,9 +22,16 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
     return null;
   }
 
-  // Filter image files
-  const imageFiles = files.filter(file => file.type.startsWith('image/'));
-  const otherFiles = files.filter(file => !file.type.startsWith('image/'));
+  // Group image and other files
+  const { imageFiles, otherFiles } = files.reduce((acc, file) => {
+    if (file.type.startsWith('image/')) {
+      acc.imageFiles.push(file);
+    } else {
+      acc.otherFiles.push(file);
+    }
+
+    return acc;
+  }, { imageFiles: [] as ConversationFile[], otherFiles: [] as ConversationFile[] })
 
   return (
     <>
