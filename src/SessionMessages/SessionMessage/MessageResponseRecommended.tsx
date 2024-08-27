@@ -41,7 +41,6 @@ export const MessageResponseRecommended: FC<
     >
       {children || (
         <>
-          {/* Map over follow-up responses to display them individually */}
           {followUpResponse.map((responseItem, index) => (
             <div
               key={index}
