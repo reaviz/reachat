@@ -143,7 +143,7 @@ export const chatTheme: ChatTheme = {
         "overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-gradient-to-b after:from-transparent dark:after:to-gray-900 after:to-gray-200",
       cursor: 'inline-block w-1 h-4 bg-current',
       expand: 'absolute bottom-1 right-1 z-10',
-      recommended: 'flex gap-4 justify-around',
+      recommended: 'flex gap-4 justify-around mt-8',
       rimage: ' max-w-[250px] max-h-[250px] object-cover cursor-pointer',
       markdownBorder: [
         'relative font-semibold mb-4 px-4 py-4 pb-2 rounded-4xl rounded-[10px] cursor-pointer text-typography border bg-gray-200 border-gray-300 text-gray-900',

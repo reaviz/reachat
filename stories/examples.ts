@@ -190,8 +190,10 @@ export const sessionWithMessageResponseRecommended: Session[] = [
         createdAt: new Date(),
         response:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1024px-React-icon.svg.png',
-        followUpResponse:
+        followUpResponse: [
           'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1024px-React-icon.svg.png',
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1024px-React-icon.svg.png'
+        ],
         updatedAt: new Date()
       }
     ]
@@ -208,8 +210,10 @@ export const sessionWithMessageResponseRecommended: Session[] = [
         createdAt: new Date(),
         response:
           'React benefits include a declarative coding style, component-based architecture, virtual DOM, and a large community and ecosystem.',
-        followUpResponse:
-          'React’s state management system enables components to maintain their own state and efficiently re-render only when necessary, making it easier to build responsive and interactive UIs.',
+        followUpResponse: [
+          'What are some downsides of React?',
+          'What are alternative options to React?'
+        ],
         updatedAt: new Date()
       }
     ]

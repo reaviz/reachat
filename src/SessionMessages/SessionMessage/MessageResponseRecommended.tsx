@@ -8,24 +8,14 @@ import { PluggableList } from 'react-markdown/lib';
 
 export interface MessageResponseRecommendedProps extends PropsWithChildren {
   /**
-   * Initial response to render.
+   * Follow-up response to render (array of values).
    */
-  response: string;
-
-  /**
-   * Follow-up response to render.
-   */
-  followUpResponse: string;
+  followUpResponse: string[];
 
   /**
    * Whether the response is loading.
    */
   isLoading?: boolean;
-
-  /**
-   * Function to handle clicks on the response.
-   */
-  onClickResponse?: (response: string) => void;
 
   /**
    * Function to handle clicks on the follow-up response.
@@ -40,14 +30,7 @@ const isImageUrl = (url: string) => {
 
 export const MessageResponseRecommended: FC<
   MessageResponseRecommendedProps
-> = ({
-  response,
-  followUpResponse,
-  isLoading,
-  children,
-  onClickResponse,
-  onClickFollowUpResponse
-}) => {
+> = ({ followUpResponse, isLoading, children, onClickFollowUpResponse }) => {
   const { theme, isCompact, remarkPlugins } = useContext(ChatContext);
   const Comp = children ? Slot : 'div';
 
@@ -58,40 +41,30 @@ export const MessageResponseRecommended: FC<
     >
       {children || (
         <>
-          <div onClick={() => onClickResponse?.(response)}>
-            {isImageUrl(response) ? (
-              <figure>
-                <img
-                  src={response}
-                  alt={response}
-                  className={cn(theme.messages.message.rimage)}
-                />
-              </figure>
-            ) : (
-              <div className={cn(theme.messages.message.markdownBorder)}>
-                <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
-                  {response}
-                </Markdown>
-              </div>
-            )}
-          </div>
-          <div onClick={() => onClickFollowUpResponse?.(followUpResponse)}>
-            {isImageUrl(followUpResponse) ? (
-              <figure>
-                <img
-                  src={followUpResponse}
-                  alt={followUpResponse}
-                  className={cn(theme.messages.message.rimage)}
-                />
-              </figure>
-            ) : (
-              <div className={cn(theme.messages.message.markdownBorder)}>
-                <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
-                  {followUpResponse}
-                </Markdown>
-              </div>
-            )}
-          </div>
+          {/* Map over follow-up responses to display them individually */}
+          {followUpResponse.map((responseItem, index) => (
+            <div
+              key={index}
+              onClick={() => onClickFollowUpResponse?.(responseItem)}
+            >
+              {isImageUrl(responseItem) ? (
+                <figure>
+                  <img
+                    src={responseItem}
+                    alt={responseItem}
+                    className={cn(theme.messages.message.rimage)}
+                  />
+                </figure>
+              ) : (
+                <div className={cn(theme.messages.message.markdownBorder)}>
+                  <Markdown remarkPlugins={remarkPlugins as PluggableList[]}>
+                    {responseItem}
+                  </Markdown>
+                </div>
+              )}
+            </div>
+          ))}
+
           {isLoading && (
             <motion.div
               className={cn(theme.messages.message.cursor)}

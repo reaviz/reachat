@@ -42,7 +42,9 @@ export const SessionMessage: FC<SessionMessageProps> = ({
   children
 }) => {
   const { theme, isLoading } = useContext(ChatContext);
-  const hasFollowUpResponse = !!conversation.followUpResponse;
+  const hasFollowUpResponse =
+    Array.isArray(conversation.followUpResponse) &&
+    conversation.followUpResponse.length > 0;
 
   return (
     <motion.div key={conversation.id} variants={messageVariants}>
@@ -54,15 +56,14 @@ export const SessionMessage: FC<SessionMessageProps> = ({
               files={conversation.files}
             />
 
-            {hasFollowUpResponse ? (
+            <MessageResponse
+              response={conversation.response}
+              isLoading={isLast && isLoading}
+            />
+
+            {hasFollowUpResponse && (
               <MessageResponseRecommended
-                response={conversation.response}
                 followUpResponse={conversation.followUpResponse}
-                isLoading={isLast && isLoading}
-              />
-            ) : (
-              <MessageResponse
-                response={conversation.response}
                 isLoading={isLast && isLoading}
               />
             )}
