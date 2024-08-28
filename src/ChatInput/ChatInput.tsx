@@ -37,7 +37,7 @@ interface ChatInputProps {
   sendIcon?: ReactElement;
 
   /**
-   * Icon to show for send.
+   * Icon to show for stop.
    */
   stopIcon?: ReactElement;
 
