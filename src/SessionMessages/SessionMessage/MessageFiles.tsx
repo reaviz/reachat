@@ -38,10 +38,13 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
     }
   );
 
+  const maxImageLength = 3;
+  const truncateImages = !expanded && imageFiles.length > maxImageLength;
+
   // Renders the image files based on the current expansion state
   const renderImageFiles = (images: ConversationFile[]) => {
-    return !expanded && imageFiles.length > 3
-      ? images.slice(0, 3).map((image, index) => (
+    return truncateImages
+      ? images.slice(0, maxImageLength).map((image, index) => (
           <figure
             key={index}
             className={index === 0 ? 'col-span-2 row-span-2' : 'relative'}
@@ -51,12 +54,12 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
               alt={image.name}
               className="relative w-full h-full object-cover rounded-lg"
             />
-            {index === 2 && (
+            {index === maxImageLength - 1 && (
               <div
                 className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 rounded-lg cursor-pointer"
                 onClick={() => setExpanded(true)}
               >
-                +{(imageFiles.length - 3).toLocaleString()}
+                +{(imageFiles.length - maxImageLength).toLocaleString()}
               </div>
             )}
           </figure>
@@ -72,7 +75,7 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
     <div
       className={cn(
         theme.messages.message.files.base,
-        imageFiles.length < 4 || expanded ? '' : 'grid grid-cols-3 gap-2 w-1/2'
+        truncateImages ? 'grid grid-rows-2 grid-flow-col gap-2 w-1/3' : ''
       )}
     >
       {imageFiles.length > 0 && renderImageFiles(imageFiles)}
