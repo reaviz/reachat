@@ -1,3 +1,6 @@
+# 1.5.0
+- [feature] add masonary grid on image uploads
+
 # 1.4.2
 - [fix] fix katex failing next builds
 
