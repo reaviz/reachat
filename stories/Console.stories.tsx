@@ -43,7 +43,8 @@ import {
   fakeSessionsWithEmbeds,
   sessionWithSources,
   sessionsWithFiles,
-  sessionsWithPartialConversation
+  sessionsWithPartialConversation,
+  sessionWithDataDocs
 } from './examples';
 
 export default {
@@ -1088,6 +1089,41 @@ export const ImageFiles = () => {
           <SessionMessagesHeader />
           <SessionMessages />
           <ChatInput />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const CSVPreview = () => {
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        sessions={sessionWithDataDocs}
+        activeSessionId="1"
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups />
+        </SessionsList>
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages />
+          <ChatInput allowedFiles={['.pdf', '.docx', '.csv']} />
         </SessionMessagePanel>
       </Chat>
     </div>
