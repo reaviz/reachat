@@ -122,7 +122,7 @@ export const Empty = () => {
   );
 };
 
-export const WithCustomHeader = () => {
+export const WithHeader = () => {
   const [activeId, setActiveId] = useState<string>();
   const [sessions, setSessions] = useState<Session[]>([
     ...fakeSessions,

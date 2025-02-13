@@ -16,7 +16,7 @@ import {
   SessionMessagesHeader,
   ChatContext,
   SessionMessage,
-  Conversation
+  Header
 } from '../src';
 import {
   Card,
@@ -46,6 +46,9 @@ import {
   sessionsWithPartialConversation,
   sessionWithCSVFiles
 } from './examples';
+import ReachatLogo from '@/assets/logo/logo.svg?react';
+import IconSearch from '@/assets/search.svg?react';
+import IconClose from '@/assets/close-fill.svg?react';
 
 export default {
   title: 'Demos/Console',
@@ -1122,6 +1125,86 @@ export const CSVPreview = () => {
           <SessionMessages />
           <ChatInput allowedFiles={['.pdf', '.docx', '.csv']} />
         </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const WithHeader = () => {
+  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
+  const [sessions, setSessions] = useState<Session[]>([
+    ...fakeSessions,
+    ...sessionsWithFiles,
+    ...sessionWithSources
+  ]);
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="console"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onNewSession={() => {
+          const newId = (sessions.length + 1).toLocaleString();
+          setSessions([
+            ...sessions,
+            {
+              id: newId,
+              title: `New Session #${newId}`,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              conversations: []
+            }
+          ]);
+          setActiveId(newId);
+        }}
+        onSelectSession={setActiveId}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <div className="flex flex-col h-full w-full">
+          <Header 
+            contentLeft={
+              <IconButton size="small" variant="outline" className='rounded-full p-3'>
+                <IconSearch className='w-4 h-4' />
+              </IconButton>
+            }
+            contentCenter={
+              <ReachatLogo className="h-6 w-auto" />
+            }
+            contentRight={
+              <IconButton
+                variant="text"
+                size="small"
+                className='rounded-full p-3'
+              >
+                <IconClose className='w-4 h-4' />
+              </IconButton>
+            }
+          />
+          <div className="flex flex-1 overflow-hidden">
+            <SessionsList>
+              <NewSessionButton />
+              <SessionGroups />
+            </SessionsList>
+            <SessionMessagePanel>
+              <SessionMessagesHeader />
+              <SessionMessages />
+              <ChatInput />
+            </SessionMessagePanel>
+          </div>
+        </div>
       </Chat>
     </div>
   );
