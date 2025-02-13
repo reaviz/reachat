@@ -12,9 +12,13 @@ import { createPortal } from 'react-dom';
 import { cn } from 'reablocks';
 import { motion, AnimatePresence } from 'motion/react';
 
-type Position = 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right';
+export type Position =
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'top-left'
+  | 'top-right';
 
-interface ChatBubbleProps {
+export interface ChatBubbleProps {
   /**
    * The main content to be rendered.
    */
