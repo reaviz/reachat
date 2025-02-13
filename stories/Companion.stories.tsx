@@ -8,7 +8,8 @@ import {
   ChatInput,
   SessionMessagePanel,
   SessionMessagesHeader,
-  Session
+  Session,
+  Header
 } from '../src';
 import {
   fakeSessions,
@@ -16,9 +17,13 @@ import {
   sessionsWithFiles
 } from './examples';
 import { useState } from 'react';
+import { IconButton } from 'reablocks';
 
 import Placeholder from '@/assets/placeholder.svg?react';
 import PlaceholderDark from '@/assets/placeholder-dark.svg?react';
+import ReachatLogo from '@/assets/logo/logo.svg?react';
+import IconSearch from '@/assets/search.svg?react';
+import IconClose from '@/assets/close-fill.svg?react';
 
 export default {
   title: 'Demos/Companion',
@@ -112,6 +117,77 @@ export const Empty = () => {
           />
         </div>
         <ChatInput />
+      </Chat>
+    </div>
+  );
+};
+
+export const WithCustomHeader = () => {
+  const [activeId, setActiveId] = useState<string>();
+  const [sessions, setSessions] = useState<Session[]>([
+    ...fakeSessions,
+    ...sessionsWithFiles,
+    ...sessionWithSources
+  ]);
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        width: 350,
+        height: 500,
+        padding: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="companion"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onNewSession={() => {
+          const newId = (sessions.length + 1).toLocaleString();
+          setSessions([
+            ...sessions,
+            {
+              id: newId,
+              title: `New Session #${newId}`,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              conversations: []
+            }
+          ]);
+          setActiveId(newId);
+        }}
+        onSelectSession={setActiveId}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <Header 
+          contentLeft={
+            <IconButton size="small" variant="outline" className='rounded-full p-3'>
+              <IconSearch className='w-4 h-4' />
+            </IconButton>
+          }
+          contentCenter={
+            <ReachatLogo className="h-6 w-auto" />
+          }
+          contentRight={
+            <IconButton
+              variant="text"
+              size="small"
+              className='rounded-full p-3'
+            >
+              <IconClose className='w-4 h-4' />
+            </IconButton>
+          }
+        />
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups />
+        </SessionsList>
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages />
+          <ChatInput />
+        </SessionMessagePanel>
       </Chat>
     </div>
   );
