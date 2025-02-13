@@ -9,7 +9,7 @@ import {
   SessionMessagePanel,
   SessionMessagesHeader,
   Session,
-  Header
+  AppBar
 } from '../src';
 import {
   fakeSessions,
@@ -122,7 +122,7 @@ export const Empty = () => {
   );
 };
 
-export const WithHeader = () => {
+export const WithAppBar = () => {
   const [activeId, setActiveId] = useState<string>();
   const [sessions, setSessions] = useState<Session[]>([
     ...fakeSessions,
@@ -160,7 +160,7 @@ export const WithHeader = () => {
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
       >
-        <Header 
+        <AppBar 
           contentLeft={
             <IconButton size="small" variant="outline" className='rounded-full p-3'>
               <IconSearch className='w-4 h-4' />

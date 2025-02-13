@@ -1,4 +1,4 @@
-import { ReactNode, FC, useContext } from 'react';
+import React, { ReactNode, FC, useContext } from 'react';
 import { cn } from 'reablocks';
 import { ChatContext } from '../ChatContext';
 
@@ -27,7 +27,7 @@ export const AppBar: FC<AppBarProps> = ({
   const { theme } = useContext(ChatContext);
 
   return (
-    <div className={cn(theme.header.base)}>
+    <div className={cn(theme?.header?.base)}>
       <div className="flex items-center justify-between w-full">
         <div className="flex-shrink-0">{contentLeft}</div>
         <div className="flex-grow flex justify-center items-center">

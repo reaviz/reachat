@@ -16,7 +16,7 @@ import {
   SessionMessagesHeader,
   ChatContext,
   SessionMessage,
-  Header
+  AppBar
 } from '../src';
 import {
   Card,
@@ -1130,7 +1130,7 @@ export const CSVPreview = () => {
   );
 };
 
-export const WithHeader = () => {
+export const WithAppBar = () => {
   const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
   const [sessions, setSessions] = useState<Session[]>([
     ...fakeSessions,
@@ -1174,7 +1174,7 @@ export const WithHeader = () => {
         onDeleteSession={() => alert('delete!')}
       >
         <div className="flex flex-col h-full w-full">
-          <Header 
+          <AppBar 
             contentLeft={
               <IconButton size="small" variant="outline" className='rounded-full p-3'>
                 <IconSearch className='w-4 h-4' />
