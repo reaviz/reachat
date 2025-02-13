@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from 'reablocks';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 type Position = 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right';
 

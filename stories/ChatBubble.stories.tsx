@@ -14,7 +14,7 @@ import {
 import { useRef, useEffect, useState } from 'react';
 import { IconButton } from 'reablocks';
 import IconChat from '@/assets/chat-voice-fill.svg?react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { fakeSessions, sessionsWithFiles, sessionWithSources } from './examples';
 
 export default {
