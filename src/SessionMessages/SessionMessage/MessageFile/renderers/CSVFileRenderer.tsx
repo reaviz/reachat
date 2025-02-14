@@ -104,14 +104,11 @@ const CSVFileRenderer: FC<CSVFileRendererProps> = ({ name, url, fileIcon }) => {
         {data.slice(1, maxRows).map((row, rowIndex) => (
           <tr
             key={`row-${rowIndex}`}
-            className="border-b border-panel-accent hover:bg-panel-accent/40 transition-colors text-base text-text-secondary"
+            className="border-b border-panel-accent light:border-gray-700 hover:bg-panel-accent hover:light:bg-gray-700/40 transition-colors text-base"
           >
             <td className="py-4 px-6">{rowIndex + 1}</td>
             {row.map((cell, cellIndex) => (
-              <td
-                key={`cell-${rowIndex}-${cellIndex}`}
-                className="py-4 px-6 dark:bg-vulcan light:bg-mystic"
-              >
+              <td key={`cell-${rowIndex}-${cellIndex}`} className="py-4 px-6">
                 {cell}
               </td>
             ))}

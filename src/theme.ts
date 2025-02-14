@@ -105,9 +105,9 @@ export const chatTheme: ChatTheme = {
       active: [
         'border border-gray-300 hover:border-gray-400 text-gray-700 bg-gray-200 hover:bg-gray-300 ',
         'dark:text-gray-500 dark:bg-gray-800/70 dark:border-gray-700/50 dark:text-white dark:border-gray-700/70 dark:hover:bg-gray-800/50',
-        '[&_button]:!opacity-100'
+        '[&_button]:opacity-100!'
       ].join(' '),
-      delete: '[&>svg]:w-4 [&>svg]:h-4 opacity-0 group-hover:!opacity-50'
+      delete: '[&>svg]:w-4 [&>svg]:h-4 opacity-0 group-hover:opacity-50!'
     }
   },
   messages: {
@@ -127,13 +127,17 @@ export const chatTheme: ChatTheme = {
     header: 'flex justify-between items-center gap-2',
     showMore: 'mb-4',
     message: {
-      base: 'mt-4 mb-4 flex flex-col p-0 rounded border-none bg-transparent',
+      base: 'mt-4 mb-4 flex flex-col p-0 rounded-sm border-none bg-transparent',
       question: [
         'relative font-semibold mb-4 px-4 py-4 pb-2 rounded-3xl rounded-br-none text-typography border bg-gray-200 border-gray-300 text-gray-900',
         'dark:bg-gray-900/60 dark:border-gray-700/50 dark:text-gray-100'
       ].join(' '),
-      response: ['relative data-[compact=false]:px-4 text-gray-900', 'dark:text-gray-100'].join(' '),
-      overlay: `overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-gradient-to-b after:from-transparent dark:after:to-gray-900 after:to-gray-200`,
+      response: [
+        'relative data-[compact=false]:px-4 text-gray-900',
+        'dark:text-gray-100'
+      ].join(' '),
+      overlay:
+        "overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-linear-to-b after:from-transparent dark:after:to-gray-900 after:to-gray-200",
       cursor: 'inline-block w-1 h-4 bg-current',
       expand: 'absolute bottom-1 right-1 z-10',
       files: {
@@ -167,23 +171,24 @@ export const chatTheme: ChatTheme = {
         th: 'px-4 py-2 text-left font-bold border-b border-gray-500',
         td: 'px-4 py-2',
         code: 'm-2 rounded-b relative',
-        toolbar: 'text-xs dark:bg-gray-700/50 flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md bg-gray-200 ',
+        toolbar:
+          'text-xs dark:bg-gray-700/50 flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md bg-gray-200 ',
         li: 'mb-2 ml-6',
         ul: 'mb-4 list-disc',
         ol: 'mb-4 list-decimal'
       },
       footer: {
-        base: 'mt-3 flex gap-1.5 text-gray-400',
+        base: 'mt-3 flex gap-1.5',
         copy: [
-          'p-3 rounded-[10px] [&>svg]:w-4 [&>svg]:h-4 opacity-50 hover:!opacity-100 hover:bg-gray-200 hover:text-gray-500',
-          'dark:hover:bg-gray-800 dark:hover:text-white'
+          'p-3 rounded-[10px] [&>svg]:w-4 [&>svg]:h-4 opacity-50 hover:opacity-100! hover:bg-gray-200 hover:text-gray-500',
+          'dark:hover:bg-gray-800 dark:hover:text-white text-gray-400'
         ].join(' '),
         upvote:
-          'p-3 rounded-[10px] [&>svg]:w-4 [&>svg]:h-4 opacity-50 hover:!opacity-100 hover:bg-gray-700/40 hover:text-white',
+          'p-3 rounded-[10px] [&>svg]:w-4 [&>svg]:h-4 opacity-50 hover:opacity-100! hover:bg-gray-700/40 hover:text-white text-gray-400',
         downvote:
-          'p-3 rounded-[10px] [&>svg]:w-4 [&>svg]:h-4 opacity-50 hover:!opacity-100 hover:bg-gray-700/40 hover:text-white',
+          'p-3 rounded-[10px] [&>svg]:w-4 [&>svg]:h-4 opacity-50 hover:opacity-100! hover:bg-gray-700/40 hover:text-white text-gray-400',
         refresh:
-          'p-3 rounded-[10px] [&>svg]:w-4 [&>svg]:h-4 opacity-50 hover:!opacity-100 hover:bg-gray-700/40 hover:text-white'
+          'p-3 rounded-[10px] [&>svg]:w-4 [&>svg]:h-4 opacity-50 hover:opacity-100! hover:bg-gray-700/40 hover:text-white text-gray-400'
       }
     }
   },
@@ -191,14 +196,14 @@ export const chatTheme: ChatTheme = {
     base: 'flex mt-4 relative',
     upload: ['px-5 py-2 text-gray-400 size-10', 'dark:gray-500'].join(' '),
     input: [
-      'w-full border rounded-3xl px-3 py-2 pr-16 text-gray-500 border-gray-200 hover:bg-blue-100 hover:border-blue-500 after:hidden after:!mx-10 bg-white [&>textarea]:w-full [&>textarea]:flex-none',
+      'w-full border rounded-3xl px-3 py-2 pr-16 text-gray-500 border-gray-200 hover:bg-blue-100 hover:border-blue-500 after:hidden after:mx-10! bg-white [&>textarea]:w-full [&>textarea]:flex-none',
       'dark:border-gray-700/50 dark:text-gray-200 dark:bg-gray-950 dark:hover:bg-blue-950/40'
     ].join(' '),
     actions: {
       base: 'absolute flex gap-2 items-center right-5 inset-y-1/2 -translate-y-1/2 z-10',
       send: [
         'px-3 py-3 hover:bg-primary-hover rounded-full bg-gray-200 hover:bg-gray-300 text-gray-500',
-        'dark:text-white dark:bg-gray-800 hover:dark:bg-gray-700'
+        'dark:text-white light:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700'
       ].join(' '),
       stop: 'px-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 '
     }

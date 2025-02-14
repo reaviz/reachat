@@ -1,3 +1,87 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import '../node_modules/reablocks/dist/index.css';
+@import 'tailwindcss';
+
+/* Custom variants */
+@custom-variant dark (&:where(.theme-dark, .theme-dark *, [data-theme=dark], [data-theme=dark] *));
+@custom-variant light (&:where(.theme-light, .theme-light *, [data-theme=light], [data-theme=light] *));
+@custom-variant disabled-within (&:has(input:is(:disabled), textarea:is(:disabled), button:is(:disabled)));
+
+/* Define theme tokens */
+@theme inline {
+  /* Primary colors */
+  --primary: var(--color-blue-500);
+  --primary-active: var(--color-blue-500);
+  --primary-hover: var(--color-blue-600);
+  --primary-inactive: var(--color-blue-200);
+
+  /* Secondary colors */
+  --secondary: var(--color-gray-700);
+  --secondary-active: var(--color-gray-700);
+  --secondary-hover: var(--color-gray-800);
+  --secondary-inactive: var(--color-gray-400);
+
+  /* Success colors */
+  --success: var(--color-green-500);
+  --success-active: var(--color-green-500);
+  --success-hover: var(--color-green-600);
+
+  /* Error colors */
+  --error: var(--color-red-500);
+  --error-active: var(--color-red-500);
+  --error-hover: var(--color-red-600);
+
+  /* Warning colors */
+  --warning: var(--color-orange-500);
+  --warning-active: var(--color-orange-500);
+  --warning-hover: var(--color-orange-600);
+
+  /* Info colors */
+  --info: var(--color-blue-500);
+  --info-active: var(--color-blue-500);
+  --info-hover: var(--color-blue-600);
+
+  /* Background levels */
+  --background-level1: var(--color-white);
+  --background-level2: var(--color-gray-950);
+  --background-level3: var(--color-gray-900);
+  --background-level4: var(--color-gray-800);
+
+  /* Panel */
+  --panel: var(--color-black-pearl);
+  --panel-accent: var(--color-charade);
+
+  /* Surface */
+  --surface: var(--color-charade);
+
+  /* Typography */
+  --typography: var(--color-athens-gray);
+
+  /* Accent */
+  --accent: var(--color-waterloo);
+  --accent-active: var(--color-anakiwa);
+
+  /* Border radius */
+  --border-radius-3xl: 20px;
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+body {
+  line-height: inherit;
+}

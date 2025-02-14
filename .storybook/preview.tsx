@@ -13,10 +13,10 @@ const preview: Preview = {
     ),
     withThemeByClassName({
       themes: {
-        light: 'light',
-        dark: 'dark',
+        light: 'theme-light',
+        dark: 'theme-dark',
       },
-      defaultTheme: 'dark',
+      defaultTheme: 'theme-dark',
     }),
   ],
   parameters: {
