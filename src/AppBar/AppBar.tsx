@@ -4,37 +4,13 @@ import { ChatContext } from '../ChatContext';
 
 export interface AppBarProps {
   /**
-   * Content to display in the left section of the header
+   * Content to display in the header
    */
-  contentLeft?: ReactNode;
-
-  /**
-   * Content to display in the center section of the header
-   */
-  contentCenter?: ReactNode;
-
-  /**
-   * Content to display in the right section of the header
-   */
-  contentRight?: ReactNode;
+  content?: ReactNode;
 }
 
-export const AppBar: FC<AppBarProps> = ({
-  contentLeft,
-  contentCenter,
-  contentRight
-}) => {
+export const AppBar: FC<AppBarProps> = ({ content }) => {
   const { theme } = useContext(ChatContext);
 
-  return (
-    <div className={cn(theme?.header?.base)}>
-      <div className="flex items-center justify-between w-full">
-        <div className="flex-shrink-0">{contentLeft}</div>
-        <div className="flex-grow flex justify-center items-center">
-          {contentCenter}
-        </div>
-        <div className="flex-shrink-0">{contentRight}</div>
-      </div>
-    </div>
-  );
+  return <div className={cn(theme?.header)}>{content}</div>;
 };

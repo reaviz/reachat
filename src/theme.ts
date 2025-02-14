@@ -3,9 +3,7 @@ export interface ChatTheme {
   console: string;
   companion: string;
   empty: string;
-  header: {
-    base: string;
-  };
+  header: string;
   sessions: {
     base: string;
     console: string;
@@ -92,9 +90,7 @@ export const chatTheme: ChatTheme = {
   console: 'flex w-full gap-4 h-full',
   companion: 'w-full h-full overflow-hidden',
   empty: 'text-center flex-1',
-  header: {
-    base: 'pb-10'
-  },
+  header: 'pb-10',
   sessions: {
     base: 'overflow-auto',
     console:
