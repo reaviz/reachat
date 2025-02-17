@@ -1,3 +1,6 @@
+# 2.0.0-beta.0 - 2/17/25
+- [feature] Tailwind 4 Upgrade
+ 
 # 1.6.1 - 2/13/25
 - [chore] chore: update dependencies and fix vulnerabilities #44
 
