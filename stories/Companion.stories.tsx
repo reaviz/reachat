@@ -203,7 +203,7 @@ const AppBarContent = memo(({ onClose }: { onClose?: () => void }) => (
   <div className="flex items-center justify-between w-full">
     <div className="flex-shrink-0">
       <IconButton size="small" variant="outline" className='rounded-full p-3'>
-        <IconSearch className='w-4 h-4' />
+        <IconSearch className="size-4" />
       </IconButton>
     </div>
     <div className="flex-grow flex justify-center items-center">
