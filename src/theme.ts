@@ -3,6 +3,7 @@ export interface ChatTheme {
   console: string;
   companion: string;
   empty: string;
+  header: string;
   sessions: {
     base: string;
     console: string;
@@ -89,6 +90,7 @@ export const chatTheme: ChatTheme = {
   console: 'flex w-full gap-4 h-full',
   companion: 'w-full h-full overflow-hidden',
   empty: 'text-center flex-1',
+  header: 'pb-10',
   sessions: {
     base: 'overflow-auto',
     console:
@@ -132,7 +134,10 @@ export const chatTheme: ChatTheme = {
         'relative font-semibold mb-4 px-4 py-4 pb-2 rounded-3xl rounded-br-none text-typography border bg-gray-200 border-gray-300 text-gray-900',
         'dark:bg-gray-900/60 dark:border-gray-700/50 dark:text-gray-100'
       ].join(' '),
-      response: ['relative data-[compact=false]:px-4 text-gray-900', 'dark:text-gray-100'].join(' '),
+      response: [
+        'relative data-[compact=false]:px-4 text-gray-900',
+        'dark:text-gray-100'
+      ].join(' '),
       overlay: `overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-gradient-to-b after:from-transparent dark:after:to-gray-900 after:to-gray-200`,
       cursor: 'inline-block w-1 h-4 bg-current',
       expand: 'absolute bottom-1 right-1 z-10',
@@ -167,7 +172,8 @@ export const chatTheme: ChatTheme = {
         th: 'px-4 py-2 text-left font-bold border-b border-gray-500',
         td: 'px-4 py-2',
         code: 'm-2 rounded-b relative',
-        toolbar: 'text-xs dark:bg-gray-700/50 flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md bg-gray-200 ',
+        toolbar:
+          'text-xs dark:bg-gray-700/50 flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md bg-gray-200 ',
         li: 'mb-2 ml-6',
         ul: 'mb-4 list-disc',
         ol: 'mb-4 list-decimal'
