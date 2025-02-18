@@ -1,3 +1,5 @@
+import { ReactElement } from 'react';
+
 export interface ConversationSource {
   /**
    * URL of the source, if applicable
@@ -35,6 +37,28 @@ export interface ConversationFile {
    * URL of the file
    */
   url?: string;
+}
+
+export interface Template {
+  /**
+   * Unique identifier for the template
+   */
+  id: string;
+
+  /**
+   * Title of the template
+   */
+  title: string;
+
+  /**
+   * Message to be sent when template is selected
+   */
+  message: string;
+
+  /**
+   * Icon to display next to the template
+   */
+  icon?: ReactElement;
 }
 
 export interface Conversation {

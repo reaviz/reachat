@@ -238,3 +238,30 @@ export const sessionWithCSVFiles: Session[] = [
     ]
   }
 ];
+
+export const chatTemplates = [
+  {
+    id: '1',
+    title: 'Explore Components',
+    message: "Can you show me the main components available in Reachat?",
+    icon: 'SendPlane'
+  },
+  {
+    id: '2',
+    title: 'Customize Chat UI',
+    message: "How can I customize the appearance of my Reachat interface?",
+    icon: 'SendPlane'
+  },
+  {
+    id: '3',
+    title: 'Manage Sessions',
+    message: "What are the best practices for managing chat sessions in Reachat?",
+    icon: 'SendPlane'
+  },
+  {
+    id: '4',
+    title: 'Tailwind Setup',
+    message: "How do I properly set up Tailwind CSS with Reachat?",
+    icon: 'SendPlane'
+  }
+];

@@ -8,12 +8,14 @@ import {
   ChatInput,
   SessionMessagePanel,
   SessionMessagesHeader,
-  Session
+  Session,
+  SessionListItem
 } from '../src';
 import {
   fakeSessions,
   sessionWithSources,
-  sessionsWithFiles
+  sessionsWithFiles,
+  chatTemplates
 } from './examples';
 import { useState } from 'react';
 
@@ -112,6 +114,142 @@ export const Empty = () => {
           />
         </div>
         <ChatInput />
+      </Chat>
+    </div>
+  );
+};
+
+export const TemplatesView = () => {
+  const [activeId, setActiveId] = useState<string>();
+  const [sessions, setSessions] = useState<Session[]>(
+    chatTemplates.map(template => ({
+      id: template.id,
+      title: template.title,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: '1',
+          question: template.message,
+          createdAt: new Date()
+        }
+      ]
+    }))
+  );
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        width: 350,
+        height: 500,
+        padding: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="companion"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex-1 overflow-y-auto">
+            <SessionsList>
+              <SessionGroups>
+                {(groups) => (
+                  <>
+                    {groups.map(({ sessions }) => (
+                      sessions.map(session => (
+                        <SessionListItem key={session.id} session={session} deletable={false} />
+                      ))
+                    ))}
+                  </>
+                )}
+              </SessionGroups>
+            </SessionsList>
+          </div>
+          {!activeId && <ChatInput />}
+          {activeId && (
+            <SessionMessagePanel>
+              <SessionMessagesHeader />
+              <SessionMessages />
+              <ChatInput />
+            </SessionMessagePanel>
+          )}
+        </div>
+      </Chat>
+    </div>
+  );
+};
+
+export const TemplatesViewWithTitle = () => {
+  const [activeId, setActiveId] = useState<string>();
+  const [sessions, setSessions] = useState<Session[]>(
+    chatTemplates.map(template => ({
+      id: template.id,
+      title: template.title,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: '1',
+          question: template.message,
+          createdAt: new Date()
+        }
+      ]
+    }))
+  );
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        width: 350,
+        height: 500,
+        padding: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="companion"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex-1 overflow-y-auto">
+            <div className="flex flex-col gap-2 items-center justify-center py-8">
+              <p className="text-gray-500 max-w-[400px] text-center mb-4">
+                Welcome to Reachat, a UI library for effortlessly building and
+                customizing chat experiences with Tailwind.
+              </p>
+            </div>
+            <SessionsList>
+              <SessionGroups>
+                {(groups) => (
+                  <>
+                    {groups.map(({ sessions }) => (
+                      sessions.map(session => (
+                        <SessionListItem key={session.id} session={session} deletable={false} />
+                      ))
+                    ))}
+                  </>
+                )}
+              </SessionGroups>
+            </SessionsList>
+          </div>
+          {!activeId && <ChatInput />}
+          {activeId && (
+            <SessionMessagePanel>
+              <SessionMessagesHeader />
+              <SessionMessages />
+              <ChatInput />
+            </SessionMessagePanel>
+          )}
+        </div>
       </Chat>
     </div>
   );
