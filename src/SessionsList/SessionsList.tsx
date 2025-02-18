@@ -43,10 +43,7 @@ export const SessionsList: FC<SessionsListProps> = ({
         {templates && !activeSessionId && (
           <div className="mt-4">
             {templates.map(template => (
-              <div
-                key={template.id}
-                onClick={() => createSession?.(template.message)}
-              >
+              <div key={template.id} onClick={() => createSession?.()}>
                 <SessionListItem
                   session={{
                     id: template.id,
