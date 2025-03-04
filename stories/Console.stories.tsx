@@ -4,6 +4,7 @@ import {
   Chat,
   Session,
   remarkCve,
+  redactPlugin,
   SessionsList,
   SessionsGroup,
   SessionListItem,
@@ -606,6 +607,10 @@ export const MarkdownShowcase = () => {
   [Perspective](https://en.wikipedia.org/wiki/Philosophical_question)
   `;
 
+  const markdownRedactResponse = `
+  **\nMy SSN is 123-45-6789, my credit card is 4111 1111 1111 1111, and bitcoin address is 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa.
+`;
+
   const sessionWithMarkdown: Session[] = [
     {
       id: 'session-markdown',
@@ -616,9 +621,9 @@ export const MarkdownShowcase = () => {
         {
           id: 'conversation-1',
           question: markdownQuestion,
-          response: markdownResponse,
+          response: markdownResponse + markdownRedactResponse,
           createdAt: new Date()
-        }
+        }, 
       ]
     }
   ];
@@ -641,6 +646,7 @@ export const MarkdownShowcase = () => {
         viewType="console"
         sessions={sessionWithMarkdown}
         activeSessionId="session-markdown"
+        remarkPlugins={[redactPlugin]}
       >
         <SessionsList>
           <NewSessionButton />

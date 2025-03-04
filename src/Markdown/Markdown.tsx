@@ -2,11 +2,12 @@ import { FC, PropsWithChildren, useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Plugin } from 'unified';
 import { CodeHighlighter } from './CodeHighlighter';
-import { cn } from 'reablocks';
+import { cn, Redact } from 'reablocks';
 import { TableComponent, TableHeaderCell, TableDataCell } from './Table';
 import { ChatContext } from '@/ChatContext';
 import rehypeKatex from 'rehype-katex';
 import './Markdown.css';
+import rehypeRaw from 'rehype-raw';
 
 interface MarkdownWrapperProps extends PropsWithChildren {
   /**
@@ -23,7 +24,7 @@ interface MarkdownWrapperProps extends PropsWithChildren {
 export const Markdown: FC<MarkdownWrapperProps> = ({
   children,
   remarkPlugins,
-  rehypePlugins = [rehypeKatex]
+  rehypePlugins = [rehypeKatex, rehypeRaw]
 }) => {
   const { theme } = useContext(ChatContext);
 
@@ -32,6 +33,7 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
       remarkPlugins={remarkPlugins as Plugin[]}
       rehypePlugins={rehypePlugins as Plugin[]}
       components={{
+        Redact: Redact,
         code: ({ className, ...props }) => (
           <CodeHighlighter
             {...props}
