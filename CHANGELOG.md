@@ -1,3 +1,7 @@
+# 2.0.0-beta.1 - 3/24/25
+- [feature] Add ChatBubble component
+
+- 
 # 2.0.0-beta.0 - 2/17/25
 - [feature] Tailwind 4 Upgrade
  
