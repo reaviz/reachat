@@ -1,5 +1,5 @@
-@import '../node_modules/reablocks/dist/index.css';
 @import 'tailwindcss';
+@source '../node_modules/reablocks/dist/index.css';
 
 /* Custom variants */
 @custom-variant dark (&:where(.theme-dark, .theme-dark *, [data-theme=dark], [data-theme=dark] *));

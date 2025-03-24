@@ -1,3 +1,6 @@
+# 2.0.0-beta.2 - 3/24/25
+- [feature] export styles
+
 # 2.0.0-beta.1 - 3/24/25
 - [feature] Add ChatBubble component
 

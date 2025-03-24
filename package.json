@@ -1,12 +1,13 @@
 {
   "name": "reachat",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "Chat UI for Building LLMs",
   "scripts": {
     "build-storybook": "storybook build",
-    "build": "npm run build:js && npm run build:docs",
+    "build": "npm run build:js && npm run build:styles && npm run build:docs",
     "build:js": "vite build --mode library",
     "build:docs": "node scripts/docs.js",
+    "build:styles": "npx @tailwindcss/cli -i ./src/index.css -o ./dist/index.css",
     "lint": "eslint --ext js,ts,tsx",
     "lint:fix": "eslint --ext js,ts,tsx --fix src",
     "lint:prettier": "prettier --loglevel warn --write 'src/**/*.{ts,tsx,js,jsx}'",
