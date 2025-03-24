@@ -6,3 +6,5 @@ export * from './types';
 export * from './theme';
 export * from './Markdown';
 export * from './ChatContext';
+export * from './AppBar';
+export * from './ChatBubble';

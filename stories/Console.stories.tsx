@@ -16,7 +16,7 @@ import {
   SessionMessagesHeader,
   ChatContext,
   SessionMessage,
-  Conversation
+  AppBar
 } from '../src';
 import {
   Card,
@@ -46,6 +46,9 @@ import {
   sessionsWithPartialConversation,
   sessionWithCSVFiles
 } from './examples';
+import ReachatLogo from '@/assets/logo/logo.svg?react';
+import IconSearch from '@/assets/search.svg?react';
+import IconClose from '@/assets/close-fill.svg?react';
 
 export default {
   title: 'Demos/Console',

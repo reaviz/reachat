@@ -27,9 +27,9 @@
   "source": "src/index.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.umd.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.umd.cjs"
     },
     "./docs.json": "./dist/docs.json",
     "./index.css": "./dist/index.css"

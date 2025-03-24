@@ -1,7 +1,15 @@
 # 2.0.0-beta.0 - 2/17/25
 - [feature] Tailwind 4 Upgrade
  
-# 1.6.1 - 2/13/25
+# 1.7.1 - 2/19/25
+- [fix] fix ChatBubble global export
+
+# 1.7.0
+- [feature] Add AppBar component for customizable headers
+- [feature] Add Templates support to predefined user prompts
+- [feature] Add ChatBubble component for floating chat interfaces
+
+# 1.6.1
 - [chore] chore: update dependencies and fix vulnerabilities #44
 
 # 1.6.0

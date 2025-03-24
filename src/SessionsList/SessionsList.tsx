@@ -2,9 +2,22 @@ import { FC, PropsWithChildren, useContext } from 'react';
 import { List, cn } from 'reablocks';
 import { ChatContext } from '@/ChatContext';
 import { motion } from 'motion/react';
+import { Template } from '@/types';
+import { SessionListItem } from './SessionListItem';
 
-export const SessionsList: FC<PropsWithChildren> = ({ children }) => {
-  const { theme, isCompact, activeSessionId } = useContext(ChatContext);
+export interface SessionsListProps extends PropsWithChildren {
+  /**
+   * Templates to show when no session is active
+   */
+  templates?: Template[];
+}
+
+export const SessionsList: FC<SessionsListProps> = ({
+  children,
+  templates
+}) => {
+  const { theme, isCompact, activeSessionId, createSession } =
+    useContext(ChatContext);
   const isVisible = isCompact && !activeSessionId;
 
   return (
@@ -27,6 +40,23 @@ export const SessionsList: FC<PropsWithChildren> = ({ children }) => {
         })}
       >
         <List>{children}</List>
+        {templates && !activeSessionId && (
+          <div className="mt-4">
+            {templates.map(template => (
+              <div key={template.id} onClick={() => createSession?.()}>
+                <SessionListItem
+                  session={{
+                    id: template.id,
+                    title: template.title,
+                    conversations: []
+                  }}
+                  chatIcon={template.icon}
+                  deletable={false}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </motion.div>
     )
   );

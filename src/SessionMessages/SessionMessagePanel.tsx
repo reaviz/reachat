@@ -4,10 +4,18 @@ import { ChatContext } from '@/ChatContext';
 import { motion } from 'motion/react';
 import BackIcon from '@/assets/back.svg?react';
 
-export const SessionMessagePanel: FC<PropsWithChildren> = ({ children }) => {
+interface SessionMessagePanelProps extends PropsWithChildren {
+  allowBack?: boolean;
+}
+
+export const SessionMessagePanel: FC<SessionMessagePanelProps> = ({
+  children,
+  allowBack = true
+}) => {
   const { activeSessionId, theme, isCompact, selectSession, viewType } =
     useContext(ChatContext);
-  const isVisible = (isCompact && activeSessionId) || viewType === 'chat' || !isCompact;
+  const isVisible =
+    (isCompact && activeSessionId) || viewType === 'chat' || !isCompact;
 
   return (
     isVisible && (
@@ -29,7 +37,7 @@ export const SessionMessagePanel: FC<PropsWithChildren> = ({ children }) => {
         })}
       >
         <div className={cn(theme.messages.inner)}>
-          {(isCompact && viewType !== 'chat') && (
+          {allowBack && isCompact && viewType !== 'chat' && (
             <Button
               variant="text"
               size="small"
