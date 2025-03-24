@@ -1,3 +1,6 @@
+# 2.0.0 - 3/24/25
+- [feature] Tailwind 4 Upgrade
+
 # 2.0.0-beta.2 - 3/24/25
 - [feature] export styles
 
