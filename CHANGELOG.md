@@ -1,3 +1,13 @@
+# 2.0.0-beta.2 - 3/24/25
+- [feature] export styles
+
+# 2.0.0-beta.1 - 3/24/25
+- [feature] Add ChatBubble component
+
+- 
+# 2.0.0-beta.0 - 2/17/25
+- [feature] Tailwind 4 Upgrade
+ 
 # 1.7.1 - 2/19/25
 - [fix] fix ChatBubble global export
 

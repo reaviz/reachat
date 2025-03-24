@@ -2,7 +2,7 @@ import { Preview } from '@storybook/react';
 import { ThemeProvider, theme } from 'reablocks';
 import { withThemeByClassName } from '@storybook/addon-themes';
 import sbTheme from './theme';
-import './index.css';
+import '../src/index.css';
 
 const preview: Preview = {
   decorators: [
@@ -13,8 +13,8 @@ const preview: Preview = {
     ),
     withThemeByClassName({
       themes: {
-        light: 'light',
-        dark: 'dark',
+        light: 'theme-light',
+        dark: 'theme-dark',
       },
       defaultTheme: 'dark',
     }),

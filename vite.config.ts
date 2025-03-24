@@ -10,11 +10,13 @@ import external from 'rollup-plugin-peer-deps-external';
 import dts from 'vite-plugin-dts';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import path from 'path';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(({ mode }) =>
   mode === 'library'
     ? {
       plugins: [
+        tailwindcss(),
         svgrPlugin(),
         tsconfigPaths(),
         cssInjectedByJsPlugin(),
@@ -33,8 +35,8 @@ export default defineConfig(({ mode }) =>
       },
       resolve: {
         alias: {
-          '@': path.resolve(__dirname, './src'),
-        },
+          '@': path.resolve(__dirname, './src')
+        }
       },
       build: {
         minify: false,
