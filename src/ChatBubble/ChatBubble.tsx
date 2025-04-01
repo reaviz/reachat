@@ -1,16 +1,15 @@
+import { AnimatePresence, motion } from 'motion/react';
+import { cn, GlobalOverlay, Portal } from 'reablocks';
 import {
-  ReactNode,
   CSSProperties,
-  useCallback,
-  useMemo,
   memo,
-  useState,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
   useRef,
-  useEffect
+  useState
 } from 'react';
-import { createPortal } from 'react-dom';
-import { cn } from 'reablocks';
-import { motion, AnimatePresence } from 'motion/react';
 
 export type Position =
   | 'bottom-left'
@@ -65,7 +64,7 @@ export const ChatBubble = memo<ChatBubbleProps>(
     bubbleContent,
     position = 'bottom-left',
     customPosition,
-    portalTarget = typeof document !== 'undefined' ? document.body : null,
+    portalTarget,
     className
   }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -112,7 +111,47 @@ export const ChatBubble = memo<ChatBubbleProps>(
       return positions[position];
     };
 
-    const content = useMemo(
+    const PortalContent = useCallback(
+      () => (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[998]"
+            onClick={handleClose}
+          />
+          <motion.div
+            ref={contentRef}
+            initial={false}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              x: 0,
+              pointerEvents: 'auto'
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.8,
+              x: position.includes('right') ? 20 : -20,
+              pointerEvents: 'none'
+            }}
+            transition={{ type: 'spring', duration: 0.5 }}
+            className={cn(
+              'fixed z-[999]',
+              position.includes('right') ? 'origin-right' : 'origin-left',
+              position.includes('top') ? 'origin-top' : 'origin-bottom'
+            )}
+            style={getContentPosition()}
+          >
+            {children}
+          </motion.div>
+        </>
+      ),
+      [handleClose, position, getContentPosition, children]
+    );
+
+    return useMemo(
       () => (
         <>
           <div
@@ -138,66 +177,36 @@ export const ChatBubble = memo<ChatBubbleProps>(
           <AnimatePresence>
             {children && isOpen && bubbleRect && (
               <>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.5 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-[998]"
-                  onClick={handleClose}
-                />
-                <motion.div
-                  ref={contentRef}
-                  initial={false}
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                    x: 0,
-                    pointerEvents: 'auto'
-                  }}
-                  exit={{
-                    opacity: 0,
-                    scale: 0.8,
-                    x: position.includes('right') ? 20 : -20,
-                    pointerEvents: 'none'
-                  }}
-                  transition={{ type: 'spring', duration: 0.5 }}
-                  className={cn(
-                    'fixed z-[999]',
-                    position.includes('right') ? 'origin-right' : 'origin-left',
-                    position.includes('top') ? 'origin-top' : 'origin-bottom'
-                  )}
-                  style={getContentPosition()}
-                >
-                  {children}
-                </motion.div>
+                {portalTarget ? (
+                  <Portal>
+                    <GlobalOverlay open={isOpen}>
+                      {() => (
+                        <div>
+                          <PortalContent />
+                        </div>
+                      )}
+                    </GlobalOverlay>
+                  </Portal>
+                ) : (
+                  <PortalContent />
+                )}
               </>
             )}
           </AnimatePresence>
         </>
       ),
       [
-        children,
         customPosition,
         portalTarget,
+        handleToggle,
         position,
         className,
         bubbleContent,
+        children,
         isOpen,
-        handleClose,
-        handleToggle,
-        bubbleRect
+        bubbleRect,
+        PortalContent
       ]
     );
-
-    if (!portalTarget) {
-      return content;
-    }
-
-    try {
-      return createPortal(content, portalTarget);
-    } catch (error) {
-      console.error('Failed to create portal for ChatBubble:', error);
-      return content;
-    }
   }
 );
