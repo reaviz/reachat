@@ -86,7 +86,7 @@ export const ChatBubble = memo<ChatBubbleProps>(
       setIsOpen(prev => !prev);
     }, []);
 
-    const getContentPosition = () => {
+    const getContentPosition = useCallback(() => {
       if (!bubbleRect) return {};
 
       const positions: Record<Position, CSSProperties> = {
@@ -109,9 +109,9 @@ export const ChatBubble = memo<ChatBubbleProps>(
       };
 
       return positions[position];
-    };
+    }, [bubbleRect, position]);
 
-    const PortalContent = useCallback(
+    const ChildrenWrapper = useCallback(
       () => (
         <>
           <motion.div
@@ -182,13 +182,13 @@ export const ChatBubble = memo<ChatBubbleProps>(
                     <GlobalOverlay open={isOpen}>
                       {() => (
                         <div>
-                          <PortalContent />
+                          <ChildrenWrapper />
                         </div>
                       )}
                     </GlobalOverlay>
                   </Portal>
                 ) : (
-                  <PortalContent />
+                  <ChildrenWrapper />
                 )}
               </>
             )}
@@ -205,7 +205,7 @@ export const ChatBubble = memo<ChatBubbleProps>(
         children,
         isOpen,
         bubbleRect,
-        PortalContent
+        ChildrenWrapper
       ]
     );
   }
