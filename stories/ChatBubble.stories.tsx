@@ -1,3 +1,4 @@
+import { offset } from '@floating-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChatBubble } from '../src/ChatBubble';
 import {
@@ -25,7 +26,10 @@ export default {
   title: 'Demos/ChatBubble',
   component: ChatBubble,
   args: {
-    position: 'bottom-left',
+    position: 'right-end',
+    modifiers: [
+      offset({ mainAxis: 0, crossAxis: -40 })
+    ],
     bubbleContent: (
       <motion.div
         key="bubble"
@@ -43,7 +47,19 @@ export default {
   argTypes: {
     position: {
       control: 'select',
-      options: ['bottom-left', 'bottom-right', 'top-left', 'top-right'],
+      options: ['top',
+        'top-start',
+        'top-end',
+        'right',
+        'right-start',
+        'right-end',
+        'bottom',
+        'bottom-start',
+        'bottom-end',
+        'left',
+        'left-start',
+        'left-end'
+      ],
       description: 'The position of the chat bubble'
     },
     className: {
@@ -55,8 +71,8 @@ export default {
     bubbleContent: {
       description: 'Content to show in the trigger bubble'
     },
-    customPosition: {
-      description: 'Custom positioning styles'
+    modifiers: {
+      description: 'Custom position modifiers'
     },
     portalTarget: {
       description: 'The DOM element where the chat bubble should be rendered'
@@ -105,49 +121,50 @@ export const WithChildren: Story = {
     ]);
 
     return (
-      <ChatBubble {...args}>
-        <div
-          className="dark:bg-gray-950 bg-white"
-          style={{
-            width: 350,
-            height: 500,
-            padding: 20,
-            borderRadius: 5
-          }}
-        >
-          <Chat
-            viewType="companion"
-            sessions={sessions}
-            activeSessionId={activeId}
-            onNewSession={() => {
-              const newId = (sessions.length + 1).toLocaleString();
-              setSessions([
-                ...sessions,
-                {
-                  id: newId,
-                  title: `New Session #${newId}`,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  conversations: []
-                }
-              ]);
-              setActiveId(newId);
+      <div className='fixed left-5 bottom-5'>
+        <ChatBubble {...args}>
+          <div
+            className="dark:bg-gray-950 bg-white"
+            style={{
+              width: 350,
+              height: 500,
+              padding: 20,
+              borderRadius: 5
             }}
-            onSelectSession={setActiveId}
-            onDeleteSession={() => alert('delete!')}
           >
-            <SessionsList>
-              <NewSessionButton />
-              <SessionGroups />
-            </SessionsList>
-            <SessionMessagePanel>
-              <SessionMessagesHeader />
-              <SessionMessages />
-              <ChatInput />
-            </SessionMessagePanel>
-          </Chat>
-        </div>
-      </ChatBubble>
+            <Chat
+              viewType="companion"
+              sessions={sessions}
+              activeSessionId={activeId}
+              onNewSession={() => {
+                const newId = (sessions.length + 1).toLocaleString();
+                setSessions([
+                  ...sessions,
+                  {
+                    id: newId,
+                    title: `New Session #${newId}`,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    conversations: []
+                  }
+                ]);
+                setActiveId(newId);
+              }}
+              onSelectSession={setActiveId}
+              onDeleteSession={() => alert('delete!')}
+            >
+              <SessionsList>
+                <NewSessionButton />
+                <SessionGroups />
+              </SessionsList>
+              <SessionMessagePanel>
+                <SessionMessagesHeader />
+                <SessionMessages />
+                <ChatInput />
+              </SessionMessagePanel>
+            </Chat>
+          </div>
+        </ChatBubble></div>
     );
   }
 };
@@ -168,9 +185,9 @@ export const WithChildrenPortal: Story = {
         <div ref={(el) => {
           containerRef.current = el;
           setPortalTarget(el);
-        }} className="relative w-[400px] h-[300px] border-2 border-gray-300 flex justify-center items-center">
+        }} className="relative w-[400px] h-[300px] border-2 border-gray-300 flex flex-col justify-center items-center">
           <p className="text-gray-600">The ChatBubble will portal here!</p>
-          <ChatBubble {...args} portalTarget={portalTarget}>
+          <ChatBubble {...args} portalTarget={portalTarget} className='absolute left-5 bottom-5'>
             <div
               className="dark:bg-gray-950 bg-white"
               style={{
