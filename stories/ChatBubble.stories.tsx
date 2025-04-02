@@ -1,4 +1,3 @@
-import { offset } from '@floating-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChatBubble } from '../src/ChatBubble';
 import {
@@ -15,7 +14,6 @@ import {
 import { useRef, useEffect, useState } from 'react';
 import { IconButton } from 'reablocks';
 import IconChat from '@/assets/chat-voice-fill.svg?react';
-import { motion } from 'motion/react';
 import {
   fakeSessions,
   sessionsWithFiles,
@@ -27,21 +25,14 @@ export default {
   component: ChatBubble,
   args: {
     position: 'right-end',
-    modifiers: [
-      offset({ mainAxis: 0, crossAxis: -40 })
-    ],
     bubbleContent: (
-      <motion.div
-        key="bubble"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+      <IconButton
+        size="medium"
+        variant="outline"
+        className="rounded-full p-3 hover:scale-110 transition-transform"
       >
-        <IconButton size="medium" variant="outline" className='rounded-full p-3'>
-          <IconChat />
-        </IconButton>
-      </motion.div>
+        <IconChat />
+      </IconButton>
     )
   },
   argTypes: {

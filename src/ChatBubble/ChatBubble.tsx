@@ -1,5 +1,6 @@
+import { offset } from '@floating-ui/react';
 import { ConnectedOverlay, Modifiers, Placement, useMenu } from 'reablocks';
-import { memo, ReactNode, useRef, useState } from 'react';
+import { memo, ReactNode, useRef } from 'react';
 
 export interface ChatBubbleProps {
   /**
@@ -40,7 +41,7 @@ export const ChatBubble = memo<ChatBubbleProps>(
     children,
     bubbleContent,
     position = 'right-end',
-    modifiers,
+    modifiers = [offset({ mainAxis: 0, crossAxis: -40 })],
     className
   }) => {
     const { setOpen, isOpen } = useMenu();
