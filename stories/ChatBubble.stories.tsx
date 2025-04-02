@@ -102,6 +102,7 @@ export const PortalExample: Story = {
         <div ref={containerRef} className="relative w-[400px] h-[300px] border-2 border-gray-300 flex justify-center items-center">
           <p className="text-gray-600">The ChatBubble will portal here!</p>
           <ChatBubble
+            className='absolute left-5 bottom-5'
             {...args}
             portalTarget={portalTarget}
           />

@@ -1,5 +1,4 @@
-import { ConnectedOverlay } from 'reablocks';
-import { Modifiers, Placement } from 'reablocks/dist/utils/Position';
+import { ConnectedOverlay, Modifiers, Placement } from 'reablocks';
 import { memo, ReactNode, useRef, useState } from 'react';
 
 export interface ChatBubbleProps {
