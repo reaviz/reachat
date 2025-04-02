@@ -1,4 +1,4 @@
-import { ConnectedOverlay, Modifiers, Placement } from 'reablocks';
+import { ConnectedOverlay, Modifiers, Placement, useMenu } from 'reablocks';
 import { memo, ReactNode, useRef, useState } from 'react';
 
 export interface ChatBubbleProps {
@@ -43,7 +43,7 @@ export const ChatBubble = memo<ChatBubbleProps>(
     modifiers,
     className
   }) => {
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const { setOpen, isOpen } = useMenu();
     const ref = useRef<HTMLDivElement>();
 
     return (
@@ -53,14 +53,14 @@ export const ChatBubble = memo<ChatBubbleProps>(
           modifiers={modifiers}
           reference={ref.current}
           open={isOpen}
-          onOpen={() => setIsOpen(true)}
-          onClose={() => setIsOpen(false)}
+          onOpen={() => setOpen(true)}
+          onClose={() => setOpen(false)}
           content={() => <>{children}</>}
         />
         <div
           ref={ref}
           className={className}
-          onClick={() => setIsOpen(prev => !prev)}
+          onClick={() => setOpen(prev => !prev)}
         >
           {bubbleContent}
         </div>
