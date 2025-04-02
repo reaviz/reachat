@@ -14,7 +14,7 @@ export interface ChatBubbleProps {
 
   /**
    * The position of the chat bubble on the screen.
-   * @default 'right-end
+   * @default 'right-end'
    */
   position?: Placement;
 
@@ -43,13 +43,12 @@ export const ChatBubble = memo<ChatBubbleProps>(
     modifiers,
     className
   }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const ref = useRef();
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const ref = useRef<HTMLDivElement>();
 
     return (
       <>
         <ConnectedOverlay
-          appendToBody={false}
           placement={position}
           modifiers={modifiers}
           reference={ref.current}
