@@ -11,7 +11,7 @@ import {
   SessionMessagesHeader,
   Session
 } from '../src';
-import { useRef, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IconButton } from 'reablocks';
 import IconChat from '@/assets/chat-voice-fill.svg?react';
 import {
@@ -65,9 +65,6 @@ export default {
     modifiers: {
       description: 'Custom position modifiers'
     },
-    portalTarget: {
-      description: 'The DOM element where the chat bubble should be rendered'
-    }
   }
 } as Meta<typeof ChatBubble>;
 
@@ -78,29 +75,17 @@ export const Basic: Story = {
 };
 
 export const PortalExample: Story = {
-  render: (args) => {
-    const [portalTarget, setPortalTarget] = useState<HTMLDivElement | null>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      if (containerRef.current) {
-        setPortalTarget(containerRef.current);
-      }
-    }, []);
-
-    return (
-      <>
-        <div ref={containerRef} className="relative w-[400px] h-[300px] border-2 border-gray-300 flex justify-center items-center">
-          <p className="text-gray-600">The ChatBubble will portal here!</p>
-          <ChatBubble
-            className='absolute left-5 bottom-5'
-            {...args}
-            portalTarget={portalTarget}
-          />
-        </div>
-      </>
-    );
-  }
+  render: (args) =>  (
+    <>
+      <div className="relative w-[400px] h-[300px] border-2 border-gray-300 flex justify-center items-center">
+        <p className="text-gray-600">The ChatBubble will portal here!</p>
+        <ChatBubble
+          className='absolute left-5 bottom-5'
+          {...args}
+        />
+      </div>
+    </>
+  )
 };
 
 export const WithChildren: Story = {
@@ -163,8 +148,6 @@ export const WithChildren: Story = {
 
 export const WithChildrenPortal: Story = {
   render: (args) => {
-    const [portalTarget, setPortalTarget] = useState<HTMLDivElement | null>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
     const [activeId, setActiveId] = useState<string>();
     const [sessions, setSessions] = useState<Session[]>([
       ...fakeSessions,
@@ -174,12 +157,9 @@ export const WithChildrenPortal: Story = {
 
     return (
       <>
-        <div ref={(el) => {
-          containerRef.current = el;
-          setPortalTarget(el);
-        }} className="relative w-[400px] h-[300px] border-2 border-gray-300 flex flex-col justify-center items-center">
+        <div className="relative w-[400px] h-[300px] border-2 border-gray-300 flex flex-col justify-center items-center">
           <p className="text-gray-600">The ChatBubble will portal here!</p>
-          <ChatBubble {...args} portalTarget={portalTarget} className='absolute left-5 bottom-5'>
+          <ChatBubble {...args} className='absolute left-5 bottom-5'>
             <div
               className="dark:bg-gray-950 bg-white"
               style={{

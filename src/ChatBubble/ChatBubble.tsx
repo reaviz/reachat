@@ -1,6 +1,6 @@
 import { offset } from '@floating-ui/react';
 import { ConnectedOverlay, Modifiers, Placement, useMenu } from 'reablocks';
-import { memo, ReactNode, useRef } from 'react';
+import { memo, ReactNode, useRef, useState } from 'react';
 
 export interface ChatBubbleProps {
   /**
@@ -21,14 +21,9 @@ export interface ChatBubbleProps {
 
   /**
    * Custom position modifiers.
+   * @default [offset({ mainAxis: 0, crossAxis: -40 })]
    */
   modifiers?: Modifiers;
-
-  /**
-   * The DOM element where the chat bubble should be rendered.
-   * @default document.body
-   */
-  portalTarget?: HTMLElement | null;
 
   /**
    * Additional CSS classes to apply to the chat bubble.
@@ -44,8 +39,8 @@ export const ChatBubble = memo<ChatBubbleProps>(
     modifiers = [offset({ mainAxis: 0, crossAxis: -40 })],
     className
   }) => {
-    const { setOpen, isOpen } = useMenu();
-    const ref = useRef<HTMLDivElement>();
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const ref = useRef<HTMLDivElement | null>(null);
 
     return (
       <>
@@ -54,14 +49,14 @@ export const ChatBubble = memo<ChatBubbleProps>(
           modifiers={modifiers}
           reference={ref.current}
           open={isOpen}
-          onOpen={() => setOpen(true)}
-          onClose={() => setOpen(false)}
+          onOpen={() => setIsOpen(true)}
+          onClose={() => setIsOpen(false)}
           content={() => <>{children}</>}
         />
         <div
           ref={ref}
           className={className}
-          onClick={() => setOpen(prev => !prev)}
+          onClick={() => setIsOpen(prev => !prev)}
         >
           {bubbleContent}
         </div>
