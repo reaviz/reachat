@@ -1,5 +1,5 @@
 import { offset } from '@floating-ui/react';
-import { ConnectedOverlay, Modifiers, Placement, useMenu } from 'reablocks';
+import { ConnectedOverlay, Modifiers, Placement } from 'reablocks';
 import { memo, ReactNode, useRef, useState } from 'react';
 
 export interface ChatBubbleProps {
