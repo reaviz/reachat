@@ -1,3 +1,6 @@
+# 2.0.1 - 4/07/25
+- [feature] Update ChatBubble component
+
 # 2.0.0 - 3/24/25
 - [feature] Tailwind 4 Upgrade
 
