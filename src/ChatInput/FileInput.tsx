@@ -47,7 +47,13 @@ export const FileInput: FC<FileInputProps> = ({
         ref={fileInputRef}
         className="hidden"
         accept={allowedFiles.join(',')}
-        onChange={onFileUpload}
+        onChange={e => {
+          onFileUpload(e);
+          // Cleanup field value after fire callback
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+        }}
       />
       <Button
         title="Upload"

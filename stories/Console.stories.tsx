@@ -1,4 +1,5 @@
 import { useState, useRef, FC, useContext } from 'react';
+import AttachIcon from '@/assets/paperclip.svg?react';
 import { Meta } from '@storybook/react';
 import {
   Chat,
@@ -16,7 +17,6 @@ import {
   SessionMessagesHeader,
   ChatContext,
   SessionMessage,
-  AppBar
 } from '../src';
 import {
   Card,
@@ -46,9 +46,6 @@ import {
   sessionsWithPartialConversation,
   sessionWithCSVFiles
 } from './examples';
-import ReachatLogo from '@/assets/logo/logo.svg?react';
-import IconSearch from '@/assets/search.svg?react';
-import IconClose from '@/assets/close-fill.svg?react';
 
 export default {
   title: 'Demos/Console',
@@ -197,6 +194,9 @@ export const Loading = () => {
 };
 
 export const FileUploads = () => {
+  const [sessions, setSessions] = useState(sessionsWithFiles);
+  const [selectedFile, setSelectedFile] = useState<File>(null);
+
   return (
     <div
       className="dark:bg-gray-950 bg-white"
@@ -213,8 +213,31 @@ export const FileUploads = () => {
     >
       <Chat
         viewType="console"
-        sessions={sessionsWithFiles}
+        sessions={sessions}
         activeSessionId="session-files"
+        onSendMessage={(message) => setSessions((sessions) => {
+          const session = sessions[0];
+
+          setSelectedFile(null);
+
+          return [{
+            ...session,
+            conversations: [
+              ...session.conversations,
+              {
+                id: (Math.random() * 100).toString(),
+                createdAt: new Date(),
+                question: message,
+                ...(selectedFile ? { files: [{
+                  name: selectedFile.name,
+                  size: selectedFile.size,
+                  type: selectedFile.type,
+                }]} : [])
+              }
+            ]
+          }];
+        })}
+        onFileUpload={setSelectedFile}
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
@@ -224,7 +247,7 @@ export const FileUploads = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <ChatInput allowedFiles={['.pdf', '.docx']} />
+          <ChatInput attachIcon={<AttachIcon className={cn({'text-green-500': selectedFile})} />} allowedFiles={['.pdf', '.docx']} />
         </SessionMessagePanel>
       </Chat>
     </div>
