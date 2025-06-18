@@ -42,8 +42,6 @@ export const ChatBubble = memo<ChatBubbleProps>(
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const ref = useRef<HTMLDivElement | null>(null);
 
-    console.log('isOpen', isOpen);
-
     return (
       <>
         <ConnectedOverlay
