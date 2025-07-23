@@ -10,7 +10,11 @@ import external from 'rollup-plugin-peer-deps-external';
 import dts from 'vite-plugin-dts';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import tailwindcss from '@tailwindcss/vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) =>
   mode === 'library'
@@ -27,6 +31,14 @@ export default defineConfig(({ mode }) =>
         }),
         checker({
           typescript: true
+        }),
+        viteStaticCopy({
+          targets: [
+            {
+              src: 'stories/*',
+              dest: 'stories/'
+            },
+          ]
         })
       ],
       test: {
