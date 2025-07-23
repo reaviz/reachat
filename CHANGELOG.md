@@ -1,3 +1,6 @@
+# 2.0.2 - 7/23/25
+- [chore] Export stories for docs website #56
+
 # 2.0.1 - 4/07/25
 - [feature] Update ChatBubble component
 
