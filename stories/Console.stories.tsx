@@ -1,5 +1,5 @@
 import { useState, useRef, FC, useContext } from 'react';
-import AttachIcon from '@/assets/paperclip.svg?react';
+import AttachIcon from './assets/paperclip.svg?react';
 import { Meta } from '@storybook/react';
 import {
   Chat,
@@ -30,9 +30,9 @@ import {
   Menu
 } from 'reablocks';
 import { subDays, subMinutes, subHours } from 'date-fns';
-import MenuIcon from '@/assets/menu.svg?react';
-import Placeholder from '@/assets/placeholder.svg?react';
-import PlaceholderDark from '@/assets/placeholder-dark.svg?react';
+import MenuIcon from './assets/menu.svg?react';
+import Placeholder from './assets/placeholder.svg?react';
+import PlaceholderDark from './assets/placeholder-dark.svg?react';
 import { MessageActions } from '@/SessionMessages';
 import { MessageFiles } from '@/SessionMessages';
 import { MessageQuestion } from '@/SessionMessages';
@@ -195,7 +195,7 @@ export const Loading = () => {
 
 export const FileUploads = () => {
   const [sessions, setSessions] = useState(sessionsWithFiles);
-  const [selectedFile, setSelectedFile] = useState<File>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   return (
     <div
@@ -855,7 +855,7 @@ const CustomMessagesHeader: FC<any> = () => {
   return (
     <div>
       <h6 className="text-gray-400">
-        <DateFormat date={activeSession.createdAt} format="MMMM dd, yyyy" />
+        <DateFormat date={activeSession?.createdAt} format="MMMM dd, yyyy" />
       </h6>
       <h1 className="text-2xl font-semibold">{activeSession?.title}</h1>
     </div>
@@ -897,7 +897,7 @@ const CustomMessageSource: FC<any> = ({ title, url, image }) => {
           <img
             src={image}
             alt={title}
-            className={cn(theme.messages.message.sources.source.image)}
+            className={cn(theme?.messages?.message?.sources?.source?.image)}
           />
         )
       }

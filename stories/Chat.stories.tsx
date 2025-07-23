@@ -14,11 +14,11 @@ import {
   sessionsWithFiles
 } from './examples';
 import { useState } from 'react';
-import Placeholder from '@/assets/placeholder.svg?react';
-import PlaceholderDark from '@/assets/placeholder-dark.svg?react';
-import ReachatLogo from '@/assets/logo/logo.svg?react';
-import IconSearch from '@/assets/search.svg?react';
-import IconClose from '@/assets/close-fill.svg?react';
+import Placeholder from './assets/placeholder.svg?react';
+import PlaceholderDark from './assets/placeholder-dark.svg?react';
+import ReachatLogo from './assets/logo.svg?react';
+import IconSearch from './assets/search.svg?react';
+import IconClose from './assets/close-fill.svg?react';
 import { IconButton } from 'reablocks';
 
 export default {
@@ -231,7 +231,7 @@ export const WithAppBar = () => {
         onDeleteSession={() => alert('delete!')}
       >
         <div className="flex flex-col h-full">
-          <AppBar 
+          <AppBar
             content={
               <div className="flex items-center justify-between w-full">
                 <div className="flex-shrink-0">
