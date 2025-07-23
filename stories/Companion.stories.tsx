@@ -21,11 +21,11 @@ import {
 import { useState, memo, useCallback } from 'react';
 import { IconButton } from 'reablocks';
 
-import Placeholder from '@/assets/placeholder.svg?react';
-import PlaceholderDark from '@/assets/placeholder-dark.svg?react';
-import ReachatLogo from '@/assets/logo/logo.svg?react';
-import IconSearch from '@/assets/search.svg?react';
-import IconClose from '@/assets/close-fill.svg?react';
+import Placeholder from './assets/placeholder.svg?react';
+import PlaceholderDark from './assets/placeholder-dark.svg?react';
+import ReachatLogo from './assets/logo.svg?react';
+import IconSearch from './assets/search.svg?react';
+import IconClose from './assets/close-fill.svg?react';
 
 export default {
   title: 'Demos/Companion',
@@ -162,7 +162,7 @@ export const WithAppBar = () => {
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
       >
-        <AppBar 
+        <AppBar
           content={
             <div className="flex items-center justify-between w-full">
               <div className="flex-shrink-0">

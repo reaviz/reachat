@@ -13,7 +13,7 @@ import {
 } from '../src';
 import { FC, useState } from 'react';
 import { IconButton } from 'reablocks';
-import IconChat from '@/assets/chat-voice-fill.svg?react';
+import IconChat from './assets/chat-voice-fill.svg?react';
 import {
   fakeSessions,
   sessionsWithFiles,
