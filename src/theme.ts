@@ -82,6 +82,20 @@ export interface ChatTheme {
       send: string;
       stop: string;
     };
+    commands?: {
+      dropdown: string;
+      list: string;
+      item: string;
+      itemSelected: string;
+      label: string;
+      description: string;
+      icon: string;
+      empty: string;
+      indicator: string;
+      indicatorLabel: string;
+      indicatorIcon: string;
+      indicatorClose: string;
+    };
   };
 }
 
@@ -208,6 +222,37 @@ export const chatTheme: ChatTheme = {
         'dark:text-white light:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700'
       ].join(' '),
       stop: 'px-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 '
+    },
+    commands: {
+      dropdown: [
+        'absolute z-50 w-full bottom-full mb-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto',
+        'dark:bg-gray-900 dark:border-gray-700'
+      ].join(' '),
+      list: 'py-1',
+      item: [
+        'px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2',
+        'dark:hover:bg-gray-800'
+      ].join(' '),
+      itemSelected: ['bg-blue-50', 'dark:bg-blue-950/40'].join(' '),
+      label: ['font-medium text-gray-900', 'dark:text-gray-100'].join(' '),
+      description: ['text-sm text-gray-600', 'dark:text-gray-400'].join(' '),
+      icon: ['w-4 h-4 text-gray-500', 'dark:text-gray-400'].join(' '),
+      empty: ['px-3 py-2 text-gray-500 text-center', 'dark:text-gray-400'].join(
+        ' '
+      ),
+      indicator: [
+        'absolute bottom-full mb-2 left-0 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg shadow-sm',
+        'dark:bg-blue-950/40 dark:border-blue-800'
+      ].join(' '),
+      indicatorLabel: [
+        'text-sm font-medium text-blue-700',
+        'dark:text-blue-300'
+      ].join(' '),
+      indicatorIcon: ['w-4 h-4 text-blue-600', 'dark:text-blue-400'].join(' '),
+      indicatorClose: [
+        'ml-2 text-lg leading-none text-blue-600 hover:text-blue-800 cursor-pointer',
+        'dark:text-blue-400 dark:hover:text-blue-200'
+      ].join(' ')
     }
   }
 };

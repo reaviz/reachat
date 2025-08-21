@@ -42,6 +42,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^1.1.9",
     "@floating-ui/react": "^0.27.6",
+    "@nozbe/microfuzz": "^1.0.0",
     "@radix-ui/react-slot": "^1.1.0",
     "date-fns": "^4.1.0",
     "katex": "^0.16.11",

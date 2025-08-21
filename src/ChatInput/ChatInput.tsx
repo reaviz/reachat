@@ -14,6 +14,10 @@ import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
+import { SlashCommand } from './types';
+import { useSlashCommands } from './hooks/useSlashCommands';
+import { CommandDropdown } from './CommandDropdown';
+import { CommandIndicator } from './CommandIndicator';
 
 interface ChatInputProps {
   /**
@@ -45,6 +49,26 @@ interface ChatInputProps {
    * Icon to show for attach.
    */
   attachIcon?: ReactElement;
+
+  /**
+   * Slash commands available in the input.
+   */
+  commands?: SlashCommand[];
+
+  /**
+   * Callback when a command is selected.
+   */
+  onCommandSelect?: (command: SlashCommand) => void;
+
+  /**
+   * Custom filter function for commands.
+   */
+  commandFilter?: (command: SlashCommand, query: string) => boolean;
+
+  /**
+   * Maximum number of commands to show.
+   */
+  maxCommandsVisible?: number;
 }
 
 export interface ChatInputRef {
@@ -54,95 +78,179 @@ export interface ChatInputRef {
   focus: () => void;
 }
 
-export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
-  allowedFiles,
-  placeholder,
-  defaultValue,
-  sendIcon = <SendIcon />,
-  stopIcon = <StopIcon />,
-  attachIcon
-}, ref) => {
-  const { theme, isLoading, disabled, sendMessage, stopMessage, fileUpload, activeSessionId } =
-    useContext(ChatContext);
-  const [message, setMessage] = useState<string>('');
-  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
+  (
+    {
+      allowedFiles,
+      placeholder,
+      defaultValue,
+      sendIcon = <SendIcon />,
+      stopIcon = <StopIcon />,
+      attachIcon,
+      commands = [],
+      onCommandSelect,
+      commandFilter,
+      maxCommandsVisible
+    },
+    ref
+  ) => {
+    const {
+      theme,
+      isLoading,
+      disabled,
+      sendMessage,
+      stopMessage,
+      fileUpload,
+      activeSessionId
+    } = useContext(ChatContext);
+    const [message, setMessage] = useState<string>('');
+    const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
-  useEffect(() => {
-    if(inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [activeSessionId, inputRef]);
+    const {
+      showDropdown,
+      filteredCommands,
+      selectedIndex,
+      handleKeyDown: handleSlashKeyDown,
+      handleInputChange: handleSlashInputChange,
+      selectCommand,
+      handleBlur,
+      lastSelectedCommand,
+      clearLastCommand
+    } = useSlashCommands({
+      commands,
+      onCommandSelect,
+      commandFilter,
+      maxCommandsVisible,
+      inputRef,
+      setMessage,
+      message
+    });
 
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      inputRef.current?.focus();
-    }
-  }));
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, [activeSessionId, inputRef]);
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      sendMessage?.(message);
-      setMessage('');
-    }
-  };
+    useImperativeHandle(ref, () => ({
+      focus: () => {
+        inputRef.current?.focus();
+      }
+    }));
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
+    const handleSendMessage = () => {
+      if (message.trim()) {
+        sendMessage?.(message);
+        setMessage('');
+      }
+    };
 
-  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && fileUpload) {
-      fileUpload(file);
-    }
-  };
+    const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+      if (showDropdown) {
+        if (
+          e.key === 'Enter' ||
+          e.key === 'Tab' ||
+          e.key === 'Escape' ||
+          e.key === 'ArrowUp' ||
+          e.key === 'ArrowDown'
+        ) {
+          handleSlashKeyDown(e);
+          // Don't process further if it's a slash command key
+          if (e.defaultPrevented) {
+            return;
+          }
+        }
+      }
 
-  return (
-    <div className={cn(theme.input.base)}>
-      <Textarea
-        ref={inputRef}
-        containerClassName={cn(theme.input.input)}
-        minRows={1}
-        autoFocus
-        value={message}
-        defaultValue={defaultValue}
-        onKeyPress={handleKeyPress}
-        placeholder={placeholder}
-        disabled={isLoading || disabled}
-        onChange={e => setMessage(e.target.value)}
-      />
-      <div className={cn(theme.input.actions.base)}>
-        {allowedFiles?.length > 0 && (
-          <FileInput
-            allowedFiles={allowedFiles}
-            onFileUpload={handleFileUpload}
-            isLoading={isLoading}
-            disabled={disabled}
-            attachIcon={attachIcon}
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSendMessage();
+      }
+    };
+
+    const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setMessage(e.target.value);
+      if (commands.length > 0) {
+        handleSlashInputChange(e);
+      }
+      // Clear command indicator when user types after command selection
+      if (lastSelectedCommand) {
+        clearLastCommand();
+      }
+    };
+
+    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file && fileUpload) {
+        fileUpload(file);
+      }
+    };
+
+    return (
+      <div className={cn(theme.input.base, 'relative overflow-visible')}>
+        <CommandIndicator
+          command={lastSelectedCommand}
+          onDismiss={clearLastCommand}
+        />
+        {showDropdown && (
+          <CommandDropdown
+            commands={filteredCommands}
+            selectedIndex={selectedIndex}
+            onSelect={selectCommand}
           />
         )}
-        {isLoading && (
-          <Button
-            title="Stop"
-            className={cn(theme.input.actions.stop)}
-            onClick={stopMessage}
-            disabled={disabled}
-          >
-            {stopIcon}
-          </Button>
-        )}
-        <Button
-          title="Send"
-          className={cn(theme.input.actions.send)}
-          onClick={handleSendMessage}
+        <Textarea
+          ref={inputRef}
+          containerClassName={cn(theme.input.input)}
+          minRows={1}
+          autoFocus
+          value={message}
+          defaultValue={defaultValue}
+          onKeyDown={handleKeyPress}
+          placeholder={placeholder}
           disabled={isLoading || disabled}
-        >
-          {sendIcon}
-        </Button>
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={showDropdown}
+          aria-controls={showDropdown ? 'command-listbox' : undefined}
+          aria-activedescendant={
+            showDropdown && selectedIndex >= 0
+              ? `command-${selectedIndex}`
+              : undefined
+          }
+        />
+        <div className={cn(theme.input.actions.base)}>
+          {allowedFiles?.length > 0 && (
+            <FileInput
+              allowedFiles={allowedFiles}
+              onFileUpload={handleFileUpload}
+              isLoading={isLoading}
+              disabled={disabled}
+              attachIcon={attachIcon}
+            />
+          )}
+          {isLoading && (
+            <Button
+              title="Stop"
+              className={cn(theme.input.actions.stop)}
+              onClick={stopMessage}
+              disabled={disabled}
+            >
+              {stopIcon}
+            </Button>
+          )}
+          <Button
+            title="Send"
+            className={cn(theme.input.actions.send)}
+            onClick={handleSendMessage}
+            disabled={isLoading || disabled}
+          >
+            {sendIcon}
+          </Button>
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
