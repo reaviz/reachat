@@ -91,21 +91,23 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   const [isAnimating, setIsAnimating] = useState(true);
 
   useEffect(() => {
-    if (contentRef.current && messagesRef.current && !isAnimating) {
-      // Create a mutation observer to listen for changes to call scroll after children animations complete
-      const mutationObserver = new MutationObserver(() =>
-        debouncedExecuteScrollLogic(messagesRef, contentRef, mutationObserver)
-      );
-
-      mutationObserver.observe(messagesRef.current, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['style', 'class']
-      });
-
-      return () => mutationObserver.disconnect();
+    if (!contentRef.current || !messagesRef.current || isAnimating) {
+      return;
     }
+
+    // Create a mutation observer to listen for changes to call scroll after children animations complete
+    const mutationObserver = new MutationObserver(() =>
+      debouncedExecuteScrollLogic(messagesRef, contentRef, mutationObserver)
+    );
+
+    mutationObserver.observe(messagesRef.current, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class']
+    });
+
+    return () => mutationObserver.disconnect();
   }, [activeSession, isAnimating]);
 
   function handleShowMore() {
@@ -168,12 +170,12 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
           {children
             ? children(convosToRender)
             : convosToRender.map((conversation, index) => (
-              <SessionMessage
-                key={conversation.id}
-                conversation={conversation}
-                isLast={index === conversation.length - 1}
-              />
-            ))}
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                  isLast={index === conversation.length - 1}
+                />
+              ))}
         </motion.div>
       </AnimatePresence>
     </div>
