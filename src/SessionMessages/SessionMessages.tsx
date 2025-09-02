@@ -59,6 +59,7 @@ const executeScrollLogic = (
       contentRef.current.scrollTop;
     if (atBottom) {
       // If we are at the bottom, don't scroll
+      mutationObserver.disconnect();
       return;
     }
   }
