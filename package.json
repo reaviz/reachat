@@ -40,7 +40,7 @@
   "browser": "dist/index.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
-    "@ai-sdk/openai": "^2.0.22",
+    "@ai-sdk/openai": "^1.1.9",
     "@floating-ui/react": "^0.27.6",
     "@radix-ui/react-slot": "^1.1.0",
     "date-fns": "^4.1.0",
