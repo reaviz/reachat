@@ -1,11 +1,14 @@
 import React, {
   ReactNode,
+  RefObject,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState
 } from 'react';
+import debounce from 'lodash.debounce';
 import { SessionEmpty } from './SessionEmpty';
 import { ChatContext } from '@/ChatContext';
 import { Button, cn, useInfinityList } from 'reablocks';
@@ -45,6 +48,37 @@ interface SessionMessagesProps {
   children?: (conversations: Conversation[]) => ReactNode;
 }
 
+const executeScrollLogic = (
+  messagesRef: RefObject<HTMLDivElement>,
+  contentRef: RefObject<HTMLDivElement>,
+  mutationObserver: MutationObserver
+) => {
+  if (contentRef.current) {
+    const atBottom =
+      contentRef.current.scrollHeight - contentRef.current.clientHeight ===
+      contentRef.current.scrollTop;
+    if (atBottom) {
+      // If we are at the bottom, don't scroll
+      return;
+    }
+  }
+  if (messagesRef.current) {
+    const lastMessage = messagesRef.current
+      .lastElementChild as HTMLElement | null;
+
+    if (lastMessage) {
+      lastMessage.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+    // Disconnect the mutation observer after the scroll
+    mutationObserver.disconnect();
+  }
+};
+
+const debouncedExecuteScrollLogic = debounce(executeScrollLogic, 100);
+
 export const SessionMessages: React.FC<SessionMessagesProps> = ({
   children,
   newSessionContent,
@@ -53,17 +87,25 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
 }) => {
   const { activeSession, theme } = useContext(ChatContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
+  const messagesRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
 
   useEffect(() => {
-    if (contentRef.current) {
-      // Scroll to the bottom of the content in animation queue
-      requestAnimationFrame(
-        () => (contentRef.current.scrollTop = contentRef.current.scrollHeight)
+    if (contentRef.current && messagesRef.current && !isAnimating) {
+      // Create a mutation observer to listen for changes to call scroll after children animations complete
+      const mutationObserver = new MutationObserver(() =>
+        debouncedExecuteScrollLogic(messagesRef, contentRef, mutationObserver)
       );
+
+      mutationObserver.observe(messagesRef.current, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style', 'class']
+      });
+
+      return () => mutationObserver.disconnect();
     }
-    // If we update the active session or load the page initially ( onAnimationComplete )
-    // let's scroll to the bottom of the page.
   }, [activeSession, isAnimating]);
 
   function handleShowMore() {
@@ -93,7 +135,11 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   }
 
   return (
-    <div className={cn(theme.messages.content)} ref={contentRef}>
+    <div
+      className={cn(theme.messages.content)}
+      ref={contentRef}
+      id={activeSession?.id}
+    >
       {hasMore && (
         <Button
           variant="outline"
@@ -106,23 +152,28 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
       )}
       <AnimatePresence>
         <motion.div
+          ref={messagesRef}
           variants={containerVariants}
           key={activeSession?.id}
           initial="hidden"
           animate="visible"
-          onAnimationComplete={() => {
-            requestAnimationFrame(() => setIsAnimating(false));
-          }}
+          onAnimationComplete={() =>
+            requestAnimationFrame(() => {
+              setIsAnimating(false);
+              // Scroll to the bottom of the container at initial load
+              contentRef.current.scrollTop = contentRef.current.scrollHeight;
+            })
+          }
         >
           {children
             ? children(convosToRender)
             : convosToRender.map((conversation, index) => (
-              <SessionMessage
-                key={conversation.id}
-                conversation={conversation}
-                isLast={index === conversation.length - 1}
-              />
-            ))}
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                  isLast={index === conversation.length - 1}
+                />
+              ))}
         </motion.div>
       </AnimatePresence>
     </div>
