@@ -168,12 +168,12 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
           {children
             ? children(convosToRender)
             : convosToRender.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversation.length - 1}
-                />
-              ))}
+              <SessionMessage
+                key={conversation.id}
+                conversation={conversation}
+                isLast={index === conversation.length - 1}
+              />
+            ))}
         </motion.div>
       </AnimatePresence>
     </div>
