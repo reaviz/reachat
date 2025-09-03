@@ -99,7 +99,6 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   const [isAnimating, setIsAnimating] = useState(true);
   const [iAtBottom, setIsAtBottom] = useState(true);
 
-  console.log('isScrollToBottomButtonVisible', isScrollToBottomButtonVisible);
   useEffect(() => {
     if (!contentRef.current || !isScrollToBottomButtonVisible) {
       return;
