@@ -498,7 +498,7 @@ export const HundredConversations = () => {
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages />
+          <SessionMessages isScrollToBottomButtonVisible />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
