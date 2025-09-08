@@ -1,9 +1,4 @@
-import { TextAreaRef as ReaBlocksTextAreaRef } from 'reablocks';
 import { ReactElement, RefObject } from 'react';
-
-type TextAreaRef = ReaBlocksTextAreaRef & {
-  textareaRef: RefObject<HTMLTextAreaElement>;
-};
 
 export interface SimpleCommand {
   id: string;
@@ -39,7 +34,7 @@ export interface UseSlashCommandsOptions {
   onCommandSelect?: (command: SlashCommand) => void;
   commandFilter?: (command: SlashCommand, query: string) => boolean;
   maxCommandsVisible?: number;
-  inputRef: RefObject<TextAreaRef>;
+  inputRef: RefObject<HTMLTextAreaElement>;
   setMessage: (message: string) => void;
   message: string;
 }
