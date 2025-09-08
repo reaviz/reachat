@@ -9,12 +9,12 @@ import {
   useImperativeHandle,
   useEffect
 } from 'react';
-import { Button, Textarea, cn } from 'reablocks';
+import { Button, cn, Textarea } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
-import { SlashCommand } from './types';
+import { SlashCommand, TextAreaRef } from './types';
 import { useSlashCommands } from './hooks/useSlashCommands';
 import { CommandDropdown } from './CommandDropdown';
 import { CommandIndicator } from './CommandIndicator';
@@ -104,7 +104,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       activeSessionId
     } = useContext(ChatContext);
     const [message, setMessage] = useState<string>('');
-    const inputRef = useRef<HTMLTextAreaElement | null>(null);
+    const inputRef = useRef<TextAreaRef | null>(null);
 
     const {
       showDropdown,
@@ -211,7 +211,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
           disabled={isLoading || disabled}
           onChange={handleInputChange}
           onBlur={handleBlur}
-          role="combobox"
+          role="textarea"
           aria-autocomplete="list"
           aria-expanded={showDropdown}
           aria-controls={showDropdown ? 'command-listbox' : undefined}
