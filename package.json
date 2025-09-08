@@ -44,11 +44,12 @@
     "@floating-ui/react": "^0.27.6",
     "@nozbe/microfuzz": "^1.0.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@reaviz/react-use-fuzzy": "^1.0.3",
     "date-fns": "^4.1.0",
     "katex": "^0.16.11",
     "mdast-util-find-and-replace": "^3.0.1",
     "motion": "^12.4.2",
-    "reablocks": "^9.0.0",
+    "reablocks": "^9.2.1",
     "react-markdown": "^9.0.3",
     "react-syntax-highlighter": "^15.6.1",
     "reakeys": "^2.0.3",
@@ -137,5 +138,5 @@
       "pre-commit": "lint-staged"
     }
   },
-  "packageManager": "pnpm@9.5.0+sha1.8c155dc114e1689d18937974f6571e0ceee66f1d"
+  "packageManager": "pnpm@9.1.2"
 }

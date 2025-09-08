@@ -16,10 +16,10 @@ import {
 } from '../src';
 import { subHours } from 'date-fns';
 import HelpIcon from './assets/menu.svg?react';
-import CodeIcon from './assets/placeholder.svg?react';
+import CodeIcon from './assets/file.svg?react';
 
 export default {
-  title: 'Slash Commands',
+  title: 'Demos/Slash Commands',
   component: Chat
 } as Meta;
 
@@ -87,7 +87,7 @@ export const SimpleCommands = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <ChatInput 
+          <ChatInput
             commands={simpleCommands}
             onCommandSelect={(cmd) => console.log('Selected command:', cmd)}
             placeholder="Type / for commands"
@@ -172,7 +172,7 @@ export const RichCommands = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <ChatInput 
+          <ChatInput
             commands={richCommands}
             onCommandSelect={(cmd) => console.log('Selected command:', cmd)}
             placeholder="Type / for commands"
@@ -189,10 +189,10 @@ export const ConditionalCommands = () => {
   const conditionalCommands: SlashCommand[] = [
     { id: '1', label: 'help', value: 'help', description: 'Get help' },
     { id: '2', label: 'clear', value: 'clear', description: 'Clear the chat' },
-    { 
-      id: '3', 
-      label: 'admin', 
-      value: 'admin', 
+    {
+      id: '3',
+      label: 'admin',
+      value: 'admin',
       description: 'Admin commands',
       visible: isAdmin
     },
@@ -243,7 +243,7 @@ export const ConditionalCommands = () => {
           {' '}Admin Mode
         </label>
       </div>
-      
+
       <Chat
         sessions={sessions}
         activeSessionId="1"
@@ -257,7 +257,7 @@ export const ConditionalCommands = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <ChatInput 
+          <ChatInput
             commands={conditionalCommands}
             onCommandSelect={(cmd) => console.log('Selected command:', cmd)}
             placeholder="Type / for commands"
@@ -277,7 +277,7 @@ export const FilteredCommands = () => {
   }));
 
   const customFilter = (command: SlashCommand, query: string) => {
-    return command.label.includes(query) || 
+    return command.label.includes(query) ||
            ('description' in command && command.description && command.description.toLowerCase().includes(query.toLowerCase()));
   };
 
@@ -322,7 +322,7 @@ export const FilteredCommands = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <ChatInput 
+          <ChatInput
             commands={manyCommands}
             commandFilter={customFilter}
             maxCommandsVisible={5}

@@ -56,6 +56,11 @@ interface ChatInputProps {
   commands?: SlashCommand[];
 
   /**
+   * Message to show when no commands are found.
+   */
+  noCommandsMessage?: string;
+
+  /**
    * Callback when a command is selected.
    */
   onCommandSelect?: (command: SlashCommand) => void;
@@ -64,11 +69,6 @@ interface ChatInputProps {
    * Custom filter function for commands.
    */
   commandFilter?: (command: SlashCommand, query: string) => boolean;
-
-  /**
-   * Maximum number of commands to show.
-   */
-  maxCommandsVisible?: number;
 }
 
 export interface ChatInputRef {
@@ -88,9 +88,9 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       stopIcon = <StopIcon />,
       attachIcon,
       commands = [],
+      noCommandsMessage,
       onCommandSelect,
-      commandFilter,
-      maxCommandsVisible
+      commandFilter
     },
     ref
   ) => {
@@ -120,7 +120,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       commands,
       onCommandSelect,
       commandFilter,
-      maxCommandsVisible,
       inputRef,
       setMessage,
       message
@@ -196,6 +195,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
           <CommandDropdown
             commands={filteredCommands}
             selectedIndex={selectedIndex}
+            noCommandsMessage={noCommandsMessage}
             onSelect={selectCommand}
           />
         )}

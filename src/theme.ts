@@ -236,7 +236,7 @@ export const chatTheme: ChatTheme = {
       itemSelected: ['bg-blue-50', 'dark:bg-blue-950/40'].join(' '),
       label: ['font-medium text-gray-900', 'dark:text-gray-100'].join(' '),
       description: ['text-sm text-gray-600', 'dark:text-gray-400'].join(' '),
-      icon: ['w-4 h-4 text-gray-500', 'dark:text-gray-400'].join(' '),
+      icon: ['[&>svg]:size-4 text-gray-500', 'dark:text-gray-400'].join(' '),
       empty: ['px-3 py-2 text-gray-500 text-center', 'dark:text-gray-400'].join(
         ' '
       ),

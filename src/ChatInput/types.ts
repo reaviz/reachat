@@ -42,12 +42,6 @@ export interface UseSlashCommandsOptions {
 export interface CommandDropdownProps {
   commands: SlashCommand[];
   selectedIndex: number;
+  noCommandsMessage?: string;
   onSelect: (command: SlashCommand) => void;
-}
-
-export interface CommandItemProps {
-  command: SlashCommand;
-  isSelected: boolean;
-  onSelect: (command: SlashCommand) => void;
-  index: number;
 }
