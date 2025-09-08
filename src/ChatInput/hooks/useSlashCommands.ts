@@ -98,7 +98,10 @@ export function useSlashCommands({
         setTimeout(() => {
           if (inputRef.current) {
             const newCursorPos = slashPosition + command.value.length;
-            inputRef.current.setSelectionRange(newCursorPos, newCursorPos);
+            inputRef.current.textareaRef?.current?.setSelectionRange(
+              newCursorPos,
+              newCursorPos
+            );
             inputRef.current.focus();
           }
         }, 0);
