@@ -1,6 +1,6 @@
 import { ReactNode, FC } from 'react';
-import { cn, useComponentTheme } from 'reablocks';
-import { ChatTheme, chatTheme } from '../theme';
+import { cn } from 'reablocks';
+import { ChatTheme, chatTheme } from '@/theme';
 
 export interface AppBarProps {
   /**
@@ -14,11 +14,6 @@ export interface AppBarProps {
   theme?: ChatTheme;
 }
 
-export const AppBar: FC<AppBarProps> = ({
-  content,
-  theme: customTheme = chatTheme
-}) => {
-  const theme = useComponentTheme<ChatTheme>('chat', customTheme);
-
+export const AppBar: FC<AppBarProps> = ({ content, theme = chatTheme }) => {
   return <div className={cn(theme.appbar)}>{content}</div>;
 };

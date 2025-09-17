@@ -8,7 +8,7 @@ import {
   useState
 } from 'react';
 import { useHotkeys } from 'reakeys';
-import { cn, useComponentTheme } from 'reablocks';
+import { cn } from 'reablocks';
 import { Session } from './types';
 import { ChatTheme, chatTheme } from './theme';
 import { ChatContext, ChatViewType } from './ChatContext';
@@ -111,14 +111,13 @@ export const Chat: FC<ChatProps> = ({
   onFileUpload,
   isLoading,
   activeSessionId,
-  theme: customTheme = chatTheme,
+  theme = chatTheme,
   onNewSession,
   remarkPlugins = [remarkGfm, remarkYoutube, remarkMath],
   disabled,
   style,
   className
 }) => {
-  const theme = useComponentTheme<ChatTheme>('chat', customTheme);
   const [internalActiveSessionID, setInternalActiveSessionID] = useState<
     string | null
   >(activeSessionId);
