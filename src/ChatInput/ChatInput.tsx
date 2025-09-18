@@ -7,7 +7,8 @@ import {
   useContext,
   forwardRef,
   useImperativeHandle,
-  useEffect
+  useEffect,
+  useCallback
 } from 'react';
 import { Button, Textarea, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
@@ -45,6 +46,16 @@ interface ChatInputProps {
    * Icon to show for attach.
    */
   attachIcon?: ReactElement;
+
+  /**
+   * Message to be displayed in the input field.
+   */
+  message?: string;
+
+  /**
+   * Callback function to handle message change.
+   */
+  onMessageChange?: (message: string) => void;
 }
 
 export interface ChatInputRef {
@@ -52,97 +63,134 @@ export interface ChatInputRef {
    * Focus the input.
    */
   focus: () => void;
+
+  /**
+   * Send the message.
+   */
+  send: () => void;
 }
 
-export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
-  allowedFiles,
-  placeholder,
-  defaultValue,
-  sendIcon = <SendIcon />,
-  stopIcon = <StopIcon />,
-  attachIcon
-}, ref) => {
-  const { theme, isLoading, disabled, sendMessage, stopMessage, fileUpload, activeSessionId } =
-    useContext(ChatContext);
-  const [message, setMessage] = useState<string>('');
-  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
+  (
+    {
+      allowedFiles,
+      placeholder,
+      defaultValue,
+      message,
+      sendIcon = <SendIcon />,
+      stopIcon = <StopIcon />,
+      attachIcon,
+      onMessageChange
+    },
+    ref
+  ) => {
+    const {
+      theme,
+      isLoading,
+      disabled,
+      sendMessage,
+      stopMessage,
+      fileUpload,
+      activeSessionId
+    } = useContext(ChatContext);
+    const [internalMessage, setInternalMessage] = useState<string>('');
+    const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
-  useEffect(() => {
-    if(inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [activeSessionId, inputRef]);
+    useEffect(() => {
+      setInternalMessage(message || '');
+    }, [message]);
 
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      inputRef.current?.focus();
-    }
-  }));
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, [activeSessionId, inputRef]);
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      sendMessage?.(message);
-      setMessage('');
-    }
-  };
+    useImperativeHandle(ref, () => ({
+      focus: () => {
+        inputRef.current?.focus();
+      },
+      send: () => {
+        if (internalMessage.trim()) {
+          sendMessage?.(internalMessage);
+          setInternalMessage('');
+        }
+      }
+    }));
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
+    const handleSendMessage = () => {
+      if (internalMessage.trim()) {
+        sendMessage?.(internalMessage);
+        setInternalMessage('');
+      }
+    };
 
-  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && fileUpload) {
-      fileUpload(file);
-    }
-  };
+    const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSendMessage();
+      }
+    };
 
-  return (
-    <div className={cn(theme.input.base)}>
-      <Textarea
-        ref={inputRef}
-        containerClassName={cn(theme.input.input)}
-        minRows={1}
-        autoFocus
-        value={message}
-        defaultValue={defaultValue}
-        onKeyPress={handleKeyPress}
-        placeholder={placeholder}
-        disabled={isLoading || disabled}
-        onChange={e => setMessage(e.target.value)}
-      />
-      <div className={cn(theme.input.actions.base)}>
-        {allowedFiles?.length > 0 && (
-          <FileInput
-            allowedFiles={allowedFiles}
-            onFileUpload={handleFileUpload}
-            isLoading={isLoading}
-            disabled={disabled}
-            attachIcon={attachIcon}
-          />
-        )}
-        {isLoading && (
-          <Button
-            title="Stop"
-            className={cn(theme.input.actions.stop)}
-            onClick={stopMessage}
-            disabled={disabled}
-          >
-            {stopIcon}
-          </Button>
-        )}
-        <Button
-          title="Send"
-          className={cn(theme.input.actions.send)}
-          onClick={handleSendMessage}
+    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file && fileUpload) {
+        fileUpload(file);
+      }
+    };
+
+    const handleMessageChange = useCallback(
+      (event: ChangeEvent<HTMLTextAreaElement>) => {
+        setInternalMessage(event.target.value);
+        onMessageChange?.(event.target.value);
+      },
+      [onMessageChange]
+    );
+
+    return (
+      <div className={cn(theme.input.base)}>
+        <Textarea
+          ref={inputRef}
+          containerClassName={cn(theme.input.input)}
+          minRows={1}
+          autoFocus
+          value={internalMessage}
+          defaultValue={defaultValue}
+          onKeyPress={handleKeyPress}
+          placeholder={placeholder}
           disabled={isLoading || disabled}
-        >
-          {sendIcon}
-        </Button>
+          onChange={handleMessageChange}
+        />
+        <div className={cn(theme.input.actions.base)}>
+          {allowedFiles?.length > 0 && (
+            <FileInput
+              allowedFiles={allowedFiles}
+              onFileUpload={handleFileUpload}
+              isLoading={isLoading}
+              disabled={disabled}
+              attachIcon={attachIcon}
+            />
+          )}
+          {isLoading && (
+            <Button
+              title="Stop"
+              className={cn(theme.input.actions.stop)}
+              onClick={stopMessage}
+              disabled={disabled}
+            >
+              {stopIcon}
+            </Button>
+          )}
+          <Button
+            title="Send"
+            className={cn(theme.input.actions.send)}
+            onClick={handleSendMessage}
+            disabled={isLoading || disabled}
+          >
+            {sendIcon}
+          </Button>
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
