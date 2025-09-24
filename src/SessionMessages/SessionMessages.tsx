@@ -40,6 +40,11 @@ interface SessionMessagesProps {
   showMoreText?: string;
 
   /**
+   * Whether to automatically scroll to the bottom of the content.
+   */
+  autoScroll?: boolean;
+
+  /**
    * Render function for the session messages.
    */
   children?: (conversations: Conversation[]) => ReactNode;
@@ -49,14 +54,15 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   children,
   newSessionContent,
   limit = 10,
-  showMoreText = 'Show more'
+  showMoreText = 'Show more',
+  autoScroll = true
 }) => {
   const { activeSession, theme } = useContext(ChatContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
 
   useEffect(() => {
-    if (contentRef.current) {
+    if (contentRef.current && autoScroll) {
       // Scroll to the bottom of the content in animation queue
       requestAnimationFrame(
         () => (contentRef.current.scrollTop = contentRef.current.scrollHeight)
@@ -64,7 +70,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
     }
     // If we update the active session or load the page initially ( onAnimationComplete )
     // let's scroll to the bottom of the page.
-  }, [activeSession, isAnimating]);
+  }, [activeSession, autoScroll, isAnimating]);
 
   function handleShowMore() {
     showNext(limit);
@@ -117,12 +123,12 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
           {children
             ? children(convosToRender)
             : convosToRender.map((conversation, index) => (
-              <SessionMessage
-                key={conversation.id}
-                conversation={conversation}
-                isLast={index === conversation.length - 1}
-              />
-            ))}
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                  isLast={index === conversation.length - 1}
+                />
+              ))}
         </motion.div>
       </AnimatePresence>
     </div>
