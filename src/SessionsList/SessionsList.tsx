@@ -1,8 +1,11 @@
-import { FC, PropsWithChildren, useContext } from 'react';
-import { List, cn } from 'reablocks';
-import { ChatContext } from '@/ChatContext';
 import { motion } from 'motion/react';
-import { Template } from '@/types';
+import { cn, List } from 'reablocks';
+import type { FC, PropsWithChildren } from 'react';
+import { useContext } from 'react';
+
+import { ChatContext } from '@/ChatContext';
+import type { Template } from '@/types';
+
 import { SessionListItem } from './SessionListItem';
 
 export interface SessionsListProps extends PropsWithChildren {

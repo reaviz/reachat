@@ -12,7 +12,7 @@ export const useDimensions = () => {
     if (!ref) return;
 
     const resizeObserver = new ResizeObserver(entries => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         setWidth(entry.contentRect.width);
       }
     });

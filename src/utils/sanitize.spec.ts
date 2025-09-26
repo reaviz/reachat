@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
 import { sanitizeSVGCell } from './sanitize';
 
 describe('sanitizeSVGCell', () => {
@@ -33,7 +34,7 @@ describe('sanitizeSVGCell', () => {
   });
 
   it('should handle single quotes without escaping', () => {
-    expect(sanitizeSVGCell('Don\'t worry')).toBe('Don\'t worry');
+    expect(sanitizeSVGCell("Don't worry")).toBe("Don't worry");
   });
 
   // Special characters

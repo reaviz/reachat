@@ -1,11 +1,14 @@
-import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';
 import { Button, cn } from 'reablocks';
-import { FC, PropsWithChildren, useContext, useState } from 'react';
+import type { FC, PropsWithChildren } from 'react';
+import { useContext, useState } from 'react';
+import type { Plugin } from 'unified';
+
+import { ChatContext } from '@/ChatContext';
 import { Markdown } from '@/Markdown';
-import { Plugin } from 'unified';
+import type { ConversationFile } from '@/types';
+
 import { MessageFiles } from './MessageFiles';
-import { ConversationFile } from '@/types';
 
 export interface MessageQuestionProps extends PropsWithChildren {
   /**

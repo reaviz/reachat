@@ -1,7 +1,9 @@
-import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';
-import { cn, Ellipsis, DateFormat } from 'reablocks';
-import { FC, PropsWithChildren, useContext } from 'react';
+import { cn, DateFormat, Ellipsis } from 'reablocks';
+import type { FC, PropsWithChildren } from 'react';
+import { useContext } from 'react';
+
+import { ChatContext } from '@/ChatContext';
 
 export const SessionMessagesHeader: FC<PropsWithChildren> = ({ children }) => {
   const { activeSession, theme } = useContext(ChatContext);

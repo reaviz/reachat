@@ -1,4 +1,3 @@
-
 /**
  * Sanitizes cell content to prevent CSV injection and other potential vulnerabilities.
  * Based on the documentation of OWASP for CSV Injection
@@ -11,7 +10,7 @@ export const sanitizeSVGCell = (cell: string): string => {
   // Escape double quotes by doubling them
   const escaped = trimmed.replace(/"/g, '""');
   // Add single quote prefix only for potentially dangerous content
-  const prefix = /^[=+\-@]/.test(trimmed) ? '\'' : '';
+  const prefix = /^[=+\-@]/.test(trimmed) ? "'" : '';
   // Only wrap in quotes if the content contains special characters
   const needsQuotes = /[",\n\r]/.test(escaped) || prefix;
 

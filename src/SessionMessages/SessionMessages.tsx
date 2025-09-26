@@ -1,16 +1,12 @@
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import { SessionEmpty } from './SessionEmpty';
-import { ChatContext } from '@/ChatContext';
-import { Button, cn, useInfinityList } from 'reablocks';
 import { AnimatePresence, motion } from 'motion/react';
-import { Conversation } from '@/types';
+import { Button, cn, useInfinityList } from 'reablocks';
+import type { ReactNode } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+
+import { ChatContext } from '@/ChatContext';
+import type { Conversation } from '@/types';
+
+import { SessionEmpty } from './SessionEmpty';
 import { SessionMessage } from './SessionMessage/SessionMessage';
 
 const containerVariants = {

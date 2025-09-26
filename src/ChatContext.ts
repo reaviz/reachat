@@ -1,7 +1,8 @@
 import { createContext } from 'react';
-import { Session } from './types';
-import { ChatTheme } from './theme';
-import { Plugin } from 'unified';
+import type { Plugin } from 'unified';
+
+import type { ChatTheme } from './theme';
+import type { Session } from './types';
 
 export type ChatViewType = 'chat' | 'companion' | 'console';
 

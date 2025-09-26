@@ -1,6 +1,7 @@
-import { FC, ReactElement } from 'react';
+import { cn, Ellipsis } from 'reablocks';
+import type { FC, ReactElement } from 'react';
+
 import FileIcon from '@/assets/file.svg?react';
-import { Ellipsis, cn } from 'reablocks';
 
 interface DefaultFileRendererProps {
   /**
@@ -30,7 +31,7 @@ interface DefaultFileRendererProps {
 const DefaultFileRenderer: FC<DefaultFileRendererProps> = ({
   name,
   limit = 100,
-  fileIcon = <FileIcon />,
+  fileIcon = <FileIcon />
 }) => (
   <figure className="flex items-center gap-2">
     {fileIcon}

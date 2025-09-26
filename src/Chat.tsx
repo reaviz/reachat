@@ -1,23 +1,19 @@
-import {
-  CSSProperties,
-  FC,
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
-import { useHotkeys } from 'reakeys';
-import { cn } from 'reablocks';
-import { Session } from './types';
-import { ChatTheme, chatTheme } from './theme';
-import { ChatContext, ChatViewType } from './ChatContext';
-import { Plugin } from 'unified';
 import { AnimatePresence } from 'motion/react';
-import { useDimensions } from './utils/useDimensions';
+import { cn } from 'reablocks';
+import type { CSSProperties, FC, PropsWithChildren } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useHotkeys } from 'reakeys';
 import remarkGfm from 'remark-gfm';
-import remarkYoutube from 'remark-youtube';
 import remarkMath from 'remark-math';
+import remarkYoutube from 'remark-youtube';
+import type { Plugin } from 'unified';
+
+import type { ChatViewType } from './ChatContext';
+import { ChatContext } from './ChatContext';
+import type { ChatTheme } from './theme';
+import { chatTheme } from './theme';
+import type { Session } from './types';
+import { useDimensions } from './utils/useDimensions';
 
 export interface ChatProps extends PropsWithChildren {
   /**

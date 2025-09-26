@@ -1,10 +1,12 @@
-import { FC, PropsWithChildren, ReactElement, useContext } from 'react';
-import { ListItem, IconButton, cn, Ellipsis } from 'reablocks';
-import { Session } from '@/types';
-import TrashIcon from '@/assets/trash.svg?react';
-import ChatIcon from '@/assets/chat.svg?react';
-import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';
+import { cn, Ellipsis, IconButton, ListItem } from 'reablocks';
+import type { FC, PropsWithChildren, ReactElement } from 'react';
+import { useContext } from 'react';
+
+import ChatIcon from '@/assets/chat.svg?react';
+import TrashIcon from '@/assets/trash.svg?react';
+import { ChatContext } from '@/ChatContext';
+import type { Session } from '@/types';
 
 export interface SessionListItemProps extends PropsWithChildren {
   /**

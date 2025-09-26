@@ -1,9 +1,12 @@
-import { ChatContext } from '@/ChatContext';
-import { ConversationFile } from '@/types';
-import { cn } from 'reablocks';
-import { FC, PropsWithChildren, useContext, useState } from 'react';
-import { MessageFile } from './MessageFile';
 import { Slot } from '@radix-ui/react-slot';
+import { cn } from 'reablocks';
+import type { FC, PropsWithChildren } from 'react';
+import { useContext, useState } from 'react';
+
+import { ChatContext } from '@/ChatContext';
+import type { ConversationFile } from '@/types';
+
+import { MessageFile } from './MessageFile';
 
 interface MessageFilesProps extends PropsWithChildren {
   /**

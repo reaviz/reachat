@@ -1,6 +1,8 @@
-import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
+import { cn, ListItem } from 'reablocks';
+import type { FC, PropsWithChildren, ReactNode } from 'react';
+import { useContext } from 'react';
+
 import { ChatContext } from '@/ChatContext';
-import { ListItem, cn } from 'reablocks';
 
 interface SessionsGroupProps extends PropsWithChildren {
   /**
@@ -11,7 +13,7 @@ interface SessionsGroupProps extends PropsWithChildren {
 
 export const SessionsGroup: FC<SessionsGroupProps> = ({
   heading,
-  children,
+  children
 }) => {
   const { theme } = useContext(ChatContext);
   return (

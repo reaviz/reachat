@@ -1,9 +1,11 @@
-import { FC, useEffect, useState, ReactElement, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { parseCSV } from '@/utils/parseCSV';
-import DownloadIcon from '@/assets/download.svg?react';
-import PlaceholderIcon from '@/assets/copy.svg?react';
+import { AnimatePresence, motion } from 'motion/react';
 import { IconButton } from 'reablocks';
+import type { FC, ReactElement } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import PlaceholderIcon from '@/assets/copy.svg?react';
+import DownloadIcon from '@/assets/download.svg?react';
+import { parseCSV } from '@/utils/parseCSV';
 
 interface CSVFileRendererProps {
   /**

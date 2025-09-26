@@ -1,7 +1,10 @@
-import React, { FC, PropsWithChildren, ReactElement } from 'react';
 import { Button, cn } from 'reablocks';
+import type { FC, PropsWithChildren, ReactElement } from 'react';
+import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+
 import CopyIcon from '@/assets/copy.svg?react';
+
 import { dark } from './themes';
 
 export interface CodeHighlighterProps extends PropsWithChildren {
@@ -62,9 +65,7 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
   return (
     <div className={cn('relative', className)}>
       <div className={cn(toolbarClassName)}>
-        <div>
-          {lang}
-        </div>
+        <div>{lang}</div>
         {copyIcon && (
           <Button
             className={cn(copyClassName)}
@@ -77,10 +78,7 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
           </Button>
         )}
       </div>
-      <SyntaxHighlighter
-        language={lang}
-        style={theme}
-      >
+      <SyntaxHighlighter language={lang} style={theme}>
         {children}
       </SyntaxHighlighter>
     </div>
