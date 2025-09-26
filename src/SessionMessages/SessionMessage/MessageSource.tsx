@@ -1,7 +1,9 @@
-import { FC, useContext } from 'react';
-import { ConversationSource } from '@/types';
+import { cn, Ellipsis } from 'reablocks';
+import type { FC } from 'react';
+import { useContext } from 'react';
+
 import { ChatContext } from '@/ChatContext';
-import { Ellipsis, cn } from 'reablocks';
+import type { ConversationSource } from '@/types';
 
 export interface MessageSourceProps extends ConversationSource {
   /**
@@ -10,7 +12,12 @@ export interface MessageSourceProps extends ConversationSource {
   limit?: number;
 }
 
-export const MessageSource: FC<MessageSourceProps> = ({ title, url, image, limit = 50 }) => {
+export const MessageSource: FC<MessageSourceProps> = ({
+  title,
+  url,
+  image,
+  limit = 50
+}) => {
   const { theme, isCompact } = useContext(ChatContext);
 
   return (
@@ -24,7 +31,13 @@ export const MessageSource: FC<MessageSourceProps> = ({ title, url, image, limit
         }
       }}
     >
-      {image && <img src={image} alt={title} className={cn(theme.messages.message.sources.source.image)} />}
+      {image && (
+        <img
+          src={image}
+          alt={title}
+          className={cn(theme.messages.message.sources.source.image)}
+        />
+      )}
       {(title || url) && (
         <figcaption>
           {title && (
@@ -33,7 +46,12 @@ export const MessageSource: FC<MessageSourceProps> = ({ title, url, image, limit
             </span>
           )}
           {url && (
-            <a href={url} target="_blank" rel="noopener noreferrer" className={cn(theme.messages.message.sources.source.url)}>
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(theme.messages.message.sources.source.url)}
+            >
               {url}
             </a>
           )}

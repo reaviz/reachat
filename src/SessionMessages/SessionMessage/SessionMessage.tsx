@@ -1,12 +1,15 @@
-import { FC, PropsWithChildren, useContext } from 'react';
-import { ChatContext } from '@/ChatContext';
-import { Card, cn, Divider } from 'reablocks';
-import { Conversation } from '@/types';
 import { motion } from 'motion/react';
+import { Card, cn, Divider } from 'reablocks';
+import type { FC, PropsWithChildren } from 'react';
+import { useContext } from 'react';
+
+import { ChatContext } from '@/ChatContext';
+import type { Conversation } from '@/types';
+
+import { MessageActions } from './MessageActions';
 import { MessageQuestion } from './MessageQuestion';
 import { MessageResponse } from './MessageResponse';
 import { MessageSources } from './MessageSources';
-import { MessageActions } from './MessageActions';
 
 const messageVariants = {
   hidden: {
@@ -47,7 +50,10 @@ export const SessionMessage: FC<SessionMessageProps> = ({
       <Card className={cn(theme.messages.message.base)}>
         {children || (
           <>
-            <MessageQuestion question={conversation.question} files={conversation.files} />
+            <MessageQuestion
+              question={conversation.question}
+              files={conversation.files}
+            />
             <MessageResponse
               response={conversation.response}
               isLoading={isLast && isLoading}
@@ -60,9 +66,7 @@ export const SessionMessage: FC<SessionMessageProps> = ({
           </>
         )}
       </Card>
-      {!isLast && (
-        <Divider />
-      )}
+      {!isLast && <Divider />}
     </motion.div>
   );
 };

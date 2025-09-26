@@ -9,7 +9,7 @@ import { sanitizeSVGCell } from './sanitize';
 export const parseCSV = (csvString: string): string[][] => {
   try {
     const rows = csvString.split('\n');
-    return rows.map((row) => row.split(',').map((cell) => sanitizeSVGCell(cell)));
+    return rows.map(row => row.split(',').map(cell => sanitizeSVGCell(cell)));
   } catch (error) {
     console.error('Error parsing CSV:', error);
     throw new Error('Failed to parse CSV file.');

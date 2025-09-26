@@ -1,8 +1,10 @@
-import { FC, PropsWithChildren, useContext } from 'react';
-import { Button, cn } from 'reablocks';
-import { ChatContext } from '@/ChatContext';
 import { motion } from 'motion/react';
+import { Button, cn } from 'reablocks';
+import type { FC, PropsWithChildren } from 'react';
+import { useContext } from 'react';
+
 import BackIcon from '@/assets/back.svg?react';
+import { ChatContext } from '@/ChatContext';
 
 interface SessionMessagePanelProps extends PropsWithChildren {
   allowBack?: boolean;

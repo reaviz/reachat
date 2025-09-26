@@ -1,8 +1,12 @@
-import { FC, ReactNode, useContext, useMemo } from 'react';
-import { GroupedSessions, groupSessionsByDate } from '@/utils/grouping';
+import type { FC, ReactNode } from 'react';
+import { useContext, useMemo } from 'react';
+
 import { ChatContext } from '@/ChatContext';
-import { SessionsGroup } from './SessionsGroup';
+import type { GroupedSessions } from '@/utils/grouping';
+import { groupSessionsByDate } from '@/utils/grouping';
+
 import { SessionListItem } from './SessionListItem';
+import { SessionsGroup } from './SessionsGroup';
 
 export interface SessionGroupsProps {
   /**
@@ -20,7 +24,7 @@ export const SessionGroups: FC<SessionGroupsProps> = ({ children }) => {
       {children
         ? children(groups)
         : groups.map(({ heading, sessions }) => (
-            <SessionsGroup heading={heading}>
+            <SessionsGroup key={heading} heading={heading}>
               {sessions.map(session => (
                 <SessionListItem key={session.id} session={session} />
               ))}

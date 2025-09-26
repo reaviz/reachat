@@ -1,12 +1,16 @@
-import { FC, PropsWithChildren, useContext } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { Plugin } from 'unified';
-import { CodeHighlighter } from './CodeHighlighter';
-import { cn } from 'reablocks';
-import { TableComponent, TableHeaderCell, TableDataCell } from './Table';
-import { ChatContext } from '@/ChatContext';
-import rehypeKatex from 'rehype-katex';
 import './Markdown.css';
+
+import { cn } from 'reablocks';
+import type { FC, PropsWithChildren } from 'react';
+import { useContext } from 'react';
+import ReactMarkdown from 'react-markdown';
+import rehypeKatex from 'rehype-katex';
+import type { Plugin } from 'unified';
+
+import { ChatContext } from '@/ChatContext';
+
+import { CodeHighlighter } from './CodeHighlighter';
+import { TableComponent, TableDataCell, TableHeaderCell } from './Table';
 
 interface MarkdownWrapperProps extends PropsWithChildren {
   /**

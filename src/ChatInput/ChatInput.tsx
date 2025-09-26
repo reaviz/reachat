@@ -1,19 +1,19 @@
+import { Button, cn, Textarea } from 'reablocks';
+import type { ChangeEvent, KeyboardEvent, ReactElement } from 'react';
 import {
-  useState,
-  KeyboardEvent,
-  ReactElement,
-  useRef,
-  ChangeEvent,
-  useContext,
   forwardRef,
-  useImperativeHandle,
+  useCallback,
+  useContext,
   useEffect,
-  useCallback
+  useImperativeHandle,
+  useRef,
+  useState
 } from 'react';
-import { Button, Textarea, cn } from 'reablocks';
+
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
+
 import { FileInput } from './FileInput';
 
 interface ChatInputProps {

@@ -1,6 +1,8 @@
 import { offset } from '@floating-ui/react';
-import { ConnectedOverlay, Modifiers, Placement } from 'reablocks';
-import { memo, ReactNode, useRef, useState } from 'react';
+import type { Modifiers, Placement } from 'reablocks';
+import { ConnectedOverlay } from 'reablocks';
+import type { ReactNode } from 'react';
+import { memo, useRef, useState } from 'react';
 
 export interface ChatBubbleProps {
   /**
@@ -31,14 +33,14 @@ export interface ChatBubbleProps {
   className?: string;
 }
 
-export const ChatBubble = memo<ChatBubbleProps>(
+export const ChatBubble = memo(
   ({
     children,
     bubbleContent,
     position = 'right-end',
     modifiers = [offset({ mainAxis: 0, crossAxis: -40 })],
     className
-  }) => {
+  }: ChatBubbleProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const ref = useRef<HTMLDivElement | null>(null);
 

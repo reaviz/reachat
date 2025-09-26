@@ -1,6 +1,8 @@
-import { ReactNode, FC } from 'react';
 import { cn } from 'reablocks';
-import { ChatTheme, chatTheme } from '@/theme';
+import type { FC, ReactNode } from 'react';
+
+import type { ChatTheme } from '@/theme';
+import { chatTheme } from '@/theme';
 
 export interface AppBarProps {
   /**

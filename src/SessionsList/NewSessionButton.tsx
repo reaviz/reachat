@@ -1,9 +1,10 @@
-import { Button, cn } from 'reablocks';
-import { FC, PropsWithChildren, ReactNode, useContext } from 'react';
-import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';
+import { Button, cn } from 'reablocks';
+import type { FC, PropsWithChildren, ReactNode } from 'react';
+import { useContext } from 'react';
 
 import PlusIcon from '@/assets/plus.svg?react';
+import { ChatContext } from '@/ChatContext';
 
 interface NewSessionButtonProps extends PropsWithChildren {
   /**

@@ -1,13 +1,10 @@
-import { FC, PropsWithChildren, useContext } from 'react';
-import { ChatContext } from '@/ChatContext';
 import { cn } from 'reablocks';
+import type { FC, PropsWithChildren } from 'react';
+import { useContext } from 'react';
 
-interface SessionEmptyProps extends PropsWithChildren {
-}
+import { ChatContext } from '@/ChatContext';
 
-export const SessionEmpty: FC<SessionEmptyProps> = ({
-  children
-}) => {
+export const SessionEmpty: FC<PropsWithChildren> = ({ children }) => {
   const { theme } = useContext(ChatContext);
   return <div className={cn(theme.empty)}>{children}</div>;
 };

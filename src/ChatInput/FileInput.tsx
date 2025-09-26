@@ -1,7 +1,9 @@
-import { ChatContext } from '@/ChatContext';
 import { Button, cn } from 'reablocks';
-import { FC, ReactNode, useRef, ChangeEvent, useContext } from 'react';
+import type { ChangeEvent, FC, ReactNode } from 'react';
+import { useContext, useRef } from 'react';
+
 import AttachIcon from '@/assets/paperclip.svg?react';
+import { ChatContext } from '@/ChatContext';
 
 interface FileInputProps {
   /**

@@ -1,17 +1,13 @@
-import { ChatContext } from '@/ChatContext';
 import { Slot } from '@radix-ui/react-slot';
 import { cn, IconButton } from 'reablocks';
-import {
-  FC,
-  PropsWithChildren,
-  ReactElement,
-  ReactNode,
-  useContext
-} from 'react';
+import type { FC, PropsWithChildren, ReactElement } from 'react';
+import { useContext } from 'react';
+
 import CopyIcon from '@/assets/copy.svg?react';
+import RefreshIcon from '@/assets/refresh.svg?react';
 import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
 import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
-import RefreshIcon from '@/assets/refresh.svg?react';
+import { ChatContext } from '@/ChatContext';
 
 export interface MessageActionsProps extends PropsWithChildren {
   /**

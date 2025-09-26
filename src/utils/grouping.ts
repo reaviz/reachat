@@ -1,13 +1,12 @@
 import {
+  differenceInYears,
   format,
-  isToday,
-  isYesterday,
   isThisWeek,
-  isThisYear,
-  parseISO,
-  differenceInYears
+  isToday,
+  isYesterday
 } from 'date-fns';
-import { Session } from '@/types';
+
+import type { Session } from '@/types';
 
 export interface GroupedSessions {
   heading: string;

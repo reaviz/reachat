@@ -1,7 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { groupSessionsByDate } from './grouping';
-import { Session } from '@/types';
 import { subDays } from 'date-fns';
+import { describe, expect, it } from 'vitest';
+
+import type { Session } from '@/types';
+
+import { groupSessionsByDate } from './grouping';
 
 describe('groupSessionsByDate', () => {
   const createSession = (daysAgo: number): Session => ({

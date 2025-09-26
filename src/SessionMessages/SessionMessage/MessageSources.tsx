@@ -1,8 +1,11 @@
-import { ChatContext } from '@/ChatContext';
-import { ConversationSource } from '@/types';
-import { cn } from 'reablocks';
-import { FC, PropsWithChildren, useContext } from 'react';
 import { Slot } from '@radix-ui/react-slot';
+import { cn } from 'reablocks';
+import type { FC, PropsWithChildren } from 'react';
+import { useContext } from 'react';
+
+import { ChatContext } from '@/ChatContext';
+import type { ConversationSource } from '@/types';
+
 import { MessageSource } from './MessageSource';
 
 interface MessageSourcesProps extends PropsWithChildren {
