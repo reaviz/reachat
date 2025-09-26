@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+@import '../../node_modules/reablocks/dist/styles/index.css';
+@source '../../node_modules/reablocks';
+
+/* Custom variants */
+@custom-variant dark (&:where(.theme-dark, .theme-dark *, [data-theme=dark], [data-theme=dark] *));
+@custom-variant light (&:where(.theme-light, .theme-light *, [data-theme=light], [data-theme=light] *));
+@custom-variant disabled-within (&:has(input:is(:disabled), textarea:is(:disabled), button:is(:disabled)));
+
+body {
+  line-height: inherit;
+}

@@ -41,7 +41,7 @@ export const Basic = () => {
   ]);
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         width: 350,
         height: 500,
@@ -87,7 +87,7 @@ export const Basic = () => {
 export const Empty = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         width: 350,
         height: 500,
@@ -133,7 +133,7 @@ export const WithAppBar = () => {
   ]);
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         width: 350,
         height: 500,
@@ -242,7 +242,7 @@ export const TemplatesView = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         width: 350,
         height: 500,
@@ -307,7 +307,7 @@ export const TemplatesViewWithTitle = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         width: 350,
         height: 500,
@@ -382,7 +382,7 @@ export const TemplatesViewWithAppBar = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white flex flex-col"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white) flex flex-col"
       style={{
         width: 350,
         height: 500,

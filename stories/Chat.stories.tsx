@@ -36,7 +36,7 @@ export const Compact = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         width: 350,
         height: 500,
@@ -84,7 +84,7 @@ export const FullScreen = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -132,7 +132,7 @@ export const Empty = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         width: 350,
         height: 500,
@@ -167,7 +167,7 @@ export const Empty = () => {
               <div className="flex flex-col gap-2 items-center justify-center h-full">
                 <Placeholder className="h-[50%] block dark:hidden max-w-[100%]" />
                 <PlaceholderDark className="h-[50%] hidden dark:block max-w-[100%]" />
-                <p className="text-gray-500 max-w-[400px] text-center">
+                <p className="text-(--content-text-neutral-2) max-w-[400px] text-center">
                   Welcome to Reachat, a UI library for effortlessly building and
                   customizing chat experiences with Tailwind.
                 </p>
@@ -201,7 +201,7 @@ export const WithAppBar = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         width: 800,
         height: 600,

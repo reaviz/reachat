@@ -126,7 +126,7 @@ export const _OpenAI = () => {
         onChange={e => setApiKey(e.target.value)}
       />
       <div
-        className="dark:bg-gray-950 bg-white"
+        className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
         style={{
           position: 'absolute',
           top: 50,
@@ -273,7 +273,7 @@ export const VercelAI = () => {
         onChange={e => setApiKey(e.target.value)}
       />
       <div
-        className="dark:bg-gray-950 bg-white"
+        className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
         style={{
           position: 'absolute',
           top: 50,

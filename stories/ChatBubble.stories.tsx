@@ -81,7 +81,7 @@ const ChatSample: FC = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         width: 350,
         height: 500,
@@ -158,7 +158,7 @@ export const WithChildren: Story = {
       <div className="fixed left-5 bottom-5">
         <ChatBubble {...args}>
           <div
-            className="dark:bg-gray-950 bg-white"
+            className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
             style={{
               width: 350,
               height: 500,
@@ -219,7 +219,7 @@ export const WithChildrenPortal: Story = {
           <p className="text-gray-600">The ChatBubble will portal here!</p>
           <ChatBubble {...args} className="absolute left-5 bottom-5">
             <div
-              className="dark:bg-gray-950 bg-white"
+              className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
               style={{
                 width: 350,
                 height: 500,

@@ -55,7 +55,7 @@ export default {
 export const Basic = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -89,7 +89,7 @@ export const Basic = () => {
 export const Embeds = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -123,7 +123,7 @@ export const Embeds = () => {
 export const DefaultSession = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -159,7 +159,7 @@ export const DefaultSession = () => {
 export const Loading = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -199,7 +199,7 @@ export const FileUploads = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -257,7 +257,7 @@ export const FileUploads = () => {
 export const DefaultInputValue = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -293,7 +293,7 @@ export const DefaultInputValue = () => {
 export const UndeleteableSessions = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -367,7 +367,7 @@ export const SessionGrouping = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -423,7 +423,7 @@ export const HundredSessions = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -474,7 +474,7 @@ export const HundredConversations = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -531,7 +531,7 @@ export const LongSessionNames = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -648,7 +648,7 @@ export const MarkdownShowcase = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -718,7 +718,7 @@ export const CVEExample = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -754,7 +754,7 @@ export const CVEExample = () => {
 export const Empty = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -817,7 +817,7 @@ export const Empty = () => {
 export const ConversationSources = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -954,7 +954,7 @@ const CustomSessionListItem: FC<SessionListItemProps> = ({
 export const CustomComponents = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -1089,7 +1089,7 @@ export const ImageFiles = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -1124,7 +1124,7 @@ export const ImageFiles = () => {
 export const CSVPreview = () => {
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         inset: 0,

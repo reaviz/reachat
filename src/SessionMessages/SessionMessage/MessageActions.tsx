@@ -102,7 +102,7 @@ export const MessageActions: FC<MessageActionsProps> = ({
           <>
             {copyIcon && (
               <IconButton
-                variant="text"
+                variant="ghost"
                 disablePadding
                 title="Copy question and response"
                 className={cn(theme.messages.message.footer.copy)}
@@ -115,7 +115,7 @@ export const MessageActions: FC<MessageActionsProps> = ({
             )}
             {thumbsUpIcon && (
               <IconButton
-                variant="text"
+                variant="ghost"
                 disablePadding
                 title="Upvote"
                 className={cn(theme.messages.message.footer.upvote)}
@@ -126,7 +126,7 @@ export const MessageActions: FC<MessageActionsProps> = ({
             )}
             {thumbsDownIcon && (
               <IconButton
-                variant="text"
+                variant="ghost"
                 disablePadding
                 title="Downvote"
                 className={cn(theme.messages.message.footer.downvote)}
@@ -137,7 +137,7 @@ export const MessageActions: FC<MessageActionsProps> = ({
             )}
             {refreshIcon && (
               <IconButton
-                variant="text"
+                variant="ghost"
                 disablePadding
                 title="Refresh"
                 className={cn(theme.messages.message.footer.refresh)}
