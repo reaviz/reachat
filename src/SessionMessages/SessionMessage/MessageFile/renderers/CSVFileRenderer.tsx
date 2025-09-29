@@ -5,8 +5,8 @@ import { useContext, useEffect, useRef, useState } from 'react';
 
 import PlaceholderIcon from '@/assets/copy.svg?react';
 import DownloadIcon from '@/assets/download.svg?react';
-import { parseCSV } from '@/utils/parseCSV';
 import { ChatContext } from '@/ChatContext';
+import { parseCSV } from '@/utils/parseCSV';
 
 interface CSVFileRendererProps {
   /**
