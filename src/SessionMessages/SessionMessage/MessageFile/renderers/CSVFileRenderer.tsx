@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { IconButton } from 'reablocks';
 import type { FC, ReactElement } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import PlaceholderIcon from '@/assets/copy.svg?react';
 import DownloadIcon from '@/assets/download.svg?react';
 import { parseCSV } from '@/utils/parseCSV';
+import { ChatContext } from '@/ChatContext';
 
 interface CSVFileRendererProps {
   /**
@@ -28,6 +29,7 @@ interface CSVFileRendererProps {
  * Renderer for CSV files that fetches and displays a snippet of the file data.
  */
 const CSVFileRenderer: FC<CSVFileRendererProps> = ({ name, url, fileIcon }) => {
+  const { theme } = useContext(ChatContext);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [csvData, setCsvData] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -121,17 +123,17 @@ const CSVFileRenderer: FC<CSVFileRendererProps> = ({ name, url, fileIcon }) => {
   );
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex justify-between items-center gap-4">
-        <div className="csv-icon flex items-center">
+    <div className={theme.messages.message.csvPreview.base}>
+      <div className={theme.messages.message.csvPreview.header.base}>
+        <div className={theme.messages.message.csvPreview.header.icon}>
           {fileIcon}
           {name && <figcaption className="ml-1">{name}</figcaption>}
         </div>
-        <div className="csv-icon flex items-center gap-6">
-          <IconButton size="small" variant="text" onClick={downloadCSV}>
+        <div className={theme.messages.message.csvPreview.header.actions}>
+          <IconButton size="medium" variant="text" onClick={downloadCSV}>
             <DownloadIcon />
           </IconButton>
-          <IconButton size="small" variant="text" onClick={toggleModal}>
+          <IconButton size="medium" variant="text" onClick={toggleModal}>
             <PlaceholderIcon />
           </IconButton>
         </div>
@@ -143,14 +145,14 @@ const CSVFileRenderer: FC<CSVFileRendererProps> = ({ name, url, fileIcon }) => {
         <div className="text-text-secondary">Loading...</div>
       )}
 
-      <div className="flex justify-between">
+      <div className={theme.messages.message.csvPreview.tableContainer}>
         {!error && csvData.length > 0 && renderTable(csvData, 6)}
       </div>
 
       <AnimatePresence>
         {isModalOpen && (
           <motion.div
-            className="fixed inset-0 bg-black/70 flex justify-center items-center z-50"
+            className={theme.messages.message.csvPreview.dialog.base}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -158,7 +160,7 @@ const CSVFileRenderer: FC<CSVFileRendererProps> = ({ name, url, fileIcon }) => {
           >
             <motion.div
               ref={modalRef}
-              className="bg-white dark:bg-gray-900 rounded-md w-11/12 h-5/6 overflow-auto"
+              className={theme.messages.message.csvPreview.dialog.container}
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}

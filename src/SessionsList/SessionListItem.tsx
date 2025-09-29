@@ -62,7 +62,7 @@ export const SessionListItem: FC<SessionListItemProps> = ({
           {deletable && (
             <IconButton
               size="small"
-              variant="text"
+              variant="ghost"
               onClick={e => {
                 e.stopPropagation();
                 deleteSession(session.id);
