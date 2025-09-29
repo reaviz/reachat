@@ -18,8 +18,8 @@ export default tseslint.config(
       '**/docs/**',
       '**/storybook/**',
       '**/coverage/**',
-      'vite.config.ts',
-    ],
+      'vite.config.ts'
+    ]
   },
   {
     files: ['**/*.{js,mjs,cjs,ts,tsx}'],
@@ -32,9 +32,9 @@ export default tseslint.config(
       globals: globals.browser,
       parserOptions: {
         ecmaFeatures: {
-          jsx: true,
-        },
-      },
+          jsx: true
+        }
+      }
     },
     plugins: {
       import: importPlugin,
@@ -43,7 +43,7 @@ export default tseslint.config(
       'react-hooks': reactHooksPlugin,
       'react-refresh': reactRefreshPlugin,
       'unused-imports': unusedImportsPlugin,
-      'simple-import-sort': simpleImportSortPlugin,
+      'simple-import-sort': simpleImportSortPlugin
     },
     rules: {
       ...reactPlugin.configs.recommended.rules,
@@ -53,8 +53,8 @@ export default tseslint.config(
         'error',
         {
           singleQuote: true,
-          trailingComma: 'all',
-        },
+          trailingComma: 'none'
+        }
       ],
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
@@ -63,18 +63,18 @@ export default tseslint.config(
           vars: 'all',
           varsIgnorePattern: '^_',
           args: 'after-used',
-          argsIgnorePattern: '^_',
-        },
+          argsIgnorePattern: '^_'
+        }
       ],
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/explicit-function-return-type': 'off',
-      'comma-dangle': ['error', 'always-multiline'],
+      'comma-dangle': ['error', 'never'],
       '@typescript-eslint/no-empty-function': 'warn',
       '@typescript-eslint/ban-ts-comment': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/consistent-type-imports': [
         'warn',
-        { prefer: 'type-imports' },
+        { prefer: 'type-imports' }
       ],
       'prefer-const': 'warn',
       'jsx-quotes': ['warn', 'prefer-double'],
@@ -83,7 +83,7 @@ export default tseslint.config(
       'import/newline-after-import': 'error',
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
-      'react/display-name': 'off',
-    },
-  },
+      'react/display-name': 'off'
+    }
+  }
 );
