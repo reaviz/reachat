@@ -70,7 +70,7 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
           <Button
             className={cn(copyClassName)}
             size="small"
-            variant="text"
+            variant="ghost"
             title="Copy code"
             onClick={() => handleCopy(children as string)}
           >

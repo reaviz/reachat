@@ -7,6 +7,10 @@
 @custom-variant light (&:where(.theme-light, .theme-light *, [data-theme=light], [data-theme=light] *));
 @custom-variant disabled-within (&:has(input:is(:disabled), textarea:is(:disabled), button:is(:disabled)));
 
+@theme inline {
+  --color-red: #ff0000;
+}
+
 body {
   line-height: inherit;
 }

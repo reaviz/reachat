@@ -1038,25 +1038,25 @@ export const ImageFiles = () => {
       id: '1',
       name: 'landscape.jpg',
       type: 'image/jpeg',
-      url: 'https://www.goodcode.us/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Faustin.1ee6ee64.jpg&w=640&q=75'
+      url: 'https://picsum.photos/200?random=1'
     },
     {
       id: '2',
       name: 'portrait.jpg',
       type: 'image/jpeg',
-      url: 'https://www.goodcode.us/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fandrew.50c21037.jpeg&w=640&q=75'
+      url: 'https://picsum.photos/200?random=2'
     },
     {
       id: '3',
       name: 'abstract.png',
       type: 'image/jpg',
-      url: 'https://www.goodcode.us/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fkyle.52befaed.jpg&w=640&q=75'
+      url: 'https://picsum.photos/200?random=3'
     },
     {
       id: '4',
       name: 'nature.jpg',
       type: 'image/jpeg',
-      url: 'https://www.goodcode.us/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fsteph.8a52b5d2.jpg&w=640&q=75'
+      url: 'https://picsum.photos/200?random=4'
     }
   ];
 
