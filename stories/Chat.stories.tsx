@@ -1,3 +1,4 @@
+import { QuickActions } from '@/QuickActions';
 import { Meta } from '@storybook/react';
 import {
   Chat,
@@ -13,13 +14,13 @@ import {
   sessionWithSources,
   sessionsWithFiles
 } from './examples';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Placeholder from './assets/placeholder.svg?react';
 import PlaceholderDark from './assets/placeholder-dark.svg?react';
 import ReachatLogo from './assets/logo.svg?react';
 import IconSearch from './assets/search.svg?react';
 import IconClose from './assets/close-fill.svg?react';
-import { IconButton } from 'reablocks';
+import { DotsLoader, IconButton, List, ListItem, NestedMenu } from 'reablocks';
 
 export default {
   title: 'Demos/Chat',
@@ -259,6 +260,211 @@ export const WithAppBar = () => {
             <ChatInput />
           </SessionMessagePanel>
         </div>
+      </Chat>
+    </div>
+  );
+};
+
+export const ActionsMenu = () => {
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
+  const [sessions, setSessions] = useState<Session[]>([
+    ...fakeSessions,
+    ...sessionsWithFiles,
+    ...sessionWithSources
+  ]);
+
+  const onSelectAction = (action: string) => {
+    if (inputRef.current) {
+      inputRef.current.value = action;
+      inputRef.current.focus();
+    }
+  }
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        width: 350,
+        height: 500,
+        padding: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="chat"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onNewSession={() => {
+          const newId = (sessions.length + 1).toLocaleString();
+          setSessions([
+            ...sessions,
+            {
+              id: newId,
+              title: `New Session #${newId}`,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              conversations: []
+            }
+          ]);
+          setActiveId(newId);
+        }}
+        onSelectSession={setActiveId}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionMessagePanel>
+          <SessionMessages />
+          <ChatInput placeholder="Type '/' to call actions menu" inputRef={inputRef} />
+          <QuickActions
+            trigger="/"
+            inputRef={inputRef}
+          >
+            {({ close: closeMain }) => (
+              <List className="bg-gray-800">
+                <NestedMenu label="Functions">
+                  {({ close: closeNested}) => (
+                    <List className="bg-gray-800">
+                      <ListItem value="Function 1" onClick={() => {
+                        onSelectAction('Function 1');
+                        closeNested();
+                        closeMain();
+                      }}>Fn 1</ListItem>
+                      <ListItem value="Function 2" onClick={() => {
+                        onSelectAction('Function 2');
+                        closeNested();
+                        closeMain();
+                      }}>Fn 2</ListItem>
+                    </List>
+                  )}
+                </NestedMenu>
+                <NestedMenu label="Actions">
+                  {({ close: closeNested}) => (
+                    <List className="bg-gray-800">
+                      <ListItem value="Action 1" onClick={() => {
+                        onSelectAction('Action 1');
+                        closeNested();
+                        closeMain();
+                      }}>Action 1</ListItem>
+                      <ListItem value="Action 2" onClick={() => {
+                        onSelectAction('Action 2');
+                        closeNested();
+                        closeMain();
+                      }}>Action 2</ListItem>
+                    </List>
+                  )}
+                </NestedMenu>
+              </List>
+            )}
+          </QuickActions>
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const ActionsMenuAsync = () => {
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
+  const [sessions, setSessions] = useState<Session[]>([
+    ...fakeSessions,
+    ...sessionsWithFiles,
+    ...sessionWithSources
+  ]);
+
+  const onSelectAction = (action: string) => {
+    if (inputRef.current) {
+      inputRef.current.value = action;
+      inputRef.current.focus();
+    }
+  }
+
+  const renderAsyncNested = useCallback((name: string, onClick: (index: string) => void) => {
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+      const timer = setTimeout(() => setIsLoading(false), 2000);
+      return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading) {
+      return (
+        <List className="bg-gray-800 flex items-center justify-center p-2">
+          <DotsLoader size="small" />
+        </List>
+      );
+    }
+
+    return (
+      <List className="bg-gray-800">
+        <ListItem value={`${name} 1`} onClick={() => onClick('1')}>{name} 1</ListItem>
+        <ListItem value={`${name} 2`} onClick={() => onClick('1')}>{name} 2</ListItem>
+      </List>
+    )
+  }, []);
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        width: 350,
+        height: 500,
+        padding: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="chat"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onNewSession={() => {
+          const newId = (sessions.length + 1).toLocaleString();
+          setSessions([
+            ...sessions,
+            {
+              id: newId,
+              title: `New Session #${newId}`,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              conversations: []
+            }
+          ]);
+          setActiveId(newId);
+        }}
+        onSelectSession={setActiveId}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionMessagePanel>
+          <SessionMessages />
+          <ChatInput placeholder="Type '/' to call actions menu" inputRef={inputRef} />
+          <QuickActions
+            placement="bottom-start"
+            trigger="/"
+            inputRef={inputRef}
+          >
+            {({ close: closeMain }) => (
+              <List className="bg-gray-800">
+                <NestedMenu label="Functions">
+                  {({ close: closeNested}) => (
+                    renderAsyncNested('Function', (index) => {
+                      onSelectAction(`Function ${index}`);
+                      closeNested();
+                      closeMain();
+                    })
+                  )}
+                </NestedMenu>
+                <NestedMenu label="Actions">
+                  {({ close: closeNested}) => (
+                    renderAsyncNested('Action', (index) => {
+                      onSelectAction(`Action ${index}`);
+                      closeNested();
+                      closeMain();
+                    })
+                  )}
+                </NestedMenu>
+              </List>
+            )}
+          </QuickActions>
+        </SessionMessagePanel>
       </Chat>
     </div>
   );

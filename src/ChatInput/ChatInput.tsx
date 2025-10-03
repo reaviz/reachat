@@ -7,15 +7,21 @@ import {
   useContext,
   forwardRef,
   useImperativeHandle,
-  useEffect
+  useEffect,
+  MutableRefObject
 } from 'react';
-import { Button, Textarea, cn } from 'reablocks';
+import { Button, Textarea, cn, TextAreaRef } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
 
 interface ChatInputProps {
+  /**
+   * Reference to the input element.
+   */
+  inputRef?: MutableRefObject<HTMLTextAreaElement>;
+
   /**
    * Default value for the input field.
    */
@@ -54,95 +60,117 @@ export interface ChatInputRef {
   focus: () => void;
 }
 
-export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
-  allowedFiles,
-  placeholder,
-  defaultValue,
-  sendIcon = <SendIcon />,
-  stopIcon = <StopIcon />,
-  attachIcon
-}, ref) => {
-  const { theme, isLoading, disabled, sendMessage, stopMessage, fileUpload, activeSessionId } =
-    useContext(ChatContext);
-  const [message, setMessage] = useState<string>('');
-  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
+  (
+    {
+      inputRef,
+      allowedFiles,
+      placeholder,
+      defaultValue,
+      sendIcon = <SendIcon />,
+      stopIcon = <StopIcon />,
+      attachIcon
+    },
+    ref
+  ) => {
+    const {
+      theme,
+      isLoading,
+      disabled,
+      sendMessage,
+      stopMessage,
+      fileUpload,
+      activeSessionId
+    } = useContext(ChatContext);
+    const [message, setMessage] = useState<string>('');
+    const _inputRef = useRef<TextAreaRef | null>(null);
 
-  useEffect(() => {
-    if(inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [activeSessionId, inputRef]);
+    useEffect(() => {
+      if (_inputRef?.current) {
+        _inputRef?.current?.focus();
+      }
+    }, [activeSessionId, _inputRef]);
 
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      inputRef.current?.focus();
-    }
-  }));
+    /**
+     * Sync the input reference with the internal input reference.
+     */
+    useEffect(() => {
+      if (inputRef && _inputRef?.current?.inputRef?.current) {
+        inputRef.current = _inputRef?.current?.inputRef?.current;
+      }
+    }, [_inputRef, inputRef]);
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      sendMessage?.(message);
-      setMessage('');
-    }
-  };
+    useImperativeHandle(ref, () => ({
+      focus: () => {
+        _inputRef.current?.focus();
+      }
+    }));
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
+    const handleSendMessage = () => {
+      if (message.trim()) {
+        sendMessage?.(message);
+        setMessage('');
+      }
+    };
 
-  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && fileUpload) {
-      fileUpload(file);
-    }
-  };
+    const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSendMessage();
+      }
+    };
 
-  return (
-    <div className={cn(theme.input.base)}>
-      <Textarea
-        ref={inputRef}
-        containerClassName={cn(theme.input.input)}
-        minRows={1}
-        autoFocus
-        value={message}
-        defaultValue={defaultValue}
-        onKeyPress={handleKeyPress}
-        placeholder={placeholder}
-        disabled={isLoading || disabled}
-        onChange={e => setMessage(e.target.value)}
-      />
-      <div className={cn(theme.input.actions.base)}>
-        {allowedFiles?.length > 0 && (
-          <FileInput
-            allowedFiles={allowedFiles}
-            onFileUpload={handleFileUpload}
-            isLoading={isLoading}
-            disabled={disabled}
-            attachIcon={attachIcon}
-          />
-        )}
-        {isLoading && (
-          <Button
-            title="Stop"
-            className={cn(theme.input.actions.stop)}
-            onClick={stopMessage}
-            disabled={disabled}
-          >
-            {stopIcon}
-          </Button>
-        )}
-        <Button
-          title="Send"
-          className={cn(theme.input.actions.send)}
-          onClick={handleSendMessage}
+    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file && fileUpload) {
+        fileUpload(file);
+      }
+    };
+
+    return (
+      <div className={cn(theme.input.base)}>
+        <Textarea
+          ref={_inputRef}
+          containerClassName={cn(theme.input.input)}
+          minRows={1}
+          autoFocus
+          value={message}
+          defaultValue={defaultValue}
+          onKeyPress={handleKeyPress}
+          placeholder={placeholder}
           disabled={isLoading || disabled}
-        >
-          {sendIcon}
-        </Button>
+          onChange={e => setMessage(e.target.value)}
+        />
+        <div className={cn(theme.input.actions.base)}>
+          {allowedFiles?.length > 0 && (
+            <FileInput
+              allowedFiles={allowedFiles}
+              onFileUpload={handleFileUpload}
+              isLoading={isLoading}
+              disabled={disabled}
+              attachIcon={attachIcon}
+            />
+          )}
+          {isLoading && (
+            <Button
+              title="Stop"
+              className={cn(theme.input.actions.stop)}
+              onClick={stopMessage}
+              disabled={disabled}
+            >
+              {stopIcon}
+            </Button>
+          )}
+          <Button
+            title="Send"
+            className={cn(theme.input.actions.send)}
+            onClick={handleSendMessage}
+            disabled={isLoading || disabled}
+          >
+            {sendIcon}
+          </Button>
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
