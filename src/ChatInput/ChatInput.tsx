@@ -68,6 +68,11 @@ export interface ChatInputRef {
    * Send the message.
    */
   send: () => void;
+
+  /**
+   * Set the input value programmatically.
+   */
+  setValue: (value: string) => void;
 }
 
 export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
@@ -106,24 +111,25 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       }
     }, [activeSessionId, inputRef]);
 
-    useImperativeHandle(ref, () => ({
-      focus: () => {
-        inputRef.current?.focus();
-      },
-      send: () => {
-        if (internalMessage.trim()) {
-          sendMessage?.(internalMessage);
-          setInternalMessage('');
-        }
-      }
-    }));
-
     const handleSendMessage = () => {
       if (internalMessage.trim()) {
         sendMessage?.(internalMessage);
         setInternalMessage('');
       }
     };
+
+    useImperativeHandle(ref, () => ({
+      focus: () => {
+        inputRef.current?.focus();
+      },
+      send: () => {
+        handleSendMessage();
+      },
+      setValue: (value: string) => {
+        setInternalMessage(value);
+        onMessageChange?.(value);
+      }
+    }));
 
     const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
       if (e.key === 'Enter' && !e.shiftKey) {
