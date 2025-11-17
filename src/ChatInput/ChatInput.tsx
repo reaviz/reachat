@@ -53,6 +53,11 @@ interface ChatInputProps {
   message?: string;
 
   /**
+   * Class name to apply to the container.
+   */
+  className?: string;
+
+  /**
    * Callback function to handle message change.
    */
   onMessageChange?: (message: string) => void;
@@ -81,6 +86,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       allowedFiles,
       placeholder,
       defaultValue,
+      className,
       message,
       sendIcon = <SendIcon />,
       stopIcon = <StopIcon />,
@@ -154,7 +160,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     );
 
     return (
-      <div className={cn(theme.input.base)}>
+      <div className={cn(theme.input.base, className)}>
         <Textarea
           ref={inputRef}
           containerClassName={cn(theme.input.input)}
