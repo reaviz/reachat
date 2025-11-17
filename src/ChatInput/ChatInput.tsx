@@ -61,6 +61,11 @@ export interface ChatInputProps {
   mentions?: SuggestionConfig<MentionItem>;
 
   /**
+   * Class name to apply to the container.
+   */
+  className?: string;
+
+  /**
    * Configuration for commands (/command).
    * Provide items or an onSearch function to enable commands.
    */
@@ -111,6 +116,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       placeholder = 'Type a message...',
       allowMultipleFiles = false,
       defaultValue,
+      className,
       sendIcon = <SendIcon />,
       stopIcon = <StopIcon />,
       attachIcon,
@@ -205,7 +211,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     );
 
     return (
-      <div ref={containerRef} className={cn(theme.input.base)}>
+      <div ref={containerRef} className={cn(theme.input.base, className)}>
         <div className={cn('relative flex-1', theme.input.input)}>
           <RichTextInput
             ref={inputRef}
