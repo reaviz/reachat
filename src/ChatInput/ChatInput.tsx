@@ -78,6 +78,11 @@ export interface ChatInputRef {
    * Set the input value programmatically.
    */
   setValue: (value: string) => void;
+
+  /**
+   * Get the input value programmatically.
+   */
+  getValue: () => string;
 }
 
 export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
@@ -134,6 +139,9 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       setValue: (value: string) => {
         setInternalMessage(value);
         onMessageChange?.(value);
+      },
+      getValue: () => {
+        return internalMessage;
       }
     }));
 
