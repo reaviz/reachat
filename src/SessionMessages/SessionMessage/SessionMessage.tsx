@@ -27,6 +27,11 @@ const messageVariants = {
 
 interface SessionMessageProps extends PropsWithChildren {
   /**
+   * Class name to apply to the root element.
+   */
+  className?: string;
+
+  /**
    * Conversation to render.
    */
   conversation: Conversation;
@@ -39,6 +44,7 @@ interface SessionMessageProps extends PropsWithChildren {
 }
 
 export const SessionMessage: FC<SessionMessageProps> = ({
+  className,
   conversation,
   isLast,
   children
@@ -47,7 +53,7 @@ export const SessionMessage: FC<SessionMessageProps> = ({
 
   return (
     <motion.div key={conversation.id} variants={messageVariants}>
-      <Card className={cn(theme.messages.message.base)}>
+      <Card className={cn(theme.messages.message.base, className)}>
         {children || (
           <>
             <MessageQuestion
