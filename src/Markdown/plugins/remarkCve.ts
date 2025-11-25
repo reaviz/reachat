@@ -4,7 +4,9 @@ const CVE_REGEX = /(CVE-(19|20)\d{2}-\d{4,7})/gi;
 
 export function remarkCve() {
   return tree => {
-    findAndReplace(tree, [[CVE_REGEX, replaceCve as unknown as any]]);
+    findAndReplace(tree, [[CVE_REGEX, replaceCve as unknown as any]], {
+      ignore: ['link']
+    });
   };
 
   function replaceCve(value, id) {

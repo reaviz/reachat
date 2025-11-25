@@ -695,7 +695,7 @@ export const CVEExample = () => {
   The listed CVEs are critical vulnerabilities that need immediate attention.
 
   - CVE-2021-34527
-  - CVE-2021-44228
+  - [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228) < Has link
   - CVE-2021-45046
   `;
 
