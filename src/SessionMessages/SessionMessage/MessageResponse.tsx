@@ -29,7 +29,7 @@ export const MessageResponse = memo<MessageResponseProps>(
       >
         {children || (
           <>
-            <Markdown remarkPlugins={remarkPlugins as Plugin[]}>
+            <Markdown remarkPlugins={remarkPlugins as Plugin[]} theme={theme}>
               {response}
             </Markdown>
             {isLoading && (
@@ -49,5 +49,3 @@ export const MessageResponse = memo<MessageResponseProps>(
     );
   }
 );
-
-MessageResponse.displayName = 'MessageResponse';

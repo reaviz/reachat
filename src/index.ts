@@ -12,3 +12,5 @@ export * from './ChatSuggestions';
 export * from './MessageStatus';
 export * from './useAgUi';
 export * from './ComponentCatalog';
+export * from './types';
+export * from './utils';

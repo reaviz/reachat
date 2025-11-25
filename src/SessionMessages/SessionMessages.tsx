@@ -27,6 +27,11 @@ const containerVariants = {
 
 interface SessionMessagesProps {
   /**
+   * Class name to apply to the root element.
+   */
+  className?: string;
+
+  /**
    * Content to display when there are no sessions selected or a new session is started.
    */
   newSessionContent?: string | ReactNode;
@@ -56,6 +61,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   children,
   newSessionContent,
   limit = 10,
+  className,
   showMoreText = 'Show more',
   showScrollBottomButton = false
 }) => {
@@ -130,7 +136,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   }
 
   return (
-    <div className="relative flex-1 overflow-y-hidden">
+    <div className={cn('relative flex-1 overflow-y-hidden', className)}>
       <div
         className={cn(theme.messages.content, 'h-full')}
         ref={contentRef}

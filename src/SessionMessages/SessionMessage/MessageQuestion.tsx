@@ -37,7 +37,7 @@ export const MessageQuestion = memo<MessageQuestionProps>(
         {children || (
           <>
             <MessageFiles files={files} />
-            <Markdown remarkPlugins={remarkPlugins as Plugin[]}>
+            <Markdown remarkPlugins={remarkPlugins as Plugin[]} theme={theme}>
               {question}
             </Markdown>
             {isLong && !expanded && (
