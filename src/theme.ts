@@ -52,6 +52,7 @@ export interface ChatTheme {
         };
       };
       markdown: {
+        hr: string;
         p: string;
         a: string;
         table: string;
@@ -157,6 +158,7 @@ export const chatTheme: ChatTheme = {
         }
       },
       markdown: {
+        hr: 'my-4 border-t border-stroke-neutral-4',
         copy: 'sticky py-1 [&>svg]:w-4 [&>svg]:h-4 opacity-50',
         p: 'mb-2',
         a: 'text-buttons-colors-link-primary-text-resting underline',
