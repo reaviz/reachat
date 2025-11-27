@@ -111,7 +111,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
     <div
       className={cn(theme.messages.content, className)}
       ref={contentRef}
-      onScroll={onScroll}
+      onScrollCapture={onScroll}
     >
       {hasMore && (
         <Button
