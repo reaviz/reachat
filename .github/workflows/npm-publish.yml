@@ -13,8 +13,27 @@ jobs:
           node-version-file: 'package.json'
       - run: npm ci
       - run: npm run build
+      - name: Extract tag from version
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+          # extract the prerelease tag (alpha, beta, rc, etc.)
+          PRE=$(echo "$VERSION" | grep -oP '(?<=-)[0-9A-Za-z.\-]+' || true)
+          
+          if [ -z "$PRE" ]; then
+            TAG="latest"
+          else
+            # npm requires the pre-release base (alpha/beta/rc), not the full number
+            TAG=$(echo "$PRE" | cut -d. -f1)
+          fi
+          
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Release tag: $TAG"
       - uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_TOKEN }}
+          tag: ${{ steps.version.outputs.tag }}
       - if: ${{ steps.publish.outputs.type }}
         run: echo "Version changed!"

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { Button, cn, useInfinityList } from 'reablocks';
-import type { ReactNode } from 'react';
+import type { ReactNode, UIEventHandler } from 'react';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ChatContext } from '@/ChatContext';
@@ -49,6 +49,12 @@ interface SessionMessagesProps {
    * Render function for the session messages.
    */
   children?: (conversations: Conversation[]) => ReactNode;
+
+  /**
+   * Scroll event handler.
+   * @param e
+   */
+  onScroll?: UIEventHandler<HTMLDivElement>;
 }
 
 export const SessionMessages: React.FC<SessionMessagesProps> = ({
@@ -57,7 +63,8 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   limit = 10,
   className,
   showMoreText = 'Show more',
-  autoScroll = true
+  autoScroll = true,
+  onScroll
 }) => {
   const { activeSession, theme } = useContext(ChatContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -101,7 +108,11 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   }
 
   return (
-    <div className={cn(theme.messages.content, className)} ref={contentRef}>
+    <div
+      className={cn(theme.messages.content, className)}
+      ref={contentRef}
+      onScroll={onScroll}
+    >
       {hasMore && (
         <Button
           variant="outline"
