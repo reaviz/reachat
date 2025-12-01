@@ -83,6 +83,24 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
       ),
       ol: props => (
         <ol {...props} className={cn(theme.messages.message.markdown.ol)} />
+      ),
+      h1: props => (
+        <h1 {...props} className={cn(theme.messages.message.markdown.h1)} />
+      ),
+      h2: props => (
+        <h2 {...props} className={cn(theme.messages.message.markdown.h2)} />
+      ),
+      h3: props => (
+        <h3 {...props} className={cn(theme.messages.message.markdown.h3)} />
+      ),
+      h4: props => (
+        <h4 {...props} className={cn(theme.messages.message.markdown.h4)} />
+      ),
+      h5: props => (
+        <h5 {...props} className={cn(theme.messages.message.markdown.h5)} />
+      ),
+      h6: props => (
+        <h6 {...props} className={cn(theme.messages.message.markdown.h6)} />
       )
     }}
   >

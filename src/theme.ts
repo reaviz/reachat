@@ -64,6 +64,12 @@ export interface ChatTheme {
         ul: string;
         ol: string;
         copy: string;
+        h1: string;
+        h2: string;
+        h3: string;
+        h4: string;
+        h5: string;
+        h6: string;
       };
       csvPreview: {
         base: string;
@@ -170,7 +176,13 @@ export const chatTheme: ChatTheme = {
           'text-xs flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md bg-gradient-neutral-500/50',
         li: 'mb-2 ml-6',
         ul: 'mb-4 list-disc',
-        ol: 'mb-4 list-decimal'
+        ol: 'mb-4 list-decimal',
+        h1: 'text-4xl font-bold mb-4 mt-6',
+        h2: 'text-3xl font-bold mb-3 mt-5',
+        h3: 'text-2xl font-bold mb-3 mt-4',
+        h4: 'text-xl font-bold mb-2 mt-3',
+        h5: 'text-lg font-bold mb-2 mt-2',
+        h6: 'text-base font-bold mb-2 mt-2'
       },
       csvPreview: {
         base: 'flex flex-col gap-2',
