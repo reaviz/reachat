@@ -6,12 +6,12 @@ export const ChatPreBuiltResponses = () => {
   // Will move these to a separate file later
   const initialResponses = [
     {
-      id: 'greeting',
-      response: 'Hello, how can I help you today?'
+      id: 'no_thanks',
+      response: "I'm just browsing, thanks for asking."
     },
     {
-      id: 'weather',
-      response: 'Would you like to know the weather in your area?'
+      id: 'support',
+      response: 'I need support with my account.'
     }
   ];
 
@@ -32,7 +32,8 @@ export const ChatPreBuiltResponses = () => {
     <div>
       <div className="border-gray-500 h-30 rounded-md p-4 bg-gradient-to-bl from-transparent from-30% via-blue-950 via-60% to-indigo-500 to-85">
         {/* will add option for image later*/}
-        {/* Will refactor later to use theme colors*/}
+        {/* Will refactor later to use theme colors and need to do dark and light mode*/}
+        {/* Will need to add a conditional to check if the response is initial or followup */}
         <p className="text-white text-lg font-bold">
           Hi, What can I help you with?
         </p>
