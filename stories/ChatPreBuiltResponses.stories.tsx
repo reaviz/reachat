@@ -17,12 +17,35 @@ export default {
 
   export const PreBuiltSample: FC = () => {
 
+    //   const initialResponses = [
+//     {
+//       id: 'no_thanks',
+//       response: "I'm just browsing, thanks for asking."
+//     },
+//     {
+//       id: 'support',
+//       response: 'I need support with my account.'
+//     }
+//   ];
+
+//   const followUpResponses = [
+//     {
+//       id: 'more_help',
+//       response: 'What else can I help you with?'
+//     },
+//     {
+//       id: 'thanks',
+//       response: "You're welcome! Have a great day!"
+//     }
+//   ];
+
 
     return (
         <div className="dark:bg-gray-950 bg-white"
         style={{
-          width: 350,
+          width: 400,
           height: 500,
+          padding: 40
         }}>
             <ChatPreBuiltResponses
                 // initialResponses={initialResponses}
