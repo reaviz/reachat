@@ -17,27 +17,31 @@ export default {
 
   export const PreBuiltSample: FC = () => {
 
-    //   const initialResponses = [
-//     {
-//       id: 'no_thanks',
-//       response: "I'm just browsing, thanks for asking."
-//     },
-//     {
-//       id: 'support',
-//       response: 'I need support with my account.'
-//     }
-//   ];
+      const initialResponses = [
+    {
+      id: 'no_thanks',
+      response: "I'm just browsing, thanks for asking."
+    },
+    {
+      id: 'support',
+      response: 'I need support with my account.'
+    }
+  ];
 
-//   const followUpResponses = [
-//     {
-//       id: 'more_help',
-//       response: 'What else can I help you with?'
-//     },
-//     {
-//       id: 'thanks',
-//       response: "You're welcome! Have a great day!"
-//     }
-//   ];
+  const followUpResponses = [
+    {
+      id: 'another_question',
+      response: 'I have another question.'
+    },
+    {
+      id: 'all_done',
+      response: "That's all I need help with, thanks!"
+    },
+    {
+        id: 'speak_to_representative',
+        response: "I'd like to speak to a live representative."
+      }
+  ];
 
 
     return (

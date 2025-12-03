@@ -17,16 +17,16 @@ export const ChatPreBuiltResponses: FC<ChatPreBuiltResponsesProps> = ({
   //2. Build the chat component with the pre built responses which will be props passed in
 
   //3. Add a conditional to set the response to initial or followUp
-  const [response, setResponse] = useState<'initial' | 'followUp'>('initial');
+  const [phase, setPhase] = useState<'initial' | 'followUp'>('initial');
 
   const currentResponses =
-    response === 'initial' ? initialResponses : followUpResponses;
+    phase === 'initial' ? initialResponses : followUpResponses;
 
   //4. Change response options to buttons and an event handler to toggle the response between initial and followUp
 
-  const handleSelectResponse = (response: string) => {
-    onSelectResponse?.(response);
-    setResponse(response === 'initial' ? 'followUp' : 'initial');
+  const handleSelectResponse = (selectedResponse: string) => {
+    onSelectResponse?.(selectedResponse);
+    setPhase(phase === 'initial' ? 'followUp' : 'initial');
   };
 
   return (
@@ -36,7 +36,7 @@ export const ChatPreBuiltResponses: FC<ChatPreBuiltResponsesProps> = ({
         {/* Will refactor later to use theme colors and need to do dark and light mode*/}
         {/* Will need a compact size and a full size look. flex col to flex row*/}
         <p className="text-white text-lg font-bold">
-          {response === 'initial'
+          {phase === 'initial'
             ? 'Hi, What can I help you with?'
             : 'What else can I help you with?'}
         </p>
