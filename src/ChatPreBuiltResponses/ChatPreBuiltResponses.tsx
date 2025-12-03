@@ -1,15 +1,14 @@
-import { FC, useState } from 'react';
+import { FC, useState, useContext } from 'react';
+import { ChatContext } from '../ChatContext';
 
 interface ChatPreBuiltResponsesProps {
   initialResponses: { id: string; response: string }[];
   followUpResponses: { id: string; response: string }[];
-  onSelectResponse: (response: string) => void;
 }
 
 export const ChatPreBuiltResponses: FC<ChatPreBuiltResponsesProps> = ({
   initialResponses,
-  followUpResponses,
-  onSelectResponse /*This will be the parent's handler */
+  followUpResponses
 }) => {
   //1. Define the pre built responses for intial and follow up (decided to have this be in the stories version)
   // Will move these to a separate file later
@@ -18,6 +17,8 @@ export const ChatPreBuiltResponses: FC<ChatPreBuiltResponsesProps> = ({
 
   //3. Add a conditional to set the response to initial or followUp
   const [phase, setPhase] = useState<'initial' | 'followUp'>('initial');
+  //5. Because this component will be used in the Chat, we need context from Chat
+  const { sendMessage } = useContext(ChatContext);
 
   const currentResponses =
     phase === 'initial' ? initialResponses : followUpResponses;
@@ -25,7 +26,7 @@ export const ChatPreBuiltResponses: FC<ChatPreBuiltResponsesProps> = ({
   //4. Change response options to buttons and an event handler to toggle the response between initial and followUp
 
   const handleSelectResponse = (selectedResponse: string) => {
-    onSelectResponse?.(selectedResponse);
+    sendMessage?.(selectedResponse);
     setPhase(phase === 'initial' ? 'followUp' : 'initial');
   };
 

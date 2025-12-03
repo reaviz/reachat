@@ -17,7 +17,8 @@ export default {
 
   export const PreBuiltSample: FC = () => {
 
-      const initialResponses = [
+    
+    const initialResponses = [
     {
       id: 'no_thanks',
       response: "I'm just browsing, thanks for asking."
@@ -43,6 +44,10 @@ export default {
       }
   ];
 
+  const handleSelectResponse = (response: string) => {
+    console.log('Selected response:', response);
+  }
+
 
     return (
         <div className="dark:bg-gray-950 bg-white"
@@ -51,10 +56,17 @@ export default {
           height: 500,
           padding: 40
         }}>
-            <ChatPreBuiltResponses
-                // initialResponses={initialResponses}
-                // followUpResponses={followUpResponses}
-            />
+            <Chat sessions={fakeSessions} viewType="chat" onSendMessage={handleSelectResponse}>
+                <SessionMessagePanel>
+                    <div className="flex flex-col h-full justify-between">
+                        <ChatPreBuiltResponses
+                            initialResponses={initialResponses}
+                            followUpResponses={followUpResponses}
+                        />
+                        <ChatInput />
+                    </div>
+                </SessionMessagePanel>
+            </Chat>
         </div>
     );
 }
