@@ -15,34 +15,53 @@ export default {
 
   type Story = StoryObj<typeof ChatPreBuiltResponses>;
 
-  export const PreBuiltSample: FC = () => {
+  const initialResponses = [
+  {
+    id: 'no_thanks',
+    response: "I'm just browsing, thanks for asking."
+  },
+  {
+    id: 'support',
+    response: 'I need support with my account.'
+  }
+];
+
+const followUpResponses = [
+  {
+    id: 'another_question',
+    response: 'I have another question.'
+  },
+  {
+    id: 'all_done',
+    response: "That's all I need help with, thanks!"
+  },
+  {
+      id: 'speak_to_representative',
+      response: "I'd like to speak to a live representative."
+    }
+];
+
+  export const PreBuiltResponsesInStory: FC = () => {
+    return (
+        <div className="dark:bg-gray-950 bg-white"
+        style={{
+          width: 400,
+          height: 500,
+          padding: 40
+        }}>
+           
+           <ChatPreBuiltResponses
+                initialResponses={initialResponses}
+                followUpResponses={followUpResponses}
+            />
+                 
+        </div>
+    );
+  }
+
+  export const PreBuiltResponsesInChat: FC = () => {
 
     
-    const initialResponses = [
-    {
-      id: 'no_thanks',
-      response: "I'm just browsing, thanks for asking."
-    },
-    {
-      id: 'support',
-      response: 'I need support with my account.'
-    }
-  ];
-
-  const followUpResponses = [
-    {
-      id: 'another_question',
-      response: 'I have another question.'
-    },
-    {
-      id: 'all_done',
-      response: "That's all I need help with, thanks!"
-    },
-    {
-        id: 'speak_to_representative',
-        response: "I'd like to speak to a live representative."
-      }
-  ];
 
   const handleSelectResponse = (response: string) => {
     console.log('Selected response:', response);
