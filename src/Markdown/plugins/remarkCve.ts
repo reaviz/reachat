@@ -4,9 +4,9 @@ import type { Plugin } from 'unified';
 
 const CVE_REGEX = /(CVE-(19|20)\d{2}-\d{4,7})/gi;
 
-export const remarkCve: Plugin<[], Root> = () => {
-  return (tree: Root) => {
-    findAndReplace(tree, [[CVE_REGEX, replaceCve]], {
+export const remarkCve: Plugin = () => {
+  return tree => {
+    findAndReplace(tree as Root, [[CVE_REGEX, replaceCve]], {
       ignore: ['link', 'linkReference']
     });
   };
