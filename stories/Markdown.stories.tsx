@@ -16,17 +16,22 @@ export default {
 type Story = StoryObj<typeof Markdown>;
 
 const riskTableMarkdown = `
-| Risk Category | Description | Impacted Areas | Likelihood | Priority Level | Remarks/Notes |
+Austin, based strictly on the provided organizational profile of Acme Controls International plc and the Dragos Q2 2025 ransomware threat intelligence, I have created a concise Risk Table illustrating key risk areas, their impact domains, likelihood, and priority levels for your strategic assessment.
+
+| Risk Category                  | Description                                                                                                  | Impacted Areas                           | Likelihood      | Priority Level  | Remarks/Notes                                                                                                                     |
 |-------------------------------|--------------------------------------------------------------------------------------------------------------|----------------------------------------|-----------------|-----------------|----------------------------------------------------------------------------------------------------------------------------------|
-| Ransomware Attacks | High-volume ransomware targeting manufacturing and industrial control systems; sophisticated groups like Qilin, SafePay, Devman active | Manufacturing, ICS, Supply Chains | Highly Likely | Critical | Qilin alone accounted for ~15% of all industrial ransomware incidents Q2 2025; ties to nation-state actors increase strategic risk|
-| Critical Vulnerability Exploits| Exploitation of unpatched Fortinet, SAP Netweaver, SimpleHelp vulnerabilities leading to network compromise | IT-OT networks, Remote Access Points | Highly Likely | High | Notable CVEs: CVE-2024-21762 (Fortinet), CVE-2025-31324 (SAP); patch management is critical |
-| Supply Chain Disruptions | Ransomware, component shortages, geopolitical conflict impact supply and finance operations | Supply Chain, Procurement, Vendors | Likely | High | Includes semiconductor shortages, geopolitical events in Middle East and Russia/Ukraine impacting component availability |
-| Social Engineering Attacks | Increased phishing, vishing, and helpdesk impersonation leading to credential theft and initial access | Employees, IT helpdesk | Likely | High | Attackers use voice spoofing, Teams calls, and email bombing; training and awareness crucial |
-| AI-driven Attack Enhancements | Emerging use of AI for phishing, evasion, and automated reconnaissance reducing detection windows | Security Operations, SOC | Medium Likely | Medium | Threat actors enhance sophistication, requiring advanced detection technologies |
-| Data Privacy and Compliance Risks| Potential violations of GDPR, US state privacy laws and sector-specific reporting obligations due to breaches | Legal, Compliance Departments | Even Chance | Medium | Incident impacts can trigger complex regulatory reporting and fines |
-| Environmental and Product Liability Litigation| PFAS contamination and asbestos-related claims risk operational and reputational impact | Legal, Environmental Compliance, Public Affairs | Even Chance | Medium | Ongoing remediation and litigation in Wisconsin sites; impacts company reputation and financial reserves |
-| Competitor-led Market Shifts | Competition from Honeywell, Siemens, Schneider Electric in smart building and cooling systems sectors | Product Development, Strategic Planning | Medium | Low | Market dynamics but outside direct cybersecurity scope |
-`;
+| Ransomware Attacks             | High-volume ransomware targeting manufacturing and industrial control systems; sophisticated groups like Qilin, SafePay, Devman active | Manufacturing, ICS, Supply Chains       | Highly Likely   | Critical        | Qilin alone accounted for ~15% of all industrial ransomware incidents Q2 2025; ties to nation-state actors increase strategic risk|
+| Critical Vulnerability Exploits| Exploitation of unpatched Fortinet, SAP Netweaver, SimpleHelp vulnerabilities leading to network compromise | IT-OT networks, Remote Access Points    | Highly Likely   | High            | Notable CVEs: CVE-2024-21762 (Fortinet), CVE-2025-31324 (SAP); patch management is critical                                     |
+| Supply Chain Disruptions        | Ransomware, component shortages, geopolitical conflict impact supply and finance operations                   | Supply Chain, Procurement, Vendors      | Likely          | High            | Includes semiconductor shortages, geopolitical events in Middle East and Russia/Ukraine impacting component availability        |
+| Social Engineering Attacks      | Increased phishing, vishing, and helpdesk impersonation leading to credential theft and initial access       | Employees, IT helpdesk                   | Likely          | High            | Attackers use voice spoofing, Teams calls, and email bombing; training and awareness crucial                                      |
+| AI-driven Attack Enhancements   | Emerging use of AI for phishing, evasion, and automated reconnaissance reducing detection windows            | Security Operations, SOC                 | Medium Likely   | Medium          | Threat actors enhance sophistication, requiring advanced detection technologies                                                 |
+| Data Privacy and Compliance Risks| Potential violations of GDPR, US state privacy laws and sector-specific reporting obligations due to breaches | Legal, Compliance Departments            | Even Chance     | Medium          | Incident impacts can trigger complex regulatory reporting and fines                                                               |
+| Environmental and Product Liability Litigation| PFAS contamination and asbestos-related claims risk operational and reputational impact               | Legal, Environmental Compliance, Public Affairs | Even Chance     | Medium          | Ongoing remediation and litigation in Wisconsin sites; impacts company reputation and financial reserves                         |
+| Competitor-led Market Shifts     | Competition from Honeywell, Siemens, Schneider Electric in smart building and cooling systems sectors        | Product Development, Strategic Planning | Medium          | Low             | Market dynamics but outside direct cybersecurity scope                                                                             |
+
+This risk table uses Dragos ransomware intelligence trends along with Acme Controls' industrial, geographic, regulatory, and operational context to prioritize risks most pertinent for strategic decision-making.
+
+Let me know your next question or if you want me to elaborate on specific risks before we proceed to complete the Strategic Risk Assessment.`;
 
 export const RiskAssessmentTable: Story = {
   render: args => (
@@ -46,22 +51,6 @@ export const SimpleTable: Story = {
 | Alice | 30 | New York |
 | Bob | 25 | London |
 | Charlie | 35 | Tokyo |
-`}
-      </Markdown>
-    </div>
-  )
-};
-
-export const TableWithLongContent: Story = {
-  render: args => (
-    <div className="p-8 bg-background-neutral-canvas-base">
-      <Markdown {...args}>
-        {`
-| Feature | Description | Status |
-|---------|-------------|--------|
-| Authentication | Secure user authentication with JWT tokens and refresh token rotation. Supports OAuth2 and SAML. | ✅ Complete |
-| Real-time Updates | WebSocket-based real-time notifications and updates across all connected clients with automatic reconnection. | 🚧 In Progress |
-| Data Export | Export data in multiple formats including CSV, JSON, and Excel with custom field selection. | ⏳ Planned |
 `}
       </Markdown>
     </div>
