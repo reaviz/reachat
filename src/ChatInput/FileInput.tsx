@@ -10,6 +10,11 @@ interface FileInputProps {
   allowedFiles: string[];
 
   /**
+   * Allow multiple file uploads.
+   */
+  multiple: boolean;
+
+  /**
    * Indicates whether a file upload is in progress.
    */
   isLoading: boolean;
@@ -32,6 +37,7 @@ interface FileInputProps {
 
 export const FileInput: FC<FileInputProps> = ({
   allowedFiles,
+  multiple,
   onFileUpload,
   isLoading,
   disabled,
@@ -47,6 +53,7 @@ export const FileInput: FC<FileInputProps> = ({
         ref={fileInputRef}
         className="hidden"
         accept={allowedFiles.join(',')}
+        multiple={multiple}
         onChange={e => {
           onFileUpload(e);
           // Cleanup field value after fire callback
