@@ -28,6 +28,11 @@ interface ChatInputProps {
   allowedFiles?: string[];
 
   /**
+   * Allow multiple file uploads.
+   */
+  allowMultipleFiles?: boolean;
+
+  /**
    * Placeholder text for the input field.
    */
   placeholder?: string;
@@ -89,6 +94,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
   (
     {
       allowedFiles,
+      allowMultipleFiles = false,
       placeholder,
       defaultValue,
       className,
@@ -153,9 +159,16 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     };
 
     const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file && fileUpload) {
-        fileUpload(file);
+      const files = event.target.files;
+      if (files && fileUpload) {
+        if (allowMultipleFiles) {
+          Array.from(files).forEach(file => fileUpload(file));
+        } else {
+          const file = files[0];
+          if (file) {
+            fileUpload(file);
+          }
+        }
       }
     };
 
@@ -185,6 +198,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
           {allowedFiles?.length > 0 && (
             <FileInput
               allowedFiles={allowedFiles}
+              multiple={allowMultipleFiles}
               onFileUpload={handleFileUpload}
               isLoading={isLoading}
               disabled={disabled}
