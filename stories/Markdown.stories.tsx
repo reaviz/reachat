@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Markdown } from '../src/Markdown';
-import { chatTheme } from '../src/theme';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+
+import { Markdown, remarkCve } from '../src/Markdown';
+import { chatTheme } from '../src/theme';
 
 export default {
   title: 'Components/Markdown',
@@ -20,7 +21,7 @@ Austin, based strictly on the provided organizational profile of Acme Controls I
 
 | Risk Category                  | Description                                                                                                  | Impacted Areas                           | Likelihood      | Priority Level  | Remarks/Notes                                                                                                                     |
 |-------------------------------|--------------------------------------------------------------------------------------------------------------|----------------------------------------|-----------------|-----------------|----------------------------------------------------------------------------------------------------------------------------------|
-| Ransomware Attacks             | High-volume ransomware targeting manufacturing and industrial control systems; sophisticated groups like Qilin, SafePay, Devman active | Manufacturing, ICS, Supply Chains       | Highly Likely   | Critical        | Qilin alone accounted for ~15% of all industrial ransomware incidents Q2 2025; ties to nation-state actors increase strategic risk|
+| Ransomware Attacks             | CVE-2024-21762 High-volume ransomware targeting manufacturing and industrial control systems; sophisticated groups like Qilin, SafePay, Devman active | Manufacturing, ICS, Supply Chains       | Highly Likely   | Critical        | Qilin alone accounted for ~15% of all industrial ransomware incidents Q2 2025; ties to nation-state actors increase strategic risk|
 | Critical Vulnerability Exploits| Exploitation of unpatched Fortinet, SAP Netweaver, SimpleHelp vulnerabilities leading to network compromise | IT-OT networks, Remote Access Points    | Highly Likely   | High            | Notable CVEs: CVE-2024-21762 (Fortinet), CVE-2025-31324 (SAP); patch management is critical                                     |
 | Supply Chain Disruptions        | Ransomware, component shortages, geopolitical conflict impact supply and finance operations                   | Supply Chain, Procurement, Vendors      | Likely          | High            | Includes semiconductor shortages, geopolitical events in Middle East and Russia/Ukraine impacting component availability        |
 | Social Engineering Attacks      | Increased phishing, vishing, and helpdesk impersonation leading to credential theft and initial access       | Employees, IT helpdesk                   | Likely          | High            | Attackers use voice spoofing, Teams calls, and email bombing; training and awareness crucial                                      |
@@ -36,7 +37,9 @@ Let me know your next question or if you want me to elaborate on specific risks 
 export const RiskAssessmentTable: Story = {
   render: args => (
     <div className="p-8 bg-background-neutral-canvas-base max-w-full overflow-x-auto">
-      <Markdown {...args}>{riskTableMarkdown}</Markdown>
+      <Markdown {...args} remarkPlugins={[remarkGfm, remarkMath, remarkCve]}>
+        {riskTableMarkdown}
+      </Markdown>
     </div>
   )
 };
@@ -142,4 +145,3 @@ function greet(name: string): string {
     </div>
   )
 };
-
