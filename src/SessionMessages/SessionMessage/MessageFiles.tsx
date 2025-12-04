@@ -27,7 +27,7 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
   // Group image and other files
   const { imageFiles, otherFiles } = files.reduce(
     (acc, file) => {
-      if (file.type.startsWith('image/')) {
+      if (file.type?.startsWith('image/')) {
         acc.imageFiles.push(file);
       } else {
         acc.otherFiles.push(file);
