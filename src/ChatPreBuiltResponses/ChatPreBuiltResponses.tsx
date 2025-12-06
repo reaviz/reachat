@@ -10,20 +10,11 @@ export const ChatPreBuiltResponses: FC<ChatPreBuiltResponsesProps> = ({
   initialResponses,
   followUpResponses
 }) => {
-  //1. Define the pre built responses for intial and follow up (decided to have this be in the stories version)
-  // Will move these to a separate file later
-
-  //2. Build the chat component with the pre built responses which will be props passed in
-
-  //3. Add a conditional to set the response to initial or followUp
   const [phase, setPhase] = useState<'initial' | 'followUp'>('initial');
-  //5. Because this component will be used in the Chat, we need context from Chat
   const { sendMessage } = useContext(ChatContext);
 
   const currentResponses =
     phase === 'initial' ? initialResponses : followUpResponses;
-
-  //4. Change response options to buttons and an event handler to toggle the response between initial and followUp
 
   const handleSelectResponse = (selectedResponse: string) => {
     sendMessage?.(selectedResponse);
@@ -32,10 +23,15 @@ export const ChatPreBuiltResponses: FC<ChatPreBuiltResponsesProps> = ({
 
   return (
     <div>
-      <div className="h-30 rounded-md p-4 bg-gradient-to-bl from-transparent from-40% via-blue-500 via-70% to-indigo-500 to-80%">
-        {/* will add option for image later*/}
-        {/* Will refactor later to use theme colors and need to do dark and light mode*/}
-        {/* Will need a compact size and a full size look. flex col to flex row*/}
+      <div className="flex items-center justify- h-30 rounded-md p-4 gap-4 bg-gradient-to-br from-transparent from-40% via-blue-500 via-70% to-indigo-500 to-80%">
+        <div className="">
+          <img
+            src="/stories/assets/chatbot.png"
+            alt="logo"
+            width={80}
+            height={80}
+          />
+        </div>
         <p className="text-white text-lg font-bold">
           {phase === 'initial'
             ? 'Hi, What can I help you with?'

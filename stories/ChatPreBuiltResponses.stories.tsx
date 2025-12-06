@@ -2,10 +2,10 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Chat, ChatInput, Session, SessionMessages, SessionMessagePanel } from '../src';
 import {
     fakeSessions,
-    sessionWithSources,
-    sessionsWithFiles
   } from './examples';
 import { useState, FC } from 'react';
+import { OpenAI } from 'openai';
+import { Input } from 'reablocks';
 import { ChatPreBuiltResponses } from '../src'
 
 export default {
@@ -41,7 +41,7 @@ const followUpResponses = [
     }
 ];
 
-  export const PreBuiltResponsesInStory: FC = () => {
+  export const IndependentComponent: FC = () => {
     return (
         <div className="dark:bg-gray-950 bg-white"
         style={{
@@ -59,14 +59,11 @@ const followUpResponses = [
     );
   }
 
-  export const PreBuiltResponsesInChat: FC = () => {
-
-    
+  export const InsideChat: FC = () => {
 
   const handleSelectResponse = (response: string) => {
     console.log('Selected response:', response);
   }
-
 
     return (
         <div className="dark:bg-gray-950 bg-white"
