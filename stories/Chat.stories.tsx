@@ -1,25 +1,28 @@
-import { Meta } from '@storybook/react';
-import {
-  Chat,
-  SessionMessages,
-  ChatInput,
-  SessionMessagePanel,
-  SessionMessage,
-  Session,
-  AppBar
-} from '../src';
-import {
-  fakeSessions,
-  sessionWithSources,
-  sessionsWithFiles
-} from './examples';
+import type { Meta } from '@storybook/react';
+import { IconButton } from 'reablocks';
 import { useState } from 'react';
+
+import type { Session } from '../src';
+import {
+  AppBar,
+  Chat,
+  ChatInput,
+  MessageQuestion,
+  MessageResponse,
+  SessionMessage,
+  SessionMessagePanel,
+  SessionMessages
+} from '../src';
+import IconClose from './assets/close-fill.svg?react';
+import ReachatLogo from './assets/logo.svg?react';
 import Placeholder from './assets/placeholder.svg?react';
 import PlaceholderDark from './assets/placeholder-dark.svg?react';
-import ReachatLogo from './assets/logo.svg?react';
 import IconSearch from './assets/search.svg?react';
-import IconClose from './assets/close-fill.svg?react';
-import { IconButton } from 'reablocks';
+import {
+  fakeSessions,
+  sessionsWithFiles,
+  sessionWithSources
+} from './examples';
 
 export default {
   title: 'Demos/Chat',
@@ -67,6 +70,67 @@ export const Compact = () => {
       >
         <SessionMessagePanel>
           <SessionMessages />
+          <ChatInput />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const LongQuestion = () => {
+  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
+  const [sessions, setSessions] = useState<Session[]>([
+    ...fakeSessions,
+    ...sessionsWithFiles,
+    ...sessionWithSources
+  ]);
+
+  return (
+    <div
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
+      style={{
+        width: 350,
+        height: 500,
+        padding: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="chat"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onNewSession={() => {
+          const newId = (sessions.length + 1).toLocaleString();
+          setSessions([
+            ...sessions,
+            {
+              id: newId,
+              title: `New Session #${newId}`,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              conversations: []
+            }
+          ]);
+          setActiveId(newId);
+        }}
+        onSelectSession={setActiveId}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionMessagePanel>
+          <SessionMessages>
+            {conversations =>
+              conversations.map((conversation, index) => (
+                <SessionMessage
+                  key={conversation.id}
+                  conversation={conversation}
+                  isLast={index === conversations.length - 1}
+                >
+                  <MessageQuestion question="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi hendrerit nunc ante, id tristique tortor rutrum bibendum. In hac habitasse platea dictumst. Etiam convallis vestibulum magna eu commodo. Pellentesque at tempor turpis. Suspendisse ut ipsum vehicula, convallis lectus ut, interdum nisi. Aliquam erat volutpat. Cras iaculis nisi vel massa semper tincidunt. Maecenas finibus, dolor a elementum pellentesque, mauris lectus sodales lectus, nec tempus leo tellus vitae nunc. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus condimentum velit eu vehicula pulvinar. Suspendisse ac metus imperdiet, aliquam neque vehicula, pretium elit. Curabitur eros ex, rutrum vitae est vel, placerat pharetra velit. Cras sodales, mi sagittis faucibus facilisis, odio ante tempus turpis, nec iaculis diam dui eget dui. Pellentesque blandit turpis vitae leo iaculis, bibendum molestie leo rhoncus. Vestibulum libero dui, condimentum non suscipit sit amet, molestie non lorem." />
+                  <MessageResponse response={conversation.response} />
+                </SessionMessage>
+              ))
+            }
+          </SessionMessages>
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -235,8 +299,12 @@ export const WithAppBar = () => {
             content={
               <div className="flex items-center justify-between w-full">
                 <div className="flex-shrink-0">
-                  <IconButton size="small" variant="outline" className='rounded-full p-3'>
-                    <IconSearch className='w-4 h-4' />
+                  <IconButton
+                    size="small"
+                    variant="outline"
+                    className="rounded-full p-3"
+                  >
+                    <IconSearch className="w-4 h-4" />
                   </IconButton>
                 </div>
                 <div className="flex-grow flex justify-center items-center">
@@ -246,9 +314,9 @@ export const WithAppBar = () => {
                   <IconButton
                     variant="text"
                     size="small"
-                    className='rounded-full p-3'
+                    className="rounded-full p-3"
                   >
-                    <IconClose className='w-4 h-4' />
+                    <IconClose className="w-4 h-4" />
                   </IconButton>
                 </div>
               </div>
