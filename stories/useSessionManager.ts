@@ -48,25 +48,28 @@ export const useSessionManager = (options: UseSessionManagerOptions = {}) => {
 
       await new Promise(resolve => setTimeout(resolve, 800));
 
-      // Generate mock options
-      const mockOptions : Record<string, { header: string; options: PreBuiltOption[] }> = {
+      // Generate mock options - organized by conversation flow
+      const mockOptions: Record<string, { header: string; options: PreBuiltOption[] }> = {
+        // Level 1: User is just browsing
         browsing: {
-          header: "No problem! Let me know if you need anything.",
+          header: "No problem! Feel free to look around. Need anything?",
           options: [
-            { id: '1', response: "Actually, I have a question" },
-            { id: '2', response: "Show me popular features" },
-            { id: '3', response: "Start over" },
+            { id: '1', response: "Actually, I do have a question" },
+            { id: '2', response: "What are your most popular features?" },
+            { id: '3', response: "That's all, thanks!" },
           ]
         },
+        // Level 1: User needs support
         support: {
           header: "I'd be happy to help! What kind of support do you need?",
           options: [
             { id: '1', response: "I have a billing question" },
             { id: '2', response: "I'm having a technical issue" },
             { id: '3', response: "I need to reset my password" },
-            { id: '4', response: "I'd like to speak to someone" },
+            { id: '4', response: "I'd like to speak to a representative" },
           ]
         },
+        // Level 1: User asking about pricing
         pricing: {
           header: "Great question! What would you like to know about pricing?",
           options: [
@@ -76,26 +79,138 @@ export const useSessionManager = (options: UseSessionManagerOptions = {}) => {
             { id: '4', response: "How does billing work?" },
           ]
         },
+        // Level 2: Support - Billing
+        billing: {
+          header: "I can help with billing! What's your question?",
+          options: [
+            { id: '1', response: "I need to update my payment method" },
+            { id: '2', response: "I have a charge I don't recognize" },
+            { id: '3', response: "I want to cancel my subscription" },
+            { id: '4', response: "Go back to support options" },
+          ]
+        },
+        // Level 2: Support - Technical
+        technical: {
+          header: "Let's troubleshoot! What's happening?",
+          options: [
+            { id: '1', response: "The app is running slowly" },
+            { id: '2', response: "I'm getting an error message" },
+            { id: '3', response: "A feature isn't working" },
+            { id: '4', response: "Go back to support options" },
+          ]
+        },
+        // Level 2: Support - Password
+        password: {
+          header: "No problem! I'll help you reset your password.",
+          options: [
+            { id: '1', response: "Send me a reset email" },
+            { id: '2', response: "I'm not receiving the reset email" },
+            { id: '3', response: "Go back to support options" },
+          ]
+        },
+        // Level 2: Support - Representative
+        representative: {
+          header: "I'll connect you with our team!",
+          options: [
+            { id: '1', response: "Schedule a call" },
+            { id: '2', response: "Start a live chat" },
+            { id: '3', response: "Send an email instead" },
+            { id: '4', response: "Go back to support options" },
+          ]
+        },
+        // Level 2: Pricing - Plans
+        plans: {
+          header: "We offer three plans: Basic, Pro, and Enterprise.",
+          options: [
+            { id: '1', response: "Tell me about the Basic plan" },
+            { id: '2', response: "Tell me about the Pro plan" },
+            { id: '3', response: "Tell me about Enterprise" },
+            { id: '4', response: "Go back to pricing options" },
+          ]
+        },
+        // Level 2: Pricing - Trial
+        trial: {
+          header: "Yes! We offer a 14-day free trial with full access.",
+          options: [
+            { id: '1', response: "Start my free trial" },
+            { id: '2', response: "What happens after the trial?" },
+            { id: '3', response: "Go back to pricing options" },
+          ]
+        },
+        // Ending/Thank you
+        thanks: {
+          header: "Thanks for stopping by! Anything else I can help with?",
+          options: [
+            { id: '1', response: "Actually, I have another question" },
+            { id: '2', response: "No, that's everything!" },
+          ]
+        },
+        // Final goodbye
+        goodbye: {
+          header: "Great talking with you! Have a wonderful day! 👋",
+          options: [
+            { id: '1', response: "Start a new conversation" },
+          ]
+        },
+        // Start/Reset - mirrors initial options
+        start: {
+          header: "Hi! What can I help you with?",
+          options: [
+            { id: '1', response: "I'm just browsing, thanks for asking." },
+            { id: '2', response: "I need support with my account." },
+            { id: '3', response: "Tell me about your pricing." },
+          ]
+        },
+        // Default fallback
         default: {
           header: "Thanks for your message! How can I help further?",
           options: [
-            { id: '1', response: "Tell me more about this" },
-            { id: '2', response: "I have another question" },
+            { id: '1', response: "I need support with my account" },
+            { id: '2', response: "Tell me about your pricing" },
             { id: '3', response: "That's all I needed, thanks!" },
           ]
         }
-      }
+      };
 
       // Match message to appropriate category based on keywords
       const messageText = message.toLowerCase();
       let mockData = mockOptions.default;
       
+      // Level 1 matches
       if (messageText.includes('browsing') || messageText.includes('just looking')) {
         mockData = mockOptions.browsing;
-      } else if (messageText.includes('support') || messageText.includes('help') || messageText.includes('account')) {
-        mockData = mockOptions.support;
       } else if (messageText.includes('pricing') || messageText.includes('cost') || messageText.includes('price')) {
         mockData = mockOptions.pricing;
+      } else if (messageText.includes('support') || messageText.includes('help') || messageText.includes('account')) {
+        mockData = mockOptions.support;
+      }
+      // Level 2: Support sub-options
+      else if (messageText.includes('billing') || messageText.includes('payment') || messageText.includes('charge')) {
+        mockData = mockOptions.billing;
+      } else if (messageText.includes('technical') || messageText.includes('issue') || messageText.includes('error')) {
+        mockData = mockOptions.technical;
+      } else if (messageText.includes('password') || messageText.includes('reset')) {
+        mockData = mockOptions.password;
+      } else if (messageText.includes('representative') || messageText.includes('speak') || messageText.includes('someone')) {
+        mockData = mockOptions.representative;
+      }
+      // Level 2: Pricing sub-options
+      else if (messageText.includes('plans') || messageText.includes('offer')) {
+        mockData = mockOptions.plans;
+      } else if (messageText.includes('trial') || messageText.includes('free')) {
+        mockData = mockOptions.trial;
+      }
+      // Endings and restarts
+      else if (messageText.includes('no,') && messageText.includes('everything')) {
+        // "No, that's everything!" → goodbye
+        mockData = mockOptions.goodbye;
+      } else if (messageText.includes('start') && messageText.includes('new')) {
+        // "Start a new conversation" → reset to beginning
+        mockData = mockOptions.start;
+      } else if (messageText.includes('thanks') || messageText.includes('that\'s all')) {
+        mockData = mockOptions.thanks;
+      } else if (messageText.includes('question') || messageText.includes('another')) {
+        mockData = mockOptions.default;
       }
 
       setCurrentOptions(mockData.options);
