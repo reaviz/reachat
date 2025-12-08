@@ -2,13 +2,33 @@ import { useState, useCallback } from 'react';
 import { Session } from '../src';
 import OpenAI from 'openai';
 
+interface PreBuiltOption {
+  id: string;
+  response: string;
+}
+
+interface DynamicOptionsResult {
+  response: string;
+  headerText: string;
+  options: PreBuiltOption[];
+}
+
 interface UseSessionManagerOptions {
   apiKey?: string;
   useOpenAI?: boolean;
+  dynamicOptions?: boolean;
+  initialOptions?: PreBuiltOption[];
+  initialHeaderText?: string;
 }
 
 export const useSessionManager = (options: UseSessionManagerOptions = {}) => {
-  const { apiKey, useOpenAI = false } = options;
+  const {
+    apiKey,
+    useOpenAI = false,
+    dynamicOptions = false,
+    initialOptions = [],
+    initialHeaderText = 'Hi, What can I help you with?'
+  } = options;
   
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
