@@ -1,25 +1,26 @@
-import { Meta } from '@storybook/react';
-import {
-  Chat,
-  SessionMessages,
-  ChatInput,
-  SessionMessagePanel,
-  SessionMessage,
-  Session,
-  AppBar
-} from '../src';
-import {
-  fakeSessions,
-  sessionWithSources,
-  sessionsWithFiles
-} from './examples';
+import type { Meta } from '@storybook/react';
+import { IconButton } from 'reablocks';
 import { useState } from 'react';
+
+import type { Session } from '../src';
+import {
+  AppBar,
+  Chat,
+  ChatInput,
+  SessionMessage,
+  SessionMessagePanel,
+  SessionMessages
+} from '../src';
+import IconClose from './assets/close-fill.svg?react';
+import ReachatLogo from './assets/logo.svg?react';
 import Placeholder from './assets/placeholder.svg?react';
 import PlaceholderDark from './assets/placeholder-dark.svg?react';
-import ReachatLogo from './assets/logo.svg?react';
 import IconSearch from './assets/search.svg?react';
-import IconClose from './assets/close-fill.svg?react';
-import { IconButton } from 'reablocks';
+import {
+  fakeSessions,
+  sessionsWithFiles,
+  sessionWithSources
+} from './examples';
 
 export default {
   title: 'Demos/Chat',
@@ -235,8 +236,12 @@ export const WithAppBar = () => {
             content={
               <div className="flex items-center justify-between w-full">
                 <div className="flex-shrink-0">
-                  <IconButton size="small" variant="outline" className='rounded-full p-3'>
-                    <IconSearch className='w-4 h-4' />
+                  <IconButton
+                    size="small"
+                    variant="outline"
+                    className="rounded-full p-3"
+                  >
+                    <IconSearch className="w-4 h-4" />
                   </IconButton>
                 </div>
                 <div className="flex-grow flex justify-center items-center">
@@ -246,9 +251,9 @@ export const WithAppBar = () => {
                   <IconButton
                     variant="text"
                     size="small"
-                    className='rounded-full p-3'
+                    className="rounded-full p-3"
                   >
-                    <IconClose className='w-4 h-4' />
+                    <IconClose className="w-4 h-4" />
                   </IconButton>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import '../../node_modules/reablocks/dist/styles/index.css';
 @source '../../node_modules/reablocks';
+@source inline("line-clamp-{1..10}");
 
 /* Custom variants */
 @custom-variant dark (&:where(.theme-dark, .theme-dark *, [data-theme=dark], [data-theme=dark] *));
