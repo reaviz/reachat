@@ -78,6 +78,177 @@ export const TableWithMarkdown: Story = {
   )
 };
 
+export const InlineAndCodeBlocks: Story = {
+  render: args => (
+    <div className="p-8 bg-background-neutral-canvas-base max-w-4xl">
+      <Markdown {...args}>
+        {`
+# Inline Code vs Code Blocks
+
+## Inline Code Examples
+
+Use inline code when referencing code elements within sentences:
+
+- Call the \`useState\` hook to manage component state
+- Import the component with \`import { Button } from 'reablocks'\`
+- Set the variable using \`const name = 'John'\`
+- The function \`calculateTotal()\` returns a number
+- Access the property with \`user.email\`
+- Use the className \`bg-blue-500\` for styling
+
+You can also use inline code for short commands like \`npm install\` or file paths like \`/src/components/App.tsx\`.
+
+## Code Block Examples
+
+Use code blocks for multi-line code snippets:
+\`\`\`
+Hello, world!
+\`\`\`
+
+### TypeScript/React Component
+
+\`\`\`typescript
+import { useState } from 'react';
+import { Button } from 'reablocks';
+
+interface UserProps {
+  name: string;
+  email: string;
+}
+
+export const UserProfile = ({ name, email }: UserProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  return (
+    <div className="p-4 border rounded">
+      <h2>{name}</h2>
+      <p>{email}</p>
+      <Button onClick={() => setIsEditing(!isEditing)}>
+        {isEditing ? 'Save' : 'Edit'}
+      </Button>
+    </div>
+  );
+};
+\`\`\`
+
+### JavaScript
+
+\`\`\`javascript
+function fetchUserData(userId) {
+  return fetch(\`/api/users/\${userId}\`)
+    .then(response => response.json())
+    .then(data => {
+      console.log('User data:', data);
+      return data;
+    })
+    .catch(error => {
+      console.error('Error fetching user:', error);
+    });
+}
+\`\`\`
+
+### Python
+
+\`\`\`python
+def calculate_total(items):
+    total = sum(item['price'] * item['quantity'] for item in items)
+    return round(total, 2)
+
+items = [
+    {'name': 'Book', 'price': 12.99, 'quantity': 2},
+    {'name': 'Pen', 'price': 1.50, 'quantity': 5}
+]
+
+print(f"Total: $\{calculate_total(items)}")
+\`\`\`
+
+### JSON
+
+\`\`\`json
+{
+  "name": "reachat",
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "^18.3.0",
+    "reablocks": "^8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0"
+  }
+}
+\`\`\`
+
+### CSS/Tailwind
+
+\`\`\`css
+.chat-bubble {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.chat-bubble:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+\`\`\`
+
+### Bash/Shell
+
+\`\`\`bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run tests
+npm test
+\`\`\`
+
+### SQL
+
+\`\`\`sql
+SELECT
+  u.id,
+  u.name,
+  u.email,
+  COUNT(o.id) as order_count
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE u.created_at > '2024-01-01'
+GROUP BY u.id, u.name, u.email
+ORDER BY order_count DESC
+LIMIT 10;
+\`\`\`
+
+## Mixed Usage
+
+You can combine inline code and code blocks in the same content:
+
+To create a new React component, first import \`React\` and \`useState\`:
+
+\`\`\`tsx
+import React, { useState } from 'react';
+
+export const Counter = () => {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+};
+\`\`\`
+
+Then use it in your app by importing it with \`import { Counter } from './Counter'\` and rendering \`<Counter />\` in your JSX.
+`}
+      </Markdown>
+    </div>
+  )
+};
+
 export const AllMarkdownFeatures: Story = {
   render: args => (
     <div className="p-8 bg-background-neutral-canvas-base max-w-4xl">

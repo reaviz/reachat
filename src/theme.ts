@@ -59,6 +59,7 @@ export interface ChatTheme {
         th: string;
         td: string;
         code: string;
+        inlineCode: string;
         toolbar: string;
         li: string;
         ul: string;
@@ -172,6 +173,7 @@ export const chatTheme: ChatTheme = {
         th: 'px-4 py-2 text-left font-bold border-b border-stroke-neutral-4',
         td: 'px-4 py-2',
         code: 'm-2 rounded-b relative',
+        inlineCode: 'bg-gradient-neutral-200 p-1 rounded',
         toolbar:
           'text-xs flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md bg-gradient-neutral-500/50',
         li: 'mb-2 ml-6',

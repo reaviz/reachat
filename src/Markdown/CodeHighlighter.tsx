@@ -14,6 +14,11 @@ export interface CodeHighlighterProps extends PropsWithChildren {
   className?: string;
 
   /**
+   * The class name to apply to the inline code.
+   */
+  inlineClassName?: string;
+
+  /**
    * The language of the code block.
    */
   language?: string;
@@ -42,14 +47,18 @@ export interface CodeHighlighterProps extends PropsWithChildren {
 export const CodeHighlighter: FC<CodeHighlighterProps> = ({
   className,
   children,
+  inlineClassName,
   copyClassName,
   copyIcon = <CopyIcon />,
   language,
   toolbarClassName,
-  theme = dark
+  theme = dark,
+  ...props
 }) => {
   const match = language?.match(/language-(\w+)/);
   const lang = match ? match[1] : 'text';
+  // If we can't match a language type, its probably not a code block
+  const isInline = !match;
 
   const handleCopy = (text: string) => {
     navigator.clipboard
@@ -61,6 +70,14 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
         console.error('Could not copy text: ', err);
       });
   };
+
+  if (isInline) {
+    return (
+      <code className={cn(inlineClassName, className)} {...props}>
+        {children}
+      </code>
+    );
+  }
 
   return (
     <div className={cn('relative', className)}>

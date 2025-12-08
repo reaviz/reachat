@@ -42,7 +42,8 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
         <CodeHighlighter
           {...props}
           // Ref: https://github.com/remarkjs/react-markdown?tab=readme-ov-file#use-custom-components-syntax-highlight
-          language={className}
+          language={cn(className)}
+          inlineClassName={cn(theme.messages.message.markdown.inlineCode)}
           className={cn(theme.messages.message.markdown.code, className)}
           copyClassName={cn(theme.messages.message.markdown.copy)}
           toolbarClassName={cn(theme.messages.message.markdown.toolbar)}
