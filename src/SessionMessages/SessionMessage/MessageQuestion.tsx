@@ -42,17 +42,15 @@ export const MessageQuestion: FC<MessageQuestionProps> = ({
   const calculateTruncation = useCallback(() => {
     const el = ref.current;
 
-    if (!el) return;
-
     setTruncated(el.scrollHeight > el.clientHeight);
   }, []);
 
   useEffect(() => {
-    calculateTruncation();
-
     const el = ref.current;
 
-    if (!el) return;
+    if (!el || previewLineClamp === false) return;
+
+    calculateTruncation();
 
     const resizeObserver = new ResizeObserver(() => {
       calculateTruncation();
@@ -67,7 +65,7 @@ export const MessageQuestion: FC<MessageQuestionProps> = ({
       resizeObserver.disconnect();
       window.removeEventListener('resize', calculateTruncation);
     };
-  }, [calculateTruncation]);
+  }, [calculateTruncation, previewLineClamp]);
 
   return (
     <Comp
