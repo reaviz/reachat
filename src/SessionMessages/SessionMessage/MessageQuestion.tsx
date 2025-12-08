@@ -41,14 +41,16 @@ export const MessageQuestion: FC<MessageQuestionProps> = ({
 
   const calculateTruncation = useCallback(() => {
     const el = ref.current;
-
-    setTruncated(el.scrollHeight > el.clientHeight);
+    if (el) {
+      setTruncated(el.scrollHeight > el.clientHeight);
+    }
   }, []);
 
   useEffect(() => {
     const el = ref.current;
-
-    if (!el || previewLineClamp === false) return;
+    if (!el || previewLineClamp === false) {
+      return;
+    }
 
     calculateTruncation();
 
