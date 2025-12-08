@@ -7,8 +7,6 @@ import {
   AppBar,
   Chat,
   ChatInput,
-  MessageQuestion,
-  MessageResponse,
   SessionMessage,
   SessionMessagePanel,
   SessionMessages
@@ -70,67 +68,6 @@ export const Compact = () => {
       >
         <SessionMessagePanel>
           <SessionMessages />
-          <ChatInput />
-        </SessionMessagePanel>
-      </Chat>
-    </div>
-  );
-};
-
-export const LongQuestion = () => {
-  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
-  const [sessions, setSessions] = useState<Session[]>([
-    ...fakeSessions,
-    ...sessionsWithFiles,
-    ...sessionWithSources
-  ]);
-
-  return (
-    <div
-      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
-      style={{
-        width: 350,
-        height: 500,
-        padding: 20,
-        borderRadius: 5
-      }}
-    >
-      <Chat
-        viewType="chat"
-        sessions={sessions}
-        activeSessionId={activeId}
-        onNewSession={() => {
-          const newId = (sessions.length + 1).toLocaleString();
-          setSessions([
-            ...sessions,
-            {
-              id: newId,
-              title: `New Session #${newId}`,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              conversations: []
-            }
-          ]);
-          setActiveId(newId);
-        }}
-        onSelectSession={setActiveId}
-        onDeleteSession={() => alert('delete!')}
-      >
-        <SessionMessagePanel>
-          <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                >
-                  <MessageQuestion question="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi hendrerit nunc ante, id tristique tortor rutrum bibendum. In hac habitasse platea dictumst. Etiam convallis vestibulum magna eu commodo. Pellentesque at tempor turpis. Suspendisse ut ipsum vehicula, convallis lectus ut, interdum nisi. Aliquam erat volutpat. Cras iaculis nisi vel massa semper tincidunt. Maecenas finibus, dolor a elementum pellentesque, mauris lectus sodales lectus, nec tempus leo tellus vitae nunc. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus condimentum velit eu vehicula pulvinar. Suspendisse ac metus imperdiet, aliquam neque vehicula, pretium elit. Curabitur eros ex, rutrum vitae est vel, placerat pharetra velit. Cras sodales, mi sagittis faucibus facilisis, odio ante tempus turpis, nec iaculis diam dui eget dui. Pellentesque blandit turpis vitae leo iaculis, bibendum molestie leo rhoncus. Vestibulum libero dui, condimentum non suscipit sit amet, molestie non lorem." />
-                  <MessageResponse response={conversation.response} />
-                </SessionMessage>
-              ))
-            }
-          </SessionMessages>
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
