@@ -1,5 +1,7 @@
-import { FC, useState, useContext } from 'react';
+import { FC, useContext } from 'react';
+import { cn } from 'reablocks';
 import { ChatContext } from '../ChatContext';
+import { chatTheme } from '../theme';
 
 interface PreBuiltOption {
   id: string;
@@ -11,38 +13,40 @@ interface ChatPreBuiltResponsesProps {
   headerText?: string;
   onSelectOption?: (option: PreBuiltOption) => void;
   isLoading?: boolean;
+  avatarUrl?: string;
 }
 
 export const ChatPreBuiltResponses: FC<ChatPreBuiltResponsesProps> = ({
   options,
   headerText = 'Hi, What can I help you with?',
   onSelectOption,
-  isLoading = false
+  isLoading = false,
+  avatarUrl = '/stories/assets/chatbot.png'
 }) => {
+  const { theme = chatTheme } = useContext(ChatContext);
+
   return (
-    <div>
-      <div className="flex items-center rounded-md gap-3 p-3 sm:gap-4 sm:p-4 bg-gradient-to-br from-transparent from-40% via-blue-500 via-70% to-indigo-500 to-80%">
-        <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16">
+    <div className={cn(theme.preBuiltResponses.base)}>
+      <div className={cn(theme.preBuiltResponses.header.base)}>
+        <div className={cn(theme.preBuiltResponses.header.avatar)}>
           <img
-            src="/stories/assets/chatbot.png"
+            src={avatarUrl}
             alt="logo"
             className="w-full h-full object-contain"
           />
         </div>
-        <p className="text-white text-sm sm:text-base md:text-lg font-bold flex-1">
-          {headerText}
-        </p>
+        <p className={cn(theme.preBuiltResponses.header.text)}>{headerText}</p>
       </div>
-      <div className="mt-4 flex flex-col gap-2">
+      <div className={cn(theme.preBuiltResponses.options.base)}>
         {isLoading ? (
-          <p className="dark:border-gray-700/50 dark:text-gray-200 dark:bg-gray-950 dark:hover:bg-blue-950/40 hover:bg-blue-100 hover:shadow-sm shadow-blue-500 hover:border-blue-500 border border-gray-200 h-12 rounded-md flex items-center justify-center">
-            Start a new conversation
-          </p>
+          <div className={cn(theme.preBuiltResponses.options.loading)}>
+            Loading...
+          </div>
         ) : (
           options?.map(option => (
             <button
               key={option.id}
-              className="dark:border-gray-700/50 dark:text-gray-200 dark:bg-gray-950 dark:hover:bg-blue-950/40 hover:bg-blue-100 hover:shadow-sm shadow-blue-500 hover:border-blue-500 border border-gray-200 h-12 rounded-md flex items-center justify-center"
+              className={cn(theme.preBuiltResponses.options.button)}
               onClick={() => onSelectOption?.(option)}
             >
               {option.response}

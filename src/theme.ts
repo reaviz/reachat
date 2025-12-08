@@ -4,6 +4,19 @@ export interface ChatTheme {
   companion: string;
   empty: string;
   appbar: string;
+  preBuiltResponses: {
+    base: string;
+    header: {
+      base: string;
+      avatar: string;
+      text: string;
+    };
+    options: {
+      base: string;
+      button: string;
+      loading: string;
+    };
+  };
   sessions: {
     base: string;
     console: string;
@@ -91,6 +104,24 @@ export const chatTheme: ChatTheme = {
   companion: 'w-full h-full overflow-hidden',
   empty: 'text-center flex-1',
   appbar: 'flex p-5',
+  preBuiltResponses: {
+    base: '',
+    header: {
+      base: 'flex items-center rounded-md gap-3 p-3 sm:gap-4 sm:p-4 bg-gradient-to-br from-transparent from-40% via-blue-500 via-70% to-indigo-500 to-80%',
+      avatar: 'flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16',
+      text: 'text-white text-sm sm:text-base md:text-lg font-bold flex-1'
+    },
+    options: {
+      base: 'mt-4 flex flex-col gap-2',
+      button: [
+        'border border-gray-200 h-12 rounded-md flex items-center justify-center',
+        'hover:bg-blue-100 hover:shadow-sm shadow-blue-500 hover:border-blue-500',
+        'dark:border-gray-700/50 dark:text-gray-200 dark:bg-gray-950 dark:hover:bg-blue-950/40'
+      ].join(' '),
+      loading:
+        'h-12 rounded-md flex items-center justify-center text-gray-500 dark:text-gray-400'
+    }
+  },
   sessions: {
     base: 'overflow-auto',
     console:
