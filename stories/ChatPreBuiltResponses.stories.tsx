@@ -1,12 +1,9 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta } from '@storybook/react';
 import { Chat, ChatInput, SessionMessagePanel } from '../src';
-import {
-    fakeSessions,
-  } from './examples';
 import { useState, FC } from 'react';
 import { useSessionManager } from './useSessionManager';
-import { OpenAI } from 'openai';
 import { ChatPreBuiltResponses } from '../src'
+import { Input } from 'reablocks';
 
 export default {
     title: 'Demos/ChatPreBuiltResponses',
@@ -42,9 +39,7 @@ export default {
       currentOptions,
       isLoading,
       headerText,
-      activeSessionId,
       handleSendMessage,
-      setActiveSessionId
     } = useSessionManager({
       apiKey,
       useOpenAI: true,
@@ -58,6 +53,13 @@ export default {
     }
 
     return (
+      <div>
+        <Input
+          fullWidth
+          placeholder="Enter OpenAI API Key (works with mock data without key)"
+          value={apiKey}
+          onChange={e => setApiKey(e.target.value)}
+        />
         <div className="dark:bg-gray-950 bg-white"
         style={{
           width: 400,
@@ -83,5 +85,6 @@ export default {
                 </SessionMessagePanel>
             </Chat>
         </div>
+      </div>
     );
 }
