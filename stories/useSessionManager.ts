@@ -41,7 +41,7 @@ export const useSessionManager = (options: UseSessionManagerOptions = {}) => {
     
     let aiResponse = 'Thanks for reaching out! How can I help further?';
 
-    // Since I don't have an api key, I'll use a mock response
+    // Since I don't have an api key, I'll use a mock responses
 
     if (dynamicOptions && !apiKey) {
       setIsLoading(true);
@@ -113,12 +113,54 @@ export const useSessionManager = (options: UseSessionManagerOptions = {}) => {
           dangerouslyAllowBrowser: true
         });
 
-        const completion = await openai.chat.completions.create({
-          model: 'gpt-3.5-turbo',
-          messages: [{ role: 'user', content: message }]
-        });
+        if (dynamicOptions) {
+          // Get structured JSON response with dynamic options
+          const completion = await openai.chat.completions.create({
+            model: 'gpt-3.5-turbo',
+            messages: [
+              {
+                role: 'system',
+                content: `You are a helpful assistant. When the user sends a message, respond with:
+1. A brief helpful response to their query
+2. 3-4 follow-up options they might want to ask next
 
-        aiResponse = completion.choices[0]?.message?.content || 'Sorry, I could not generate a response.';
+Respond in JSON format:
+{
+  "response": "Your helpful response here",
+  "headerText": "A question prompting next action",
+  "options": [
+    { "id": "1", "response": "Follow-up option 1" },
+    { "id": "2", "response": "Follow-up option 2" },
+    { "id": "3", "response": "Follow-up option 3" }
+  ]
+}`
+              },
+              { role: 'user', content: message }
+            ],
+            response_format: { type: 'json_object' }
+          });
+
+          const aiResult: DynamicOptionsResult = JSON.parse(
+            completion.choices[0]?.message?.content || '{}'
+          );
+
+          aiResponse = aiResult.response || 'Thanks for reaching out!';
+
+          if (aiResult.options) {
+            setCurrentOptions(aiResult.options);
+          }
+          if (aiResult.headerText) {
+            setHeaderText(aiResult.headerText);
+          }
+        } else {
+          // Standard text response
+          const completion = await openai.chat.completions.create({
+            model: 'gpt-3.5-turbo',
+            messages: [{ role: 'user', content: message }]
+          });
+
+          aiResponse = completion.choices[0]?.message?.content || 'Sorry, I could not generate a response.';
+        }
       } catch (error) {
         console.error('OpenAI API error:', error);
         aiResponse = 'Error getting response. Please check your API key.';
@@ -161,7 +203,7 @@ export const useSessionManager = (options: UseSessionManagerOptions = {}) => {
     });
 
     setActiveSessionId(sessionId);
-  }, [activeSessionId, apiKey, useOpenAI]);
+  }, [activeSessionId, apiKey, useOpenAI, dynamicOptions]);
 
   const clearSessions = useCallback(() => {
     setSessions([]);
@@ -171,6 +213,8 @@ export const useSessionManager = (options: UseSessionManagerOptions = {}) => {
   return {
     sessions,
     activeSessionId,
+    currentOptions,
+    headerText,
     isLoading,
     handleSendMessage,
     clearSessions,
