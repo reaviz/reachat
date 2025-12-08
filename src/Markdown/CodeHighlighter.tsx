@@ -73,7 +73,7 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
 
   if (isInline) {
     return (
-      <code className={cn(inlineClassName, className)} {...props}>
+      <code className={cn(inlineClassName)} {...props}>
         {children}
       </code>
     );
