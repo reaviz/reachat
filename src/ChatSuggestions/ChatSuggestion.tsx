@@ -26,13 +26,13 @@ export const ChatSuggestion: FC<ChatSuggestionProps> = ({
       type="button"
       variant="outline"
       disableMargins
-      className={cn(theme.chatSuggestions.item.base, {
+      className={cn(theme.suggestions.item.base, {
         'opacity-50 cursor-not-allowed': disabled || isLoading
       })}
       onClick={handleClick}
       disabled={disabled || isLoading}
     >
-      <span className={cn(theme.chatSuggestions.item.text)}>{content}</span>
+      <span className={cn(theme.suggestions.item.text)}>{content}</span>
     </Button>
   );
 };

@@ -83,7 +83,7 @@ export interface ChatTheme {
       stop: string;
     };
   };
-  chatSuggestions: {
+  suggestions: {
     base: string;
     item: {
       base: string;
@@ -218,7 +218,7 @@ export const chatTheme: ChatTheme = {
       stop: 'px-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 '
     }
   },
-  chatSuggestions: {
+  suggestions: {
     base: 'flex flex-wrap gap-2 mt-4',
     item: {
       base: [

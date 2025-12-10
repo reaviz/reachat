@@ -46,7 +46,7 @@ export const ChatSuggestions: FC<ChatSuggestionsProps> = ({
   }
 
   return (
-    <div className={cn(theme.chatSuggestions.base, className)}>
+    <div className={cn(theme.suggestions.base, className)}>
       {suggestions.map(suggestion => {
         if (children && isValidElement(children)) {
           return cloneElement(children as ReactElement<any>, {
