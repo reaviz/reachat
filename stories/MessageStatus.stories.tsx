@@ -7,7 +7,7 @@ import {
 } from '../src/MessageStatus';
 
 export default {
-  title: 'Demos/MessageStatus',
+  title: 'Components/MessageStatus',
   component: MessageStatus,
   args: {
     text: 'Analyzing your request...',
