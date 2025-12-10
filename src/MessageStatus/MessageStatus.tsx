@@ -1,6 +1,6 @@
-import { FC, PropsWithChildren, ReactNode, useMemo } from 'react';
+import { FC, PropsWithChildren, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { cn } from 'reablocks';
+import { cn, useComponentTheme } from 'reablocks';
 import { Slot } from '@radix-ui/react-slot';
 import SpinnerIcon from '@/assets/spinner.svg?react';
 import CheckIcon from '@/assets/check.svg?react';
@@ -101,6 +101,99 @@ export const messageStatusTheme: MessageStatusTheme = {
   }
 };
 
+/**
+ * Renders a status icon based on the state.
+ */
+const StatusIcon: FC<{
+  state: MessageStatusState;
+  className?: string;
+  colorClassName?: string;
+}> = ({ state, className, colorClassName }) => {
+  switch (state) {
+    case 'loading':
+      return (
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className={cn(className, colorClassName)}
+        >
+          <SpinnerIcon className="w-full h-full" />
+        </motion.div>
+      );
+    case 'complete':
+      return (
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+          className={cn(className, colorClassName)}
+        >
+          <CheckIcon className="w-full h-full" />
+        </motion.div>
+      );
+    case 'error':
+      return (
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+          className={cn(className, colorClassName)}
+        >
+          <ErrorIcon className="w-full h-full" />
+        </motion.div>
+      );
+  }
+};
+
+export interface MessageStatusItemProps {
+  /**
+   * The step data to display.
+   */
+  step: MessageStatusStep;
+
+  /**
+   * Theme for the step item.
+   */
+  theme?: MessageStatusTheme['steps']['step'];
+}
+
+/**
+ * Individual step item within a MessageStatus.
+ */
+export const MessageStatusItem: FC<MessageStatusItemProps> = ({
+  step,
+  theme: stepTheme
+}) => {
+  const defaultStepTheme = messageStatusTheme.steps.step;
+  const theme = stepTheme || defaultStepTheme;
+  const stepStatus = step.status || 'loading';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.2 }}
+      className={theme.base}
+    >
+      <StatusIcon
+        state={stepStatus}
+        className={theme.icon}
+        colorClassName={theme[stepStatus]}
+      />
+      <span
+        className={cn(
+          theme.text,
+          stepStatus === 'loading' && theme.loading,
+          stepStatus === 'complete' && theme.complete,
+          stepStatus === 'error' && theme.error
+        )}
+      >
+        {step.text}
+      </span>
+    </motion.div>
+  );
+};
+
 export interface MessageStatusProps extends PropsWithChildren {
   /**
    * Current status state.
@@ -126,7 +219,7 @@ export interface MessageStatusProps extends PropsWithChildren {
   /**
    * Custom theme overrides.
    */
-  theme?: Partial<MessageStatusTheme>;
+  theme?: MessageStatusTheme;
 
   /**
    * Additional CSS class name.
@@ -134,86 +227,24 @@ export interface MessageStatusProps extends PropsWithChildren {
   className?: string;
 }
 
+/**
+ * Displays status information with optional sub-steps, similar to Claude's tool status UI.
+ */
 export const MessageStatus: FC<MessageStatusProps> = ({
   status = 'loading',
   text,
   steps,
   icon,
-  theme: customTheme,
+  theme: customTheme = messageStatusTheme,
   className,
   children
 }) => {
-  const theme = useMemo(
-    () => ({
-      ...messageStatusTheme,
-      ...customTheme,
-      icon: { ...messageStatusTheme.icon, ...customTheme?.icon },
-      text: { ...messageStatusTheme.text, ...customTheme?.text },
-      steps: {
-        ...messageStatusTheme.steps,
-        ...customTheme?.steps,
-        step: { ...messageStatusTheme.steps.step, ...customTheme?.steps?.step }
-      }
-    }),
-    [customTheme]
+  const theme = useComponentTheme<MessageStatusTheme>(
+    'messageStatus',
+    customTheme
   );
 
   const Comp = children ? Slot : 'div';
-
-  const renderIcon = (
-    state: MessageStatusState,
-    size: 'normal' | 'small' = 'normal'
-  ) => {
-    const iconClass =
-      size === 'small' ? theme.steps.step.icon : theme.icon.base;
-    const stateClasses =
-      size === 'small'
-        ? {
-            loading: theme.steps.step.loading,
-            complete: theme.steps.step.complete,
-            error: theme.steps.step.error
-          }
-        : {
-            loading: theme.icon.loading,
-            complete: theme.icon.complete,
-            error: theme.icon.error
-          };
-
-    switch (state) {
-      case 'loading':
-        return (
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-            className={cn(iconClass, stateClasses.loading)}
-          >
-            <SpinnerIcon className="w-full h-full" />
-          </motion.div>
-        );
-      case 'complete':
-        return (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-            className={cn(iconClass, stateClasses.complete)}
-          >
-            <CheckIcon className="w-full h-full" />
-          </motion.div>
-        );
-      case 'error':
-        return (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-            className={cn(iconClass, stateClasses.error)}
-          >
-            <ErrorIcon className="w-full h-full" />
-          </motion.div>
-        );
-    }
-  };
 
   return (
     <AnimatePresence mode="wait">
@@ -227,7 +258,13 @@ export const MessageStatus: FC<MessageStatusProps> = ({
           {children || (
             <>
               <div className={theme.header}>
-                {icon || renderIcon(status)}
+                {icon || (
+                  <StatusIcon
+                    state={status}
+                    className={theme.icon.base}
+                    colorClassName={theme.icon[status]}
+                  />
+                )}
                 <span
                   className={cn(
                     theme.text.base,
@@ -242,27 +279,11 @@ export const MessageStatus: FC<MessageStatusProps> = ({
               {steps && steps.length > 0 && (
                 <div className={theme.steps.base}>
                   {steps.map(step => (
-                    <motion.div
+                    <MessageStatusItem
                       key={step.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className={theme.steps.step.base}
-                    >
-                      {renderIcon(step.status || 'loading', 'small')}
-                      <span
-                        className={cn(
-                          theme.steps.step.text,
-                          (step.status || 'loading') === 'loading' &&
-                            theme.steps.step.loading,
-                          step.status === 'complete' &&
-                            theme.steps.step.complete,
-                          step.status === 'error' && theme.steps.step.error
-                        )}
-                      >
-                        {step.text}
-                      </span>
-                    </motion.div>
+                      step={step}
+                      theme={theme.steps.step}
+                    />
                   ))}
                 </div>
               )}
