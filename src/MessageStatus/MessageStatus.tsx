@@ -5,101 +5,17 @@ import { Slot } from '@radix-ui/react-slot';
 import SpinnerIcon from '@/assets/spinner.svg?react';
 import CheckIcon from '@/assets/check.svg?react';
 import ErrorIcon from '@/assets/error.svg?react';
+import { MessageStatusTheme, chatTheme } from '@/theme';
+
+export type { MessageStatusTheme };
 
 export type MessageStatusState = 'loading' | 'complete' | 'error';
 
 export interface MessageStatusStep {
-  /**
-   * Unique identifier for the step.
-   */
   id: string;
-
-  /**
-   * Text to display for the step.
-   */
   text: string;
-
-  /**
-   * Current state of the step.
-   * @default 'loading'
-   */
   status?: MessageStatusState;
 }
-
-export interface MessageStatusTheme {
-  /**
-   * Base container styles.
-   */
-  base: string;
-
-  /**
-   * Header row styles (icon + text).
-   */
-  header: string;
-
-  /**
-   * Icon container styles.
-   */
-  icon: {
-    base: string;
-    loading: string;
-    complete: string;
-    error: string;
-  };
-
-  /**
-   * Text styles.
-   */
-  text: {
-    base: string;
-    loading: string;
-    complete: string;
-    error: string;
-  };
-
-  /**
-   * Steps container styles.
-   */
-  steps: {
-    base: string;
-    step: {
-      base: string;
-      icon: string;
-      text: string;
-      loading: string;
-      complete: string;
-      error: string;
-    };
-  };
-}
-
-export const messageStatusTheme: MessageStatusTheme = {
-  base: 'py-2 px-3 rounded-lg bg-gray-100/50 dark:bg-gray-800/30',
-  header: 'flex items-center gap-2',
-  icon: {
-    base: 'flex-shrink-0 w-4 h-4',
-    loading: 'text-blue-500 dark:text-blue-400',
-    complete: 'text-green-500 dark:text-green-400',
-    error: 'text-red-500 dark:text-red-400'
-  },
-  text: {
-    base: 'text-sm',
-    loading: 'text-gray-600 dark:text-gray-400',
-    complete: 'text-gray-600 dark:text-gray-400',
-    error: 'text-red-600 dark:text-red-400'
-  },
-  steps: {
-    base: 'mt-1 ml-6 space-y-0.5',
-    step: {
-      base: 'flex items-center gap-2',
-      icon: 'flex-shrink-0 w-3.5 h-3.5',
-      text: 'text-sm',
-      loading: 'text-gray-500 dark:text-gray-500',
-      complete: 'text-gray-500 dark:text-gray-500',
-      error: 'text-red-500 dark:text-red-400'
-    }
-  }
-};
 
 /**
  * Renders a status icon based on the state.
@@ -164,7 +80,7 @@ export const MessageStatusItem: FC<MessageStatusItemProps> = ({
   step,
   theme: stepTheme
 }) => {
-  const defaultStepTheme = messageStatusTheme.steps.step;
+  const defaultStepTheme = chatTheme.status.steps.step;
   const theme = stepTheme || defaultStepTheme;
   const stepStatus = step.status || 'loading';
 
@@ -235,7 +151,7 @@ export const MessageStatus: FC<MessageStatusProps> = ({
   text,
   steps,
   icon,
-  theme: customTheme = messageStatusTheme,
+  theme: customTheme = chatTheme.status,
   className,
   children
 }) => {
