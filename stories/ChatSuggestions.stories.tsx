@@ -10,26 +10,23 @@ import {
   SessionMessagePanel,
   SessionMessagesHeader,
   Session,
-  FollowUpQuestions,
-  FollowUp
+  ChatSuggestions,
+  Suggestion
 } from '../src';
-import {
-  defaultFollowUpQuestions,
-  sessionWithFollowUps
-} from './examples';
+import { defaultSuggestions, sessionWithSuggestions } from './examples';
 import Placeholder from './assets/placeholder.svg?react';
 import PlaceholderDark from './assets/placeholder-dark.svg?react';
 import SparklesIcon from './assets/sparkles.svg?react';
 import ArrowIcon from './assets/arrow-right.svg?react';
 
 export default {
-  title: 'Components/FollowUpQuestions',
-  component: FollowUpQuestions
+  title: 'Components/ChatSuggestions',
+  component: ChatSuggestions
 } as Meta;
 
 export const Basic = () => {
-  const [sessions, setSessions] = useState<Session[]>(sessionWithFollowUps);
-  const [activeId, setActiveId] = useState<string>('session-followups');
+  const [sessions, setSessions] = useState<Session[]>(sessionWithSuggestions);
+  const [activeId, setActiveId] = useState<string>('session-suggestions');
 
   return (
     <div
@@ -50,9 +47,9 @@ export const Basic = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={(message) => {
-          setSessions((prev) =>
-            prev.map((session) =>
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
               session.id === activeId
                 ? {
                     ...session,
@@ -79,7 +76,7 @@ export const Basic = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <FollowUpQuestions questions={defaultFollowUpQuestions} />
+          <ChatSuggestions suggestions={defaultSuggestions} />
           <ChatInput placeholder="Type a message..." />
         </SessionMessagePanel>
       </Chat>
@@ -88,13 +85,13 @@ export const Basic = () => {
 };
 
 export const WithIcons = () => {
-  const [sessions, setSessions] = useState<Session[]>(sessionWithFollowUps);
-  const [activeId, setActiveId] = useState<string>('session-followups');
+  const [sessions, setSessions] = useState<Session[]>(sessionWithSuggestions);
+  const [activeId, setActiveId] = useState<string>('session-suggestions');
 
-  const followUpQuestions: FollowUp[] = [
-    { id: '1', question: 'Explain this in simpler terms' },
-    { id: '2', question: 'What are the alternatives?' },
-    { id: '3', question: 'Show me a code example' }
+  const suggestions: Suggestion[] = [
+    { id: '1', content: 'Explain this in simpler terms' },
+    { id: '2', content: 'What are the alternatives?' },
+    { id: '3', content: 'Show me a code example' }
   ];
 
   return (
@@ -116,9 +113,9 @@ export const WithIcons = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={(message) => {
-          setSessions((prev) =>
-            prev.map((session) =>
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
               session.id === activeId
                 ? {
                     ...session,
@@ -145,8 +142,90 @@ export const WithIcons = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <FollowUpQuestions
-            questions={followUpQuestions}
+          <ChatSuggestions suggestions={suggestions} icon={<SparklesIcon />} />
+          <ChatInput placeholder="Type a message..." />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const LongSuggestions = () => {
+  const [sessions, setSessions] = useState<Session[]>(sessionWithSuggestions);
+  const [activeId, setActiveId] = useState<string>('session-suggestions');
+
+  const longSuggestions: Suggestion[] = [
+    {
+      id: '1',
+      content:
+        'Can you explain in detail how machine learning algorithms work and what are the key differences between supervised and unsupervised learning?'
+    },
+    {
+      id: '2',
+      content:
+        'What are the best practices for building scalable and maintainable React applications with TypeScript?'
+    },
+    {
+      id: '3',
+      content:
+        'How do I implement authentication and authorization in a modern web application using OAuth 2.0 and OpenID Connect?'
+    },
+    {
+      id: '4',
+      content: 'Short one'
+    }
+  ];
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="console"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups />
+        </SessionsList>
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages />
+          <ChatSuggestions
+            suggestions={longSuggestions}
             icon={<SparklesIcon />}
           />
           <ChatInput placeholder="Type a message..." />
@@ -160,11 +239,11 @@ export const EmptySession = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activeId, setActiveId] = useState<string>();
 
-  const initialQuestions: FollowUp[] = [
-    { id: '1', question: 'What can you help me with?' },
-    { id: '2', question: 'Tell me about your capabilities' },
-    { id: '3', question: 'How do I get started?' },
-    { id: '4', question: 'Show me some examples' }
+  const initialSuggestions: Suggestion[] = [
+    { id: '1', content: 'What can you help me with?' },
+    { id: '2', content: 'Tell me about your capabilities' },
+    { id: '3', content: 'How do I get started?' },
+    { id: '4', content: 'Show me some examples' }
   ];
 
   return (
@@ -188,7 +267,7 @@ export const EmptySession = () => {
         onSelectSession={setActiveId}
         onNewSession={() => {
           const newId = Date.now().toString();
-          setSessions((prev) => [
+          setSessions(prev => [
             ...prev,
             {
               id: newId,
@@ -199,7 +278,7 @@ export const EmptySession = () => {
           ]);
           setActiveId(newId);
         }}
-        onSendMessage={(message) => {
+        onSendMessage={message => {
           if (!activeId) {
             const newId = Date.now().toString();
             setSessions([
@@ -219,8 +298,8 @@ export const EmptySession = () => {
             ]);
             setActiveId(newId);
           } else {
-            setSessions((prev) =>
-              prev.map((session) =>
+            setSessions(prev =>
+              prev.map(session =>
                 session.id === activeId
                   ? {
                       ...session,
@@ -252,10 +331,11 @@ export const EmptySession = () => {
                 <Placeholder className="w-48 block dark:hidden" />
                 <PlaceholderDark className="w-48 hidden dark:block" />
                 <p className="text-gray-500 max-w-[400px] text-center">
-                  Welcome! Start a conversation or choose one of the suggestions below.
+                  Welcome! Start a conversation or choose one of the suggestions
+                  below.
                 </p>
-                <FollowUpQuestions
-                  questions={initialQuestions}
+                <ChatSuggestions
+                  suggestions={initialSuggestions}
                   icon={<ArrowIcon />}
                 />
               </div>
@@ -269,8 +349,8 @@ export const EmptySession = () => {
 };
 
 export const Companion = () => {
-  const [sessions, setSessions] = useState<Session[]>(sessionWithFollowUps);
-  const [activeId, setActiveId] = useState<string>('session-followups');
+  const [sessions, setSessions] = useState<Session[]>(sessionWithSuggestions);
+  const [activeId, setActiveId] = useState<string>('session-suggestions');
 
   return (
     <div
@@ -287,9 +367,9 @@ export const Companion = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={(message) => {
-          setSessions((prev) =>
-            prev.map((session) =>
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
               session.id === activeId
                 ? {
                     ...session,
@@ -316,7 +396,7 @@ export const Companion = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <FollowUpQuestions questions={defaultFollowUpQuestions} />
+          <ChatSuggestions suggestions={defaultSuggestions} />
           <ChatInput placeholder="Type a message..." />
         </SessionMessagePanel>
       </Chat>
@@ -325,13 +405,13 @@ export const Companion = () => {
 };
 
 export const CustomItemRendering = () => {
-  const [sessions, setSessions] = useState<Session[]>(sessionWithFollowUps);
-  const [activeId, setActiveId] = useState<string>('session-followups');
+  const [sessions, setSessions] = useState<Session[]>(sessionWithSuggestions);
+  const [activeId, setActiveId] = useState<string>('session-suggestions');
 
-  const followUpQuestions: FollowUp[] = [
-    { id: '1', question: 'How does this work?' },
-    { id: '2', question: 'What are the limitations?' },
-    { id: '3', question: 'Can you explain further?' }
+  const suggestions: Suggestion[] = [
+    { id: '1', content: 'How does this work?' },
+    { id: '2', content: 'What are the limitations?' },
+    { id: '3', content: 'Can you explain further?' }
   ];
 
   return (
@@ -353,9 +433,9 @@ export const CustomItemRendering = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={(message) => {
-          setSessions((prev) =>
-            prev.map((session) =>
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
               session.id === activeId
                 ? {
                     ...session,
@@ -382,9 +462,9 @@ export const CustomItemRendering = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <FollowUpQuestions questions={followUpQuestions}>
-            <CustomFollowUpItem />
-          </FollowUpQuestions>
+          <ChatSuggestions suggestions={suggestions}>
+            <CustomSuggestionItem />
+          </ChatSuggestions>
           <ChatInput placeholder="Type a message..." />
         </SessionMessagePanel>
       </Chat>
@@ -392,71 +472,85 @@ export const CustomItemRendering = () => {
   );
 };
 
-const CustomFollowUpItem = ({ question, onClick }: { question?: string; onClick?: (q: string) => void }) => (
+const CustomSuggestionItem = ({
+  content,
+  onClick
+}: {
+  content?: string;
+  onClick?: (c: string) => void;
+}) => (
   <button
     className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-md hover:shadow-lg"
-    onClick={() => onClick?.(question || '')}
+    onClick={() => onClick?.(content || '')}
   >
     <span className="flex items-center gap-2">
       <SparklesIcon className="w-4 h-4" />
-      {question}
+      {content}
     </span>
   </button>
 );
 
-export const DynamicFollowUps = () => {
+export const DynamicSuggestions = () => {
   const [sessions, setSessions] = useState<Session[]>([
     {
       id: 'session-1',
-      title: 'Dynamic Follow-ups Demo',
+      title: 'Dynamic Suggestions Demo',
       createdAt: new Date(),
       conversations: []
     }
   ]);
   const [activeId, setActiveId] = useState<string>('session-1');
-  const [followUps, setFollowUps] = useState<FollowUp[]>([
-    { id: '1', question: 'What is machine learning?' },
-    { id: '2', question: 'Explain neural networks' },
-    { id: '3', question: 'What is deep learning?' }
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([
+    { id: '1', content: 'What is machine learning?' },
+    { id: '2', content: 'Explain neural networks' },
+    { id: '3', content: 'What is deep learning?' }
   ]);
 
-  const questionResponseMap: Record<string, { response: string; nextFollowUps: FollowUp[] }> = {
+  const suggestionResponseMap: Record<
+    string,
+    { response: string; nextSuggestions: Suggestion[] }
+  > = {
     'What is machine learning?': {
-      response: 'Machine learning is a subset of artificial intelligence that enables systems to learn and improve from experience.',
-      nextFollowUps: [
-        { id: '4', question: 'What are the types of machine learning?' },
-        { id: '5', question: 'How is ML different from AI?' },
-        { id: '6', question: 'What are common ML algorithms?' }
+      response:
+        'Machine learning is a subset of artificial intelligence that enables systems to learn and improve from experience.',
+      nextSuggestions: [
+        { id: '4', content: 'What are the types of machine learning?' },
+        { id: '5', content: 'How is ML different from AI?' },
+        { id: '6', content: 'What are common ML algorithms?' }
       ]
     },
     'Explain neural networks': {
-      response: 'Neural networks are computing systems inspired by biological neural networks in the human brain.',
-      nextFollowUps: [
-        { id: '7', question: 'How do neurons work in a network?' },
-        { id: '8', question: 'What is backpropagation?' },
-        { id: '9', question: 'What are activation functions?' }
+      response:
+        'Neural networks are computing systems inspired by biological neural networks in the human brain.',
+      nextSuggestions: [
+        { id: '7', content: 'How do neurons work in a network?' },
+        { id: '8', content: 'What is backpropagation?' },
+        { id: '9', content: 'What are activation functions?' }
       ]
     },
     'What is deep learning?': {
-      response: 'Deep learning is a type of machine learning based on artificial neural networks with multiple layers.',
-      nextFollowUps: [
-        { id: '10', question: 'What are CNNs?' },
-        { id: '11', question: 'What are RNNs?' },
-        { id: '12', question: 'What is a transformer model?' }
+      response:
+        'Deep learning is a type of machine learning based on artificial neural networks with multiple layers.',
+      nextSuggestions: [
+        { id: '10', content: 'What are CNNs?' },
+        { id: '11', content: 'What are RNNs?' },
+        { id: '12', content: 'What is a transformer model?' }
       ]
     }
   };
 
   const handleSendMessage = (message: string) => {
-    const mapping = questionResponseMap[message];
-    const response = mapping?.response || 'Thank you for your question. Here is a helpful response.';
-    const nextFollowUps = mapping?.nextFollowUps || [
-      { id: Date.now().toString(), question: 'Tell me more' },
-      { id: (Date.now() + 1).toString(), question: 'Can you clarify?' }
+    const mapping = suggestionResponseMap[message];
+    const response =
+      mapping?.response ||
+      'Thank you for your question. Here is a helpful response.';
+    const nextSuggestions = mapping?.nextSuggestions || [
+      { id: Date.now().toString(), content: 'Tell me more' },
+      { id: (Date.now() + 1).toString(), content: 'Can you clarify?' }
     ];
 
-    setSessions((prev) =>
-      prev.map((session) =>
+    setSessions(prev =>
+      prev.map(session =>
         session.id === activeId
           ? {
               ...session,
@@ -474,7 +568,7 @@ export const DynamicFollowUps = () => {
       )
     );
 
-    setFollowUps(nextFollowUps);
+    setSuggestions(nextSuggestions);
   };
 
   return (
@@ -506,10 +600,12 @@ export const DynamicFollowUps = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <FollowUpQuestions
-            questions={followUps}
+          <ChatSuggestions
+            suggestions={suggestions}
             icon={<SparklesIcon />}
-            onQuestionClick={(question) => console.log('Follow-up clicked:', question)}
+            onSuggestionClick={suggestion =>
+              console.log('Suggestion clicked:', suggestion)
+            }
           />
           <ChatInput placeholder="Type a message..." />
         </SessionMessagePanel>

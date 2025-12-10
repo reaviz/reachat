@@ -1,22 +1,22 @@
 import { FC, ReactElement, useContext } from 'react';
 import { Button, cn } from 'reablocks';
 import { ChatContext } from '@/ChatContext';
-import { FollowUp } from '@/types';
+import { Suggestion } from '@/types';
 
-export interface FollowUpItemProps extends FollowUp {
+export interface ChatSuggestionProps extends Suggestion {
   /**
-   * Icon to display next to the question.
+   * Icon to display next to the suggestion.
    */
   icon?: ReactElement;
 
   /**
-   * Callback when the follow-up question is clicked.
+   * Callback when the suggestion is clicked.
    */
-  onClick?: (question: string) => void;
+  onClick?: (suggestion: string) => void;
 }
 
-export const FollowUpItem: FC<FollowUpItemProps> = ({
-  question,
+export const ChatSuggestion: FC<ChatSuggestionProps> = ({
+  content,
   icon,
   onClick
 }) => {
@@ -25,8 +25,8 @@ export const FollowUpItem: FC<FollowUpItemProps> = ({
   const handleClick = () => {
     if (disabled || isLoading) return;
 
-    setInputValue?.(question);
-    onClick?.(question);
+    setInputValue?.(content);
+    onClick?.(content);
   };
 
   return (
@@ -35,13 +35,13 @@ export const FollowUpItem: FC<FollowUpItemProps> = ({
       variant="outline"
       disableMargins
       startAdornment={icon}
-      className={cn(theme.followUpQuestions.item.base, {
+      className={cn(theme.chatSuggestions.item.base, {
         'opacity-50 cursor-not-allowed': disabled || isLoading
       })}
       onClick={handleClick}
       disabled={disabled || isLoading}
     >
-      <span className={cn(theme.followUpQuestions.item.text)}>{question}</span>
+      <span className={cn(theme.chatSuggestions.item.text)}>{content}</span>
     </Button>
   );
 };
