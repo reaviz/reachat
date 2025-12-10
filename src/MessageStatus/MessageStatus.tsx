@@ -160,48 +160,6 @@ export interface MessageStatusProps extends PropsWithChildren {
   className?: string;
 }
 
-const spinnerVariants = {
-  animate: {
-    rotate: 360,
-    transition: {
-      duration: 1,
-      repeat: Infinity,
-      ease: 'linear'
-    }
-  }
-};
-
-const containerVariants = {
-  hidden: { opacity: 0, y: -10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.2,
-      when: 'beforeChildren',
-      staggerChildren: 0.1
-    }
-  },
-  exit: {
-    opacity: 0,
-    y: -10,
-    transition: { duration: 0.15 }
-  }
-};
-
-const iconVariants = {
-  hidden: { scale: 0, opacity: 0 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    transition: {
-      type: 'spring',
-      stiffness: 500,
-      damping: 25
-    }
-  }
-};
-
 export const MessageStatus: FC<MessageStatusProps> = ({
   status = 'loading',
   text,
@@ -265,8 +223,8 @@ export const MessageStatus: FC<MessageStatusProps> = ({
       case 'loading':
         return (
           <motion.div
-            variants={spinnerVariants}
-            animate="animate"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             className={cn(iconClass, stateClasses.loading)}
           >
             <SpinnerIcon className="w-full h-full" />
@@ -275,9 +233,9 @@ export const MessageStatus: FC<MessageStatusProps> = ({
       case 'complete':
         return (
           <motion.div
-            variants={iconVariants}
-            initial="hidden"
-            animate="visible"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 25 }}
             className={cn(iconClass, stateClasses.complete)}
           >
             <CheckIcon className="w-full h-full" />
@@ -286,9 +244,9 @@ export const MessageStatus: FC<MessageStatusProps> = ({
       case 'error':
         return (
           <motion.div
-            variants={iconVariants}
-            initial="hidden"
-            animate="visible"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 25 }}
             className={cn(iconClass, stateClasses.error)}
           >
             <ErrorIcon className="w-full h-full" />
@@ -300,10 +258,10 @@ export const MessageStatus: FC<MessageStatusProps> = ({
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.2 }}
       >
         <Comp className={cn(theme.base, className)}>
           {children || (
