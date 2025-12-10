@@ -11,7 +11,6 @@ import {
   SessionMessagesHeader,
   Session,
   FollowUpQuestions,
-  FollowUpItem,
   FollowUp
 } from '../src';
 import {
