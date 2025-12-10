@@ -11,7 +11,7 @@ import { ChatContext } from '@/ChatContext';
 import { Button, cn, useInfinityList } from 'reablocks';
 import { AnimatePresence, motion } from 'motion/react';
 import { Conversation } from '@/types';
-import { debounce } from '@/utils/debounce';
+import { debounce } from 'lodash';
 import { SessionMessage } from './SessionMessage/SessionMessage';
 import ArrowDownIcon from '@/assets/arrow-down.svg?react';
 
