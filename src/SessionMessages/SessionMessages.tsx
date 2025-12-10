@@ -44,7 +44,7 @@ interface SessionMessagesProps {
   /**
    * Whether to display the scroll to bottom button.
    */
-  isScrollToBottomButtonVisible?: boolean;
+  showScrollBottomButton?: boolean;
 
   /**
    * Render function for the session messages.
@@ -57,7 +57,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   newSessionContent,
   limit = 10,
   showMoreText = 'Show more',
-  isScrollToBottomButtonVisible = false
+  showScrollBottomButton = false
 }) => {
   const { activeSession, theme } = useContext(ChatContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -65,7 +65,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   const [isAnimating, setIsAnimating] = useState(true);
   const [iAtBottom, setIsAtBottom] = useState(true);
   useEffect(() => {
-    if (!contentRef.current || !isScrollToBottomButtonVisible) {
+    if (!contentRef.current || !showScrollBottomButton) {
       return;
     }
 
@@ -81,7 +81,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
     currentRef.addEventListener('scroll', handleScroll);
 
     return () => currentRef.removeEventListener('scroll', handleScroll);
-  }, [isScrollToBottomButtonVisible]);
+  }, [showScrollBottomButton]);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -176,7 +176,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
         </AnimatePresence>
       </div>
       <AnimatePresence>
-        {!iAtBottom && isScrollToBottomButtonVisible && (
+        {!iAtBottom && showScrollBottomButton && (
           <motion.div
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
