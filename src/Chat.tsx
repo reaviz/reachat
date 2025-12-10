@@ -122,6 +122,7 @@ export const Chat: FC<ChatProps> = ({
   const [internalActiveSessionID, setInternalActiveSessionID] = useState<
     string | null
   >(activeSessionId);
+  const [inputValue, setInputValue] = useState<string>('');
 
   const { width, observe } = useDimensions();
   const isCompact = viewType === 'companion' || (width && width < 767);
@@ -184,7 +185,9 @@ export const Chat: FC<ChatProps> = ({
       createSession: handleCreateNewSession,
       sendMessage: onSendMessage,
       stopMessage: onStopMessage,
-      fileUpload: onFileUpload
+      fileUpload: onFileUpload,
+      inputValue,
+      setInputValue
     }),
     [
       isLoading,
@@ -201,7 +204,8 @@ export const Chat: FC<ChatProps> = ({
       handleCreateNewSession,
       onSendMessage,
       onStopMessage,
-      onFileUpload
+      onFileUpload,
+      inputValue
     ]
   );
 

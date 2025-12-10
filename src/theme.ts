@@ -83,6 +83,14 @@ export interface ChatTheme {
       stop: string;
     };
   };
+  followUpQuestions: {
+    base: string;
+    item: {
+      base: string;
+      icon: string;
+      text: string;
+    };
+  };
 }
 
 export const chatTheme: ChatTheme = {
@@ -208,6 +216,18 @@ export const chatTheme: ChatTheme = {
         'dark:text-white light:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700'
       ].join(' '),
       stop: 'px-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 '
+    }
+  },
+  followUpQuestions: {
+    base: 'flex flex-wrap gap-2 mt-4',
+    item: {
+      base: [
+        'flex items-center gap-2 px-4 py-2 rounded-full border cursor-pointer transition-all duration-200',
+        'bg-gray-100 border-gray-200 hover:bg-gray-200 hover:border-gray-300 text-gray-700',
+        'dark:bg-gray-800/50 dark:border-gray-700 dark:hover:bg-gray-700/70 dark:hover:border-gray-600 dark:text-gray-200'
+      ].join(' '),
+      icon: 'w-4 h-4 text-blue-500 dark:text-blue-400 flex-shrink-0',
+      text: 'text-sm'
     }
   }
 };

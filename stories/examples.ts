@@ -265,3 +265,36 @@ export const chatTemplates = [
     icon: 'SendPlane'
   }
 ];
+
+export const defaultFollowUpQuestions = [
+  {
+    id: '1',
+    question: 'Tell me more about this topic'
+  },
+  {
+    id: '2',
+    question: 'Can you provide an example?'
+  },
+  {
+    id: '3',
+    question: 'What are the best practices?'
+  }
+];
+
+export const sessionWithFollowUps = [
+  {
+    id: 'session-followups',
+    title: 'Session with Follow-up Questions',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    conversations: [
+      {
+        id: '1',
+        question: 'What is React?',
+        response: 'React is a JavaScript library for building user interfaces. It was developed by Facebook and is now maintained by Meta and a community of developers.',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ]
+  }
+];

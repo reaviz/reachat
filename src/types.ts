@@ -61,6 +61,18 @@ export interface Template {
   icon?: ReactElement;
 }
 
+export interface FollowUp {
+  /**
+   * Unique identifier for the follow-up question
+   */
+  id: string;
+
+  /**
+   * The display text for the follow-up question
+   */
+  question: string;
+}
+
 export interface Conversation {
   /**
    * Unique identifier for the conversation
