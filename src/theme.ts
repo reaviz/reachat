@@ -19,6 +19,23 @@ export interface ChatTheme {
       complete: string;
       error: string;
     };
+    stepper: {
+      base: string;
+      step: {
+        base: string;
+        marker: {
+          container: string;
+          base: string;
+          active: string;
+          label: {
+            base: string;
+            active: string;
+          };
+        };
+        active: string;
+        content: string;
+      };
+    };
     steps: {
       base: string;
       step: {
@@ -137,8 +154,25 @@ export const chatTheme: ChatTheme = {
       complete: 'text-gray-600 dark:text-gray-300',
       error: 'text-red-600 dark:text-red-400'
     },
+    stepper: {
+      base: 'mt-3 ml-4',
+      step: {
+        base: 'min-h-[28px]',
+        marker: {
+          container: 'mr-3',
+          base: 'w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-600',
+          active: 'bg-blue-500 dark:bg-blue-400',
+          label: {
+            base: 'hidden',
+            active: 'hidden'
+          }
+        },
+        active: '',
+        content: 'pb-2'
+      }
+    },
     steps: {
-      base: 'mt-3 ml-8 space-y-2',
+      base: 'mt-3 ml-4',
       step: {
         base: 'flex items-center gap-2',
         icon: 'flex-shrink-0 w-4 h-4',

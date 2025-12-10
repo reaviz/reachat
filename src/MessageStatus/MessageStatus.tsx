@@ -1,6 +1,6 @@
-import { FC, PropsWithChildren, ReactNode } from 'react';
+import { FC, PropsWithChildren, ReactNode, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { cn } from 'reablocks';
+import { cn, Stepper, Step, StepperTheme } from 'reablocks';
 import { Slot } from '@radix-ui/react-slot';
 import SpinnerIcon from '@/assets/spinner.svg?react';
 import CheckIcon from '@/assets/check.svg?react';
@@ -58,6 +58,11 @@ export interface MessageStatusTheme {
   };
 
   /**
+   * Stepper theme overrides.
+   */
+  stepper: Partial<StepperTheme>;
+
+  /**
    * Steps container styles.
    */
   steps: {
@@ -92,8 +97,25 @@ export const messageStatusTheme: MessageStatusTheme = {
     complete: 'text-gray-600 dark:text-gray-300',
     error: 'text-red-600 dark:text-red-400'
   },
+  stepper: {
+    base: 'mt-3 ml-4',
+    step: {
+      base: 'min-h-[28px]',
+      marker: {
+        container: 'mr-3',
+        base: 'w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-600',
+        active: 'bg-blue-500 dark:bg-blue-400',
+        label: {
+          base: 'hidden',
+          active: 'hidden'
+        }
+      },
+      active: '',
+      content: 'pb-2'
+    }
+  },
   steps: {
-    base: 'mt-3 ml-8 space-y-2',
+    base: 'mt-3 ml-4',
     step: {
       base: 'flex items-center gap-2',
       icon: 'flex-shrink-0 w-4 h-4',
@@ -167,15 +189,6 @@ const containerVariants = {
   }
 };
 
-const stepVariants = {
-  hidden: { opacity: 0, x: -10 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.2 }
-  }
-};
-
 const iconVariants = {
   hidden: { scale: 0, opacity: 0 },
   visible: {
@@ -198,8 +211,36 @@ export const MessageStatus: FC<MessageStatusProps> = ({
   className,
   children
 }) => {
-  const theme = { ...messageStatusTheme, ...customTheme };
+  const theme = useMemo(
+    () => ({
+      ...messageStatusTheme,
+      ...customTheme,
+      icon: { ...messageStatusTheme.icon, ...customTheme?.icon },
+      text: { ...messageStatusTheme.text, ...customTheme?.text },
+      steps: {
+        ...messageStatusTheme.steps,
+        ...customTheme?.steps,
+        step: { ...messageStatusTheme.steps.step, ...customTheme?.steps?.step }
+      },
+      stepper: { ...messageStatusTheme.stepper, ...customTheme?.stepper }
+    }),
+    [customTheme]
+  );
+
   const Comp = children ? Slot : 'div';
+
+  // Calculate active step for the stepper (last completed step + 1, or 0 if none complete)
+  const activeStep = useMemo(() => {
+    if (!steps) return 0;
+    let lastCompleteIndex = -1;
+    for (let i = steps.length - 1; i >= 0; i--) {
+      if (steps[i].status === 'complete' || steps[i].status === 'error') {
+        lastCompleteIndex = i;
+        break;
+      }
+    }
+    return lastCompleteIndex + 1;
+  }, [steps]);
 
   const renderIcon = (
     state: MessageStatusState,
@@ -281,16 +322,15 @@ export const MessageStatus: FC<MessageStatusProps> = ({
                 </span>
               </div>
               {steps && steps.length > 0 && (
-                <motion.div className={theme.steps.base}>
-                  <AnimatePresence>
-                    {steps.map(step => (
-                      <motion.div
-                        key={step.id}
-                        variants={stepVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className={theme.steps.step.base}
-                      >
+                <Stepper
+                  activeStep={activeStep}
+                  animated
+                  continuous
+                  theme={theme.stepper as StepperTheme}
+                >
+                  {steps.map(step => (
+                    <Step key={step.id}>
+                      <div className={theme.steps.step.base}>
                         {renderIcon(step.status || 'loading', 'small')}
                         <span
                           className={cn(
@@ -304,10 +344,10 @@ export const MessageStatus: FC<MessageStatusProps> = ({
                         >
                           {step.text}
                         </span>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </motion.div>
+                      </div>
+                    </Step>
+                  ))}
+                </Stepper>
               )}
             </>
           )}
