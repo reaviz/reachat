@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { SessionEmpty } from './SessionEmpty';
 import { ChatContext } from '@/ChatContext';
-import { Button, cn, useInfinityList } from 'reablocks';
+import { Button, cn, IconButton, useInfinityList } from 'reablocks';
 import { AnimatePresence, motion } from 'motion/react';
 import { Conversation } from '@/types';
 import { debounce } from '@/utils/debounce';
@@ -184,13 +184,13 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             transition={{ duration: 0.3, ease: 'easeOut' }}
             className={theme.messages?.message?.scrollToBottom?.container}
           >
-            <Button
+            <IconButton
               onClick={handleScrollToBottom}
               className={theme.messages?.message?.scrollToBottom?.button}
               size="sm"
             >
               <ArrowDownIcon />
-            </Button>
+            </IconButton>
           </motion.div>
         )}
       </AnimatePresence>
