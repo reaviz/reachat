@@ -4,6 +4,33 @@ export interface ChatTheme {
   companion: string;
   empty: string;
   appbar: string;
+  status: {
+    base: string;
+    header: string;
+    icon: {
+      base: string;
+      loading: string;
+      complete: string;
+      error: string;
+    };
+    text: {
+      base: string;
+      loading: string;
+      complete: string;
+      error: string;
+    };
+    steps: {
+      base: string;
+      step: {
+        base: string;
+        icon: string;
+        text: string;
+        loading: string;
+        complete: string;
+        error: string;
+      };
+    };
+  };
   sessions: {
     base: string;
     console: string;
@@ -91,6 +118,37 @@ export const chatTheme: ChatTheme = {
   companion: 'w-full h-full overflow-hidden',
   empty: 'text-center flex-1',
   appbar: 'flex p-5',
+  status: {
+    base: [
+      'rounded-2xl px-4 py-3 border',
+      'bg-gray-100 border-gray-200',
+      'dark:bg-gray-900/50 dark:border-gray-700/50'
+    ].join(' '),
+    header: 'flex items-center gap-3',
+    icon: {
+      base: 'flex-shrink-0 w-5 h-5',
+      loading: 'text-blue-500 dark:text-blue-400',
+      complete: 'text-green-500 dark:text-green-400',
+      error: 'text-red-500 dark:text-red-400'
+    },
+    text: {
+      base: 'text-sm font-medium',
+      loading: 'text-gray-700 dark:text-gray-200',
+      complete: 'text-gray-600 dark:text-gray-300',
+      error: 'text-red-600 dark:text-red-400'
+    },
+    steps: {
+      base: 'mt-3 ml-8 space-y-2',
+      step: {
+        base: 'flex items-center gap-2',
+        icon: 'flex-shrink-0 w-4 h-4',
+        text: 'text-sm',
+        loading: 'text-gray-500 dark:text-gray-400',
+        complete: 'text-gray-500 dark:text-gray-400',
+        error: 'text-red-500 dark:text-red-400'
+      }
+    }
+  },
   sessions: {
     base: 'overflow-auto',
     console:
