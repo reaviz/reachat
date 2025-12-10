@@ -74,7 +74,7 @@ export interface MessageStatusTheme {
 }
 
 export const messageStatusTheme: MessageStatusTheme = {
-  base: 'py-2',
+  base: 'py-2 px-3 rounded-lg bg-gray-100/50 dark:bg-gray-800/30',
   header: 'flex items-center gap-2',
   icon: {
     base: 'flex-shrink-0 w-4 h-4',
