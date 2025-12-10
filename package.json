@@ -45,7 +45,6 @@
     "@radix-ui/react-slot": "^1.1.0",
     "date-fns": "^4.1.0",
     "katex": "^0.16.11",
-    "lodash.debounce": "^4.0.8",
     "mdast-util-find-and-replace": "^3.0.1",
     "motion": "^12.4.2",
     "reablocks": "^9.0.0",
