@@ -17,12 +17,6 @@ export interface ChatSuggestionsProps {
   suggestions: Suggestion[];
 
   /**
-   * Icon to display for each suggestion. Applied to all suggestions unless
-   * custom children are provided.
-   */
-  icon?: ReactElement;
-
-  /**
    * Custom class name to apply to the container.
    */
   className?: string;
@@ -41,7 +35,6 @@ export interface ChatSuggestionsProps {
 
 export const ChatSuggestions: FC<ChatSuggestionsProps> = ({
   suggestions,
-  icon,
   className,
   onSuggestionClick,
   children
@@ -67,7 +60,6 @@ export const ChatSuggestions: FC<ChatSuggestionsProps> = ({
           <ChatSuggestion
             key={suggestion.id}
             {...suggestion}
-            icon={icon}
             onClick={onSuggestionClick}
           />
         );

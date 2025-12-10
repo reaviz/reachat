@@ -21,8 +21,6 @@ export interface ChatContextProps {
   sendMessage?: (message: string) => void;
   stopMessage?: () => void;
   fileUpload?: (file: File) => void;
-  inputValue?: string;
-  setInputValue?: (value: string) => void;
 }
 
 export const ChatContext = createContext<ChatContextProps>({

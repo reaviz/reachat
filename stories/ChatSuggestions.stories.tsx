@@ -17,7 +17,6 @@ import { defaultSuggestions, sessionWithSuggestions } from './examples';
 import Placeholder from './assets/placeholder.svg?react';
 import PlaceholderDark from './assets/placeholder-dark.svg?react';
 import SparklesIcon from './assets/sparkles.svg?react';
-import ArrowIcon from './assets/arrow-right.svg?react';
 
 export default {
   title: 'Components/ChatSuggestions',
@@ -77,72 +76,6 @@ export const Basic = () => {
           <SessionMessagesHeader />
           <SessionMessages />
           <ChatSuggestions suggestions={defaultSuggestions} />
-          <ChatInput placeholder="Type a message..." />
-        </SessionMessagePanel>
-      </Chat>
-    </div>
-  );
-};
-
-export const WithIcons = () => {
-  const [sessions, setSessions] = useState<Session[]>(sessionWithSuggestions);
-  const [activeId, setActiveId] = useState<string>('session-suggestions');
-
-  const suggestions: Suggestion[] = [
-    { id: '1', content: 'Explain this in simpler terms' },
-    { id: '2', content: 'What are the alternatives?' },
-    { id: '3', content: 'Show me a code example' }
-  ];
-
-  return (
-    <div
-      className="dark:bg-gray-950 bg-white"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        borderRadius: 5
-      }}
-    >
-      <Chat
-        viewType="console"
-        sessions={sessions}
-        activeSessionId={activeId}
-        onSelectSession={setActiveId}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
-        onDeleteSession={() => alert('delete!')}
-      >
-        <SessionsList>
-          <NewSessionButton />
-          <SessionGroups />
-        </SessionsList>
-        <SessionMessagePanel>
-          <SessionMessagesHeader />
-          <SessionMessages />
-          <ChatSuggestions suggestions={suggestions} icon={<SparklesIcon />} />
           <ChatInput placeholder="Type a message..." />
         </SessionMessagePanel>
       </Chat>
@@ -224,10 +157,7 @@ export const LongSuggestions = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <ChatSuggestions
-            suggestions={longSuggestions}
-            icon={<SparklesIcon />}
-          />
+          <ChatSuggestions suggestions={longSuggestions} />
           <ChatInput placeholder="Type a message..." />
         </SessionMessagePanel>
       </Chat>
@@ -334,10 +264,7 @@ export const EmptySession = () => {
                   Welcome! Start a conversation or choose one of the suggestions
                   below.
                 </p>
-                <ChatSuggestions
-                  suggestions={initialSuggestions}
-                  icon={<ArrowIcon />}
-                />
+                <ChatSuggestions suggestions={initialSuggestions} />
               </div>
             }
           />
@@ -602,7 +529,6 @@ export const DynamicSuggestions = () => {
           <SessionMessages />
           <ChatSuggestions
             suggestions={suggestions}
-            icon={<SparklesIcon />}
             onSuggestionClick={suggestion =>
               console.log('Suggestion clicked:', suggestion)
             }

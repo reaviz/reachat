@@ -1,14 +1,9 @@
-import { FC, ReactElement, useContext } from 'react';
+import { FC, useContext } from 'react';
 import { Button, cn } from 'reablocks';
 import { ChatContext } from '@/ChatContext';
 import { Suggestion } from '@/types';
 
 export interface ChatSuggestionProps extends Suggestion {
-  /**
-   * Icon to display next to the suggestion.
-   */
-  icon?: ReactElement;
-
   /**
    * Callback when the suggestion is clicked.
    */
@@ -17,15 +12,12 @@ export interface ChatSuggestionProps extends Suggestion {
 
 export const ChatSuggestion: FC<ChatSuggestionProps> = ({
   content,
-  icon,
   onClick
 }) => {
-  const { theme, setInputValue, disabled, isLoading } = useContext(ChatContext);
+  const { theme, disabled, isLoading } = useContext(ChatContext);
 
   const handleClick = () => {
     if (disabled || isLoading) return;
-
-    setInputValue?.(content);
     onClick?.(content);
   };
 
@@ -34,7 +26,6 @@ export const ChatSuggestion: FC<ChatSuggestionProps> = ({
       type="button"
       variant="outline"
       disableMargins
-      startAdornment={icon}
       className={cn(theme.chatSuggestions.item.base, {
         'opacity-50 cursor-not-allowed': disabled || isLoading
       })}

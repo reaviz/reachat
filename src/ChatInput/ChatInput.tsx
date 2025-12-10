@@ -73,9 +73,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       sendMessage,
       stopMessage,
       fileUpload,
-      activeSessionId,
-      inputValue,
-      setInputValue
+      activeSessionId
     } = useContext(ChatContext);
     const [message, setMessage] = useState<string>('');
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -85,13 +83,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         inputRef.current.focus();
       }
     }, [activeSessionId, inputRef]);
-
-    useEffect(() => {
-      if (inputValue !== undefined && inputValue !== message) {
-        setMessage(inputValue);
-        inputRef.current?.focus();
-      }
-    }, [inputValue]);
 
     useImperativeHandle(ref, () => ({
       focus: () => {
@@ -103,7 +94,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       if (message.trim()) {
         sendMessage?.(message);
         setMessage('');
-        setInputValue?.('');
       }
     };
 
