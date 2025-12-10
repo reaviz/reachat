@@ -222,7 +222,7 @@ export const chatTheme: ChatTheme = {
     base: 'flex flex-wrap gap-2 mt-4',
     item: {
       base: [
-        'rounded-full! max-w-full',
+        'rounded-full! max-w-full py-2 px-4',
         'bg-gray-100 border-gray-200 hover:bg-gray-200 hover:border-gray-300 text-gray-700',
         'dark:bg-gray-800/50 dark:border-gray-700 dark:hover:bg-gray-700/70 dark:hover:border-gray-600 dark:text-gray-200',
         '[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-blue-500 [&>svg]:dark:text-blue-400 [&>svg]:flex-shrink-0'
