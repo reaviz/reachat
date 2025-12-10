@@ -74,32 +74,28 @@ export interface MessageStatusTheme {
 }
 
 export const messageStatusTheme: MessageStatusTheme = {
-  base: [
-    'rounded-2xl px-4 py-3 border',
-    'bg-gray-100 border-gray-200',
-    'dark:bg-gray-900/50 dark:border-gray-700/50'
-  ].join(' '),
-  header: 'flex items-center gap-3',
+  base: 'py-2',
+  header: 'flex items-center gap-2',
   icon: {
-    base: 'flex-shrink-0 w-5 h-5',
+    base: 'flex-shrink-0 w-4 h-4',
     loading: 'text-blue-500 dark:text-blue-400',
     complete: 'text-green-500 dark:text-green-400',
     error: 'text-red-500 dark:text-red-400'
   },
   text: {
-    base: 'text-sm font-medium',
-    loading: 'text-gray-700 dark:text-gray-200',
-    complete: 'text-gray-600 dark:text-gray-300',
+    base: 'text-sm',
+    loading: 'text-gray-600 dark:text-gray-400',
+    complete: 'text-gray-600 dark:text-gray-400',
     error: 'text-red-600 dark:text-red-400'
   },
   steps: {
-    base: 'mt-2 ml-8 space-y-1',
+    base: 'mt-1 ml-6 space-y-0.5',
     step: {
       base: 'flex items-center gap-2',
-      icon: 'flex-shrink-0 w-4 h-4',
+      icon: 'flex-shrink-0 w-3.5 h-3.5',
       text: 'text-sm',
-      loading: 'text-gray-500 dark:text-gray-400',
-      complete: 'text-gray-500 dark:text-gray-400',
+      loading: 'text-gray-500 dark:text-gray-500',
+      complete: 'text-gray-500 dark:text-gray-500',
       error: 'text-red-500 dark:text-red-400'
     }
   }
