@@ -34,6 +34,10 @@ export interface ChatTheme {
       cursor: string;
       overlay: string;
       expand: string;
+      scrollToBottom: {
+        container: string;
+        button: string;
+      };
       files: {
         base: string;
         file: {
@@ -142,6 +146,10 @@ export const chatTheme: ChatTheme = {
         "overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-linear-to-b after:from-transparent dark:after:to-gray-900 after:to-gray-200",
       cursor: 'inline-block w-1 h-4 bg-current',
       expand: 'absolute bottom-1 right-1 z-10',
+      scrollToBottom: {
+        container: 'absolute bottom-2 left-1/2 transform -translate-x-1/2 z-10',
+        button: 'rounded-full p-2 shadow-lg'
+      },
       files: {
         base: 'mb-2 flex flex-wrap gap-3 ',
         file: {

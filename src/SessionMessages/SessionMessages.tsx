@@ -1,21 +1,19 @@
 import React, {
   ReactNode,
-  RefObject,
   useContext,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState
 } from 'react';
-import debounce from 'lodash.debounce';
 import { SessionEmpty } from './SessionEmpty';
 import { ChatContext } from '@/ChatContext';
 import { Button, cn, useInfinityList } from 'reablocks';
 import { AnimatePresence, motion } from 'motion/react';
 import { Conversation } from '@/types';
+import { debounce } from '@/utils/debounce';
 import { SessionMessage } from './SessionMessage/SessionMessage';
-import ArrowDownIcon from '../assets/arrow-down.svg?react';
+import ArrowDownIcon from '@/assets/arrow-down.svg?react';
 
 const containerVariants = {
   hidden: {},
@@ -54,38 +52,6 @@ interface SessionMessagesProps {
   children?: (conversations: Conversation[]) => ReactNode;
 }
 
-const executeScrollLogic = (
-  messagesRef: RefObject<HTMLDivElement>,
-  contentRef: RefObject<HTMLDivElement>,
-  mutationObserver: MutationObserver
-) => {
-  if (contentRef.current) {
-    const atBottom =
-      contentRef.current.scrollHeight - contentRef.current.clientHeight ===
-      contentRef.current.scrollTop;
-    if (atBottom) {
-      // If we are at the bottom, don't scroll
-      mutationObserver.disconnect();
-      return;
-    }
-  }
-  if (messagesRef.current) {
-    const lastMessage = messagesRef.current
-      .lastElementChild as HTMLElement | null;
-
-    if (lastMessage) {
-      lastMessage.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-    // Disconnect the mutation observer after the scroll
-    mutationObserver.disconnect();
-  }
-};
-
-const debouncedExecuteScrollLogic = debounce(executeScrollLogic, 100);
-
 export const SessionMessages: React.FC<SessionMessagesProps> = ({
   children,
   newSessionContent,
@@ -98,42 +64,34 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   const messagesRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
   const [iAtBottom, setIsAtBottom] = useState(true);
-
   useEffect(() => {
     if (!contentRef.current || !isScrollToBottomButtonVisible) {
       return;
     }
 
     const handleScroll = debounce(() => {
-      setIsAtBottom(
-        contentRef.current.scrollHeight - contentRef.current.clientHeight ===
-          contentRef.current.scrollTop
-      );
+      if (contentRef.current) {
+        setIsAtBottom(
+          contentRef.current.scrollHeight - contentRef.current.clientHeight ===
+            contentRef.current.scrollTop
+        );
+      }
     }, 50);
-    contentRef.current.addEventListener('scroll', handleScroll);
+    const currentRef = contentRef.current;
+    currentRef.addEventListener('scroll', handleScroll);
 
-    return () =>
-      contentRef.current?.removeEventListener('scroll', handleScroll);
-  }, [contentRef]);
+    return () => currentRef.removeEventListener('scroll', handleScroll);
+  }, [isScrollToBottomButtonVisible]);
 
   useEffect(() => {
-    if (!contentRef.current || !messagesRef.current || isAnimating) {
-      return;
+    if (contentRef.current) {
+      // Scroll to the bottom of the content in animation queue
+      requestAnimationFrame(
+        () => (contentRef.current.scrollTop = contentRef.current.scrollHeight)
+      );
     }
-
-    // Create a mutation observer to listen for changes to call scroll after children animations complete
-    const mutationObserver = new MutationObserver(() =>
-      debouncedExecuteScrollLogic(messagesRef, contentRef, mutationObserver)
-    );
-
-    mutationObserver.observe(messagesRef.current, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['style', 'class']
-    });
-
-    return () => mutationObserver.disconnect();
+    // If we update the active session or load the page initially ( onAnimationComplete )
+    // let's scroll to the bottom of the page.
   }, [activeSession, isAnimating]);
 
   const handleShowMore = () => {
@@ -198,8 +156,10 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             onAnimationComplete={() =>
               requestAnimationFrame(() => {
                 setIsAnimating(false);
-                // Scroll to the bottom of the container at initial load
-                contentRef.current.scrollTop = contentRef.current.scrollHeight;
+                if (contentRef.current) {
+                  contentRef.current.scrollTop =
+                    contentRef.current.scrollHeight;
+                }
               })
             }
           >
@@ -222,11 +182,11 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="absolute bottom-2 left-1/2 transform -translate-x-1/2 z-10"
+            className={theme.messages?.message?.scrollToBottom?.container}
           >
             <Button
               onClick={handleScrollToBottom}
-              className="rounded-full p-2 shadow-lg"
+              className={theme.messages?.message?.scrollToBottom?.button}
               size="sm"
             >
               <ArrowDownIcon />
