@@ -1,5 +1,5 @@
 import { FC, ReactElement, useContext } from 'react';
-import { cn } from 'reablocks';
+import { Button, cn } from 'reablocks';
 import { ChatContext } from '@/ChatContext';
 import { FollowUp } from '@/types';
 
@@ -30,18 +30,18 @@ export const FollowUpItem: FC<FollowUpItemProps> = ({
   };
 
   return (
-    <button
+    <Button
       type="button"
+      variant="outline"
+      disableMargins
+      startAdornment={icon}
       className={cn(theme.followUpQuestions.item.base, {
         'opacity-50 cursor-not-allowed': disabled || isLoading
       })}
       onClick={handleClick}
       disabled={disabled || isLoading}
     >
-      {icon && (
-        <span className={cn(theme.followUpQuestions.item.icon)}>{icon}</span>
-      )}
       <span className={cn(theme.followUpQuestions.item.text)}>{question}</span>
-    </button>
+    </Button>
   );
 };
