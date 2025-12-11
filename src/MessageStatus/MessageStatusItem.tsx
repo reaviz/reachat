@@ -6,6 +6,9 @@ import { StatusIcon } from './StatusIcon';
 import { MessageStatusStep } from './MessageStatus';
 
 export interface MessageStatusItemProps {
+  /**
+   * The step to display.
+   */
   step: MessageStatusStep;
 }
 
