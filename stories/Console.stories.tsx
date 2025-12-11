@@ -1233,7 +1233,7 @@ export const WithToolStatus = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,

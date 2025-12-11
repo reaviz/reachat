@@ -34,7 +34,7 @@ This risk table uses Dragos ransomware intelligence trends along with Acme Contr
 
 Let me know your next question or if you want me to elaborate on specific risks before we proceed to complete the Strategic Risk Assessment.`;
 
-export const RiskAssessmentTable: Story = {
+export const ComplexTable: Story = {
   render: args => (
     <div className="p-8 bg-background-neutral-canvas-base max-w-full overflow-x-auto">
       <Markdown {...args} remarkPlugins={[remarkGfm, remarkMath, remarkCve]}>
