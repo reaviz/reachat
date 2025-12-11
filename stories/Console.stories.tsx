@@ -151,7 +151,7 @@ export const DefaultInputValue = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <ChatInput />
+          <ChatInput defaultValue="Hello, tell me more" />
         </SessionMessagePanel>
       </Chat>
     </div>

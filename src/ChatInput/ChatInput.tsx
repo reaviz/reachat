@@ -119,7 +119,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
     useEffect(() => {
-      setInternalMessage(message || '');
+      setInternalMessage(message);
     }, [message]);
 
     useEffect(() => {
