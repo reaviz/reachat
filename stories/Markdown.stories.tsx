@@ -316,3 +316,110 @@ function greet(name: string): string {
     </div>
   )
 };
+
+export const MarkdownShowcase: Story = {
+  render: args => (
+    <div className="p-8 bg-background-neutral-canvas-base max-w-4xl">
+      <Markdown {...args}>
+        {`
+**The purpose of life is a philosophical question concerning the significance of life or existence in general.**
+
+1. Burning of fossil fuels (coal, oil, and natural gas)
+2. Deforestation and land-use changes
+3. Industrial processes
+4. Agriculture and livestock farming
+
+or
+
+- Burning
+- Deforestation
+- Industrial
+- Agriculture
+
+Here is a table to illustrate different perspectives:
+
+| Perspective       | Description                                                                 |
+|-------------------|-----------------------------------------------------------------------------|
+| Religious         | Belief in a higher power or divine purpose.                                 |
+| Philosophical     | Various theories including existentialism, nihilism, and absurdism.         |
+| Scientific        | Understanding life through biology, evolution, and the universe.            |
+| Personal          | Individual goals, happiness, and fulfillment.                               |
+
+\`\`\`python
+def purpose_of_life():
+    return 42
+\`\`\`
+
+\`\`\`json
+{
+  "perspectives": [
+    {
+      "type": "Religious",
+      "description": "Belief in a higher power or divine purpose."
+    },
+    {
+      "type": "Philosophical",
+      "description": "Various theories including existentialism, nihilism, and absurdism."
+    },
+    {
+      "type": "Scientific",
+      "description": "Understanding life through biology, evolution, and the universe."
+    },
+    {
+      "type": "Personal",
+      "description": "Individual goals, happiness, and fulfillment."
+    }
+  ]
+}
+\`\`\`
+
+The answer to the ultimate question of life, the universe, and everything is **42**.
+
+\`\`\`math
+L = \\frac{1}{2} \\rho v^2 S C_L
+\`\`\`
+
+[Perspective](https://en.wikipedia.org/wiki/Philosophical_question)
+`}
+      </Markdown>
+    </div>
+  )
+};
+
+export const CVEExample: Story = {
+  render: args => (
+    <div className="p-8 bg-background-neutral-canvas-base max-w-4xl">
+      <Markdown {...args} remarkPlugins={[remarkGfm, remarkMath, remarkCve]}>
+        {`
+## Analysis
+
+The listed CVEs are critical vulnerabilities that need immediate attention.
+
+- CVE-2021-34527
+- [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228) < Has link
+- CVE-2021-45046
+
+The \`remarkCve\` plugin automatically converts CVE identifiers into clickable links.
+`}
+      </Markdown>
+    </div>
+  )
+};
+
+export const Embeds: Story = {
+  render: args => (
+    <div className="p-8 bg-background-neutral-canvas-base max-w-4xl">
+      <Markdown {...args}>
+        {`
+## Watch this video
+
+https://youtu.be/enTFE2c68FQ
+
+https://www.youtube.com/watch?v=enTFE2c68FQ
+
+These links showcase a video about React basics. You can click on either link to watch the video.
+`}
+      </Markdown>
+    </div>
+  )
+};

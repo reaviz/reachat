@@ -3,7 +3,6 @@ import { Meta } from '@storybook/react';
 import {
   Chat,
   Session,
-  remarkCve,
   SessionsList,
   SessionsGroup,
   SessionListItem,
@@ -42,7 +41,6 @@ import { MessageResponse } from '@/SessionMessages';
 import { MessageSources } from '@/SessionMessages';
 import {
   fakeSessions,
-  fakeSessionsWithEmbeds,
   sessionWithSources,
   sessionsWithFiles,
   sessionsWithPartialConversation
@@ -71,40 +69,6 @@ export const Basic = () => {
       <Chat
         sessions={fakeSessions}
         viewType="console"
-        onDeleteSession={() => alert('delete!')}
-      >
-        <SessionsList>
-          <NewSessionButton />
-          <SessionGroups />
-        </SessionsList>
-        <SessionMessagePanel>
-          <SessionMessagesHeader />
-          <SessionMessages />
-          <ChatInput />
-        </SessionMessagePanel>
-      </Chat>
-    </div>
-  );
-};
-
-export const Embeds = () => {
-  return (
-    <div
-      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        borderRadius: 5
-      }}
-    >
-      <Chat
-        sessions={fakeSessionsWithEmbeds}
-        activeSessionId="1"
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
@@ -487,194 +451,6 @@ export const LongSessionNames = () => {
         viewType="console"
         sessions={sessionsWithLongNames}
         activeSessionId="session-10"
-      >
-        <SessionsList>
-          <NewSessionButton />
-          <SessionGroups />
-        </SessionsList>
-
-        <SessionMessagePanel>
-          <SessionMessagesHeader />
-          <SessionMessages />
-          <ChatInput />
-        </SessionMessagePanel>
-      </Chat>
-    </div>
-  );
-};
-
-export const MarkdownShowcase = () => {
-  const markdownQuestion = `
-  **What is the purpose of life?**
-  `;
-
-  const markdownResponse = `
-  **The purpose of life is a philosophical question concerning the significance of life or existence in general.**
-
-  1. Burning of fossil fuels (coal, oil, and natural gas)
-  2. Deforestation and land-use changes
-  3. Industrial processes
-  4. Agriculture and livestock farming
-
-  or
-
-  - Burning
-  - Deforestation
-  - Industrial
-  - Agriculture
-
-  Here is a table to illustrate different perspectives:
-
-  | Perspective       | Description                                                                 |
-  |-------------------|-----------------------------------------------------------------------------|
-  | Religious         | Belief in a higher power or divine purpose.                                 |
-  | Philosophical     | Various theories including existentialism, nihilism, and absurdism.         |
-  | Scientific        | Understanding life through biology, evolution, and the universe.            |
-  | Personal          | Individual goals, happiness, and fulfillment.                               |
-
-  \`\`\`python
-  def purpose_of_life():
-      return 42
-  \`\`\`
-
-  \`\`\`json
-  {
-    "perspectives": [
-      {
-        "type": "Religious",
-        "description": "Belief in a higher power or divine purpose."
-      },
-      {
-        "type": "Philosophical",
-        "description": "Various theories including existentialism, nihilism, and absurdism."
-      },
-      {
-        "type": "Scientific",
-        "description": "Understanding life through biology, evolution, and the universe."
-      },
-      {
-        "type": "Personal",
-        "description": "Individual goals, happiness, and fulfillment."
-      }
-    ]
-  }
-  \`\`\`
-
-  The answer to the ultimate question of life, the universe, and everything is **42**.
-
-  \`\`\`math
-  L = \\frac{1}{2} \\rho v^2 S C_L
-  \`\`\`
-
-  [Perspective](https://en.wikipedia.org/wiki/Philosophical_question)
-  `;
-
-  const sessionWithMarkdown: Session[] = [
-    {
-      id: 'session-markdown',
-      title: 'Markdown Showcase',
-      createdAt: subHours(new Date(), 1),
-      updatedAt: new Date(),
-      conversations: [
-        {
-          id: 'conversation-1',
-          question: markdownQuestion,
-          response: markdownResponse,
-          createdAt: new Date()
-        }
-      ]
-    }
-  ];
-
-  return (
-    <div
-      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        borderRadius: 5
-      }}
-    >
-      <Chat
-        viewType="console"
-        sessions={sessionWithMarkdown}
-        activeSessionId="session-markdown"
-      >
-        <SessionsList>
-          <NewSessionButton />
-          <SessionGroups />
-        </SessionsList>
-
-        <SessionMessagePanel>
-          <SessionMessagesHeader />
-          <SessionMessages />
-          <ChatInput />
-        </SessionMessagePanel>
-      </Chat>
-    </div>
-  );
-};
-
-export const CVEExample = () => {
-  const markdownQuestion = `# Security Report
-
-  Please review the following CVEs:
-
-  - CVE-2021-34527
-  - CVE-2021-44228
-  - CVE-2021-45046
-  `;
-
-  const markdownResponse = `## Analysis
-
-  The listed CVEs are critical vulnerabilities that need immediate attention.
-
-  - CVE-2021-34527
-  - [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228) < Has link
-  - CVE-2021-45046
-  `;
-
-  const sessionWithMarkdown: Session[] = [
-    {
-      id: 'session-cve',
-      title: 'CVE Showcase',
-      createdAt: subHours(new Date(), 1),
-      updatedAt: new Date(),
-      conversations: [
-        {
-          id: 'conversation-1',
-          question: markdownQuestion,
-          response: markdownResponse,
-          createdAt: new Date()
-        }
-      ]
-    }
-  ];
-
-  return (
-    <div
-      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        borderRadius: 5
-      }}
-    >
-      <Chat
-        viewType="console"
-        sessions={sessionWithMarkdown}
-        activeSessionId="session-cve"
-        remarkPlugins={[remarkCve as any]}
       >
         <SessionsList>
           <NewSessionButton />
