@@ -1,17 +1,18 @@
+import type { Meta } from '@storybook/react';
 import { useState } from 'react';
-import { Meta } from '@storybook/react';
+
 import {
   Chat,
-  SessionsList,
-  NewSessionButton,
-  SessionMessages,
-  SessionGroups,
   ChatInput,
-  SessionMessagePanel,
-  SessionMessagesHeader,
-  Session,
   ChatSuggestions,
-  Suggestion
+  NewSessionButton,
+  type Session,
+  SessionGroups,
+  SessionMessagePanel,
+  SessionMessages,
+  SessionMessagesHeader,
+  SessionsList,
+  type Suggestion
 } from '../src';
 import { defaultSuggestions, sessionWithSuggestions } from './examples';
 import Placeholder from './assets/placeholder.svg?react';
@@ -29,7 +30,7 @@ export const Basic = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -111,7 +112,7 @@ export const LongSuggestions = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -178,7 +179,7 @@ export const EmptySession = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -281,7 +282,7 @@ export const Companion = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         width: 350,
         height: 500,
@@ -343,7 +344,7 @@ export const CustomItemRendering = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,
@@ -500,7 +501,7 @@ export const DynamicSuggestions = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
       style={{
         position: 'absolute',
         top: 0,

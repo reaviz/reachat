@@ -1,14 +1,26 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useEffect, useState } from 'react';
+
+import { ChatContext } from '../src/ChatContext';
 import {
   MessageStatus,
-  MessageStatusStep,
-  MessageStatusState
+  type MessageStatusState,
+  type MessageStatusStep
 } from '../src/MessageStatus';
+import { chatTheme } from '../src/theme';
 
 export default {
   title: 'Components/MessageStatus',
   component: MessageStatus,
+  decorators: [
+    Story => (
+      <ChatContext.Provider
+        value={{ sessions: [], activeSessionId: null, theme: chatTheme }}
+      >
+        <Story />
+      </ChatContext.Provider>
+    )
+  ],
   args: {
     text: 'Analyzing your request...',
     status: 'loading'
