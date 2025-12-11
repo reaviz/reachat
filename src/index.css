@@ -1,6 +1,6 @@
 @import 'tailwindcss';
-@import '../../node_modules/reablocks/dist/styles/index.css';
-@source '../../node_modules/reablocks';
+@import '../node_modules/reablocks/dist/styles/index.css';
+@source '../node_modules/reablocks';
 @source inline("line-clamp-{1..10}");
 
 /* Custom variants */
