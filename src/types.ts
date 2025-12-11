@@ -61,6 +61,18 @@ export interface Template {
   icon?: ReactElement;
 }
 
+export interface Suggestion {
+  /**
+   * Unique identifier for the suggestion
+   */
+  id: string;
+
+  /**
+   * The display text for the suggestion
+   */
+  content: string;
+}
+
 export interface Conversation {
   /**
    * Unique identifier for the conversation

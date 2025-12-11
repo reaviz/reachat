@@ -20,7 +20,7 @@ export const SessionGroups: FC<SessionGroupsProps> = ({ children }) => {
       {children
         ? children(groups)
         : groups.map(({ heading, sessions }) => (
-            <SessionsGroup heading={heading}>
+            <SessionsGroup key={heading} heading={heading}>
               {sessions.map(session => (
                 <SessionListItem key={session.id} session={session} />
               ))}

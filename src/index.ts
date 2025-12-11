@@ -8,4 +8,5 @@ export * from './Markdown';
 export * from './ChatContext';
 export * from './AppBar';
 export * from './ChatBubble';
+export * from './ChatSuggestions';
 export * from './MessageStatus';
