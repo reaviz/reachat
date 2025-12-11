@@ -79,6 +79,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   const messagesRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
   const [iAtBottom, setIsAtBottom] = useState(true);
+
   useEffect(() => {
     if (!contentRef.current || !showScrollBottomButton) {
       return;
