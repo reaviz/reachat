@@ -4,6 +4,33 @@ export interface ChatTheme {
   companion: string;
   empty: string;
   appbar: string;
+  status: {
+    base: string;
+    header: string;
+    icon: {
+      base: string;
+      loading: string;
+      complete: string;
+      error: string;
+    };
+    text: {
+      base: string;
+      loading: string;
+      complete: string;
+      error: string;
+    };
+    steps: {
+      base: string;
+      step: {
+        base: string;
+        icon: string;
+        text: string;
+        loading: string;
+        complete: string;
+        error: string;
+      };
+    };
+  };
   sessions: {
     base: string;
     console: string;
@@ -34,6 +61,10 @@ export interface ChatTheme {
       cursor: string;
       overlay: string;
       expand: string;
+      scrollToBottom: {
+        container: string;
+        button: string;
+      };
       files: {
         base: string;
         file: {
@@ -104,6 +135,14 @@ export interface ChatTheme {
       stop: string;
     };
   };
+  suggestions: {
+    base: string;
+    item: {
+      base: string;
+      icon: string;
+      text: string;
+    };
+  };
 }
 
 export const chatTheme: ChatTheme = {
@@ -112,6 +151,33 @@ export const chatTheme: ChatTheme = {
   companion: 'w-full h-full overflow-hidden',
   empty: 'text-center flex-1',
   appbar: 'flex p-5',
+  status: {
+    base: 'py-2 px-3 rounded-lg bg-gray-100/50 dark:bg-gray-800/30',
+    header: 'flex items-center gap-2',
+    icon: {
+      base: 'flex-shrink-0 w-4 h-4',
+      loading: 'text-blue-500 dark:text-blue-400',
+      complete: 'text-green-500 dark:text-green-400',
+      error: 'text-red-500 dark:text-red-400'
+    },
+    text: {
+      base: 'text-sm',
+      loading: 'text-gray-600 dark:text-gray-400',
+      complete: 'text-gray-600 dark:text-gray-400',
+      error: 'text-red-600 dark:text-red-400'
+    },
+    steps: {
+      base: 'mt-1 ml-6 space-y-0.5',
+      step: {
+        base: 'flex items-center gap-2',
+        icon: 'flex-shrink-0 w-3.5 h-3.5',
+        text: 'text-sm',
+        loading: 'text-gray-500 dark:text-gray-500',
+        complete: 'text-gray-500 dark:text-gray-500',
+        error: 'text-red-500 dark:text-red-400'
+      }
+    }
+  },
   sessions: {
     base: 'overflow-auto',
     console:
@@ -128,7 +194,7 @@ export const chatTheme: ChatTheme = {
   },
   messages: {
     base: '',
-    console: 'flex flex-col mx-5 flex-1 overflow-hidden',
+    console: 'flex flex-col mx-5 flex-1 min-h-0',
     companion: 'flex w-full h-full',
     back: 'self-start pl-0 my-2 ',
     inner: 'flex-1 h-full flex flex-col',
@@ -146,7 +212,11 @@ export const chatTheme: ChatTheme = {
       overlay:
         "overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-linear-to-b after:from-transparent after:to-effects-shadows-base-2-xl",
       cursor: 'inline-block w-1 h-4 bg-current',
-      expand: 'absolute bottom-0 right-1 z-10',
+      expand: 'absolute bottom-1 right-1 z-10',
+      scrollToBottom: {
+        container: 'absolute bottom-2 left-1/2 transform -translate-x-1/2 z-10',
+        button: 'rounded-full p-2 shadow-lg'
+      },
       files: {
         base: 'mb-2 flex flex-wrap gap-3 ',
         file: {
@@ -222,6 +292,19 @@ export const chatTheme: ChatTheme = {
       base: 'absolute flex gap-2 items-center right-2 inset-y-1/2 -translate-y-1/2 z-10',
       send: 'px-3 py-3 hover:bg-primary-hover rounded-full size-8',
       stop: 'px-2 py-2 bg-content-assets-semantic-error-base text-white rounded-full hover:bg-content-assets-semantic-error-1 size-8'
+    }
+  },
+  suggestions: {
+    base: 'flex flex-wrap gap-2 mt-4',
+    item: {
+      base: [
+        'rounded-full! max-w-full py-2 px-4',
+        'bg-gray-100 border-gray-200 hover:bg-gray-200 hover:border-gray-300 text-gray-700',
+        'dark:bg-gray-800/50 dark:border-gray-700 dark:hover:bg-gray-700/70 dark:hover:border-gray-600 dark:text-gray-200',
+        '[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-blue-500 [&>svg]:dark:text-blue-400 [&>svg]:flex-shrink-0'
+      ].join(' '),
+      icon: 'w-4 h-4 text-blue-500 dark:text-blue-400 flex-shrink-0',
+      text: 'text-sm truncate'
     }
   }
 };

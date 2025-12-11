@@ -1,4 +1,4 @@
-import { useState, useRef, FC, useContext } from 'react';
+import { useState, useRef, FC, useContext, useEffect } from 'react';
 import AttachIcon from './assets/paperclip.svg?react';
 import { Meta } from '@storybook/react';
 import {
@@ -17,6 +17,9 @@ import {
   SessionMessagesHeader,
   ChatContext,
   SessionMessage,
+  MessageStatus,
+  MessageStatusStep,
+  MessageStatusState
 } from '../src';
 import {
   Card,
@@ -498,7 +501,7 @@ export const HundredConversations = () => {
 
         <SessionMessagePanel>
           <SessionMessagesHeader />
-          <SessionMessages />
+          <SessionMessages showScrollBottomButton />
           <ChatInput />
         </SessionMessagePanel>
       </Chat>
@@ -1147,6 +1150,143 @@ export const CSVPreview = () => {
           <SessionMessagesHeader />
           <SessionMessages />
           <ChatInput allowedFiles={['.pdf', '.docx', '.csv']} />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const WithToolStatus = () => {
+  const [status, setStatus] = useState<MessageStatusState>('loading');
+  const [steps, setSteps] = useState<MessageStatusStep[]>([
+    { id: '1', text: 'Reading src/index.ts', status: 'loading' }
+  ]);
+
+  useEffect(() => {
+    const timeline = [
+      {
+        delay: 1500,
+        action: () => {
+          setSteps(prev =>
+            prev.map(s => (s.id === '1' ? { ...s, status: 'complete' as const } : s))
+          );
+        }
+      },
+      {
+        delay: 2000,
+        action: () => {
+          setSteps(prev => [
+            ...prev,
+            { id: '2', text: 'Searching for dependencies', status: 'loading' as const }
+          ]);
+        }
+      },
+      {
+        delay: 3500,
+        action: () => {
+          setSteps(prev =>
+            prev.map(s => (s.id === '2' ? { ...s, status: 'complete' as const } : s))
+          );
+        }
+      },
+      {
+        delay: 4000,
+        action: () => {
+          setSteps(prev => [
+            ...prev,
+            { id: '3', text: 'Analyzing code patterns', status: 'loading' as const }
+          ]);
+        }
+      },
+      {
+        delay: 6000,
+        action: () => {
+          setSteps(prev =>
+            prev.map(s => (s.id === '3' ? { ...s, status: 'complete' as const } : s))
+          );
+          setStatus('complete');
+        }
+      }
+    ];
+
+    const timeouts = timeline.map(item => setTimeout(item.action, item.delay));
+    return () => timeouts.forEach(clearTimeout);
+  }, []);
+
+  const sessionWithToolStatus: Session[] = [
+    {
+      id: 'session-tool-status',
+      title: 'Tool Status Demo',
+      createdAt: subHours(new Date(), 1),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: 'conversation-1',
+          question: 'Can you analyze my codebase and find any issues?',
+          response:
+            'I\'ll analyze your codebase now. Let me read through the files and check for any potential issues.',
+          createdAt: new Date()
+        }
+      ]
+    }
+  ];
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="console"
+        sessions={sessionWithToolStatus}
+        activeSessionId="session-tool-status"
+        isLoading={status === 'loading'}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups />
+        </SessionsList>
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages>
+            {conversations =>
+              conversations.map((conversation, index) => (
+                <SessionMessage
+                  conversation={conversation}
+                  isLast={index === conversations.length - 1}
+                  key={conversation.id}
+                >
+                  <MessageQuestion
+                    question={conversation.question}
+                    files={conversation.files}
+                  />
+                  <MessageResponse response={conversation.response} />
+                  <div className="mt-4">
+                    <MessageStatus
+                      status={status}
+                      text={status === 'complete' ? 'Analysis complete' : 'Analyzing codebase...'}
+                      steps={steps}
+                    />
+                  </div>
+                  <MessageActions
+                    question={conversation.question}
+                    response={conversation.response}
+                  />
+                </SessionMessage>
+              ))
+            }
+          </SessionMessages>
+          <ChatInput />
         </SessionMessagePanel>
       </Chat>
     </div>

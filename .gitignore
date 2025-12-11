@@ -129,6 +129,7 @@ dist
 .pnp.*
 .DS_Store
 
-storybook-static/*
+# Storybook build output
+storybook-static/
 
-.idea/*
+.idea/

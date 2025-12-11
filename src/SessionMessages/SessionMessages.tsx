@@ -1,8 +1,10 @@
+import debounce from 'lodash/debounce';
 import { AnimatePresence, motion } from 'motion/react';
-import { Button, cn, useInfinityList } from 'reablocks';
+import { Button, cn, IconButton, useInfinityList } from 'reablocks';
 import type { ReactNode, UIEventHandler } from 'react';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
+import ArrowDownIcon from '@/assets/arrow-down.svg?react';
 import { ChatContext } from '@/ChatContext';
 import type { Conversation } from '@/types';
 
@@ -46,6 +48,11 @@ interface SessionMessagesProps {
   autoScroll?: boolean;
 
   /**
+   * Whether to display the scroll to bottom button.
+   */
+  showScrollBottomButton?: boolean;
+
+  /**
    * Render function for the session messages.
    */
   children?: (conversations: Conversation[]) => ReactNode;
@@ -64,11 +71,32 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   className,
   showMoreText = 'Show more',
   autoScroll = true,
+  showScrollBottomButton = false,
   onScroll
 }) => {
   const { activeSession, theme } = useContext(ChatContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
+  const messagesRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
+  const [iAtBottom, setIsAtBottom] = useState(true);
+  useEffect(() => {
+    if (!contentRef.current || !showScrollBottomButton) {
+      return;
+    }
+
+    const handleScroll = debounce(() => {
+      if (contentRef.current) {
+        setIsAtBottom(
+          contentRef.current.scrollHeight - contentRef.current.clientHeight ===
+            contentRef.current.scrollTop
+        );
+      }
+    }, 50);
+    const currentRef = contentRef.current;
+    currentRef.addEventListener('scroll', handleScroll);
+
+    return () => currentRef.removeEventListener('scroll', handleScroll);
+  }, [showScrollBottomButton]);
 
   useEffect(() => {
     if (contentRef.current && autoScroll) {
@@ -81,10 +109,19 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
     // let's scroll to the bottom of the page.
   }, [activeSession, autoScroll, isAnimating]);
 
-  function handleShowMore() {
+  const handleShowMore = () => {
     showNext(limit);
     requestAnimationFrame(() => (contentRef.current.scrollTop = 0));
-  }
+  };
+
+  const handleScrollToBottom = () => {
+    if (contentRef.current) {
+      contentRef.current.scrollTo({
+        top: contentRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   // Reverse the conversations so the last one is the first one
   const reversedConvos = useMemo(
@@ -108,41 +145,70 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   }
 
   return (
-    <div
-      className={cn(theme.messages.content, className)}
-      ref={contentRef}
-      onScrollCapture={onScroll}
-    >
-      {hasMore && (
-        <Button
-          variant="outline"
-          className={cn(theme.messages.showMore)}
-          fullWidth
-          onClick={handleShowMore}
-        >
-          {showMoreText}
-        </Button>
-      )}
+    <div className="relative flex-1 overflow-y-hidden">
+      <div
+        className={cn(theme.messages.content, className, 'h-full')}
+        ref={contentRef}
+        id={activeSession?.id}
+        onScrollCapture={onScroll}
+      >
+        {hasMore && (
+          <Button
+            variant="outline"
+            className={cn(theme.messages.showMore)}
+            fullWidth
+            onClick={handleShowMore}
+          >
+            {showMoreText}
+          </Button>
+        )}
+        <AnimatePresence>
+          <motion.div
+            ref={messagesRef}
+            variants={containerVariants}
+            key={activeSession?.id}
+            initial="hidden"
+            animate="visible"
+            onAnimationComplete={() =>
+              requestAnimationFrame(() => {
+                setIsAnimating(false);
+                if (contentRef.current && autoScroll) {
+                  contentRef.current.scrollTop =
+                    contentRef.current.scrollHeight;
+                }
+              })
+            }
+          >
+            {children
+              ? children(convosToRender)
+              : convosToRender.map((conversation, index) => (
+                  <SessionMessage
+                    key={conversation.id}
+                    conversation={conversation}
+                    isLast={index === convosToRender.length - 1}
+                  />
+                ))}
+          </motion.div>
+        </AnimatePresence>
+      </div>
       <AnimatePresence>
-        <motion.div
-          variants={containerVariants}
-          key={activeSession?.id}
-          initial="hidden"
-          animate="visible"
-          onAnimationComplete={() => {
-            requestAnimationFrame(() => setIsAnimating(false));
-          }}
-        >
-          {children
-            ? children(convosToRender)
-            : convosToRender.map((conversation, index) => (
-                <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversation.length - 1}
-                />
-              ))}
-        </motion.div>
+        {!iAtBottom && showScrollBottomButton && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className={theme.messages?.message?.scrollToBottom?.container}
+          >
+            <IconButton
+              onClick={handleScrollToBottom}
+              className={theme.messages?.message?.scrollToBottom?.button}
+              size="sm"
+            >
+              <ArrowDownIcon />
+            </IconButton>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
