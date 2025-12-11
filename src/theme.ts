@@ -118,7 +118,7 @@ export const chatTheme: ChatTheme = {
   },
   messages: {
     base: '',
-    console: 'flex flex-col mx-5 flex-1 overflow-hidden',
+    console: 'flex flex-col mx-5 flex-1 min-h-0',
     companion: 'flex w-full h-full',
     back: 'self-start p-0 my-2',
     inner: 'flex-1 h-full flex flex-col',
