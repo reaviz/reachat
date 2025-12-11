@@ -14,6 +14,7 @@ import {
   SessionMessagesHeader,
   SessionsList
 } from '../src';
+import UploadIcon from '../src/assets/upload.svg?react';
 import AttachIcon from './assets/paperclip.svg?react';
 import { sessionsWithFiles, sessionWithCSVFiles } from './examples';
 
@@ -92,6 +93,133 @@ export const FileUploads = () => {
             }
             allowedFiles={['.pdf', '.docx']}
           />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const DragAndDrop = () => {
+  const [sessions, setSessions] = useState<Session[]>([
+    {
+      id: 'session-dragdrop',
+      title: 'Drag and Drop Demo',
+      createdAt: subHours(new Date(), 1),
+      updatedAt: new Date(),
+      conversations: [
+        {
+          id: 'conv-1',
+          question: 'Try dragging and dropping files onto the input below!',
+          response:
+            'You can drag and drop files directly onto the chat input. When you start dragging a file over the input area, you will see a visual indicator showing where to drop. This works with any file type that is allowed by the chat input configuration.',
+          createdAt: new Date()
+        }
+      ]
+    }
+  ]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+
+  const handleFileUpload = (file: File) => {
+    setUploadedFiles(prev => [...prev, file]);
+  };
+
+  return (
+    <div
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 20,
+        margin: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="console"
+        sessions={sessions}
+        activeSessionId="session-dragdrop"
+        onSendMessage={message =>
+          setSessions(sessions => {
+            const session = sessions[0];
+            const files = uploadedFiles.map(f => ({
+              name: f.name,
+              size: f.size,
+              type: f.type
+            }));
+            setUploadedFiles([]);
+
+            return [
+              {
+                ...session,
+                conversations: [
+                  ...session.conversations,
+                  {
+                    id: (Math.random() * 100).toString(),
+                    createdAt: new Date(),
+                    question: message,
+                    response: files.length
+                      ? `Received ${files.length} file(s): ${files.map(f => f.name).join(', ')}`
+                      : 'Message received!',
+                    ...(files.length > 0 ? { files } : {})
+                  }
+                ]
+              }
+            ];
+          })
+        }
+        onFileUpload={handleFileUpload}
+        onDeleteSession={() => alert('delete!')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups />
+        </SessionsList>
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages />
+          <div className="flex flex-col gap-2">
+            {uploadedFiles.length > 0 && (
+              <div className="flex flex-wrap gap-2 px-2">
+                {uploadedFiles.map((file, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full text-sm"
+                  >
+                    <span>{file.name}</span>
+                    <button
+                      onClick={() =>
+                        setUploadedFiles(prev =>
+                          prev.filter((_, i) => i !== idx)
+                        )
+                      }
+                      className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <ChatInput
+              allowedFiles={[
+                '.pdf',
+                '.docx',
+                '.txt',
+                '.csv',
+                '.jpg',
+                '.jpeg',
+                '.png',
+                '.gif'
+              ]}
+              allowMultipleFiles
+              dropIcon={<UploadIcon className="w-8 h-8" />}
+              dropText="Drop your files here"
+              placeholder="Type a message or drag files here..."
+            />
+          </div>
         </SessionMessagePanel>
       </Chat>
     </div>

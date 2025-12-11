@@ -17,11 +17,6 @@ interface FileInputProps {
   multiple: boolean;
 
   /**
-   * Indicates whether a file upload is in progress.
-   */
-  isLoading: boolean;
-
-  /**
    * Disables the file input when true.
    */
   disabled: boolean;
@@ -41,12 +36,11 @@ export const FileInput: FC<FileInputProps> = ({
   allowedFiles,
   multiple,
   onFileUpload,
-  isLoading,
   disabled,
   attachIcon = <AttachIcon />
 }) => {
   const { theme } = useContext(ChatContext);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <>
@@ -67,7 +61,7 @@ export const FileInput: FC<FileInputProps> = ({
       <Button
         title="Upload"
         variant="text"
-        disabled={isLoading || disabled}
+        disabled={disabled}
         className={cn(theme.input.upload)}
         onClick={() => fileInputRef.current?.click()}
       >

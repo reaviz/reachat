@@ -14,6 +14,7 @@ import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 
+import { FileDropzone } from './FileDropzone';
 import { FileInput } from './FileInput';
 
 interface ChatInputProps {
@@ -23,7 +24,7 @@ interface ChatInputProps {
   defaultValue?: string;
 
   /**
-   * Allowed file types for upload.
+   * Allowed file extensions for upload (e.g., ['.pdf', '.docx']).
    */
   allowedFiles?: string[];
 
@@ -51,6 +52,16 @@ interface ChatInputProps {
    * Icon to show for attach.
    */
   attachIcon?: ReactElement;
+
+  /**
+   * Icon to show for the dropzone overlay.
+   */
+  dropIcon?: ReactElement;
+
+  /**
+   * Text to show on the dropzone overlay.
+   */
+  dropText?: string;
 
   /**
    * Message to be displayed in the input field.
@@ -102,6 +113,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       sendIcon = <SendIcon />,
       stopIcon = <StopIcon />,
       attachIcon,
+      dropIcon,
+      dropText,
       onMessageChange
     },
     ref
@@ -182,48 +195,56 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 
     return (
       <div className={cn(theme.input.base, className)}>
-        <Textarea
-          ref={inputRef}
-          containerClassName={cn(theme.input.input)}
-          minRows={1}
-          autoFocus
-          value={internalMessage}
-          defaultValue={defaultValue}
-          onKeyPress={handleKeyPress}
-          placeholder={placeholder}
-          disabled={isLoading || disabled}
-          onChange={handleMessageChange}
-        />
-        <div className={cn(theme.input.actions.base)}>
-          {allowedFiles?.length > 0 && (
-            <FileInput
-              allowedFiles={allowedFiles}
-              multiple={allowMultipleFiles}
-              onFileUpload={handleFileUpload}
-              isLoading={isLoading}
-              disabled={disabled}
-              attachIcon={attachIcon}
-            />
-          )}
-          {isLoading && (
-            <Button
-              title="Stop"
-              className={cn(theme.input.actions.stop)}
-              onClick={stopMessage}
-              disabled={disabled}
-            >
-              {stopIcon}
-            </Button>
-          )}
-          <Button
-            title="Send"
-            className={cn(theme.input.actions.send)}
-            onClick={handleSendMessage}
+        <FileDropzone
+          allowedFiles={allowedFiles}
+          multiple={allowMultipleFiles}
+          disabled={disabled || isLoading}
+          dropIcon={dropIcon}
+          dropText={dropText}
+          onFileDrop={fileUpload}
+        >
+          <Textarea
+            ref={inputRef}
+            containerClassName={cn(theme.input.input)}
+            minRows={1}
+            autoFocus
+            value={internalMessage}
+            defaultValue={defaultValue}
+            onKeyPress={handleKeyPress}
+            placeholder={placeholder}
             disabled={isLoading || disabled}
-          >
-            {sendIcon}
-          </Button>
-        </div>
+            onChange={handleMessageChange}
+          />
+          <div className={cn(theme.input.actions.base)}>
+            {allowedFiles?.length > 0 && (
+              <FileInput
+                allowedFiles={allowedFiles}
+                multiple={allowMultipleFiles}
+                onFileUpload={handleFileUpload}
+                disabled={disabled || isLoading}
+                attachIcon={attachIcon}
+              />
+            )}
+            {isLoading && (
+              <Button
+                title="Stop"
+                className={cn(theme.input.actions.stop)}
+                onClick={stopMessage}
+                disabled={disabled}
+              >
+                {stopIcon}
+              </Button>
+            )}
+            <Button
+              title="Send"
+              className={cn(theme.input.actions.send)}
+              onClick={handleSendMessage}
+              disabled={isLoading || disabled}
+            >
+              {sendIcon}
+            </Button>
+          </div>
+        </FileDropzone>
       </div>
     );
   }

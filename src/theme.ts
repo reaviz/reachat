@@ -134,6 +134,13 @@ export interface ChatTheme {
       send: string;
       stop: string;
     };
+    dropzone: {
+      base: string;
+      active: string;
+      overlay: string;
+      text: string;
+      icon: string;
+    };
   };
   suggestions: {
     base: string;
@@ -292,6 +299,14 @@ export const chatTheme: ChatTheme = {
       base: 'absolute flex gap-2 items-center right-2 inset-y-1/2 -translate-y-1/2 z-10',
       send: 'px-3 py-3 hover:bg-primary-hover rounded-full size-8',
       stop: 'px-2 py-2 bg-content-assets-semantic-error-base text-white rounded-full hover:bg-content-assets-semantic-error-1 size-8'
+    },
+    dropzone: {
+      base: 'relative w-full',
+      active: 'ring-1 ring-primary ring-offset-2 rounded-3xl',
+      overlay:
+        'absolute inset-0 bg-primary/10 border-2 border-dashed border-primary rounded-3xl flex items-center justify-center gap-1.5 z-20 backdrop-blur-sm',
+      text: 'text-primary font-medium text-sm',
+      icon: '[&>svg]:w-4 [&>svg]:h-4 text-primary'
     }
   },
   suggestions: {
