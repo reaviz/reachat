@@ -112,8 +112,6 @@ export interface ChatTheme {
   };
 }
 
-export type MessageStatusTheme = ChatTheme['status'];
-
 export const chatTheme: ChatTheme = {
   base: 'dark:text-white text-gray-500',
   console: 'flex w-full gap-4 h-full',
