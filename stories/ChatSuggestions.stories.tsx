@@ -20,7 +20,7 @@ import PlaceholderDark from './assets/placeholder-dark.svg?react';
 import SparklesIcon from './assets/sparkles.svg?react';
 
 export default {
-  title: 'Components/ChatSuggestions',
+  title: 'Demos/Suggestions',
   component: ChatSuggestions
 } as Meta;
 
