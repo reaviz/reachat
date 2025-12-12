@@ -58,15 +58,25 @@ interface SessionMessagesProps {
   children?: (conversations: Conversation[]) => ReactNode;
 
   /**
-   * Load more button element.
+   * Whether to show the load more button.
    */
-  loadMoreButton?: ReactNode;
+  showLoadMoreButton?: boolean;
+
+  /**
+   * Whether to disable the load more button.
+   */
+  loadMoreButtonDisabled?: boolean;
 
   /**
    * Scroll event handler.
    * @param e
    */
   onScroll?: UIEventHandler<HTMLDivElement>;
+
+  /**
+   * Load more event handler.
+   */
+  onLoadMore?: () => void;
 }
 
 export const SessionMessages: React.FC<SessionMessagesProps> = ({
@@ -76,9 +86,11 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   className,
   showMoreText = 'Show more',
   autoScroll = true,
-  showScrollBottomButton = false,
-  loadMoreButton,
-  onScroll
+  showLoadMoreButton = false,
+  showScrollBottomButton,
+  loadMoreButtonDisabled,
+  onScroll,
+  onLoadMore
 }) => {
   const { activeSession, theme } = useContext(ChatContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -159,13 +171,13 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
         id={activeSession?.id}
         onScrollCapture={onScroll}
       >
-        {loadMoreButton}
-        {!loadMoreButton && hasMore && (
+        {(showLoadMoreButton || hasMore) && (
           <Button
+            disabled={loadMoreButtonDisabled}
             variant="outline"
             className={cn(theme.messages.showMore)}
             fullWidth
-            onClick={handleShowMore}
+            onClick={onLoadMore ?? handleShowMore}
           >
             {showMoreText}
           </Button>
