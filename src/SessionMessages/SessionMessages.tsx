@@ -58,6 +58,11 @@ interface SessionMessagesProps {
   children?: (conversations: Conversation[]) => ReactNode;
 
   /**
+   * Load more button element.
+   */
+  loadMoreButton?: ReactNode;
+
+  /**
    * Scroll event handler.
    * @param e
    */
@@ -72,6 +77,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   showMoreText = 'Show more',
   autoScroll = true,
   showScrollBottomButton = false,
+  loadMoreButton,
   onScroll
 }) => {
   const { activeSession, theme } = useContext(ChatContext);
@@ -153,7 +159,8 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
         id={activeSession?.id}
         onScrollCapture={onScroll}
       >
-        {hasMore && (
+        {loadMoreButton}
+        {!loadMoreButton && hasMore && (
           <Button
             variant="outline"
             className={cn(theme.messages.showMore)}
