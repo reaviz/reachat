@@ -113,6 +113,26 @@ export interface ChatTheme {
       send: string;
       stop: string;
     };
+    toolbar: {
+      base: string;
+      button: string;
+      buttonActive: string;
+      divider: string;
+    };
+    popup: {
+      base: string;
+      header: string;
+      content: string;
+      item: string;
+      itemHighlighted: string;
+      itemIcon: string;
+      itemContent: string;
+      itemLabel: string;
+      itemDescription: string;
+      itemShortcut: string;
+      empty: string;
+      loading: string;
+    };
   };
   suggestions: {
     base: string;
@@ -278,6 +298,53 @@ export const chatTheme: ChatTheme = {
         'dark:text-white light:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700'
       ].join(' '),
       stop: 'px-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 '
+    },
+    toolbar: {
+      base: [
+        'flex items-center gap-1 p-1.5 mb-2 rounded-lg border border-gray-200 bg-gray-50',
+        'dark:border-gray-700 dark:bg-gray-900'
+      ].join(' '),
+      button: [
+        'p-1.5 rounded hover:bg-gray-200 text-gray-500 [&>svg]:w-4 [&>svg]:h-4',
+        'dark:hover:bg-gray-700 dark:text-gray-400'
+      ].join(' '),
+      buttonActive: [
+        'bg-gray-200 text-gray-900',
+        'dark:bg-gray-700 dark:text-white'
+      ].join(' '),
+      divider: 'w-px h-5 bg-gray-200 dark:bg-gray-700 mx-1'
+    },
+    popup: {
+      base: [
+        'bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden min-w-[200px] max-w-[300px]',
+        'dark:bg-gray-900 dark:border-gray-700'
+      ].join(' '),
+      header: [
+        'px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-200',
+        'dark:text-gray-400 dark:border-gray-700'
+      ].join(' '),
+      content: 'overflow-y-auto max-h-[250px]',
+      item: [
+        'flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors',
+        'hover:bg-gray-100 dark:hover:bg-gray-800'
+      ].join(' '),
+      itemHighlighted: 'bg-gray-100 dark:bg-gray-800',
+      itemIcon: [
+        'flex-shrink-0 w-5 h-5 text-gray-500 [&>svg]:w-full [&>svg]:h-full',
+        'dark:text-gray-400'
+      ].join(' '),
+      itemContent: 'flex flex-col min-w-0 flex-1',
+      itemLabel: [
+        'text-sm font-medium text-gray-900 truncate',
+        'dark:text-gray-100'
+      ].join(' '),
+      itemDescription: 'text-xs text-gray-500 dark:text-gray-400 truncate',
+      itemShortcut: 'text-xs text-gray-400 dark:text-gray-500 ml-auto',
+      empty: 'px-3 py-4 text-sm text-center text-gray-500 dark:text-gray-400',
+      loading: [
+        'flex items-center justify-center gap-2 px-3 py-4 text-gray-500',
+        'dark:text-gray-400'
+      ].join(' ')
     }
   },
   suggestions: {
