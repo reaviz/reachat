@@ -7,6 +7,13 @@
   word-break: break-word;
 }
 
+/* Remove any default ProseMirror borders/outlines */
+.rich-text-input-container .ProseMirror {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 /* Placeholder styling */
 .rich-text-input-editor.is-editor-empty::before {
   color: #9ca3af;
@@ -20,9 +27,16 @@
   color: #6b7280;
 }
 
-/* Focus state */
+/* Focus state - remove all focus indicators on editor itself */
 .ProseMirror:focus {
   outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.ProseMirror-focused {
+  outline: none;
+  border: none;
 }
 
 /* Code block styling */

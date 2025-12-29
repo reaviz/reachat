@@ -233,6 +233,24 @@ export const createSlashCommandExtension = ({
             let component: ReactRenderer<SlashCommandListRef> | null = null;
             let popup: TippyInstance<TippyProps>[] | null = null;
 
+            // Helper to get cursor position from the editor
+            const getCursorRect = (editor: any): DOMRect => {
+              const { view } = editor;
+              const { state } = view;
+              const { from } = state.selection;
+
+              // Try to get coordinates from the editor view
+              const coords = view.coordsAtPos(from);
+
+              // Create a virtual rect at the cursor position
+              return new DOMRect(
+                coords.left,
+                coords.top,
+                1,
+                coords.bottom - coords.top
+              );
+            };
+
             return {
               onStart: (props: SuggestionProps<SlashCommand>) => {
                 component = new ReactRenderer(SlashCommandList, {
@@ -243,17 +261,22 @@ export const createSlashCommandExtension = ({
                   editor: props.editor
                 });
 
-                if (!props.clientRect) return;
-
-                // Get the editor element for positioning fallback
                 const editorElement = props.editor.view.dom;
 
                 popup = tippy('body', {
                   getReferenceClientRect: () => {
-                    const rect = props.clientRect?.();
-                    if (rect) return rect;
-                    // Fallback to editor element position
-                    return editorElement.getBoundingClientRect();
+                    // First try Tiptap's clientRect
+                    const tiptapRect = props.clientRect?.();
+                    if (tiptapRect && tiptapRect.width > 0) {
+                      return tiptapRect;
+                    }
+                    // Fallback: get cursor position from editor
+                    try {
+                      return getCursorRect(props.editor);
+                    } catch {
+                      // Last resort: use editor element
+                      return editorElement.getBoundingClientRect();
+                    }
                   },
                   appendTo: () => document.body,
                   content: component.element,
@@ -291,15 +314,19 @@ export const createSlashCommandExtension = ({
                   theme
                 });
 
-                if (!props.clientRect) return;
-
                 const editorElement = props.editor.view.dom;
 
                 popup?.[0]?.setProps({
                   getReferenceClientRect: () => {
-                    const rect = props.clientRect?.();
-                    if (rect) return rect;
-                    return editorElement.getBoundingClientRect();
+                    const tiptapRect = props.clientRect?.();
+                    if (tiptapRect && tiptapRect.width > 0) {
+                      return tiptapRect;
+                    }
+                    try {
+                      return getCursorRect(props.editor);
+                    } catch {
+                      return editorElement.getBoundingClientRect();
+                    }
                   }
                 });
               },
