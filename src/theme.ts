@@ -113,6 +113,53 @@ export interface ChatTheme {
       send: string;
       stop: string;
     };
+    slashCommand?: {
+      menu?: string;
+      item?: {
+        base?: string;
+        active?: string;
+        disabled?: string;
+      };
+      icon?: string;
+      label?: string;
+      description?: string;
+      shortcut?: string;
+      category?: string;
+      empty?: string;
+    };
+    mention?: {
+      menu?: string;
+      item?: {
+        base?: string;
+        active?: string;
+        disabled?: string;
+      };
+      avatar?: string;
+      name?: string;
+      description?: string;
+      category?: string;
+      empty?: string;
+      loading?: string;
+      token?: string;
+    };
+    preview?: {
+      container?: string;
+      label?: string;
+    };
+    richTextPreview?: {
+      container?: string;
+      bold?: string;
+      italic?: string;
+      inlineCode?: string;
+      codeBlock?: string;
+      list?: {
+        container?: string;
+        item?: string;
+      };
+      blockquote?: string;
+      strikethrough?: string;
+      link?: string;
+    };
   };
   suggestions: {
     base: string;
