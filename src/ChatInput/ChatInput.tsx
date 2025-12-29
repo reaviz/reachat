@@ -34,6 +34,7 @@ import {
   RichTextFormatConfig,
   RichTextPreviewProps
 } from './RichTextPreview';
+import { RichTextInput, RichTextInputRef } from './RichTextInput';
 import { useInputTrigger } from './hooks/useInputTrigger';
 
 export interface ChatInputProps {
@@ -144,29 +145,97 @@ export interface ChatInputProps {
     onClose: () => void;
   }) => ReactNode;
 
-  // ===== Rich Text Preview =====
+  // ===== Rich Text Preview (Legacy) =====
 
   /**
    * Enable rich text preview/formatting.
    * @default false
+   * @deprecated Use enableRichText for inline WYSIWYG editing
    */
   enableRichTextPreview?: boolean;
 
   /**
    * Configuration for which rich text formats to enable.
+   * @deprecated Use enableRichText for inline WYSIWYG editing
    */
   richTextConfig?: RichTextFormatConfig;
 
   /**
    * Custom props to pass to the RichTextPreview component.
+   * @deprecated Use enableRichText for inline WYSIWYG editing
    */
   richTextPreviewProps?: Partial<RichTextPreviewProps>;
 
   /**
    * Whether to show the rich text preview above the input.
    * @default true
+   * @deprecated Use enableRichText for inline WYSIWYG editing
    */
   showPreviewAbove?: boolean;
+
+  // ===== Inline Rich Text (Tiptap) =====
+
+  /**
+   * Enable inline rich text editing with WYSIWYG formatting.
+   * When enabled, formatting like bold, italic, lists, code, etc.
+   * renders directly in the input as you type.
+   * @default false
+   */
+  enableRichText?: boolean;
+
+  /**
+   * Whether to enable bold formatting in rich text mode.
+   * @default true
+   */
+  enableBold?: boolean;
+
+  /**
+   * Whether to enable italic formatting in rich text mode.
+   * @default true
+   */
+  enableItalic?: boolean;
+
+  /**
+   * Whether to enable strikethrough formatting in rich text mode.
+   * @default true
+   */
+  enableStrikethrough?: boolean;
+
+  /**
+   * Whether to enable code formatting in rich text mode.
+   * @default true
+   */
+  enableCode?: boolean;
+
+  /**
+   * Whether to enable code blocks in rich text mode.
+   * @default true
+   */
+  enableCodeBlock?: boolean;
+
+  /**
+   * Whether to enable bullet lists in rich text mode.
+   * @default true
+   */
+  enableBulletList?: boolean;
+
+  /**
+   * Whether to enable ordered lists in rich text mode.
+   * @default true
+   */
+  enableOrderedList?: boolean;
+
+  /**
+   * Whether to enable blockquotes in rich text mode.
+   * @default true
+   */
+  enableBlockquote?: boolean;
+
+  /**
+   * Async function to fetch mentions based on query.
+   * Used for async/dynamic mention loading.
+   */
+  fetchMentions?: (query: string) => Promise<Mention[]>;
 }
 
 export interface ChatInputRef {
@@ -259,11 +328,22 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       onMention,
       mentionsMenuProps,
       renderMentionsMenu,
-      // Rich text preview
+      // Rich text preview (legacy)
       enableRichTextPreview = false,
       richTextConfig,
       richTextPreviewProps,
-      showPreviewAbove = true
+      showPreviewAbove = true,
+      // Rich text (Tiptap)
+      enableRichText = false,
+      enableBold = true,
+      enableItalic = true,
+      enableStrikethrough = true,
+      enableCode = true,
+      enableCodeBlock = true,
+      enableBulletList = true,
+      enableOrderedList = true,
+      enableBlockquote = true,
+      fetchMentions
     },
     ref
   ) => {
@@ -282,6 +362,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     const [asyncMentions, setAsyncMentions] = useState<Mention[]>([]);
 
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
+    const richTextInputRef = useRef<RichTextInputRef | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     // Normalize mentions data
@@ -378,29 +459,52 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     }, [triggerState?.filter, triggerState?.type, mentionsConfig]);
 
     useEffect(() => {
-      if (inputRef.current) {
+      if (enableRichText) {
+        richTextInputRef.current?.focus();
+      } else if (inputRef.current) {
         inputRef.current.focus();
       }
-    }, [activeSessionId]);
+    }, [activeSessionId, enableRichText]);
 
     useImperativeHandle(ref, () => ({
       focus: () => {
-        inputRef.current?.focus();
+        if (enableRichText) {
+          richTextInputRef.current?.focus();
+        } else {
+          inputRef.current?.focus();
+        }
       },
-      getValue: () => message,
+      getValue: () => {
+        if (enableRichText) {
+          return richTextInputRef.current?.getText() ?? '';
+        }
+        return message;
+      },
       setValue: (value: string) => {
-        setMessage(value);
-        handleTextChange(value);
+        if (enableRichText) {
+          richTextInputRef.current?.setContent(value);
+        } else {
+          setMessage(value);
+          handleTextChange(value);
+        }
       }
     }));
 
     const handleSendMessage = useCallback(() => {
-      if (message.trim()) {
-        sendMessage?.(message);
-        setMessage('');
-        closeTrigger();
+      if (enableRichText) {
+        const text = richTextInputRef.current?.getText() ?? '';
+        if (text.trim()) {
+          sendMessage?.(text);
+          richTextInputRef.current?.clear();
+        }
+      } else {
+        if (message.trim()) {
+          sendMessage?.(message);
+          setMessage('');
+          closeTrigger();
+        }
       }
-    }, [message, sendMessage, closeTrigger]);
+    }, [enableRichText, message, sendMessage, closeTrigger]);
 
     const handleInputChange = useCallback(
       (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -543,53 +647,81 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 
         {/* Main input row */}
         <div className="flex relative w-full">
-          <Textarea
-            ref={inputRef}
-            containerClassName={cn(theme.input.input)}
-            minRows={1}
-            autoFocus
-            value={message}
-            defaultValue={defaultValue}
-            onKeyDown={handleKeyPress}
-            placeholder={placeholder}
-            disabled={isLoading || disabled}
-            onChange={handleInputChange}
-          />
-
-          {/* Slash Command Menu */}
-          {triggerState?.type === 'slash' &&
-            slashCommands.length > 0 &&
-            filteredCommands.length > 0 && (
-              <ConnectedOverlay
-                open={true}
-                reference={inputRef.current}
-                placement="top-start"
-                modifiers={[offset({ mainAxis: 8 })]}
-                content={() =>
-                  renderSlashCommandMenu ? (
-                    renderSlashCommandMenu({
-                      commands: filteredCommands,
-                      filter: triggerState.filter,
-                      activeIndex: triggerState.activeIndex,
-                      onSelect: handleSlashCommandSelect,
-                      onClose: closeTrigger
-                    })
-                  ) : (
-                    <SlashCommandMenu
-                      commands={filteredCommands}
-                      filter={triggerState.filter}
-                      activeIndex={triggerState.activeIndex}
-                      onSelect={handleSlashCommandSelect}
-                      onClose={closeTrigger}
-                      {...slashCommandMenuProps}
-                    />
-                  )
-                }
+          {enableRichText ? (
+            <RichTextInput
+              ref={richTextInputRef}
+              className={cn(theme.input.input)}
+              defaultValue={defaultValue}
+              placeholder={placeholder}
+              disabled={isLoading || disabled}
+              onChange={text => setMessage(text)}
+              onSubmit={handleSendMessage}
+              slashCommands={slashCommands}
+              onSlashCommand={onSlashCommand}
+              mentions={staticMentions}
+              fetchMentions={fetchMentions}
+              onMention={onMention}
+              enableBold={enableBold}
+              enableItalic={enableItalic}
+              enableStrikethrough={enableStrikethrough}
+              enableCode={enableCode}
+              enableCodeBlock={enableCodeBlock}
+              enableBulletList={enableBulletList}
+              enableOrderedList={enableOrderedList}
+              enableBlockquote={enableBlockquote}
+            />
+          ) : (
+            <>
+              <Textarea
+                ref={inputRef}
+                containerClassName={cn(theme.input.input)}
+                minRows={1}
+                autoFocus
+                value={message}
+                defaultValue={defaultValue}
+                onKeyDown={handleKeyPress}
+                placeholder={placeholder}
+                disabled={isLoading || disabled}
+                onChange={handleInputChange}
               />
-            )}
 
-          {/* Mentions Menu */}
-          {triggerState?.type === 'mention' &&
+              {/* Slash Command Menu (only for non-rich-text mode) */}
+              {triggerState?.type === 'slash' &&
+                slashCommands.length > 0 &&
+                filteredCommands.length > 0 && (
+                  <ConnectedOverlay
+                    open={true}
+                    reference={inputRef.current}
+                    placement="top-start"
+                    modifiers={[offset({ mainAxis: 8 })]}
+                    content={() =>
+                      renderSlashCommandMenu ? (
+                        renderSlashCommandMenu({
+                          commands: filteredCommands,
+                          filter: triggerState.filter,
+                          activeIndex: triggerState.activeIndex,
+                          onSelect: handleSlashCommandSelect,
+                          onClose: closeTrigger
+                        })
+                      ) : (
+                        <SlashCommandMenu
+                          commands={filteredCommands}
+                          filter={triggerState.filter}
+                          activeIndex={triggerState.activeIndex}
+                          onSelect={handleSlashCommandSelect}
+                          onClose={closeTrigger}
+                          {...slashCommandMenuProps}
+                        />
+                      )
+                    }
+                  />
+                )}
+            </>
+          )}
+
+          {/* Mentions Menu (only for non-rich-text mode) */}
+          {!enableRichText &&
+            triggerState?.type === 'mention' &&
             (filteredMentions.length > 0 || mentionsLoading) && (
               <ConnectedOverlay
                 open={true}

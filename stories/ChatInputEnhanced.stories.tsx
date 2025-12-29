@@ -255,7 +255,7 @@ export const Mentions = () => {
   );
 };
 
-export const RichTextPreview = () => {
+export const InlineRichText = () => {
   const [sessions, setSessions] = useState<Session[]>([emptySession]);
 
   return (
@@ -273,13 +273,15 @@ export const RichTextPreview = () => {
       }}
     >
       <div className="mb-4 text-sm text-gray-500">
-        <strong>Try it:</strong> Type formatted text to see a live preview:
+        <strong>Inline Rich Text Editor:</strong> Format text directly in the input!
         <ul className="mt-2 list-disc ml-6">
-          <li><code>**bold**</code> for <strong>bold</strong></li>
-          <li><code>*italic*</code> for <em>italic</em></li>
+          <li><code>**bold**</code> or <code>Ctrl+B</code> for <strong>bold</strong></li>
+          <li><code>*italic*</code> or <code>Ctrl+I</code> for <em>italic</em></li>
           <li><code>`code`</code> for <code>inline code</code></li>
-          <li><code>- item</code> for lists</li>
+          <li><code>- item</code> for bullet lists</li>
+          <li><code>1. item</code> for numbered lists</li>
           <li><code>&gt; quote</code> for blockquotes</li>
+          <li><code>```</code> for code blocks</li>
           <li><code>~~strikethrough~~</code> for <del>strikethrough</del></li>
         </ul>
       </div>
@@ -310,8 +312,8 @@ export const RichTextPreview = () => {
           <SessionMessagesHeader />
           <SessionMessages />
           <ChatInput
-            placeholder="Try typing formatted text..."
-            enableRichTextPreview
+            placeholder="Try typing formatted text inline..."
+            enableRichText
           />
         </SessionMessagePanel>
       </Chat>
@@ -338,11 +340,11 @@ export const AllFeaturesCombined = () => {
       }}
     >
       <div className="mb-4 text-sm text-gray-500">
-        <strong>All features enabled:</strong>
+        <strong>All features enabled with inline rich text:</strong>
         <ul className="mt-2 list-disc ml-6">
           <li>Type <code>/</code> for slash commands</li>
           <li>Type <code>@</code> for mentions</li>
-          <li>Use markdown formatting for preview</li>
+          <li>Use markdown formatting inline (bold, italic, lists, code)</li>
         </ul>
         {lastAction && (
           <div className="mt-2 text-blue-500">
@@ -378,10 +380,10 @@ export const AllFeaturesCombined = () => {
           <SessionMessagesHeader />
           <SessionMessages />
           <ChatInput
-            placeholder="Type your message... (try / or @)"
+            placeholder="Type your message... (try / or @ or **bold**)"
             slashCommands={sampleSlashCommands}
             mentions={sampleMentions}
-            enableRichTextPreview
+            enableRichText
             onSlashCommand={(cmd) => {
               setLastAction(`Slash command: /${cmd.command}`);
             }}

@@ -160,6 +160,10 @@ export interface ChatTheme {
       strikethrough?: string;
       link?: string;
     };
+    richTextInput?: {
+      container?: string;
+      editor?: string;
+    };
   };
   suggestions: {
     base: string;

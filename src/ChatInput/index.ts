@@ -3,4 +3,5 @@ export * from './FileInput';
 export * from './SlashCommand';
 export * from './Mentions';
 export * from './RichTextPreview';
+export * from './RichTextInput';
 export * from './hooks';
