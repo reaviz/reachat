@@ -1,4 +1,4 @@
-import { FC, useMemo, useContext, Fragment, ReactNode } from 'react';
+import { FC, useContext, Fragment, ReactNode, useMemo } from 'react';
 import { cn } from 'reablocks';
 import { ChatContext } from '@/ChatContext';
 import { RichTextPreviewProps, RichTextFormatConfig } from './types';
@@ -193,10 +193,8 @@ const parseInlineFormatting = (
 
     // No match - consume one character as text
     if (!matched) {
-      // Find next potential formatting start
-      const nextSpecial = remaining
-        .slice(1)
-        .search(/[\*_`~\[]|^[-*+]\s|^\d+\./);
+      // Find next potential formatting start (formatting markers only, not line anchors)
+      const nextSpecial = remaining.slice(1).search(/[*_`~\[]/);
       if (nextSpecial === -1) {
         tokens.push({ type: 'text', content: remaining });
         remaining = '';
@@ -225,7 +223,12 @@ export const RichTextPreview: FC<RichTextPreviewProps> = ({
   customRenderers
 }) => {
   const { theme } = useContext(ChatContext);
-  const config = { ...DEFAULT_CONFIG, ...formatConfig };
+
+  // Memoize config to prevent unnecessary re-parsing
+  const config = useMemo(
+    () => ({ ...DEFAULT_CONFIG, ...formatConfig }),
+    [formatConfig]
+  );
 
   const tokens = useMemo(() => parseText(text, config), [text, config]);
 

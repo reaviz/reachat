@@ -134,6 +134,8 @@ export const SlashCommandMenu: FC<SlashCommandMenuProps> = ({
   return (
     <div
       ref={menuRef}
+      role="listbox"
+      aria-label="Slash commands"
       className={cn(
         'rounded-lg border shadow-lg overflow-hidden',
         'bg-white dark:bg-gray-900',
@@ -180,6 +182,9 @@ export const SlashCommandMenu: FC<SlashCommandMenuProps> = ({
                   <div
                     key={command.id}
                     ref={isActive ? activeItemRef : undefined}
+                    role="option"
+                    aria-selected={isActive}
+                    aria-disabled={command.disabled}
                     className={cn(
                       'flex items-center gap-3 px-3 py-2 cursor-pointer',
                       'transition-colors duration-100',

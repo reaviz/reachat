@@ -287,6 +287,8 @@ const filterMentions = (mentions: Mention[], filter: string): Mention[] => {
 
 /**
  * Normalizes mention configuration to an array of Mention objects.
+ * Note: Currently only processes the first MentionTrigger if multiple are provided.
+ * Multiple triggers with different characters (e.g., '@' and '#') are not yet supported.
  */
 const normalizeMentions = (
   mentions: Mention[] | MentionTrigger[] | undefined
@@ -295,7 +297,7 @@ const normalizeMentions = (
 
   // Check if it's an array of MentionTrigger
   if (mentions.length > 0 && 'trigger' in mentions[0]) {
-    // Extract data from first trigger for now
+    // Extract data from first trigger only (multiple triggers not yet supported)
     const trigger = mentions[0] as MentionTrigger;
     if (Array.isArray(trigger.data)) {
       return trigger.data;
@@ -450,7 +452,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
               setAsyncMentions(data);
               setMentionsLoading(false);
             })
-            .catch(() => {
+            .catch(error => {
+              console.error('Failed to fetch mentions:', error);
               setAsyncMentions([]);
               setMentionsLoading(false);
             });
@@ -556,7 +559,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       [onMention, getInsertText, closeTrigger]
     );
 
-    const handleKeyPress = useCallback(
+    const handleInputKeyDown = useCallback(
       (e: KeyboardEvent<HTMLTextAreaElement>) => {
         // Check if trigger menu is handling the key
         if (isMenuOpen && handleKeyDown(e, currentItemCount)) {
@@ -679,7 +682,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
                 autoFocus
                 value={message}
                 defaultValue={defaultValue}
-                onKeyDown={handleKeyPress}
+                onKeyDown={handleInputKeyDown}
                 placeholder={placeholder}
                 disabled={isLoading || disabled}
                 onChange={handleInputChange}

@@ -14,6 +14,7 @@ import {
 } from 'react';
 import { cn } from 'reablocks';
 import { Mention } from '../Mentions';
+import { getCursorRect } from './utils';
 
 export interface MentionListProps {
   items: Mention[];
@@ -277,24 +278,6 @@ export const createMentionExtension = ({
       render: () => {
         let component: ReactRenderer<MentionListRef> | null = null;
         let popup: TippyInstance<TippyProps>[] | null = null;
-
-        // Helper to get cursor position from the editor
-        const getCursorRect = (editor: any): DOMRect => {
-          const { view } = editor;
-          const { state } = view;
-          const { from } = state.selection;
-
-          // Try to get coordinates from the editor view
-          const coords = view.coordsAtPos(from);
-
-          // Create a virtual rect at the cursor position
-          return new DOMRect(
-            coords.left,
-            coords.top,
-            1,
-            coords.bottom - coords.top
-          );
-        };
 
         return {
           onStart: (props: SuggestionProps<Mention>) => {

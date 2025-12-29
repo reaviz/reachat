@@ -413,7 +413,7 @@ export const AllFeaturesCombined = () => {
 };
 
 export const CustomSlashCommandMenu = () => {
-  const [sessions, setSessions] = useState<Session[]>([emptySession]);
+  const [sessions] = useState<Session[]>([emptySession]);
 
   return (
     <div
@@ -474,7 +474,7 @@ export const CustomSlashCommandMenu = () => {
 };
 
 export const AsyncMentions = () => {
-  const [sessions, setSessions] = useState<Session[]>([emptySession]);
+  const [sessions] = useState<Session[]>([emptySession]);
 
   // Simulated async data fetching
   const fetchMentions = async (query: string): Promise<Mention[]> => {
@@ -536,7 +536,7 @@ export const AsyncMentions = () => {
 };
 
 export const DisabledCommands = () => {
-  const [sessions, setSessions] = useState<Session[]>([emptySession]);
+  const [sessions] = useState<Session[]>([emptySession]);
 
   const commandsWithDisabled: SlashCommand[] = [
     {

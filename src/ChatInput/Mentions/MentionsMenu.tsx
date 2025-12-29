@@ -162,6 +162,8 @@ export const MentionsMenu: FC<MentionsMenuProps> = ({
   return (
     <div
       ref={menuRef}
+      role="listbox"
+      aria-label="Mentions"
       className={cn(
         'rounded-lg border shadow-lg overflow-hidden',
         'bg-white dark:bg-gray-900',
@@ -208,6 +210,9 @@ export const MentionsMenu: FC<MentionsMenuProps> = ({
                   <div
                     key={mention.id}
                     ref={isActive ? activeItemRef : undefined}
+                    role="option"
+                    aria-selected={isActive}
+                    aria-disabled={mention.disabled}
                     className={cn(
                       'flex items-center gap-3 px-3 py-2 cursor-pointer',
                       'transition-colors duration-100',
