@@ -291,14 +291,43 @@ export const createMentionExtension = ({
 
             if (!props.clientRect) return;
 
+            // Get the editor element for positioning fallback
+            const editorElement = props.editor.view.dom;
+
             popup = tippy('body', {
-              getReferenceClientRect: props.clientRect as () => DOMRect,
+              getReferenceClientRect: () => {
+                const rect = props.clientRect?.();
+                if (rect) return rect;
+                // Fallback to editor element position
+                return editorElement.getBoundingClientRect();
+              },
               appendTo: () => document.body,
               content: component.element,
               showOnCreate: true,
               interactive: true,
               trigger: 'manual',
-              placement: 'top-start'
+              placement: 'top-start',
+              popperOptions: {
+                modifiers: [
+                  {
+                    name: 'flip',
+                    options: {
+                      fallbackPlacements: [
+                        'bottom-start',
+                        'top-end',
+                        'bottom-end'
+                      ]
+                    }
+                  },
+                  {
+                    name: 'preventOverflow',
+                    options: {
+                      boundary: 'viewport',
+                      padding: 8
+                    }
+                  }
+                ]
+              }
             });
           },
 
@@ -311,8 +340,14 @@ export const createMentionExtension = ({
 
             if (!props.clientRect) return;
 
+            const editorElement = props.editor.view.dom;
+
             popup?.[0]?.setProps({
-              getReferenceClientRect: props.clientRect as () => DOMRect
+              getReferenceClientRect: () => {
+                const rect = props.clientRect?.();
+                if (rect) return rect;
+                return editorElement.getBoundingClientRect();
+              }
             });
           },
 

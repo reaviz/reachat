@@ -18,9 +18,26 @@ import SearchIcon from './assets/search.svg?react';
 import CloseIcon from './assets/close-fill.svg?react';
 
 export default {
-  title: 'Demos/Enhanced Input',
+  title: 'Demos/ChatInput',
   component: ChatInput
 } as Meta;
+
+// Info panel component that floats in the corner
+const InfoPanel = ({
+  children,
+  show = true
+}: {
+  children: React.ReactNode;
+  show?: boolean;
+}) =>
+  show ? (
+    <div
+      className="absolute top-4 right-4 z-50 max-w-xs p-3 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-300 shadow-lg"
+      style={{ maxWidth: 280 }}
+    >
+      {children}
+    </div>
+  ) : null;
 
 // Sample slash commands
 const sampleSlashCommands: SlashCommand[] = [
@@ -124,7 +141,7 @@ export const SlashCommands = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-gray-950 bg-white relative"
       style={{
         position: 'absolute',
         top: 0,
@@ -136,32 +153,33 @@ export const SlashCommands = () => {
         borderRadius: 5
       }}
     >
-      <div className="mb-4 text-sm text-gray-500">
-        <strong>Try it:</strong> Type <code>/</code> to see available commands.
-        Use arrow keys to navigate and Enter to select.
+      <InfoPanel>
+        <strong>Try it:</strong> Type <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">/</code> to see commands.
         {lastCommand && (
           <div className="mt-2 text-blue-500">
-            Last command selected: <code>{lastCommand}</code>
+            Selected: <code>/{lastCommand}</code>
           </div>
         )}
-      </div>
+      </InfoPanel>
       <Chat
         viewType="console"
         sessions={sessions}
         activeSessionId="session-1"
-        onSendMessage={(message) => {
-          setSessions(prev => [{
-            ...prev[0],
-            conversations: [
-              ...prev[0].conversations,
-              {
-                id: Date.now().toString(),
-                createdAt: new Date(),
-                question: message,
-                response: 'This is a sample response.'
-              }
-            ]
-          }]);
+        onSendMessage={message => {
+          setSessions(prev => [
+            {
+              ...prev[0],
+              conversations: [
+                ...prev[0].conversations,
+                {
+                  id: Date.now().toString(),
+                  createdAt: new Date(),
+                  question: message,
+                  response: 'This is a sample response.'
+                }
+              ]
+            }
+          ]);
         }}
       >
         <SessionsList>
@@ -174,9 +192,8 @@ export const SlashCommands = () => {
           <ChatInput
             placeholder="Type / to see commands..."
             slashCommands={sampleSlashCommands}
-            onSlashCommand={(cmd) => {
+            onSlashCommand={cmd => {
               setLastCommand(cmd.command);
-              console.log('Slash command selected:', cmd);
             }}
           />
         </SessionMessagePanel>
@@ -191,7 +208,7 @@ export const Mentions = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-gray-950 bg-white relative"
       style={{
         position: 'absolute',
         top: 0,
@@ -203,32 +220,33 @@ export const Mentions = () => {
         borderRadius: 5
       }}
     >
-      <div className="mb-4 text-sm text-gray-500">
-        <strong>Try it:</strong> Type <code>@</code> to mention someone.
-        Use arrow keys to navigate and Enter to select.
+      <InfoPanel>
+        <strong>Try it:</strong> Type <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">@</code> to mention someone.
         {lastMention && (
           <div className="mt-2 text-blue-500">
-            Last mention: <code>@{lastMention}</code>
+            Mentioned: <code>@{lastMention}</code>
           </div>
         )}
-      </div>
+      </InfoPanel>
       <Chat
         viewType="console"
         sessions={sessions}
         activeSessionId="session-1"
-        onSendMessage={(message) => {
-          setSessions(prev => [{
-            ...prev[0],
-            conversations: [
-              ...prev[0].conversations,
-              {
-                id: Date.now().toString(),
-                createdAt: new Date(),
-                question: message,
-                response: 'This is a sample response.'
-              }
-            ]
-          }]);
+        onSendMessage={message => {
+          setSessions(prev => [
+            {
+              ...prev[0],
+              conversations: [
+                ...prev[0].conversations,
+                {
+                  id: Date.now().toString(),
+                  createdAt: new Date(),
+                  question: message,
+                  response: 'This is a sample response.'
+                }
+              ]
+            }
+          ]);
         }}
       >
         <SessionsList>
@@ -244,9 +262,8 @@ export const Mentions = () => {
             mentionsMenuProps={{
               groupByCategory: true
             }}
-            onMention={(mention) => {
+            onMention={mention => {
               setLastMention(mention.name);
-              console.log('Mention selected:', mention);
             }}
           />
         </SessionMessagePanel>
@@ -260,7 +277,7 @@ export const InlineRichText = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-gray-950 bg-white relative"
       style={{
         position: 'absolute',
         top: 0,
@@ -272,36 +289,39 @@ export const InlineRichText = () => {
         borderRadius: 5
       }}
     >
-      <div className="mb-4 text-sm text-gray-500">
-        <strong>Inline Rich Text Editor:</strong> Format text directly in the input!
-        <ul className="mt-2 list-disc ml-6">
-          <li><code>**bold**</code> or <code>Ctrl+B</code> for <strong>bold</strong></li>
-          <li><code>*italic*</code> or <code>Ctrl+I</code> for <em>italic</em></li>
-          <li><code>`code`</code> for <code>inline code</code></li>
-          <li><code>- item</code> for bullet lists</li>
-          <li><code>1. item</code> for numbered lists</li>
-          <li><code>&gt; quote</code> for blockquotes</li>
-          <li><code>```</code> for code blocks</li>
-          <li><code>~~strikethrough~~</code> for <del>strikethrough</del></li>
-        </ul>
-      </div>
+      <InfoPanel>
+        <strong>Rich Text:</strong> Format inline!
+        <div className="mt-1 text-xs space-y-0.5">
+          <div>
+            <code>**bold**</code> • <code>*italic*</code>
+          </div>
+          <div>
+            <code>`code`</code> • <code>- list</code>
+          </div>
+          <div>
+            <code>&gt; quote</code> • <code>```block</code>
+          </div>
+        </div>
+      </InfoPanel>
       <Chat
         viewType="console"
         sessions={sessions}
         activeSessionId="session-1"
-        onSendMessage={(message) => {
-          setSessions(prev => [{
-            ...prev[0],
-            conversations: [
-              ...prev[0].conversations,
-              {
-                id: Date.now().toString(),
-                createdAt: new Date(),
-                question: message,
-                response: 'Message received!'
-              }
-            ]
-          }]);
+        onSendMessage={message => {
+          setSessions(prev => [
+            {
+              ...prev[0],
+              conversations: [
+                ...prev[0].conversations,
+                {
+                  id: Date.now().toString(),
+                  createdAt: new Date(),
+                  question: message,
+                  response: 'Message received!'
+                }
+              ]
+            }
+          ]);
         }}
       >
         <SessionsList>
@@ -311,10 +331,7 @@ export const InlineRichText = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages />
-          <ChatInput
-            placeholder="Try typing formatted text inline..."
-            enableRichText
-          />
+          <ChatInput placeholder="Try typing formatted text inline..." enableRichText />
         </SessionMessagePanel>
       </Chat>
     </div>
@@ -327,7 +344,7 @@ export const AllFeaturesCombined = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-gray-950 bg-white relative"
       style={{
         position: 'absolute',
         top: 0,
@@ -339,37 +356,35 @@ export const AllFeaturesCombined = () => {
         borderRadius: 5
       }}
     >
-      <div className="mb-4 text-sm text-gray-500">
-        <strong>All features enabled with inline rich text:</strong>
-        <ul className="mt-2 list-disc ml-6">
-          <li>Type <code>/</code> for slash commands</li>
-          <li>Type <code>@</code> for mentions</li>
-          <li>Use markdown formatting inline (bold, italic, lists, code)</li>
-        </ul>
+      <InfoPanel>
+        <strong>All features:</strong>
+        <div className="mt-1 text-xs">
+          <code>/</code> commands • <code>@</code> mentions • rich text
+        </div>
         {lastAction && (
-          <div className="mt-2 text-blue-500">
-            Last action: {lastAction}
-          </div>
+          <div className="mt-2 text-blue-500 text-xs truncate">{lastAction}</div>
         )}
-      </div>
+      </InfoPanel>
       <Chat
         viewType="console"
         sessions={sessions}
         activeSessionId="session-1"
-        onSendMessage={(message) => {
-          setSessions(prev => [{
-            ...prev[0],
-            conversations: [
-              ...prev[0].conversations,
-              {
-                id: Date.now().toString(),
-                createdAt: new Date(),
-                question: message,
-                response: 'This is a sample response with all features.'
-              }
-            ]
-          }]);
-          setLastAction(`Sent message: "${message.substring(0, 50)}..."`);
+        onSendMessage={message => {
+          setSessions(prev => [
+            {
+              ...prev[0],
+              conversations: [
+                ...prev[0].conversations,
+                {
+                  id: Date.now().toString(),
+                  createdAt: new Date(),
+                  question: message,
+                  response: 'This is a sample response with all features.'
+                }
+              ]
+            }
+          ]);
+          setLastAction(`Sent: "${message.substring(0, 30)}..."`);
         }}
       >
         <SessionsList>
@@ -380,14 +395,14 @@ export const AllFeaturesCombined = () => {
           <SessionMessagesHeader />
           <SessionMessages />
           <ChatInput
-            placeholder="Type your message... (try / or @ or **bold**)"
+            placeholder="Type / or @ or **bold**..."
             slashCommands={sampleSlashCommands}
             mentions={sampleMentions}
             enableRichText
-            onSlashCommand={(cmd) => {
-              setLastAction(`Slash command: /${cmd.command}`);
+            onSlashCommand={cmd => {
+              setLastAction(`Command: /${cmd.command}`);
             }}
-            onMention={(mention) => {
+            onMention={mention => {
               setLastAction(`Mentioned: @${mention.name}`);
             }}
           />
@@ -402,7 +417,7 @@ export const CustomSlashCommandMenu = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-gray-950 bg-white relative"
       style={{
         position: 'absolute',
         top: 0,
@@ -414,15 +429,10 @@ export const CustomSlashCommandMenu = () => {
         borderRadius: 5
       }}
     >
-      <div className="mb-4 text-sm text-gray-500">
-        <strong>Custom Menu Renderer:</strong> This example shows how to
-        use a custom renderer for the slash command menu.
-      </div>
-      <Chat
-        viewType="console"
-        sessions={sessions}
-        activeSessionId="session-1"
-      >
+      <InfoPanel>
+        <strong>Custom Menu:</strong> Uses a custom renderer for the slash command menu.
+      </InfoPanel>
+      <Chat viewType="console" sessions={sessions} activeSessionId="session-1">
         <SessionsList>
           <NewSessionButton />
           <SessionGroups />
@@ -433,7 +443,7 @@ export const CustomSlashCommandMenu = () => {
           <ChatInput
             placeholder="Type / to see custom menu..."
             slashCommands={sampleSlashCommands}
-            renderSlashCommandMenu={({ commands, activeIndex, onSelect, onClose }) => (
+            renderSlashCommandMenu={({ commands, activeIndex, onSelect }) => (
               <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-1 shadow-xl">
                 <div className="bg-gray-900 rounded-md p-2">
                   <div className="text-xs text-gray-400 mb-2 px-2">
@@ -468,7 +478,6 @@ export const AsyncMentions = () => {
 
   // Simulated async data fetching
   const fetchMentions = async (query: string): Promise<Mention[]> => {
-    // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 500));
 
     const allMentions: Mention[] = [
@@ -488,7 +497,7 @@ export const AsyncMentions = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-gray-950 bg-white relative"
       style={{
         position: 'absolute',
         top: 0,
@@ -500,15 +509,10 @@ export const AsyncMentions = () => {
         borderRadius: 5
       }}
     >
-      <div className="mb-4 text-sm text-gray-500">
-        <strong>Async Mentions:</strong> This example demonstrates loading
-        mentions from an async data source with a loading indicator.
-      </div>
-      <Chat
-        viewType="console"
-        sessions={sessions}
-        activeSessionId="session-1"
-      >
+      <InfoPanel>
+        <strong>Async Mentions:</strong> Loads mentions from an async source with loading indicator.
+      </InfoPanel>
+      <Chat viewType="console" sessions={sessions} activeSessionId="session-1">
         <SessionsList>
           <NewSessionButton />
           <SessionGroups />
@@ -517,7 +521,7 @@ export const AsyncMentions = () => {
           <SessionMessagesHeader />
           <SessionMessages />
           <ChatInput
-            placeholder="Type @ to load mentions asynchronously..."
+            placeholder="Type @ to load mentions..."
             mentions={[
               {
                 trigger: '@',
@@ -559,7 +563,7 @@ export const DisabledCommands = () => {
 
   return (
     <div
-      className="dark:bg-gray-950 bg-white"
+      className="dark:bg-gray-950 bg-white relative"
       style={{
         position: 'absolute',
         top: 0,
@@ -571,15 +575,10 @@ export const DisabledCommands = () => {
         borderRadius: 5
       }}
     >
-      <div className="mb-4 text-sm text-gray-500">
-        <strong>Disabled Commands:</strong> Some commands can be disabled
-        (e.g., for premium features or unavailable actions).
-      </div>
-      <Chat
-        viewType="console"
-        sessions={sessions}
-        activeSessionId="session-1"
-      >
+      <InfoPanel>
+        <strong>Disabled Commands:</strong> Some commands can be disabled for premium features.
+      </InfoPanel>
+      <Chat viewType="console" sessions={sessions} activeSessionId="session-1">
         <SessionsList>
           <NewSessionButton />
           <SessionGroups />

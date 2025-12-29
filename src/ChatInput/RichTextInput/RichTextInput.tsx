@@ -175,10 +175,7 @@ export const RichTextInput = forwardRef<RichTextInputRef, RichTextInputProps>(
       <div
         className={cn(
           'rich-text-input-container',
-          'w-full px-3 py-2',
-          'bg-white dark:bg-gray-900',
-          'border border-gray-200 dark:border-gray-700 rounded-lg',
-          'focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent',
+          'w-full',
           disabled && 'opacity-50 cursor-not-allowed',
           className
         )}
