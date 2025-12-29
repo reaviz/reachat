@@ -1,5 +1,5 @@
 import { FC, useContext, useEffect, useRef, useMemo, useCallback } from 'react';
-import { cn } from 'reablocks';
+import { cn, List, ListItem, ListHeader, Avatar } from 'reablocks';
 import { ChatContext } from '@/ChatContext';
 import { Mention, MentionsMenuProps } from './types';
 
@@ -72,15 +72,6 @@ export const MentionsMenu: FC<MentionsMenuProps> = ({
     return groupMentionsByCategory(filteredMentions);
   }, [filteredMentions, groupByCategory]);
 
-  // Flatten grouped mentions for index tracking
-  const flatMentions = useMemo(() => {
-    const flat: Mention[] = [];
-    groupedMentions.forEach(items => {
-      flat.push(...items);
-    });
-    return flat;
-  }, [groupedMentions]);
-
   // Scroll active item into view
   useEffect(() => {
     if (activeItemRef.current) {
@@ -105,10 +96,10 @@ export const MentionsMenu: FC<MentionsMenuProps> = ({
   // Loading state
   if (isLoading) {
     return (
-      <div
+      <List
         ref={menuRef}
         className={cn(
-          'rounded-lg border shadow-lg overflow-hidden',
+          'rounded-lg border shadow-lg overflow-hidden min-w-[220px]',
           'bg-white dark:bg-gray-900',
           'border-gray-200 dark:border-gray-700',
           mentionTheme?.menu,
@@ -128,17 +119,19 @@ export const MentionsMenu: FC<MentionsMenuProps> = ({
             </div>
           )}
         </div>
-      </div>
+      </List>
     );
   }
 
   // Empty state
   if (filteredMentions.length === 0) {
     return (
-      <div
+      <List
         ref={menuRef}
+        role="listbox"
+        aria-label="Mentions"
         className={cn(
-          'rounded-lg border shadow-lg overflow-hidden',
+          'rounded-lg border shadow-lg overflow-hidden min-w-[220px]',
           'bg-white dark:bg-gray-900',
           'border-gray-200 dark:border-gray-700',
           mentionTheme?.menu,
@@ -153,81 +146,77 @@ export const MentionsMenu: FC<MentionsMenuProps> = ({
         >
           {emptyContent || 'No matches found'}
         </div>
-      </div>
+      </List>
     );
   }
 
   let currentFlatIndex = 0;
 
   return (
-    <div
+    <List
       ref={menuRef}
       role="listbox"
       aria-label="Mentions"
       className={cn(
-        'rounded-lg border shadow-lg overflow-hidden',
+        'rounded-lg border shadow-lg overflow-hidden min-w-[220px]',
         'bg-white dark:bg-gray-900',
         'border-gray-200 dark:border-gray-700',
         mentionTheme?.menu,
         className
       )}
-      style={{ maxHeight }}
+      style={{ maxHeight, overflowY: 'auto' }}
     >
-      <div className="overflow-y-auto" style={{ maxHeight }}>
-        {Array.from(groupedMentions.entries()).map(
-          ([category, categoryMentions]) => (
-            <div key={category}>
-              {groupByCategory && groupedMentions.size > 1 && (
-                <div
-                  className={cn(
-                    'px-3 py-2 text-xs font-semibold uppercase tracking-wide',
-                    'text-gray-500 dark:text-gray-400',
-                    'bg-gray-50 dark:bg-gray-800/50',
-                    'border-b border-gray-200 dark:border-gray-700',
-                    mentionTheme?.category
-                  )}
-                >
-                  {category}
-                </div>
-              )}
-              {categoryMentions.map(mention => {
-                const flatIndex = currentFlatIndex++;
-                const isActive = flatIndex === activeIndex;
+      {Array.from(groupedMentions.entries()).map(
+        ([category, categoryMentions]) => (
+          <div key={category}>
+            {groupByCategory && groupedMentions.size > 1 && (
+              <ListHeader
+                className={cn(
+                  'text-xs font-semibold uppercase tracking-wide',
+                  'text-gray-500 dark:text-gray-400',
+                  'bg-gray-50 dark:bg-gray-800/50',
+                  'border-b border-gray-200 dark:border-gray-700',
+                  mentionTheme?.category
+                )}
+              >
+                {category}
+              </ListHeader>
+            )}
+            {categoryMentions.map(mention => {
+              const flatIndex = currentFlatIndex++;
+              const isActive = flatIndex === activeIndex;
 
-                if (renderMention) {
-                  return (
-                    <div
-                      key={mention.id}
-                      ref={isActive ? activeItemRef : undefined}
-                      onClick={() => handleSelect(mention)}
-                    >
-                      {renderMention(mention, isActive)}
-                    </div>
-                  );
-                }
-
+              if (renderMention) {
                 return (
                   <div
                     key={mention.id}
                     ref={isActive ? activeItemRef : undefined}
-                    role="option"
-                    aria-selected={isActive}
-                    aria-disabled={mention.disabled}
-                    className={cn(
-                      'flex items-center gap-3 px-3 py-2 cursor-pointer',
-                      'transition-colors duration-100',
-                      {
-                        'bg-blue-50 dark:bg-blue-900/30': isActive,
-                        'hover:bg-gray-50 dark:hover:bg-gray-800/50': !isActive,
-                        'opacity-50 cursor-not-allowed': mention.disabled
-                      },
-                      mentionTheme?.item?.base,
-                      isActive && mentionTheme?.item?.active,
-                      mention.disabled && mentionTheme?.item?.disabled
-                    )}
                     onClick={() => handleSelect(mention)}
                   >
-                    {mention.avatar && (
+                    {renderMention(mention, isActive)}
+                  </div>
+                );
+              }
+
+              return (
+                <ListItem
+                  key={mention.id}
+                  ref={isActive ? activeItemRef : undefined}
+                  role="option"
+                  aria-selected={isActive}
+                  aria-disabled={mention.disabled}
+                  active={isActive}
+                  disabled={mention.disabled}
+                  dense
+                  className={cn(
+                    'cursor-pointer transition-colors duration-100',
+                    mentionTheme?.item?.base,
+                    isActive && mentionTheme?.item?.active,
+                    mention.disabled && mentionTheme?.item?.disabled
+                  )}
+                  onClick={() => handleSelect(mention)}
+                  start={
+                    mention.avatar && (
                       <div
                         className={cn(
                           'flex-shrink-0 w-8 h-8 rounded-full overflow-hidden',
@@ -236,10 +225,10 @@ export const MentionsMenu: FC<MentionsMenuProps> = ({
                         )}
                       >
                         {typeof mention.avatar === 'string' ? (
-                          <img
+                          <Avatar
                             src={mention.avatar}
-                            alt={mention.name}
-                            className="w-full h-full object-cover"
+                            name={mention.name}
+                            size={32}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center [&>svg]:w-5 [&>svg]:h-5">
@@ -247,36 +236,37 @@ export const MentionsMenu: FC<MentionsMenuProps> = ({
                           </div>
                         )}
                       </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <span
+                    )
+                  }
+                >
+                  <div className="flex-1 min-w-0">
+                    <span
+                      className={cn(
+                        'font-medium text-sm block',
+                        'text-gray-900 dark:text-gray-100',
+                        mentionTheme?.name
+                      )}
+                    >
+                      {mention.name}
+                    </span>
+                    {mention.description && (
+                      <p
                         className={cn(
-                          'font-medium text-sm block',
-                          'text-gray-900 dark:text-gray-100',
-                          mentionTheme?.name
+                          'text-xs truncate',
+                          'text-gray-500 dark:text-gray-400',
+                          mentionTheme?.description
                         )}
                       >
-                        {mention.name}
-                      </span>
-                      {mention.description && (
-                        <p
-                          className={cn(
-                            'text-xs truncate',
-                            'text-gray-500 dark:text-gray-400',
-                            mentionTheme?.description
-                          )}
-                        >
-                          {mention.description}
-                        </p>
-                      )}
-                    </div>
+                        {mention.description}
+                      </p>
+                    )}
                   </div>
-                );
-              })}
-            </div>
-          )
-        )}
-      </div>
-    </div>
+                </ListItem>
+              );
+            })}
+          </div>
+        )
+      )}
+    </List>
   );
 };

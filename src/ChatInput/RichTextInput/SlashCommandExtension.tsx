@@ -15,25 +15,13 @@ import {
   useState,
   useCallback
 } from 'react';
-import { cn } from 'reablocks';
+import { cn, List, ListItem, Kbd } from 'reablocks';
 import { SlashCommand } from '../SlashCommand';
 import { getCursorRect } from './utils';
 
 export interface SlashCommandListProps {
   items: SlashCommand[];
   command: (item: SlashCommand) => void;
-  theme?: {
-    menu?: {
-      base?: string;
-      item?: string;
-      itemActive?: string;
-      itemIcon?: string;
-      itemContent?: string;
-      itemLabel?: string;
-      itemDescription?: string;
-      itemShortcut?: string;
-    };
-  };
 }
 
 export interface SlashCommandListRef {
@@ -43,7 +31,7 @@ export interface SlashCommandListRef {
 export const SlashCommandList = forwardRef<
   SlashCommandListRef,
   SlashCommandListProps
->(({ items, command, theme }, ref) => {
+>(({ items, command }, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const selectItem = useCallback(
@@ -108,71 +96,48 @@ export const SlashCommandList = forwardRef<
   }
 
   return (
-    <div
+    <List
+      role="listbox"
+      aria-label="Slash commands"
       className={cn(
-        'bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700',
-        'overflow-hidden min-w-[220px] max-h-[300px] overflow-y-auto',
-        theme?.menu?.base
+        'rounded-lg border shadow-lg overflow-hidden min-w-[220px] max-h-[300px] overflow-y-auto',
+        'bg-white dark:bg-gray-800',
+        'border-gray-200 dark:border-gray-700'
       )}
     >
       {items.map((item, index) => (
-        <button
+        <ListItem
           key={item.id}
-          type="button"
-          className={cn(
-            'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors',
-            'hover:bg-gray-100 dark:hover:bg-gray-700',
-            index === selectedIndex && 'bg-gray-100 dark:bg-gray-700',
-            item.disabled && 'opacity-50 cursor-not-allowed',
-            theme?.menu?.item,
-            index === selectedIndex && theme?.menu?.itemActive
-          )}
-          onClick={() => selectItem(index)}
+          role="option"
+          aria-selected={index === selectedIndex}
+          aria-disabled={item.disabled}
+          active={index === selectedIndex}
           disabled={item.disabled}
-        >
-          {item.icon && (
-            <span
-              className={cn(
-                'w-5 h-5 flex items-center justify-center text-gray-500 dark:text-gray-400',
-                theme?.menu?.itemIcon
-              )}
-            >
-              {item.icon}
-            </span>
-          )}
-          <div className={cn('flex-1 min-w-0', theme?.menu?.itemContent)}>
-            <div
-              className={cn(
-                'font-medium text-sm text-gray-900 dark:text-gray-100',
-                theme?.menu?.itemLabel
-              )}
-            >
-              /{item.command}
-            </div>
-            {item.description && (
-              <div
-                className={cn(
-                  'text-xs text-gray-500 dark:text-gray-400 truncate',
-                  theme?.menu?.itemDescription
-                )}
-              >
-                {item.description}
+          dense
+          className="cursor-pointer"
+          onClick={() => selectItem(index)}
+          start={
+            item.icon && (
+              <div className="w-5 h-5 flex items-center justify-center text-gray-500 dark:text-gray-400 [&>svg]:w-full [&>svg]:h-full">
+                {item.icon}
               </div>
+            )
+          }
+          end={item.shortcut && <Kbd keycode={item.shortcut} />}
+        >
+          <div className="flex-1 min-w-0">
+            <span className="font-medium text-sm block text-gray-900 dark:text-gray-100">
+              /{item.command}
+            </span>
+            {item.description && (
+              <p className="text-xs truncate text-gray-500 dark:text-gray-400">
+                {item.description}
+              </p>
             )}
           </div>
-          {item.shortcut && (
-            <span
-              className={cn(
-                'text-xs text-gray-400 dark:text-gray-500',
-                theme?.menu?.itemShortcut
-              )}
-            >
-              {item.shortcut}
-            </span>
-          )}
-        </button>
+        </ListItem>
       ))}
-    </div>
+    </List>
   );
 });
 
@@ -181,13 +146,11 @@ SlashCommandList.displayName = 'SlashCommandList';
 export interface CreateSlashCommandExtensionOptions {
   commands: SlashCommand[];
   onSelect?: (command: SlashCommand) => void;
-  theme?: SlashCommandListProps['theme'];
 }
 
 export const createSlashCommandExtension = ({
   commands,
-  onSelect,
-  theme
+  onSelect
 }: CreateSlashCommandExtensionOptions) => {
   return Extension.create({
     name: 'slashCommand',
@@ -237,10 +200,7 @@ export const createSlashCommandExtension = ({
             return {
               onStart: (props: SuggestionProps<SlashCommand>) => {
                 component = new ReactRenderer(SlashCommandList, {
-                  props: {
-                    ...props,
-                    theme
-                  },
+                  props,
                   editor: props.editor
                 });
 
@@ -292,10 +252,7 @@ export const createSlashCommandExtension = ({
               },
 
               onUpdate: (props: SuggestionProps<SlashCommand>) => {
-                component?.updateProps({
-                  ...props,
-                  theme
-                });
+                component?.updateProps(props);
 
                 const editorElement = props.editor.view.dom;
 

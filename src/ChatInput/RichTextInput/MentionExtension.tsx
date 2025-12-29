@@ -12,7 +12,7 @@ import {
   useState,
   useCallback
 } from 'react';
-import { cn } from 'reablocks';
+import { cn, List, ListItem, Avatar } from 'reablocks';
 import { Mention } from '../Mentions';
 import { getCursorRect } from './utils';
 
@@ -20,19 +20,6 @@ export interface MentionListProps {
   items: Mention[];
   command: (item: Mention) => void;
   isLoading?: boolean;
-  theme?: {
-    menu?: {
-      base?: string;
-      item?: string;
-      itemActive?: string;
-      itemAvatar?: string;
-      itemContent?: string;
-      itemName?: string;
-      itemDescription?: string;
-      loading?: string;
-      empty?: string;
-    };
-  };
 }
 
 export interface MentionListRef {
@@ -40,7 +27,7 @@ export interface MentionListRef {
 }
 
 export const MentionList = forwardRef<MentionListRef, MentionListProps>(
-  ({ items, command, isLoading, theme }, ref) => {
+  ({ items, command, isLoading }, ref) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const selectItem = useCallback(
@@ -84,110 +71,82 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
 
     if (isLoading) {
       return (
-        <div
+        <List
           className={cn(
-            'bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700',
-            'p-3 min-w-[200px]',
-            theme?.menu?.base
+            'rounded-lg border shadow-lg overflow-hidden min-w-[200px]',
+            'bg-white dark:bg-gray-800',
+            'border-gray-200 dark:border-gray-700'
           )}
         >
-          <div
-            className={cn(
-              'text-sm text-gray-500 dark:text-gray-400',
-              theme?.menu?.loading
-            )}
-          >
+          <div className="p-3 text-sm text-gray-500 dark:text-gray-400">
             Loading...
           </div>
-        </div>
+        </List>
       );
     }
 
     if (items.length === 0) {
       return (
-        <div
+        <List
           className={cn(
-            'bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700',
-            'p-3 min-w-[200px]',
-            theme?.menu?.base
+            'rounded-lg border shadow-lg overflow-hidden min-w-[200px]',
+            'bg-white dark:bg-gray-800',
+            'border-gray-200 dark:border-gray-700'
           )}
         >
-          <div
-            className={cn(
-              'text-sm text-gray-500 dark:text-gray-400',
-              theme?.menu?.empty
-            )}
-          >
+          <div className="p-3 text-sm text-gray-500 dark:text-gray-400">
             No results found
           </div>
-        </div>
+        </List>
       );
     }
 
     return (
-      <div
+      <List
+        role="listbox"
+        aria-label="Mentions"
         className={cn(
-          'bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700',
-          'overflow-hidden min-w-[220px] max-h-[300px] overflow-y-auto',
-          theme?.menu?.base
+          'rounded-lg border shadow-lg overflow-hidden min-w-[220px] max-h-[300px] overflow-y-auto',
+          'bg-white dark:bg-gray-800',
+          'border-gray-200 dark:border-gray-700'
         )}
       >
         {items.map((item, index) => (
-          <button
+          <ListItem
             key={item.id}
-            type="button"
-            className={cn(
-              'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors',
-              'hover:bg-gray-100 dark:hover:bg-gray-700',
-              index === selectedIndex && 'bg-gray-100 dark:bg-gray-700',
-              theme?.menu?.item,
-              index === selectedIndex && theme?.menu?.itemActive
-            )}
+            role="option"
+            aria-selected={index === selectedIndex}
+            active={index === selectedIndex}
+            dense
+            className="cursor-pointer"
             onClick={() => selectItem(index)}
-          >
-            {item.avatar &&
-              (typeof item.avatar === 'string' ? (
-                <img
-                  src={item.avatar}
-                  alt={item.name}
-                  className={cn(
-                    'w-8 h-8 rounded-full object-cover',
-                    theme?.menu?.itemAvatar
+            start={
+              item.avatar && (
+                <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700">
+                  {typeof item.avatar === 'string' ? (
+                    <Avatar src={item.avatar} name={item.name} size={32} />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center [&>svg]:w-5 [&>svg]:h-5">
+                      {item.avatar}
+                    </div>
                   )}
-                />
-              ) : (
-                <span
-                  className={cn(
-                    'w-8 h-8 flex items-center justify-center',
-                    theme?.menu?.itemAvatar
-                  )}
-                >
-                  {item.avatar}
-                </span>
-              ))}
-            <div className={cn('flex-1 min-w-0', theme?.menu?.itemContent)}>
-              <div
-                className={cn(
-                  'font-medium text-sm text-gray-900 dark:text-gray-100',
-                  theme?.menu?.itemName
-                )}
-              >
-                {item.name}
-              </div>
-              {item.description && (
-                <div
-                  className={cn(
-                    'text-xs text-gray-500 dark:text-gray-400 truncate',
-                    theme?.menu?.itemDescription
-                  )}
-                >
-                  {item.description}
                 </div>
+              )
+            }
+          >
+            <div className="flex-1 min-w-0">
+              <span className="font-medium text-sm block text-gray-900 dark:text-gray-100">
+                {item.name}
+              </span>
+              {item.description && (
+                <p className="text-xs truncate text-gray-500 dark:text-gray-400">
+                  {item.description}
+                </p>
               )}
             </div>
-          </button>
+          </ListItem>
         ))}
-      </div>
+      </List>
     );
   }
 );
@@ -198,14 +157,12 @@ export interface CreateMentionExtensionOptions {
   mentions: Mention[];
   fetchMentions?: (query: string) => Promise<Mention[]>;
   onSelect?: (mention: Mention) => void;
-  theme?: MentionListProps['theme'];
 }
 
 export const createMentionExtension = ({
   mentions,
   fetchMentions,
-  onSelect,
-  theme
+  onSelect
 }: CreateMentionExtensionOptions) => {
   let isLoading = false;
   let cachedQuery = '';
@@ -284,8 +241,7 @@ export const createMentionExtension = ({
             component = new ReactRenderer(MentionList, {
               props: {
                 ...props,
-                isLoading,
-                theme
+                isLoading
               },
               editor: props.editor
             });
@@ -340,8 +296,7 @@ export const createMentionExtension = ({
           onUpdate: (props: SuggestionProps<Mention>) => {
             component?.updateProps({
               ...props,
-              isLoading,
-              theme
+              isLoading
             });
 
             const editorElement = props.editor.view.dom;
