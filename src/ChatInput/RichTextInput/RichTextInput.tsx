@@ -48,7 +48,9 @@ export const RichTextInput = forwardRef<RichTextInputRef, RichTextInputProps>(
           codeBlock: enableCodeBlock ? {} : false,
           bulletList: enableBulletList ? {} : false,
           orderedList: enableOrderedList ? {} : false,
-          blockquote: enableBlockquote ? {} : false
+          blockquote: enableBlockquote ? {} : false,
+          // Disable hard break so Shift+Enter creates paragraphs (needed for list input rules)
+          hardBreak: false
         }),
         Placeholder.configure({
           placeholder,
@@ -103,9 +105,9 @@ export const RichTextInput = forwardRef<RichTextInputRef, RichTextInputProps>(
         attributes: {
           class: cn(
             'rich-text-input-editor',
-            'outline-none min-h-[40px] max-h-[200px] overflow-y-auto',
+            'outline-none max-h-[200px] overflow-y-auto',
             'prose prose-sm dark:prose-invert max-w-none',
-            // Remove default prose margins
+            // Remove default prose margins for compact display
             '[&_p]:my-0 [&_ul]:my-1 [&_ol]:my-1 [&_blockquote]:my-1',
             '[&_pre]:my-1 [&_code]:bg-gray-100 [&_code]:dark:bg-gray-800',
             '[&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded',
@@ -113,6 +115,13 @@ export const RichTextInput = forwardRef<RichTextInputRef, RichTextInputProps>(
           )
         },
         handleKeyDown: (view, event) => {
+          // Create new paragraph on Shift+Enter (allows list input rules to work)
+          if (event.key === 'Enter' && event.shiftKey) {
+            event.preventDefault();
+            editor?.chain().focus().splitBlock().run();
+            return true;
+          }
+
           // Submit on Enter (without Shift)
           if (event.key === 'Enter' && !event.shiftKey) {
             // Check if we're in a code block or list

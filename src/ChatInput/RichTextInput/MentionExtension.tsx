@@ -212,7 +212,7 @@ export const createMentionExtension = ({
 
   return MentionExtension.configure({
     HTMLAttributes: {
-      class: 'mention text-blue-500 dark:text-blue-400 font-medium'
+      class: 'mention-chip'
     },
     suggestion: {
       char: '@',
