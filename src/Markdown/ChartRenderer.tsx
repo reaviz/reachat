@@ -16,7 +16,9 @@ import {
   RadialAreaChart,
   RadialAreaSeries,
   SparklineChart,
-  ChartShallowDataShape
+  ChartShallowDataShape,
+  LinearXAxis,
+  LinearYAxis
 } from 'reaviz';
 import type { ChartConfig, ChartType } from './plugins/remarkChart';
 
@@ -92,10 +94,15 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
 
   const chartElement = useMemo(() => {
     // Ensure data is properly formatted for reaviz
-    const chartData: ChartShallowDataShape[] = data.map(d => ({
-      key: d.key,
-      data: d.data
-    }));
+    // Filter to only shallow data (numeric values, not nested arrays)
+    const chartData: ChartShallowDataShape[] = data
+      .filter(
+        (d): d is { key: string; data: number } => typeof d.data === 'number'
+      )
+      .map(d => ({
+        key: d.key,
+        data: d.data
+      }));
 
     console.log('chartData for reaviz:', chartData);
 
@@ -139,6 +146,8 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
           return (
             <LineChart
               {...chartProps}
+              xAxis={<LinearXAxis type="category" />}
+              yAxis={<LinearYAxis type="value" />}
               series={<LineSeries colorScheme="cybertron" />}
             />
           );
@@ -147,6 +156,8 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
           return (
             <AreaChart
               {...chartProps}
+              xAxis={<LinearXAxis type="category" />}
+              yAxis={<LinearYAxis type="value" />}
               series={<AreaSeries colorScheme="cybertron" />}
             />
           );
