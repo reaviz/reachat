@@ -2,6 +2,11 @@ import { FC, PropsWithChildren, useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Plugin } from 'unified';
 import { CodeHighlighter } from './CodeHighlighter';
+import {
+  ChartRenderer,
+  parseChartConfig,
+  isChartCodeBlock
+} from './ChartRenderer';
 import { cn } from 'reablocks';
 import { TableComponent, TableHeaderCell, TableDataCell } from './Table';
 import { ChatContext } from '@/ChatContext';
@@ -32,16 +37,28 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
       remarkPlugins={remarkPlugins as Plugin[]}
       rehypePlugins={rehypePlugins as Plugin[]}
       components={{
-        code: ({ className, ...props }) => (
-          <CodeHighlighter
-            {...props}
-            // Ref: https://github.com/remarkjs/react-markdown?tab=readme-ov-file#use-custom-components-syntax-highlight
-            language={className}
-            className={cn(theme.messages.message.markdown.code, className)}
-            copyClassName={cn(theme.messages.message.markdown.copy)}
-            toolbarClassName={cn(theme.messages.message.markdown.toolbar)}
-          />
-        ),
+        code: ({ className, children, ...props }) => {
+          // Check if this is a chart code block
+          if (isChartCodeBlock(className)) {
+            const chartConfig = parseChartConfig(String(children));
+            if (chartConfig) {
+              return <ChartRenderer config={chartConfig} className="my-4" />;
+            }
+          }
+
+          return (
+            <CodeHighlighter
+              {...props}
+              // Ref: https://github.com/remarkjs/react-markdown?tab=readme-ov-file#use-custom-components-syntax-highlight
+              language={className}
+              className={cn(theme.messages.message.markdown.code, className)}
+              copyClassName={cn(theme.messages.message.markdown.copy)}
+              toolbarClassName={cn(theme.messages.message.markdown.toolbar)}
+            >
+              {children}
+            </CodeHighlighter>
+          );
+        },
         table: props => (
           <TableComponent
             {...props}
