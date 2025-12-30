@@ -1,6 +1,6 @@
 import { visit } from 'unist-util-visit';
 import type { Plugin } from 'unified';
-import type { Root, Code, Html } from 'mdast';
+import type { Root, Code } from 'mdast';
 
 /**
  * Supported chart types for the remarkChart plugin.
@@ -52,8 +52,11 @@ export interface RemarkChartOptions {
 }
 
 /**
- * A remark plugin that transforms fenced code blocks with language "chart"
- * into custom chart elements that can be rendered by the ChartRenderer.
+ * A remark plugin that preprocesses fenced code blocks with language "chart"
+ * by validating and applying default dimensions to the chart configuration.
+ *
+ * The actual rendering is handled by the ChartRenderer component via
+ * createChartComponents().
  *
  * Usage in markdown:
  * ```chart
@@ -74,8 +77,8 @@ export const remarkChart: Plugin<[RemarkChartOptions?], Root> = (
   const { defaultWidth = 400, defaultHeight = 300 } = options;
 
   return (tree: Root) => {
-    visit(tree, 'code', (node: Code, index, parent) => {
-      if (node.lang !== 'chart' || !parent || index === undefined) {
+    visit(tree, 'code', (node: Code) => {
+      if (node.lang !== 'chart') {
         return;
       }
 
@@ -90,26 +93,15 @@ export const remarkChart: Plugin<[RemarkChartOptions?], Root> = (
           return;
         }
 
-        // Apply defaults
+        // Apply defaults and update the node value with the complete config
         const chartConfig: ChartConfig = {
           ...config,
           width: config.width ?? defaultWidth,
           height: config.height ?? defaultHeight
         };
 
-        // Replace the code node with an HTML node containing the chart data
-        // The config is encoded in a data attribute that ChartRenderer can parse
-        const escapedConfig = JSON.stringify(chartConfig)
-          .replace(/&/g, '&amp;')
-          .replace(/'/g, '&#39;')
-          .replace(/"/g, '&quot;');
-
-        const chartNode: Html = {
-          type: 'html',
-          value: `<div data-reaviz-chart="${escapedConfig}"></div>`
-        };
-
-        parent.children[index] = chartNode;
+        // Update the code block content with the processed config
+        node.value = JSON.stringify(chartConfig);
       } catch (error) {
         console.warn('remarkChart: Failed to parse chart config:', error);
       }

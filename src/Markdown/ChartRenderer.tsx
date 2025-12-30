@@ -161,21 +161,34 @@ export function parseChartConfig(value: string): ChartConfig | null {
 }
 
 /**
- * Decodes an HTML-escaped chart configuration string.
+ * Checks if a className indicates a chart code block.
  */
-function decodeChartConfig(encoded: string): string {
-  return encoded
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&amp;/g, '&');
+function isChartClassName(className?: string): boolean {
+  return className === 'language-chart';
+}
+
+/**
+ * Extracts text content from React children.
+ */
+function getChildText(children: React.ReactNode): string {
+  if (typeof children === 'string') {
+    return children;
+  }
+  if (Array.isArray(children)) {
+    return children.map(getChildText).join('');
+  }
+  if (children && typeof children === 'object' && 'props' in children) {
+    return getChildText((children as React.ReactElement).props.children);
+  }
+  return '';
 }
 
 /**
  * Creates markdown components with chart support.
  * Pass the returned object to the Chat component's `markdownComponents` prop.
  *
- * The remarkChart plugin transforms chart code blocks into HTML divs with
- * a data-reaviz-chart attribute containing the encoded chart configuration.
+ * The remarkChart plugin preprocesses chart code blocks, and this component
+ * handles rendering them as actual charts using reaviz.
  *
  * @example
  * ```tsx
@@ -191,24 +204,33 @@ function decodeChartConfig(encoded: string): string {
  */
 export function createChartComponents() {
   return {
-    div: ({
-      'data-reaviz-chart': chartConfigEncoded,
+    // Handle fenced code blocks (pre > code)
+    pre: ({
       children,
       ...props
     }: {
-      'data-reaviz-chart'?: string;
       children?: React.ReactNode;
       [key: string]: unknown;
     }) => {
-      if (chartConfigEncoded) {
-        const decoded = decodeChartConfig(chartConfigEncoded);
-        const chartConfig = parseChartConfig(decoded);
-        if (chartConfig) {
-          return <ChartRenderer config={chartConfig} className="my-4" />;
+      // Check if the child is a code element with chart language
+      if (children && typeof children === 'object' && 'props' in children) {
+        const codeElement = children as React.ReactElement<{
+          className?: string;
+          children?: React.ReactNode;
+        }>;
+
+        if (isChartClassName(codeElement.props?.className)) {
+          const codeContent = getChildText(codeElement.props?.children);
+          const chartConfig = parseChartConfig(codeContent);
+
+          if (chartConfig) {
+            return <ChartRenderer config={chartConfig} className="my-4" />;
+          }
         }
       }
-      // Return a normal div for non-chart divs
-      return <div {...props}>{children}</div>;
+
+      // Return normal pre for non-chart code blocks
+      return <pre {...props}>{children}</pre>;
     }
   };
 }
