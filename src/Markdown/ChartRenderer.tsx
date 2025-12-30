@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import {
   BarChart,
   BarSeries,
@@ -161,8 +161,54 @@ export function parseChartConfig(value: string): ChartConfig | null {
 }
 
 /**
- * Checks if a code block is a chart block.
+ * Decodes an HTML-escaped chart configuration string.
  */
-export function isChartCodeBlock(language: string | undefined): boolean {
-  return language === 'chart' || language === 'language-chart';
+function decodeChartConfig(encoded: string): string {
+  return encoded
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&');
+}
+
+/**
+ * Creates markdown components with chart support.
+ * Pass the returned object to the Chat component's `markdownComponents` prop.
+ *
+ * The remarkChart plugin transforms chart code blocks into HTML divs with
+ * a data-reaviz-chart attribute containing the encoded chart configuration.
+ *
+ * @example
+ * ```tsx
+ * import { remarkChart, createChartComponents } from 'reachat';
+ *
+ * <Chat
+ *   remarkPlugins={[remarkChart]}
+ *   markdownComponents={createChartComponents()}
+ * >
+ *   ...
+ * </Chat>
+ * ```
+ */
+export function createChartComponents() {
+  return {
+    div: ({
+      'data-reaviz-chart': chartConfigEncoded,
+      children,
+      ...props
+    }: {
+      'data-reaviz-chart'?: string;
+      children?: React.ReactNode;
+      [key: string]: unknown;
+    }) => {
+      if (chartConfigEncoded) {
+        const decoded = decodeChartConfig(chartConfigEncoded);
+        const chartConfig = parseChartConfig(decoded);
+        if (chartConfig) {
+          return <ChartRenderer config={chartConfig} className="my-4" />;
+        }
+      }
+      // Return a normal div for non-chart divs
+      return <div {...props}>{children}</div>;
+    }
+  };
 }

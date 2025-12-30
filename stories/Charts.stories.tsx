@@ -4,6 +4,7 @@ import {
   Chat,
   Session,
   remarkChart,
+  createChartComponents,
   SessionsList,
   SessionGroups,
   NewSessionButton,
@@ -12,6 +13,9 @@ import {
   SessionMessagePanel,
   SessionMessagesHeader
 } from '../src';
+
+// Create chart components once - this is decoupled from core reachat
+const chartComponents = createChartComponents();
 
 export default {
   title: 'Demos/Charts',
@@ -182,6 +186,7 @@ export const BarChartExample = () => {
         sessions={sessionWithCharts}
         activeSessionId="session-charts"
         remarkPlugins={[remarkChart]}
+        markdownComponents={chartComponents}
       >
         <SessionsList>
           <NewSessionButton />
@@ -217,6 +222,7 @@ export const MultipleCharts = () => {
         sessions={sessionWithMultipleCharts}
         activeSessionId="session-multi-charts"
         remarkPlugins={[remarkChart]}
+        markdownComponents={chartComponents}
       >
         <SessionsList>
           <NewSessionButton />
@@ -336,6 +342,7 @@ Each chart type is optimized for different use cases:
         sessions={sessionAllCharts}
         activeSessionId="session-all-charts"
         remarkPlugins={[remarkChart]}
+        markdownComponents={chartComponents}
       >
         <SessionsList>
           <NewSessionButton />
@@ -374,6 +381,7 @@ export const ChatViewWithCharts = () => {
         sessions={sessionWithCharts}
         activeSessionId="session-charts"
         remarkPlugins={[remarkChart]}
+        markdownComponents={chartComponents}
       >
         <SessionMessagePanel>
           <SessionMessagesHeader />

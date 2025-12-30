@@ -1,6 +1,6 @@
 import { visit } from 'unist-util-visit';
 import type { Plugin } from 'unified';
-import type { Root, Code } from 'mdast';
+import type { Root, Code, Html } from 'mdast';
 
 /**
  * Supported chart types for the remarkChart plugin.
@@ -53,7 +53,7 @@ export interface RemarkChartOptions {
 
 /**
  * A remark plugin that transforms fenced code blocks with language "chart"
- * into chart configuration nodes that can be rendered by the ChartRenderer.
+ * into custom chart elements that can be rendered by the ChartRenderer.
  *
  * Usage in markdown:
  * ```chart
@@ -97,24 +97,19 @@ export const remarkChart: Plugin<[RemarkChartOptions?], Root> = (
           height: config.height ?? defaultHeight
         };
 
-        // Replace the code node with a custom node that preserves chart config
-        // We use the 'html' type with a special data attribute that can be
-        // detected by the Markdown component's custom renderer
-        const chartNode = {
-          type: 'code',
-          lang: 'chart',
-          meta: null,
-          value: JSON.stringify(chartConfig),
-          data: {
-            hName: 'div',
-            hProperties: {
-              'data-chart': 'true',
-              'data-chart-config': JSON.stringify(chartConfig)
-            }
-          }
+        // Replace the code node with an HTML node containing the chart data
+        // The config is encoded in a data attribute that ChartRenderer can parse
+        const escapedConfig = JSON.stringify(chartConfig)
+          .replace(/&/g, '&amp;')
+          .replace(/'/g, '&#39;')
+          .replace(/"/g, '&quot;');
+
+        const chartNode: Html = {
+          type: 'html',
+          value: `<div data-reaviz-chart="${escapedConfig}"></div>`
         };
 
-        parent.children[index] = chartNode as unknown as Code;
+        parent.children[index] = chartNode;
       } catch (error) {
         console.warn('remarkChart: Failed to parse chart config:', error);
       }
