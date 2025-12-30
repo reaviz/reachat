@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, Component, ErrorInfo, ReactNode } from 'react';
 import {
   BarChart,
   BarSeries,
@@ -19,6 +19,50 @@ import {
   ChartShallowDataShape
 } from 'reaviz';
 import type { ChartConfig, ChartType } from './plugins/remarkChart';
+
+/**
+ * Error boundary to catch runtime errors in chart rendering.
+ */
+interface ChartErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+class ChartErrorBoundary extends Component<
+  { children: ReactNode; config: ChartConfig },
+  ChartErrorBoundaryState
+> {
+  constructor(props: { children: ReactNode; config: ChartConfig }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): ChartErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('ChartRenderer error:', error, errorInfo);
+    console.error('Chart config:', this.props.config);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="my-4 p-4 border border-red-300 dark:border-red-700 rounded bg-red-50 dark:bg-red-900/20">
+          <div className="text-red-600 dark:text-red-400 text-sm font-medium mb-2">
+            Chart rendering error: {this.state.error?.message}
+          </div>
+          <pre className="text-xs overflow-auto">
+            <code>{JSON.stringify(this.props.config, null, 2)}</code>
+          </pre>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 export interface ChartRendererProps {
   /**
@@ -133,14 +177,16 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
   }, [type, data, width, height]);
 
   return (
-    <div className={className}>
-      {title && (
-        <div className="text-sm font-medium mb-2 text-gray-600 dark:text-gray-400">
-          {title}
-        </div>
-      )}
-      <div className="flex items-center justify-center">{chartElement}</div>
-    </div>
+    <ChartErrorBoundary config={config}>
+      <div className={className}>
+        {title && (
+          <div className="text-sm font-medium mb-2 text-gray-600 dark:text-gray-400">
+            {title}
+          </div>
+        )}
+        <div className="flex items-center justify-center">{chartElement}</div>
+      </div>
+    </ChartErrorBoundary>
   );
 };
 
