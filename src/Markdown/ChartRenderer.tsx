@@ -87,9 +87,37 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
 }) => {
   const { type, data, width = 400, height = 300, title } = config;
 
+  // Debug logging
+  console.log('ChartRenderer config:', { type, data, width, height, title });
+
   const chartElement = useMemo(() => {
-    // Cast data to reaviz's expected format
-    const chartData = data as ChartShallowDataShape[];
+    // Ensure data is properly formatted for reaviz
+    const chartData: ChartShallowDataShape[] = data.map(d => ({
+      key: d.key,
+      data: d.data
+    }));
+
+    console.log('chartData for reaviz:', chartData);
+
+    // Verify data is valid before rendering
+    if (!chartData || chartData.length === 0) {
+      return (
+        <div className="text-yellow-500 p-4 border border-yellow-300 rounded">
+          No chart data available
+        </div>
+      );
+    }
+
+    // Check all data points have valid values
+    for (const point of chartData) {
+      if (typeof point.data !== 'number' || isNaN(point.data)) {
+        return (
+          <div className="text-red-500 p-4 border border-red-300 rounded">
+            Invalid data point: {JSON.stringify(point)}
+          </div>
+        );
+      }
+    }
 
     const chartProps = {
       width,
@@ -97,82 +125,91 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
       data: chartData
     };
 
-    switch (type as ChartType) {
-      case 'bar':
-        return (
-          <BarChart
-            {...chartProps}
-            series={<BarSeries colorScheme="cybertron" />}
-          />
-        );
+    try {
+      switch (type as ChartType) {
+        case 'bar':
+          return (
+            <BarChart
+              {...chartProps}
+              series={<BarSeries colorScheme="cybertron" />}
+            />
+          );
 
-      case 'line':
-        return (
-          <LineChart
-            {...chartProps}
-            series={<LineSeries colorScheme="cybertron" />}
-          />
-        );
+        case 'line':
+          return (
+            <LineChart
+              {...chartProps}
+              series={<LineSeries colorScheme="cybertron" />}
+            />
+          );
 
-      case 'area':
-        return (
-          <AreaChart
-            {...chartProps}
-            series={<AreaSeries colorScheme="cybertron" />}
-          />
-        );
+        case 'area':
+          return (
+            <AreaChart
+              {...chartProps}
+              series={<AreaSeries colorScheme="cybertron" />}
+            />
+          );
 
-      case 'pie':
-        return (
-          <PieChart
-            width={width}
-            height={height}
-            data={chartData}
-            series={<PieArcSeries colorScheme="cybertron" />}
-          />
-        );
+        case 'pie':
+          return (
+            <PieChart
+              width={width}
+              height={height}
+              data={chartData}
+              series={<PieArcSeries colorScheme="cybertron" />}
+            />
+          );
 
-      case 'scatter':
-        return (
-          <ScatterPlot
-            {...chartProps}
-            series={
-              <ScatterSeries point={<ScatterPoint color="cybertron" />} />
-            }
-          />
-        );
+        case 'scatter':
+          return (
+            <ScatterPlot
+              {...chartProps}
+              series={
+                <ScatterSeries point={<ScatterPoint color="cybertron" />} />
+              }
+            />
+          );
 
-      case 'radialBar':
-        return (
-          <RadialBarChart
-            width={width}
-            height={height}
-            data={chartData}
-            series={<RadialBarSeries colorScheme="cybertron" />}
-          />
-        );
+        case 'radialBar':
+          return (
+            <RadialBarChart
+              width={width}
+              height={height}
+              data={chartData}
+              series={<RadialBarSeries colorScheme="cybertron" />}
+            />
+          );
 
-      case 'radialArea':
-        return (
-          <RadialAreaChart
-            width={width}
-            height={height}
-            data={chartData}
-            series={<RadialAreaSeries colorScheme="cybertron" />}
-          />
-        );
+        case 'radialArea':
+          return (
+            <RadialAreaChart
+              width={width}
+              height={height}
+              data={chartData}
+              series={<RadialAreaSeries colorScheme="cybertron" />}
+            />
+          );
 
-      case 'sparkline':
-        return (
-          <SparklineChart width={width} height={height} data={chartData} />
-        );
+        case 'sparkline':
+          return (
+            <SparklineChart width={width} height={height} data={chartData} />
+          );
 
-      default:
-        return (
-          <div className="text-red-500 p-4 border border-red-300 rounded">
-            Unknown chart type: {type}
-          </div>
-        );
+        default:
+          return (
+            <div className="text-red-500 p-4 border border-red-300 rounded">
+              Unknown chart type: {type}
+            </div>
+          );
+      }
+    } catch (error) {
+      console.error('Error rendering chart:', error);
+      return (
+        <div className="text-red-500 p-4 border border-red-300 rounded">
+          Chart render error: {String(error)}
+        </div>
+      );
     }
   }, [type, data, width, height]);
 
