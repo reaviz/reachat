@@ -145,17 +145,62 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
 };
 
 /**
+ * Validates and normalizes chart data to ensure all data points have numeric values.
+ */
+function validateChartData(
+  data: unknown[]
+): { key: string; data: number }[] | null {
+  if (!Array.isArray(data)) {
+    return null;
+  }
+
+  const validData: { key: string; data: number }[] = [];
+
+  for (const item of data) {
+    if (
+      item &&
+      typeof item === 'object' &&
+      'key' in item &&
+      'data' in item &&
+      typeof (item as { data: unknown }).data === 'number'
+    ) {
+      validData.push({
+        key: String((item as { key: unknown }).key),
+        data: (item as { data: number }).data
+      });
+    } else {
+      // Invalid data point found
+      return null;
+    }
+  }
+
+  return validData.length > 0 ? validData : null;
+}
+
+/**
  * Parses a chart configuration from a JSON string.
- * Returns null if parsing fails.
+ * Returns null if parsing fails or data is invalid.
  */
 export function parseChartConfig(value: string): ChartConfig | null {
   try {
     const config = JSON.parse(value);
-    if (config && config.type && config.data) {
-      return config as ChartConfig;
+    if (!config || !config.type || !config.data) {
+      return null;
     }
-    return null;
-  } catch {
+
+    // Validate and normalize the data
+    const validData = validateChartData(config.data);
+    if (!validData) {
+      console.warn('parseChartConfig: Invalid chart data format');
+      return null;
+    }
+
+    return {
+      ...config,
+      data: validData
+    } as ChartConfig;
+  } catch (error) {
+    console.warn('parseChartConfig: Failed to parse JSON', error);
     return null;
   }
 }
@@ -171,14 +216,24 @@ function isChartClassName(className?: string): boolean {
  * Extracts text content from React children.
  */
 function getChildText(children: React.ReactNode): string {
+  if (children === null || children === undefined) {
+    return '';
+  }
   if (typeof children === 'string') {
     return children;
+  }
+  if (typeof children === 'number') {
+    return String(children);
   }
   if (Array.isArray(children)) {
     return children.map(getChildText).join('');
   }
-  if (children && typeof children === 'object' && 'props' in children) {
-    return getChildText((children as React.ReactElement).props.children);
+  if (typeof children === 'object') {
+    // Handle React elements
+    if ('props' in children && (children as React.ReactElement).props) {
+      const element = children as React.ReactElement;
+      return getChildText(element.props.children);
+    }
   }
   return '';
 }
@@ -221,11 +276,26 @@ export function createChartComponents() {
 
         if (isChartClassName(codeElement.props?.className)) {
           const codeContent = getChildText(codeElement.props?.children);
-          const chartConfig = parseChartConfig(codeContent);
 
-          if (chartConfig) {
-            return <ChartRenderer config={chartConfig} className="my-4" />;
+          if (codeContent) {
+            const chartConfig = parseChartConfig(codeContent);
+
+            if (chartConfig) {
+              return <ChartRenderer config={chartConfig} className="my-4" />;
+            }
           }
+
+          // Chart code block but failed to parse - show error
+          return (
+            <div className="my-4 p-4 border border-red-300 dark:border-red-700 rounded bg-red-50 dark:bg-red-900/20">
+              <div className="text-red-600 dark:text-red-400 text-sm font-medium mb-2">
+                Failed to parse chart configuration
+              </div>
+              <pre className="text-xs overflow-auto">
+                <code>{codeContent || 'No content'}</code>
+              </pre>
+            </div>
+          );
         }
       }
 
