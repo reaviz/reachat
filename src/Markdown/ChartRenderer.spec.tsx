@@ -106,7 +106,6 @@ describe('parseChartConfig', () => {
       'line',
       'area',
       'pie',
-      'scatter',
       'radialBar',
       'radialArea',
       'sparkline'

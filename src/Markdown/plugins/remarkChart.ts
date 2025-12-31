@@ -10,7 +10,6 @@ export type ChartType =
   | 'line'
   | 'area'
   | 'pie'
-  | 'scatter'
   | 'radialBar'
   | 'radialArea'
   | 'sparkline';

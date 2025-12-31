@@ -8,9 +8,6 @@ import {
   AreaSeries,
   PieChart,
   PieArcSeries,
-  ScatterPlot,
-  ScatterSeries,
-  ScatterPoint,
   RadialBarChart,
   RadialBarSeries,
   RadialAreaChart,
@@ -174,16 +171,12 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
           );
 
         case 'scatter':
-          // Scatter plots need numeric data - use index as x value
+          // Scatter plots require x/y coordinate pairs which our simple format doesn't support
           return (
-            <ScatterPlot
-              height={height}
-              width={width}
-              data={chartData}
-              series={
-                <ScatterSeries point={<ScatterPoint color="#67c2e4" />} />
-              }
-            />
+            <div className="text-yellow-500 p-4 border border-yellow-300 dark:border-yellow-700 rounded bg-yellow-50 dark:bg-yellow-900/20">
+              Scatter plots require x/y coordinate data format (not currently
+              supported)
+            </div>
           );
 
         case 'radialBar':
