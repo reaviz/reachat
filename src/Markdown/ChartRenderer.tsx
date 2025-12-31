@@ -87,9 +87,6 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
 }) => {
   const { type, data, width = 400, height = 300, title } = config;
 
-  // Debug logging
-  console.log('ChartRenderer config:', { type, data, width, height, title });
-
   const chartElement = useMemo(() => {
     // Ensure data is properly formatted for reaviz
     // Filter to only shallow data (numeric values, not nested arrays)
@@ -101,8 +98,6 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
         key: d.key,
         data: d.data
       }));
-
-    console.log('chartData for reaviz:', chartData);
 
     // Verify data is valid before rendering
     if (!chartData || chartData.length === 0) {
@@ -251,7 +246,6 @@ function validateChartData(
         data: (item as { data: number }).data
       });
     } else {
-      // Invalid data point found
       return null;
     }
   }
