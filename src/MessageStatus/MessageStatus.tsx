@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from 'reablocks';
 import { Slot } from '@radix-ui/react-slot';
 import { ChatContext } from '@/ChatContext';
+import { chatTheme as defaultTheme } from '@/theme';
 import { StatusIcon } from './StatusIcon';
 import { MessageStatusItem } from './MessageStatusItem';
 
@@ -66,7 +67,7 @@ export const MessageStatus: FC<MessageStatusProps> = ({
   children
 }) => {
   const { theme: chatTheme } = useContext(ChatContext);
-  const theme = chatTheme.status;
+  const theme = (chatTheme ?? defaultTheme).status;
   const Comp = children ? Slot : 'div';
 
   return (
