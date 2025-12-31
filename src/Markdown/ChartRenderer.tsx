@@ -174,13 +174,14 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
           );
 
         case 'scatter':
+          // Scatter plots need numeric data - use index as x value
           return (
             <ScatterPlot
-              {...chartProps}
-              xAxis={<LinearXAxis type="category" />}
-              yAxis={<LinearYAxis type="value" />}
+              height={height}
+              width={width}
+              data={chartData}
               series={
-                <ScatterSeries point={<ScatterPoint color="cybertron" />} />
+                <ScatterSeries point={<ScatterPoint color="#67c2e4" />} />
               }
             />
           );
