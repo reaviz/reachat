@@ -170,15 +170,6 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
             />
           );
 
-        case 'scatter':
-          // Scatter plots require x/y coordinate pairs which our simple format doesn't support
-          return (
-            <div className="text-yellow-500 p-4 border border-yellow-300 dark:border-yellow-700 rounded bg-yellow-50 dark:bg-yellow-900/20">
-              Scatter plots require x/y coordinate data format (not currently
-              supported)
-            </div>
-          );
-
         case 'radialBar':
           return (
             <RadialBarChart

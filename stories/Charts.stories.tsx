@@ -239,20 +239,6 @@ export const MultipleCharts = () => {
 };
 
 export const AllChartTypes = () => {
-  const scatterData = {
-    type: 'scatter',
-    data: [
-      { key: 'Point 1', data: 25 },
-      { key: 'Point 2', data: 50 },
-      { key: 'Point 3', data: 75 },
-      { key: 'Point 4', data: 40 },
-      { key: 'Point 5', data: 90 }
-    ],
-    width: 400,
-    height: 250,
-    title: 'Scatter Plot Example'
-  };
-
   const sparklineData = {
     type: 'sparkline',
     data: [
@@ -300,11 +286,6 @@ ${JSON.stringify(areaChartData, null, 2)}
 ${JSON.stringify(pieChartData, null, 2)}
 \`\`\`
 
-## Scatter Plot
-\`\`\`chart
-${JSON.stringify(scatterData, null, 2)}
-\`\`\`
-
 ## Sparkline (inline mini-chart)
 \`\`\`chart
 ${JSON.stringify(sparklineData, null, 2)}
@@ -315,7 +296,6 @@ Each chart type is optimized for different use cases:
 - **Line charts** for trends over time
 - **Area charts** for cumulative data
 - **Pie charts** for proportions
-- **Scatter plots** for correlations
 - **Sparklines** for compact inline visualizations`,
           createdAt: new Date()
         }
