@@ -176,6 +176,8 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
           return (
             <ScatterPlot
               {...chartProps}
+              xAxis={<LinearXAxis type="category" />}
+              yAxis={<LinearYAxis type="value" />}
               series={
                 <ScatterSeries point={<ScatterPoint color="cybertron" />} />
               }
