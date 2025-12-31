@@ -226,9 +226,21 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
     }
   }, [type, data, width, height]);
 
+  // CSS variables for reaviz charts
+  const chartStyles: React.CSSProperties = {
+    // Tooltip styling
+    '--tooltip-background': 'rgba(0, 5, 11, 0.9)',
+    '--tooltip-color': '#fff',
+    '--tooltip-border-radius': '5px',
+    '--tooltip-spacing': '5px',
+    // Chart background
+    '--color-background': 'transparent',
+    '--color-on-background': 'currentColor'
+  } as React.CSSProperties;
+
   return (
     <ChartErrorBoundary config={config}>
-      <div className={className}>
+      <div className={className} style={chartStyles}>
         {title && (
           <div className="text-sm font-medium mb-2 text-gray-600 dark:text-gray-400">
             {title}
