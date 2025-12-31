@@ -20,6 +20,7 @@ import {
   LinearXAxis,
   LinearYAxis
 } from 'reaviz';
+import { cn } from 'reablocks';
 import type { ChartConfig, ChartType } from './plugins/remarkChart';
 
 /**
@@ -240,7 +241,7 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
 
   return (
     <ChartErrorBoundary config={config}>
-      <div className={className} style={chartStyles}>
+      <div className={cn('my-6', className)} style={chartStyles}>
         {title && (
           <div className="text-sm font-medium mb-2 text-gray-600 dark:text-gray-400">
             {title}
