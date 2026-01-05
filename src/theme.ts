@@ -122,6 +122,20 @@ export interface ChatTheme {
       text: string;
     };
   };
+  chart: {
+    base: string;
+    title: string;
+    content: string;
+    error: {
+      base: string;
+      title: string;
+      code: string;
+    };
+    warning: {
+      base: string;
+      title: string;
+    };
+  };
 }
 
 export const chatTheme: ChatTheme = {
@@ -291,6 +305,28 @@ export const chatTheme: ChatTheme = {
       ].join(' '),
       icon: 'w-4 h-4 text-blue-500 dark:text-blue-400 flex-shrink-0',
       text: 'text-sm truncate'
+    }
+  },
+  chart: {
+    base: 'my-6',
+    title: 'text-sm font-medium mb-2 text-gray-600 dark:text-gray-400',
+    content: 'flex items-center justify-center',
+    error: {
+      base: [
+        'my-4 p-4 border rounded',
+        'border-red-300 bg-red-50 text-red-500',
+        'dark:border-red-700 dark:bg-red-900/20'
+      ].join(' '),
+      title: 'text-red-600 dark:text-red-400 text-sm font-medium mb-2',
+      code: 'text-xs overflow-auto'
+    },
+    warning: {
+      base: [
+        'my-4 p-4 border rounded',
+        'border-yellow-300 bg-yellow-50 text-yellow-600',
+        'dark:border-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400'
+      ].join(' '),
+      title: 'text-yellow-600 dark:text-yellow-400 text-sm font-medium mb-2'
     }
   }
 };
