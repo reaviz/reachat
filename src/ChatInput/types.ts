@@ -148,61 +148,6 @@ export interface SlashCommandPluginConfig extends Omit<
 }
 
 /**
- * Text formatting options
- */
-export interface FormattingOptions {
-  /**
-   * Enable bold formatting (Ctrl/Cmd + B)
-   */
-  bold?: boolean;
-
-  /**
-   * Enable italic formatting (Ctrl/Cmd + I)
-   */
-  italic?: boolean;
-
-  /**
-   * Enable strikethrough formatting
-   */
-  strikethrough?: boolean;
-
-  /**
-   * Enable inline code formatting (Ctrl/Cmd + `)
-   */
-  code?: boolean;
-
-  /**
-   * Enable bullet list formatting
-   */
-  bulletList?: boolean;
-
-  /**
-   * Enable numbered list formatting
-   */
-  numberedList?: boolean;
-
-  /**
-   * Enable blockquote formatting
-   */
-  blockquote?: boolean;
-
-  /**
-   * Enable code block formatting
-   */
-  codeBlock?: boolean;
-
-  /**
-   * Show formatting toolbar
-   */
-  showToolbar?: boolean;
-
-  /**
-   * Toolbar position relative to input
-   */
-  toolbarPosition?: 'top' | 'bottom' | 'floating';
-}
-
-/**
  * Active trigger state when a popup is shown
  */
 export interface ActiveTriggerState {
@@ -327,9 +272,4 @@ export interface EnhancedChatInputProps {
    * Custom trigger configurations
    */
   triggers?: InputTrigger[];
-
-  /**
-   * Formatting options
-   */
-  formatting?: FormattingOptions;
 }

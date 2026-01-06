@@ -17,16 +17,10 @@ import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
 import { TriggerPopup } from './TriggerPopup';
-import {
-  FormattingToolbar,
-  applyFormatting,
-  FormattingAction
-} from './FormattingToolbar';
 import { useTriggerManager } from './useTriggerManager';
 import {
   MentionPluginConfig,
   SlashCommandPluginConfig,
-  FormattingOptions,
   InputTrigger,
   InputPluginItem
 } from './types';
@@ -78,12 +72,6 @@ interface ChatInputProps {
    * Custom trigger configurations for additional plugins.
    */
   triggers?: InputTrigger[];
-
-  /**
-   * Formatting options for text formatting toolbar.
-   * Set to enable formatting features like bold, italic, lists, etc.
-   */
-  formatting?: FormattingOptions;
 }
 
 export interface ChatInputRef {
@@ -119,8 +107,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       attachIcon,
       mentions,
       commands,
-      triggers: triggersProp = [],
-      formatting
+      triggers: triggersProp = []
     },
     ref
   ) => {
@@ -259,32 +246,13 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
           return;
         }
 
-        // Handle formatting shortcuts
-        if (formatting && (e.ctrlKey || e.metaKey)) {
-          let action: FormattingAction | null = null;
-
-          if (e.key === 'b' && formatting.bold) {
-            action = 'bold';
-          } else if (e.key === 'i' && formatting.italic) {
-            action = 'italic';
-          } else if (e.key === '`' && formatting.code) {
-            action = 'code';
-          }
-
-          if (action) {
-            e.preventDefault();
-            handleFormat(action);
-            return;
-          }
-        }
-
         // Handle send on Enter (without shift)
         if (e.key === 'Enter' && !e.shiftKey && !activeTrigger) {
           e.preventDefault();
           handleSendMessage();
         }
       },
-      [activeTrigger, handleTriggerKeyDown, formatting, handleSendMessage]
+      [activeTrigger, handleTriggerKeyDown, handleSendMessage]
     );
 
     const handleChange = useCallback(
@@ -309,32 +277,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       []
     );
 
-    const handleFormat = useCallback(
-      (action: FormattingAction) => {
-        const input = inputRef.current;
-        if (!input) return;
-
-        const start = input.selectionStart || 0;
-        const end = input.selectionEnd || 0;
-
-        const { newText, newSelectionStart, newSelectionEnd } = applyFormatting(
-          message,
-          start,
-          end,
-          action
-        );
-
-        setMessage(newText);
-        setCursorPosition(newSelectionEnd);
-
-        requestAnimationFrame(() => {
-          input.setSelectionRange(newSelectionStart, newSelectionEnd);
-          input.focus();
-        });
-      },
-      [message]
-    );
-
     const handleFileUpload = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -345,45 +287,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       [fileUpload]
     );
 
-    // Check if formatting toolbar should be shown
-    const showToolbar =
-      formatting?.showToolbar &&
-      (formatting.bold ||
-        formatting.italic ||
-        formatting.strikethrough ||
-        formatting.code ||
-        formatting.bulletList ||
-        formatting.numberedList ||
-        formatting.blockquote ||
-        formatting.codeBlock);
-
-    // Determine toolbar position class
-    const toolbarPositionClass = useMemo(() => {
-      if (!showToolbar) return '';
-      switch (formatting?.toolbarPosition) {
-        case 'top':
-          return 'flex-col';
-        case 'bottom':
-          return 'flex-col-reverse';
-        default:
-          return 'flex-col';
-      }
-    }, [showToolbar, formatting?.toolbarPosition]);
-
     return (
-      <div
-        ref={containerRef}
-        className={cn(theme.input.base, toolbarPositionClass)}
-      >
-        {/* Formatting Toolbar */}
-        {showToolbar && formatting?.toolbarPosition !== 'floating' && (
-          <FormattingToolbar
-            options={formatting}
-            onFormat={handleFormat}
-            disabled={isLoading || disabled}
-          />
-        )}
-
+      <div ref={containerRef} className={cn(theme.input.base)}>
         {/* Input Container */}
         <div className="relative flex-1">
           <Textarea

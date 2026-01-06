@@ -143,44 +143,6 @@ export const WithSlashCommands = () => {
   );
 };
 
-export const WithFormattingToolbar = () => {
-  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
-  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
-
-  return (
-    <div
-      className="dark:bg-gray-950 bg-white"
-      style={{ width: 500, height: 400, padding: 20, borderRadius: 5 }}
-    >
-      <Chat
-        viewType="chat"
-        sessions={sessions}
-        activeSessionId={activeId}
-        onSelectSession={setActiveId}
-      >
-        <SessionMessagePanel>
-          <SessionMessages />
-          <ChatInput
-            placeholder="Use the toolbar to format your message..."
-            formatting={{
-              showToolbar: true,
-              toolbarPosition: 'top',
-              bold: true,
-              italic: true,
-              strikethrough: true,
-              code: true,
-              bulletList: true,
-              numberedList: true,
-              blockquote: true,
-              codeBlock: true
-            }}
-          />
-        </SessionMessagePanel>
-      </Chat>
-    </div>
-  );
-};
-
 export const WithAllFeatures = () => {
   const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
   const [sessions, setSessions] = useState<Session[]>(fakeSessions);
@@ -217,15 +179,6 @@ export const WithAllFeatures = () => {
               items: sampleCommands,
               onSelect: handleCommandSelect,
               renderHeader: () => <span>Commands</span>
-            }}
-            formatting={{
-              showToolbar: true,
-              toolbarPosition: 'top',
-              bold: true,
-              italic: true,
-              code: true,
-              bulletList: true,
-              numberedList: true
             }}
           />
         </SessionMessagePanel>
