@@ -257,20 +257,31 @@ export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
     );
   }, [activeTrigger, triggers]);
 
+  // Track the trigger character to reset highlight only when it changes
+  const prevTriggerRef = useRef<string | null>(null);
+
   // Update matching items when trigger or query changes
   useEffect(() => {
     if (!activeTrigger || !currentTriggerConfig) {
       setMatchingItems([]);
+      prevTriggerRef.current = null;
       return;
     }
 
-    const { query } = activeTrigger;
+    const { query, trigger } = activeTrigger;
     const {
       items,
       onSearch,
       minQueryLength = 0,
       maxResults = 10
     } = currentTriggerConfig;
+
+    // Only reset highlighted index when the trigger character changes (e.g., switching from / to @)
+    // NOT when the query changes (e.g., typing more characters)
+    if (prevTriggerRef.current !== trigger) {
+      setHighlightedIndex(0);
+      prevTriggerRef.current = trigger;
+    }
 
     // Check minimum query length
     if (query.length < minQueryLength) {
@@ -302,9 +313,6 @@ export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
       // Filter locally
       setMatchingItems(filterItems((items as T[]) || [], query, maxResults));
     }
-
-    // Reset highlighted index when items change
-    setHighlightedIndex(0);
   }, [activeTrigger, currentTriggerConfig]);
 
   // Cleanup timeout on unmount
