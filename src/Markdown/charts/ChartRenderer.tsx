@@ -18,15 +18,19 @@ import {
   LinearYAxis
 } from 'reaviz';
 import { cn } from 'reablocks';
-import type { ChartConfig, ChartType } from './plugins/remarkChart';
-import { parseChartConfig } from './chartHelpers';
+import type { ChartConfig, ChartType } from '@/Markdown/plugins/remarkChart';
 import { ChatContext } from '@/ChatContext';
 import { ChartError } from './ChartError';
 
-export { parseChartConfig };
-
 export interface ChartRendererProps {
+  /**
+   * The chart configuration.
+   */
   config: ChartConfig;
+
+  /**
+   * The class name to apply to the chart container.
+   */
   className?: string;
 }
 
@@ -70,12 +74,7 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
     try {
       switch (type as ChartType) {
         case 'bar':
-          return (
-            <BarChart
-              {...chartProps}
-              series={<BarSeries colorScheme="cybertron" />}
-            />
-          );
+          return <BarChart {...chartProps} series={<BarSeries />} />;
 
         case 'line':
           return (
@@ -83,7 +82,7 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
               {...chartProps}
               xAxis={<LinearXAxis type="category" />}
               yAxis={<LinearYAxis type="value" />}
-              series={<LineSeries colorScheme="cybertron" />}
+              series={<LineSeries />}
             />
           );
 
@@ -93,7 +92,7 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
               {...chartProps}
               xAxis={<LinearXAxis type="category" />}
               yAxis={<LinearYAxis type="value" />}
-              series={<AreaSeries colorScheme="cybertron" />}
+              series={<AreaSeries />}
             />
           );
 
@@ -103,7 +102,7 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
               width={width}
               height={height}
               data={chartData}
-              series={<PieArcSeries colorScheme="cybertron" />}
+              series={<PieArcSeries />}
             />
           );
 
@@ -113,7 +112,7 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
               width={width}
               height={height}
               data={chartData}
-              series={<RadialBarSeries colorScheme="cybertron" />}
+              series={<RadialBarSeries />}
             />
           );
 
@@ -123,7 +122,7 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
               width={width}
               height={height}
               data={chartData}
-              series={<RadialAreaSeries colorScheme="cybertron" />}
+              series={<RadialAreaSeries />}
             />
           );
 
@@ -136,7 +135,6 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
           return <ChartError message={`Unknown chart type: ${type}`} />;
       }
     } catch (error) {
-      console.error('Error rendering chart:', error);
       return <ChartError message={`Chart render error: ${String(error)}`} />;
     }
   }, [type, data, width, height]);

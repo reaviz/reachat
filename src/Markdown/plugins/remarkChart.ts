@@ -55,7 +55,7 @@ export interface RemarkChartOptions {
  * by validating and applying default dimensions to the chart configuration.
  *
  * The actual rendering is handled by the ChartRenderer component via
- * createChartComponents().
+ * chartComponents.
  *
  * Usage in markdown:
  * ```chart

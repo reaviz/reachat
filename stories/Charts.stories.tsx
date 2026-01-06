@@ -4,7 +4,7 @@ import {
   Chat,
   Session,
   remarkChart,
-  createChartComponents,
+  chartComponents,
   SessionsList,
   SessionGroups,
   NewSessionButton,
@@ -13,9 +13,6 @@ import {
   SessionMessagePanel,
   SessionMessagesHeader
 } from '../src';
-
-// Create chart components once - this is decoupled from core reachat
-const chartComponents = createChartComponents();
 
 export default {
   title: 'Demos/Charts',

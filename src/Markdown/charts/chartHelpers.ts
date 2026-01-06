@@ -1,8 +1,13 @@
 import React from 'react';
-import type { ChartConfig } from './plugins/remarkChart';
+import type { ChartConfig } from '@/Markdown/plugins/remarkChart';
 
 /**
- * Validates and normalizes chart data to ensure all data points have numeric values.
+ * Validates that chart data is an array of objects with the required structure.
+ * Each item must have a `key` (convertible to string) and `data` (number) property.
+ *
+ * @param data - The unknown data array to validate
+ * @returns An array of validated chart data points with `key` and `data` properties,
+ *          or `null` if the data is invalid or empty
  */
 export function validateChartData(
   data: unknown[]
@@ -34,8 +39,12 @@ export function validateChartData(
 }
 
 /**
- * Parses a chart configuration from a JSON string.
- * Returns null if parsing fails or data is invalid.
+ * Parses a JSON string into a validated ChartConfig object.
+ * The JSON must contain a `type` and `data` property, where `data` is validated
+ * using `validateChartData`.
+ *
+ * @param value - The JSON string to parse
+ * @returns A validated ChartConfig object, or `null` if parsing fails or the config is invalid
  */
 export function parseChartConfig(value: string): ChartConfig | null {
   try {
@@ -61,14 +70,23 @@ export function parseChartConfig(value: string): ChartConfig | null {
 }
 
 /**
- * Checks if a className indicates a chart code block.
+ * Checks if the given className indicates a chart code block.
+ * Used to identify markdown code blocks that should be rendered as charts.
+ *
+ * @param className - The className to check
+ * @returns `true` if the className is 'language-chart', `false` otherwise
  */
 export function isChartClassName(className?: string): boolean {
   return className === 'language-chart';
 }
 
 /**
- * Extracts text content from React children.
+ * Recursively extracts text content from React children.
+ * Handles strings, numbers, arrays, and React elements by traversing
+ * their children props.
+ *
+ * @param children - The React children to extract text from
+ * @returns The concatenated text content as a string
  */
 export function getChildText(children: React.ReactNode): string {
   if (children === null || children === undefined) {

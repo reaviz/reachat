@@ -41,9 +41,3 @@ export const ChartPre: FC<ChartPreProps> = ({ children, ...props }) => {
 
   return <pre {...props}>{children}</pre>;
 };
-
-export function createChartComponents() {
-  return {
-    pre: ChartPre
-  };
-}
