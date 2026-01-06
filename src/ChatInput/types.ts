@@ -1,6 +1,16 @@
 import { ReactElement, ReactNode } from 'react';
 
 /**
+ * Imperative handle for reablocks Textarea component
+ */
+export interface TextareaImperativeHandle {
+  textareaRef: { current: HTMLTextAreaElement | null };
+  containerRef: { current: HTMLDivElement | null };
+  blur: () => void;
+  focus: () => void;
+}
+
+/**
  * Base interface for all input plugin items (mentions, commands, etc.)
  */
 export interface InputPluginItem {

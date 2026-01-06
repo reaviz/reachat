@@ -9,7 +9,8 @@ import {
   useImperativeHandle,
   useEffect,
   useMemo,
-  useCallback
+  useCallback,
+  SyntheticEvent
 } from 'react';
 import { Button, Textarea, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
@@ -22,7 +23,8 @@ import {
   MentionPluginConfig,
   SlashCommandPluginConfig,
   InputTrigger,
-  InputPluginItem
+  InputPluginItem,
+  TextareaImperativeHandle
 } from './types';
 
 interface ChatInputProps {
@@ -122,7 +124,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     } = useContext(ChatContext);
     const [message, setMessage] = useState<string>('');
     const [cursorPosition, setCursorPosition] = useState<number>(0);
-    const inputRef = useRef<HTMLTextAreaElement | null>(null);
+    const inputRef = useRef<TextareaImperativeHandle | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     // Build triggers array from configuration
@@ -185,13 +187,11 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         setMessage(newValue);
         setCursorPosition(newCursorPosition);
         // Update cursor position in textarea
-        if (inputRef.current) {
+        const textarea = inputRef.current?.textareaRef?.current;
+        if (textarea) {
           requestAnimationFrame(() => {
-            inputRef.current?.setSelectionRange(
-              newCursorPosition,
-              newCursorPosition
-            );
-            inputRef.current?.focus();
+            textarea?.setSelectionRange(newCursorPosition, newCursorPosition);
+            textarea?.focus();
           });
         }
       },
@@ -199,10 +199,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     });
 
     useEffect(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, [activeSessionId, inputRef]);
+      inputRef.current?.focus();
+    }, [activeSessionId]);
 
     useImperativeHandle(ref, () => ({
       focus: () => {
@@ -214,18 +212,18 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         setCursorPosition(value.length);
       },
       insertText: (text: string) => {
-        const input = inputRef.current;
-        if (input) {
-          const start = input.selectionStart || 0;
-          const end = input.selectionEnd || 0;
+        const textarea = inputRef.current?.textareaRef?.current;
+        if (textarea) {
+          const start = textarea.selectionStart || 0;
+          const end = textarea.selectionEnd || 0;
           const newValue =
             message.substring(0, start) + text + message.substring(end);
           setMessage(newValue);
           const newPosition = start + text.length;
           setCursorPosition(newPosition);
           requestAnimationFrame(() => {
-            input.setSelectionRange(newPosition, newPosition);
-            input.focus();
+            textarea.setSelectionRange(newPosition, newPosition);
+            textarea.focus();
           });
         }
       }
@@ -270,7 +268,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     );
 
     const handleSelect = useCallback(
-      (e: React.SyntheticEvent<HTMLTextAreaElement>) => {
+      (e: SyntheticEvent<HTMLTextAreaElement>) => {
         const target = e.target as HTMLTextAreaElement;
         setCursorPosition(target.selectionStart || 0);
       },

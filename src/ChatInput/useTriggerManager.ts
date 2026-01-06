@@ -1,9 +1,17 @@
-import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
+import {
+  useState,
+  useCallback,
+  useRef,
+  useMemo,
+  useEffect,
+  RefObject
+} from 'react';
 import {
   InputPluginItem,
   InputTrigger,
   ActiveTriggerState,
-  TriggerInsertResult
+  TriggerInsertResult,
+  TextareaImperativeHandle
 } from './types';
 
 interface UseTriggerManagerProps<T extends InputPluginItem = InputPluginItem> {
@@ -28,9 +36,9 @@ interface UseTriggerManagerProps<T extends InputPluginItem = InputPluginItem> {
   onChange: (value: string, cursorPosition: number) => void;
 
   /**
-   * Reference to the input element for positioning
+   * Reference to the reablocks Textarea component (imperative handle)
    */
-  inputRef: React.RefObject<HTMLTextAreaElement | HTMLInputElement | null>;
+  inputRef: RefObject<TextareaImperativeHandle | null>;
 }
 
 interface UseTriggerManagerResult<T extends InputPluginItem = InputPluginItem> {
@@ -86,27 +94,30 @@ interface UseTriggerManagerResult<T extends InputPluginItem = InputPluginItem> {
 }
 
 /**
- * Calculate the pixel position of the cursor in a textarea
+ * Calculate the pixel position of the cursor in a textarea (relative to the element)
+ * Returns coordinates relative to the input element, not absolute screen position
  */
 function getCursorPixelPosition(
   element: HTMLTextAreaElement | HTMLInputElement,
   position: number
 ): { top: number; left: number } {
-  // Create a mirror div to calculate position
-  const mirror = document.createElement('div');
   const computed = window.getComputedStyle(element);
+  const text = element.value.substring(0, position);
 
-  // Copy styles
+  // Create a mirror div to calculate the exact text width
+  const mirror = document.createElement('div');
   mirror.style.cssText = `
     position: absolute;
     visibility: hidden;
     white-space: pre-wrap;
     word-wrap: break-word;
-    overflow: hidden;
     width: ${computed.width};
     font-family: ${computed.fontFamily};
     font-size: ${computed.fontSize};
     font-weight: ${computed.fontWeight};
+    font-style: ${computed.fontStyle};
+    letter-spacing: ${computed.letterSpacing};
+    text-transform: ${computed.textTransform};
     line-height: ${computed.lineHeight};
     padding: ${computed.padding};
     border: ${computed.border};
@@ -115,37 +126,40 @@ function getCursorPixelPosition(
 
   document.body.appendChild(mirror);
 
-  const text = element.value.substring(0, position);
-  mirror.textContent = text;
-
-  // Add a span at the cursor position
-  const span = document.createElement('span');
-  span.textContent = element.value.substring(position) || '.';
-  mirror.appendChild(span);
-
-  const rect = element.getBoundingClientRect();
-  const mirrorRect = mirror.getBoundingClientRect();
-
-  // Get line height
-  const lineHeight =
-    parseInt(computed.lineHeight) || parseInt(computed.fontSize) * 1.2;
-
-  // Calculate position based on text content
+  // Get the text on the current line (for multi-line support)
   const lines = text.split('\n');
-  const currentLine = lines.length - 1;
-  const top = rect.top + (currentLine + 1) * lineHeight + element.scrollTop;
-
-  // Approximate left position
   const lastLine = lines[lines.length - 1];
-  const charWidth = parseInt(computed.fontSize) * 0.6; // Approximate character width
-  const left =
-    rect.left + parseInt(computed.paddingLeft) + lastLine.length * charWidth;
+
+  // Create a span to measure the width of text before the cursor
+  const textSpan = document.createElement('span');
+  textSpan.style.cssText = `
+    font-family: ${computed.fontFamily};
+    font-size: ${computed.fontSize};
+    font-weight: ${computed.fontWeight};
+    font-style: ${computed.fontStyle};
+    letter-spacing: ${computed.letterSpacing};
+    text-transform: ${computed.textTransform};
+    white-space: pre;
+  `;
+  textSpan.textContent = lastLine;
+  mirror.appendChild(textSpan);
+
+  // Measure the actual rendered width
+  const textWidth = textSpan.offsetWidth;
 
   document.body.removeChild(mirror);
 
+  // Get line height for top calculation
+  const lineHeight =
+    parseInt(computed.lineHeight) || parseInt(computed.fontSize) * 1.2;
+  const currentLine = lines.length - 1;
+  const paddingLeft = parseInt(computed.paddingLeft) || 0;
+
+  // Return RELATIVE position within the input element
+  // left is used as crossAxis offset in floating-ui
   return {
-    top: Math.min(top, rect.bottom),
-    left: Math.min(left, rect.right - 200)
+    top: currentLine * lineHeight,
+    left: paddingLeft + textWidth
   };
 }
 
@@ -307,9 +321,12 @@ export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
       // Check for active trigger
       const trigger = findActiveTrigger(newValue, newCursorPosition, triggers);
 
-      if (trigger && inputRef.current) {
+      // Get the actual textarea element from the imperative handle
+      const textareaElement = inputRef.current?.textareaRef?.current;
+
+      if (trigger && textareaElement) {
         const position = getCursorPixelPosition(
-          inputRef.current,
+          textareaElement,
           trigger.startPosition
         );
         setActiveTrigger({
