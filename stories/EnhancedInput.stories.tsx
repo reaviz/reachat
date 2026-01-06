@@ -148,48 +148,10 @@ export const WithSlashCommands = () => {
           <SessionMessages />
           <ChatInput
             placeholder="Type / for commands..."
-            slashCommands={{
+            commands={{
               items: sampleCommands,
               onSelect: handleCommandSelect,
               renderHeader: () => <span>Commands</span>
-            }}
-          />
-        </SessionMessagePanel>
-      </Chat>
-    </div>
-  );
-};
-
-export const WithTags = () => {
-  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
-  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
-
-  const tagsWithIcons = useMemo(() =>
-    sampleTags.map(tag => ({
-      ...tag,
-      icon: <TagIcon />
-    })),
-    []
-  );
-
-  return (
-    <div
-      className="dark:bg-gray-950 bg-white"
-      style={{ width: 500, height: 400, padding: 20, borderRadius: 5 }}
-    >
-      <Chat
-        viewType="chat"
-        sessions={sessions}
-        activeSessionId={activeId}
-        onSelectSession={setActiveId}
-      >
-        <SessionMessagePanel>
-          <SessionMessages />
-          <ChatInput
-            placeholder="Type # to add a tag..."
-            tags={{
-              items: tagsWithIcons,
-              renderHeader: () => <span>Tags</span>
             }}
           />
         </SessionMessagePanel>
@@ -249,14 +211,6 @@ export const WithAllFeatures = () => {
     }
   }, []);
 
-  const tagsWithIcons = useMemo(() =>
-    sampleTags.map(tag => ({
-      ...tag,
-      icon: <TagIcon />
-    })),
-    []
-  );
-
   return (
     <div
       className="dark:bg-gray-950 bg-white"
@@ -276,14 +230,10 @@ export const WithAllFeatures = () => {
               items: sampleUsers,
               renderHeader: () => <span>Team Members</span>
             }}
-            slashCommands={{
+            commands={{
               items: sampleCommands,
               onSelect: handleCommandSelect,
               renderHeader: () => <span>Commands</span>
-            }}
-            tags={{
-              items: tagsWithIcons,
-              renderHeader: () => <span>Tags</span>
             }}
             formatting={{
               showToolbar: true,
@@ -378,7 +328,7 @@ export const CustomTrigger = () => {
           <SessionMessages />
           <ChatInput
             placeholder="Type : for emojis..."
-            customTriggers={[
+            triggers={[
               {
                 trigger: ':',
                 items: emojiItems,
