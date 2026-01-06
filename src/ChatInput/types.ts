@@ -67,22 +67,6 @@ export interface SlashCommandItem extends InputPluginItem {
 }
 
 /**
- * Configuration for a tag (#) trigger
- */
-export interface TagItem extends InputPluginItem {
-  /**
-   * The value to insert when tag is selected
-   * Defaults to #{label} if not specified
-   */
-  value?: string;
-
-  /**
-   * Optional color for the tag
-   */
-  color?: string;
-}
-
-/**
  * Generic trigger configuration for custom plugins
  */
 export interface InputTrigger<T extends InputPluginItem = InputPluginItem> {
@@ -159,19 +143,6 @@ export interface SlashCommandPluginConfig extends Omit<
 > {
   /**
    * Custom trigger character (default: '/')
-   */
-  trigger?: string;
-}
-
-/**
- * Configuration for tags
- */
-export interface TagPluginConfig extends Omit<
-  InputTrigger<TagItem>,
-  'trigger'
-> {
-  /**
-   * Custom trigger character (default: '#')
    */
   trigger?: string;
 }
@@ -348,19 +319,14 @@ export interface EnhancedChatInputProps {
   mentions?: MentionPluginConfig;
 
   /**
-   * Slash command plugin configuration
+   * Command plugin configuration
    */
-  slashCommands?: SlashCommandPluginConfig;
-
-  /**
-   * Tag plugin configuration
-   */
-  tags?: TagPluginConfig;
+  commands?: SlashCommandPluginConfig;
 
   /**
    * Custom trigger configurations
    */
-  customTriggers?: InputTrigger[];
+  triggers?: InputTrigger[];
 
   /**
    * Formatting options

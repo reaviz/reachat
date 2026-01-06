@@ -26,7 +26,6 @@ import { useTriggerManager } from './useTriggerManager';
 import {
   MentionPluginConfig,
   SlashCommandPluginConfig,
-  TagPluginConfig,
   FormattingOptions,
   InputTrigger,
   InputPluginItem
@@ -70,21 +69,15 @@ interface ChatInputProps {
   mentions?: MentionPluginConfig;
 
   /**
-   * Configuration for slash commands (/command).
-   * Provide items or an onSearch function to enable slash commands.
+   * Configuration for commands (/command).
+   * Provide items or an onSearch function to enable commands.
    */
-  slashCommands?: SlashCommandPluginConfig;
-
-  /**
-   * Configuration for tags (#tag).
-   * Provide items or an onSearch function to enable tags.
-   */
-  tags?: TagPluginConfig;
+  commands?: SlashCommandPluginConfig;
 
   /**
    * Custom trigger configurations for additional plugins.
    */
-  customTriggers?: InputTrigger[];
+  triggers?: InputTrigger[];
 
   /**
    * Formatting options for text formatting toolbar.
@@ -125,9 +118,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       stopIcon = <StopIcon />,
       attachIcon,
       mentions,
-      slashCommands,
-      tags,
-      customTriggers = [],
+      commands,
+      triggers: triggersProp = [],
       formatting
     },
     ref
@@ -147,7 +139,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     // Build triggers array from configuration
-    const triggers = useMemo<InputTrigger<InputPluginItem>[]>(() => {
+    const allTriggers = useMemo<InputTrigger<InputPluginItem>[]>(() => {
       const result: InputTrigger<InputPluginItem>[] = [];
 
       if (mentions) {
@@ -165,41 +157,26 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         });
       }
 
-      if (slashCommands) {
+      if (commands) {
         result.push({
-          trigger: slashCommands.trigger || '/',
-          items: slashCommands.items || [],
-          onSearch: slashCommands.onSearch,
-          onSelect: slashCommands.onSelect,
-          minQueryLength: slashCommands.minQueryLength,
-          maxResults: slashCommands.maxResults,
-          renderItem: slashCommands.renderItem,
-          renderHeader: slashCommands.renderHeader,
-          renderEmpty: slashCommands.renderEmpty,
-          allowFreeform: slashCommands.allowFreeform
-        });
-      }
-
-      if (tags) {
-        result.push({
-          trigger: tags.trigger || '#',
-          items: tags.items || [],
-          onSearch: tags.onSearch,
-          onSelect: tags.onSelect,
-          minQueryLength: tags.minQueryLength,
-          maxResults: tags.maxResults,
-          renderItem: tags.renderItem,
-          renderHeader: tags.renderHeader,
-          renderEmpty: tags.renderEmpty,
-          allowFreeform: tags.allowFreeform
+          trigger: commands.trigger || '/',
+          items: commands.items || [],
+          onSearch: commands.onSearch,
+          onSelect: commands.onSelect,
+          minQueryLength: commands.minQueryLength,
+          maxResults: commands.maxResults,
+          renderItem: commands.renderItem,
+          renderHeader: commands.renderHeader,
+          renderEmpty: commands.renderEmpty,
+          allowFreeform: commands.allowFreeform
         });
       }
 
       // Add custom triggers
-      result.push(...customTriggers);
+      result.push(...triggersProp);
 
       return result;
-    }, [mentions, slashCommands, tags, customTriggers]);
+    }, [mentions, commands, triggersProp]);
 
     // Use trigger manager hook
     const {
@@ -214,7 +191,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       closePopup,
       currentTriggerConfig
     } = useTriggerManager({
-      triggers,
+      triggers: allTriggers,
       value: message,
       cursorPosition,
       onChange: (newValue, newCursorPosition) => {
@@ -457,7 +434,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         </div>
 
         {/* Trigger Popup */}
-        {triggers.length > 0 && (
+        {allTriggers.length > 0 && (
           <TriggerPopup
             isOpen={!!activeTrigger}
             query={activeTrigger?.query || ''}
