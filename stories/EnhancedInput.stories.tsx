@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/react';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Chat,
   SessionMessages,
@@ -7,8 +7,7 @@ import {
   SessionMessagePanel,
   Session,
   MentionItem,
-  SlashCommandItem,
-  TagItem
+  SlashCommandItem
 } from '../src';
 import { fakeSessions } from './examples';
 
@@ -23,13 +22,6 @@ const UserIcon = () => (
 const CommandIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z" />
-  </svg>
-);
-
-const TagIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-    <line x1="7" y1="7" x2="7.01" y2="7" />
   </svg>
 );
 
@@ -78,15 +70,6 @@ const sampleCommands: SlashCommandItem[] = [
   { id: 'image', label: 'image', description: 'Generate an image', icon: <ImageIcon />, type: 'action' },
   { id: 'code', label: 'code', description: 'Insert a code block', icon: <CommandIcon />, type: 'insert', value: '```\n\n```' },
   { id: 'summarize', label: 'summarize', description: 'Summarize the conversation', icon: <CommandIcon /> },
-];
-
-// Sample data for tags
-const sampleTags: TagItem[] = [
-  { id: '1', label: 'bug', description: 'Bug report', color: '#ef4444' },
-  { id: '2', label: 'feature', description: 'Feature request', color: '#22c55e' },
-  { id: '3', label: 'question', description: 'Question', color: '#3b82f6' },
-  { id: '4', label: 'docs', description: 'Documentation', color: '#a855f7' },
-  { id: '5', label: 'urgent', description: 'Urgent priority', color: '#f97316' },
 ];
 
 export const WithMentions = () => {
@@ -225,7 +208,7 @@ export const WithAllFeatures = () => {
         <SessionMessagePanel>
           <SessionMessages />
           <ChatInput
-            placeholder="Type @ for mentions, / for commands, # for tags..."
+            placeholder="Type @ for mentions, / for commands..."
             mentions={{
               items: sampleUsers,
               renderHeader: () => <span>Team Members</span>
