@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { useHotkeys } from 'reakeys';
 import { cn, useComponentTheme } from 'reablocks';
+import { Components } from 'react-markdown';
 import { Session } from './types';
 import { ChatTheme, chatTheme } from './theme';
 import { ChatContext, ChatViewType } from './ChatContext';
@@ -58,6 +59,12 @@ export interface ChatProps extends PropsWithChildren {
    * Remark plugins to apply to the request/response.
    */
   remarkPlugins?: Plugin[];
+
+  /**
+   * Custom markdown components to override default rendering.
+   * Use this to add support for custom elements like charts.
+   */
+  markdownComponents?: Components;
 
   /**
    * Whether to display a loading state.
@@ -114,6 +121,7 @@ export const Chat: FC<ChatProps> = ({
   theme: customTheme = chatTheme,
   onNewSession,
   remarkPlugins = [remarkGfm, remarkYoutube, remarkMath],
+  markdownComponents,
   disabled,
   style,
   className
@@ -173,6 +181,7 @@ export const Chat: FC<ChatProps> = ({
       sessions,
       activeSession,
       remarkPlugins: remarkPlugins as Plugin[],
+      markdownComponents,
       theme,
       disabled,
       isLoading,
@@ -193,6 +202,7 @@ export const Chat: FC<ChatProps> = ({
       disabled,
       theme,
       remarkPlugins,
+      markdownComponents,
       sessions,
       activeSession,
       internalActiveSessionID,
