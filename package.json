@@ -56,11 +56,18 @@
     "remark-gfm": "^4.0.0",
     "remark-math": "^6.0.0",
     "remark-youtube": "^1.3.2",
-    "unified": "^11.0.5"
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0"
   },
   "peerDependencies": {
     "react": ">=18",
-    "react-dom": ">=18"
+    "react-dom": ">=18",
+    "reaviz": ">=16"
+  },
+  "peerDependenciesMeta": {
+    "reaviz": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@storybook/addon-docs": "^8.2.6",
@@ -78,6 +85,7 @@
     "@tailwindcss/vite": "^4.0.6",
     "@types/classnames": "^2.3.1",
     "@types/lodash": "^4.17.21",
+    "@types/mdast": "^4.0.4",
     "@types/react": "^18.2.61",
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
@@ -101,6 +109,7 @@
     "postcss-nested": "^6.0.1",
     "postcss-preset-env": "^9.5.2",
     "prettier": "^3.2.5",
+    "reaviz": "^16.1.1",
     "react": "^18.3.1",
     "react-docgen-typescript": "^2.2.2",
     "react-dom": "^18.3.1",

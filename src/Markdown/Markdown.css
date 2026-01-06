@@ -1,1 +1,14 @@
 @import 'katex/dist/katex.css';
+
+/* Reaviz chart tooltip styling */
+:root {
+  --tooltip-background: rgba(0, 5, 11, 0.9);
+  --tooltip-color: #fff;
+  --tooltip-border-radius: 5px;
+  --tooltip-spacing: 5px;
+  --color-background: transparent;
+  --color-on-background: currentColor;
+  --color-on-primary: #fff;
+  --color-tooltip: rgba(0, 5, 11, 0.9);
+  --color-on-tooltip: #fff;
+}

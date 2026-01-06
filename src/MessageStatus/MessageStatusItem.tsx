@@ -2,6 +2,7 @@ import { FC, useContext } from 'react';
 import { motion } from 'motion/react';
 import { cn } from 'reablocks';
 import { ChatContext } from '@/ChatContext';
+import { chatTheme as defaultTheme } from '@/theme';
 import { StatusIcon } from './StatusIcon';
 import { MessageStatusStep } from './MessageStatus';
 
@@ -14,7 +15,7 @@ export interface MessageStatusItemProps {
 
 export const MessageStatusItem: FC<MessageStatusItemProps> = ({ step }) => {
   const { theme: chatTheme } = useContext(ChatContext);
-  const theme = chatTheme.status.steps.step;
+  const theme = (chatTheme ?? defaultTheme).status.steps.step;
   const stepStatus = step.status || 'loading';
 
   return (
