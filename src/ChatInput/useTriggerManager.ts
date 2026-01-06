@@ -10,7 +10,6 @@ import {
   InputPluginItem,
   InputTrigger,
   ActiveTriggerState,
-  TriggerInsertResult,
   TextareaImperativeHandle
 } from './types';
 
