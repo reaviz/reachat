@@ -1,31 +1,11 @@
-import { FC, useContext, useEffect, useRef } from 'react';
+import { RefObject, useContext, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn, ConnectedOverlay, List, ListItem } from 'reablocks';
 import { offset } from '@floating-ui/react';
 import { ChatContext } from '@/ChatContext';
+import { chatTheme, ChatTheme } from '@/theme';
 import { InputPluginItem, TriggerPopupProps } from './types';
 import SpinnerIcon from '@/assets/spinner.svg?react';
-
-/**
- * Default theme for the popup when not provided by context
- */
-const defaultPopupTheme = {
-  base: 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden min-w-[200px] max-w-[300px]',
-  header:
-    'px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700',
-  content: 'overflow-y-auto max-h-[250px]',
-  item: 'flex items-center gap-2 cursor-pointer transition-colors',
-  itemHighlighted: 'bg-gray-100 dark:bg-gray-800',
-  itemIcon:
-    'flex-shrink-0 w-5 h-5 text-gray-500 dark:text-gray-400 [&>svg]:w-full [&>svg]:h-full',
-  itemContent: 'flex flex-col min-w-0 flex-1',
-  itemLabel: 'text-sm font-medium text-gray-900 dark:text-gray-100 truncate',
-  itemDescription: 'text-xs text-gray-500 dark:text-gray-400 truncate',
-  itemShortcut: 'text-xs text-gray-400 dark:text-gray-500 ml-auto',
-  empty: 'px-3 py-4 text-sm text-center text-gray-500 dark:text-gray-400',
-  loading:
-    'flex items-center justify-center gap-2 px-3 py-4 text-gray-500 dark:text-gray-400'
-};
 
 /**
  * Default item renderer for trigger popup items
@@ -37,7 +17,7 @@ function DefaultItemRenderer<T extends InputPluginItem>({
 }: {
   item: T;
   isHighlighted: boolean;
-  popupTheme: typeof defaultPopupTheme;
+  popupTheme: ChatTheme['input']['popup'];
 }) {
   // Check if item has shortcut (for slash commands)
   const shortcut =
@@ -79,7 +59,7 @@ interface TriggerPopupInternalProps<
   /**
    * Reference element for positioning the popup
    */
-  referenceRef: React.RefObject<HTMLElement | null>;
+  referenceRef: RefObject<HTMLElement | null>;
 }
 
 /**
@@ -105,7 +85,7 @@ export function TriggerPopup<T extends InputPluginItem = InputPluginItem>({
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   // Get popup theme from context or use defaults
-  const popupTheme = theme?.input?.popup || defaultPopupTheme;
+  const popupTheme = theme?.input?.popup || chatTheme.input.popup;
 
   // Scroll highlighted item into view
   useEffect(() => {

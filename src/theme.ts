@@ -113,12 +113,6 @@ export interface ChatTheme {
       send: string;
       stop: string;
     };
-    toolbar: {
-      base: string;
-      button: string;
-      buttonActive: string;
-      divider: string;
-    };
     popup: {
       base: string;
       header: string;
@@ -298,21 +292,6 @@ export const chatTheme: ChatTheme = {
         'dark:text-white light:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700'
       ].join(' '),
       stop: 'px-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 '
-    },
-    toolbar: {
-      base: [
-        'flex items-center gap-1 p-1.5 mb-2 rounded-lg border border-gray-200 bg-gray-50',
-        'dark:border-gray-700 dark:bg-gray-900'
-      ].join(' '),
-      button: [
-        'p-1.5 rounded hover:bg-gray-200 text-gray-500 [&>svg]:w-4 [&>svg]:h-4',
-        'dark:hover:bg-gray-700 dark:text-gray-400'
-      ].join(' '),
-      buttonActive: [
-        'bg-gray-200 text-gray-900',
-        'dark:bg-gray-700 dark:text-white'
-      ].join(' '),
-      divider: 'w-px h-5 bg-gray-200 dark:bg-gray-700 mx-1'
     },
     popup: {
       base: [

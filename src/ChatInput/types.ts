@@ -4,9 +4,24 @@ import { ReactElement, ReactNode } from 'react';
  * Imperative handle for reablocks Textarea component
  */
 export interface TextareaImperativeHandle {
+  /**
+   * Reference to the underlying textarea DOM element
+   */
   textareaRef: { current: HTMLTextAreaElement | null };
+
+  /**
+   * Reference to the container div wrapping the textarea
+   */
   containerRef: { current: HTMLDivElement | null };
+
+  /**
+   * Remove focus from the textarea
+   */
   blur: () => void;
+
+  /**
+   * Set focus on the textarea
+   */
   focus: () => void;
 }
 
