@@ -20,6 +20,11 @@ export interface ContentEditableInputRef {
   blur: () => void;
   getValue: () => string;
   setValue: (value: string) => void;
+  setValueWithCursor: (
+    value: string,
+    cursorPosition: number,
+    onComplete?: () => void
+  ) => void;
   insertTextAtCursor: (text: string) => void;
   getCursorPosition: () => number;
   setCursorPosition: (position: number) => void;
@@ -70,9 +75,10 @@ export const ContentEditableInput = forwardRef<
     ref
   ) => {
     const editorRef = useRef<HTMLDivElement>(null);
-    const isInternalChange = useRef(false);
-    const lastKnownValue = useRef(value);
-    const isRenderingRef = useRef(false);
+    const isComposing = useRef(false);
+    const lastRenderedValue = useRef(value);
+    // Flag to prevent event loops during programmatic DOM updates
+    const isProgrammaticUpdate = useRef(false);
 
     const getTextContent = useCallback((): string => {
       if (!editorRef.current) return '';
@@ -269,100 +275,84 @@ export const ContentEditableInput = forwardRef<
 
         // Trigger change
         const newValue = getTextContent();
-        isInternalChange.current = true;
-        lastKnownValue.current = newValue;
         onChange(newValue);
         onCursorChange?.(getCursorPosition());
       },
       [onChange, onCursorChange, getTextContent, getCursorPosition]
     );
 
-    const setValue = useCallback(
-      (newValue: string) => {
+    const updateContent = useCallback(
+      (newValue: string, cursorPos?: number, onComplete?: () => void) => {
         const editor = editorRef.current;
         if (!editor) return;
 
-        const hadFocus = document.activeElement === editor;
-        const cursorPos = hadFocus ? getCursorPosition() : 0;
+        const actualCursorPos = cursorPos ?? getCursorPosition();
 
-        isRenderingRef.current = true;
+        // Mark that we're doing a programmatic update
+        isProgrammaticUpdate.current = true;
 
         if (triggers.length > 0) {
-          // Render with trigger tags
-          const html = renderContent(newValue, cursorPos);
+          const html = renderContent(newValue, actualCursorPos);
           editor.innerHTML = html;
         } else {
-          // Use textContent to avoid XSS and keep it plain text
           editor.textContent = newValue;
         }
 
-        lastKnownValue.current = newValue;
+        lastRenderedValue.current = newValue;
 
-        if (hadFocus) {
-          // Try to restore cursor position
-          const newPos = Math.min(cursorPos, newValue.length);
-          requestAnimationFrame(() => {
-            setCursorPosition(newPos);
-            isRenderingRef.current = false;
-          });
+        // Restore cursor position if provided
+        if (cursorPos !== undefined) {
+          // Use setTimeout to defer to after DOM updates
+          setTimeout(() => {
+            setCursorPosition(cursorPos);
+
+            // Call onComplete after cursor is positioned and selection has updated
+            // Need extra delay to ensure selectionchange event has fired
+            if (onComplete) {
+              setTimeout(() => {
+                onComplete();
+                // Reset flag after callback completes
+                isProgrammaticUpdate.current = false;
+              }, 50);
+            } else {
+              // Reset flag if no callback
+              isProgrammaticUpdate.current = false;
+            }
+          }, 0);
         } else {
-          isRenderingRef.current = false;
+          // Reset flag after a microtask if no cursor positioning needed
+          Promise.resolve().then(() => {
+            isProgrammaticUpdate.current = false;
+          });
+          if (onComplete) {
+            onComplete();
+          }
         }
       },
       [getCursorPosition, setCursorPosition, triggers, renderContent]
     );
 
+    const setValue = useCallback(
+      (newValue: string) => {
+        const hadFocus = document.activeElement === editorRef.current;
+        const cursorPos = hadFocus ? getCursorPosition() : newValue.length;
+        updateContent(newValue, Math.min(cursorPos, newValue.length));
+      },
+      [getCursorPosition, updateContent]
+    );
+
     // Sync value from props when it changes externally
     useEffect(() => {
-      if (isInternalChange.current || isRenderingRef.current) {
-        isInternalChange.current = false;
-        return;
-      }
+      if (isComposing.current) return;
+
+      // Skip if we're doing a programmatic update
+      if (isProgrammaticUpdate.current) return;
 
       const currentValue = getTextContent();
-      if (currentValue !== value) {
+      if (currentValue !== value && lastRenderedValue.current !== value) {
         setValue(value);
       }
     }, [value, getTextContent, setValue]);
-
-    // Re-render when cursor position changes (to update which triggers are highlighted)
-    useEffect(() => {
-      if (
-        triggers.length > 0 &&
-        !isInternalChange.current &&
-        !isRenderingRef.current
-      ) {
-        const currentValue = getTextContent();
-        if (currentValue === value) {
-          const cursorPos = getCursorPosition();
-          const html = renderContent(value, cursorPos);
-          const editor = editorRef.current;
-          if (editor && editor.innerHTML !== html) {
-            const hadFocus = document.activeElement === editor;
-            const savedCursorPos = cursorPos;
-
-            isRenderingRef.current = true;
-            editor.innerHTML = html;
-
-            if (hadFocus) {
-              requestAnimationFrame(() => {
-                setCursorPosition(savedCursorPos);
-                isRenderingRef.current = false;
-              });
-            } else {
-              isRenderingRef.current = false;
-            }
-          }
-        }
-      }
-    }, [
-      value,
-      triggers,
-      getTextContent,
-      getCursorPosition,
-      renderContent,
-      setCursorPosition
-    ]);
 
     // Auto focus
     useEffect(() => {
@@ -371,11 +361,19 @@ export const ContentEditableInput = forwardRef<
       }
     }, [autoFocus]);
 
+    const setValueWithCursor = useCallback(
+      (newValue: string, cursorPos: number, onComplete?: () => void) => {
+        updateContent(newValue, cursorPos, onComplete);
+      },
+      [updateContent]
+    );
+
     useImperativeHandle(ref, () => ({
       focus: () => editorRef.current?.focus(),
       blur: () => editorRef.current?.blur(),
       getValue: getTextContent,
       setValue,
+      setValueWithCursor,
       insertTextAtCursor,
       getCursorPosition,
       setCursorPosition,
@@ -385,37 +383,31 @@ export const ContentEditableInput = forwardRef<
 
     const handleInput = useCallback(
       (e: FormEvent<HTMLDivElement>) => {
+        if (isComposing.current) return;
+
+        // Ignore input events from programmatic updates
+        if (isProgrammaticUpdate.current) return;
+
         const newValue = e.currentTarget.textContent || '';
-        isInternalChange.current = true;
-        lastKnownValue.current = newValue;
 
-        // Re-render with trigger tags if needed
-        if (triggers.length > 0 && !isRenderingRef.current) {
-          const cursorPos = getCursorPosition();
-          const html = renderContent(newValue, cursorPos);
-          const editor = editorRef.current;
-          if (editor && editor.innerHTML !== html) {
-            const savedCursorPos = cursorPos;
-            isRenderingRef.current = true;
-            editor.innerHTML = html;
-            requestAnimationFrame(() => {
-              setCursorPosition(savedCursorPos);
-              isRenderingRef.current = false;
-            });
-          }
-        }
-
+        // Don't call updateContent here - it interferes with cursor positioning during typing
+        // Let the value sync back through the useEffect instead
         onChange(newValue);
         onCursorChange?.(getCursorPosition());
       },
-      [
-        onChange,
-        onCursorChange,
-        getCursorPosition,
-        triggers,
-        renderContent,
-        setCursorPosition
-      ]
+      [onChange, onCursorChange, getCursorPosition]
+    );
+
+    const handleCompositionStart = useCallback(() => {
+      isComposing.current = true;
+    }, []);
+
+    const handleCompositionEnd = useCallback(
+      (e: FormEvent<HTMLDivElement>) => {
+        isComposing.current = false;
+        handleInput(e);
+      },
+      [handleInput]
     );
 
     const handleKeyDown = useCallback(
@@ -433,6 +425,9 @@ export const ContentEditableInput = forwardRef<
     }, []);
 
     const handleSelectionChange = useCallback(() => {
+      // Ignore selection changes from programmatic updates
+      if (isProgrammaticUpdate.current) return;
+
       if (document.activeElement === editorRef.current && onCursorChange) {
         onCursorChange(getCursorPosition());
       }
@@ -453,6 +448,8 @@ export const ContentEditableInput = forwardRef<
           ref={editorRef}
           contentEditable={!disabled}
           onInput={handleInput}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           className={cn(
@@ -475,8 +472,9 @@ export const ContentEditableInput = forwardRef<
         {isEmpty && (
           <div
             className={cn(
-              'absolute top-0 left-0 pointer-events-none text-gray-400 dark:text-gray-500',
-              'whitespace-nowrap overflow-hidden text-ellipsis w-full'
+              'absolute inset-0 pointer-events-none text-gray-400 dark:text-gray-500',
+              'whitespace-pre-wrap break-words',
+              className
             )}
             aria-hidden="true"
           >

@@ -1,186 +1,53 @@
-import {
-  useState,
-  useCallback,
-  useRef,
-  useMemo,
-  useEffect,
-  RefObject
-} from 'react';
-import {
-  InputPluginItem,
-  InputTrigger,
-  ActiveTriggerState,
-  TextareaImperativeHandle
-} from './types';
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
+import { InputPluginItem, InputTrigger, ActiveTriggerState } from './types';
 
-interface UseTriggerManagerProps<T extends InputPluginItem = InputPluginItem> {
-  /**
-   * Array of trigger configurations
-   */
+interface UseTriggerManagerCoreProps<
+  T extends InputPluginItem = InputPluginItem
+> {
   triggers: InputTrigger<T>[];
-
-  /**
-   * Current input value
-   */
   value: string;
-
-  /**
-   * Current cursor/selection position
-   */
   cursorPosition: number;
-
-  /**
-   * Callback to update the input value
-   */
   onChange: (value: string, cursorPosition: number) => void;
-
-  /**
-   * Reference to the reablocks Textarea component (imperative handle)
-   */
-  inputRef: RefObject<TextareaImperativeHandle | null>;
+  getCursorPixelPosition: () => { top: number; left: number } | null;
 }
 
-interface UseTriggerManagerResult<T extends InputPluginItem = InputPluginItem> {
-  /**
-   * Current active trigger state (null if no popup is active)
-   */
+interface UseTriggerManagerCoreResult<
+  T extends InputPluginItem = InputPluginItem
+> {
   activeTrigger: ActiveTriggerState | null;
-
-  /**
-   * Items matching the current query
-   */
   matchingItems: T[];
-
-  /**
-   * Whether items are being loaded
-   */
   isLoading: boolean;
-
-  /**
-   * Currently highlighted item index
-   */
   highlightedIndex: number;
-
-  /**
-   * Set the highlighted index
-   */
   setHighlightedIndex: (index: number) => void;
-
-  /**
-   * Handle keyboard events for navigation
-   */
   handleKeyDown: (e: React.KeyboardEvent) => boolean;
-
-  /**
-   * Handle input changes to detect triggers
-   */
   handleInputChange: (newValue: string, newCursorPosition: number) => void;
-
-  /**
-   * Select an item from the popup
-   */
   selectItem: (item: T) => void;
-
-  /**
-   * Close the popup without selecting
-   */
   closePopup: () => void;
-
-  /**
-   * Get the current trigger configuration
-   */
   currentTriggerConfig: InputTrigger<T> | null;
 }
 
-/**
- * Calculate the pixel position of the cursor in a textarea (relative to the element)
- * Returns coordinates relative to the input element, not absolute screen position
- */
-function getCursorPixelPosition(
-  element: HTMLTextAreaElement | HTMLInputElement,
-  position: number
-): { top: number; left: number } {
-  const computed = window.getComputedStyle(element);
-  const text = element.value.substring(0, position);
-
-  // Create a mirror div to calculate the exact text width
-  const mirror = document.createElement('div');
-  mirror.style.cssText = `
-    position: absolute;
-    visibility: hidden;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    width: ${computed.width};
-    font-family: ${computed.fontFamily};
-    font-size: ${computed.fontSize};
-    font-weight: ${computed.fontWeight};
-    font-style: ${computed.fontStyle};
-    letter-spacing: ${computed.letterSpacing};
-    text-transform: ${computed.textTransform};
-    line-height: ${computed.lineHeight};
-    padding: ${computed.padding};
-    border: ${computed.border};
-    box-sizing: ${computed.boxSizing};
-  `;
-
-  document.body.appendChild(mirror);
-
-  // Get the text on the current line (for multi-line support)
-  const lines = text.split('\n');
-  const lastLine = lines[lines.length - 1];
-
-  // Create a span to measure the width of text before the cursor
-  const textSpan = document.createElement('span');
-  textSpan.style.cssText = `
-    font-family: ${computed.fontFamily};
-    font-size: ${computed.fontSize};
-    font-weight: ${computed.fontWeight};
-    font-style: ${computed.fontStyle};
-    letter-spacing: ${computed.letterSpacing};
-    text-transform: ${computed.textTransform};
-    white-space: pre;
-  `;
-  textSpan.textContent = lastLine;
-  mirror.appendChild(textSpan);
-
-  // Measure the actual rendered width
-  const textWidth = textSpan.offsetWidth;
-
-  document.body.removeChild(mirror);
-
-  // Get line height for top calculation
-  const lineHeight =
-    parseInt(computed.lineHeight) || parseInt(computed.fontSize) * 1.2;
-  const currentLine = lines.length - 1;
-  const paddingLeft = parseInt(computed.paddingLeft) || 0;
-
-  // Return RELATIVE position within the input element
-  // left is used as crossAxis offset in floating-ui
-  return {
-    top: currentLine * lineHeight,
-    left: paddingLeft + textWidth
-  };
-}
+const SEARCH_DEBOUNCE_MS = 150;
+const DEFAULT_MAX_RESULTS = 10;
+const DEFAULT_MIN_QUERY_LENGTH = 0;
 
 /**
  * Find if there's an active trigger at the current cursor position
  */
-function findActiveTrigger(
+export function findActiveTrigger(
   value: string,
   cursorPosition: number,
   triggers: InputTrigger[]
 ): { trigger: string; query: string; startPosition: number } | null {
-  // Look backwards from cursor to find a trigger
   const textBeforeCursor = value.substring(0, cursorPosition);
 
   for (const triggerConfig of triggers) {
     const triggerChar = triggerConfig.trigger;
+    let lastTriggerPos = -1;
 
     // Find the last occurrence of this trigger before cursor
-    let lastTriggerPos = -1;
     for (let i = textBeforeCursor.length - 1; i >= 0; i--) {
       if (textBeforeCursor[i] === triggerChar) {
-        // Check if this is a valid trigger position (start of input or preceded by whitespace)
+        // Valid trigger position (start of input or preceded by whitespace)
         if (i === 0 || /\s/.test(textBeforeCursor[i - 1])) {
           lastTriggerPos = i;
           break;
@@ -194,7 +61,7 @@ function findActiveTrigger(
 
     if (lastTriggerPos !== -1) {
       const query = textBeforeCursor.substring(lastTriggerPos + 1);
-      // Make sure query doesn't contain whitespace (that would end the trigger)
+      // Ensure query doesn't contain whitespace
       if (!/\s/.test(query)) {
         return {
           trigger: triggerChar,
@@ -211,10 +78,10 @@ function findActiveTrigger(
 /**
  * Filter items based on query
  */
-function filterItems<T extends InputPluginItem>(
+export function filterItems<T extends InputPluginItem>(
   items: T[],
   query: string,
-  maxResults: number = 10
+  maxResults: number = DEFAULT_MAX_RESULTS
 ): T[] {
   if (!query) {
     return items.slice(0, maxResults);
@@ -230,13 +97,19 @@ function filterItems<T extends InputPluginItem>(
     .slice(0, maxResults);
 }
 
-export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
+/**
+ * Core trigger manager logic - works with any input type
+ * Caller must provide getCursorPixelPosition function
+ */
+export function useTriggerManagerCore<
+  T extends InputPluginItem = InputPluginItem
+>({
   triggers,
   value,
   cursorPosition,
   onChange,
-  inputRef
-}: UseTriggerManagerProps<T>): UseTriggerManagerResult<T> {
+  getCursorPixelPosition
+}: UseTriggerManagerCoreProps<T>): UseTriggerManagerCoreResult<T> {
   const [activeTrigger, setActiveTrigger] = useState<ActiveTriggerState | null>(
     null
   );
@@ -245,8 +118,10 @@ export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
   const [highlightedIndex, setHighlightedIndex] = useState(0);
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const selectionLockRef = useRef(false);
+  const prevTriggerRef = useRef<string | null>(null);
+  const prevSearchKeyRef = useRef<string | null>(null);
 
-  // Get the current trigger configuration
   const currentTriggerConfig = useMemo(() => {
     if (!activeTrigger) return null;
     return (
@@ -256,30 +131,41 @@ export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
     );
   }, [activeTrigger, triggers]);
 
-  // Track the trigger character to reset highlight only when it changes
-  const prevTriggerRef = useRef<string | null>(null);
+  // Create a stable search key that only changes when we need to search
+  const searchKey = activeTrigger
+    ? `${activeTrigger.trigger}:${activeTrigger.query}:${activeTrigger.startPosition}`
+    : null;
 
   // Update matching items when trigger or query changes
   useEffect(() => {
     if (!activeTrigger || !currentTriggerConfig) {
       setMatchingItems([]);
       prevTriggerRef.current = null;
+      prevSearchKeyRef.current = null;
       return;
     }
+
+    // Skip if search key hasn't changed
+    if (searchKey === prevSearchKeyRef.current) {
+      return;
+    }
+    prevSearchKeyRef.current = searchKey;
 
     const { query, trigger } = activeTrigger;
     const {
       items,
       onSearch,
-      minQueryLength = 0,
-      maxResults = 10
+      minQueryLength = DEFAULT_MIN_QUERY_LENGTH,
+      maxResults = DEFAULT_MAX_RESULTS
     } = currentTriggerConfig;
 
-    // Only reset highlighted index when the trigger character changes (e.g., switching from / to @)
-    // NOT when the query changes (e.g., typing more characters)
+    // Reset highlighted index when trigger character changes or when query changes
     if (prevTriggerRef.current !== trigger) {
       setHighlightedIndex(0);
       prevTriggerRef.current = trigger;
+    } else {
+      // Also reset to 0 when query changes (new search results)
+      setHighlightedIndex(0);
     }
 
     // Check minimum query length
@@ -288,11 +174,10 @@ export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
       return;
     }
 
-    // If there's a search function, use it
+    // Async search
     if (onSearch) {
       setIsLoading(true);
 
-      // Debounce the search
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
@@ -307,12 +192,12 @@ export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
         } finally {
           setIsLoading(false);
         }
-      }, 150);
+      }, SEARCH_DEBOUNCE_MS);
     } else {
-      // Filter locally
+      // Local filter
       setMatchingItems(filterItems((items as T[]) || [], query, maxResults));
     }
-  }, [activeTrigger, currentTriggerConfig]);
+  }, [searchKey, activeTrigger, currentTriggerConfig]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -325,28 +210,41 @@ export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
 
   const handleInputChange = useCallback(
     (newValue: string, newCursorPosition: number) => {
-      // Check for active trigger
+      // Skip if we just made a selection
+      if (selectionLockRef.current) {
+        return;
+      }
+
       const trigger = findActiveTrigger(newValue, newCursorPosition, triggers);
 
-      // Get the actual textarea element from the imperative handle
-      const textareaElement = inputRef.current?.textareaRef?.current;
+      if (trigger) {
+        const pixelPosition = getCursorPixelPosition();
 
-      if (trigger && textareaElement) {
-        const position = getCursorPixelPosition(
-          textareaElement,
-          trigger.startPosition
-        );
-        setActiveTrigger({
-          trigger: trigger.trigger,
-          query: trigger.query,
-          startPosition: trigger.startPosition,
-          cursorPosition: position
-        });
+        if (pixelPosition) {
+          setActiveTrigger(prev => {
+            // Only update pixel position if other properties unchanged
+            if (
+              prev &&
+              prev.trigger === trigger.trigger &&
+              prev.query === trigger.query &&
+              prev.startPosition === trigger.startPosition
+            ) {
+              return { ...prev, cursorPosition: pixelPosition };
+            }
+            // Trigger or query changed, update everything
+            return {
+              trigger: trigger.trigger,
+              query: trigger.query,
+              startPosition: trigger.startPosition,
+              cursorPosition: pixelPosition
+            };
+          });
+        }
       } else {
         setActiveTrigger(null);
       }
     },
-    [triggers, inputRef]
+    [triggers, getCursorPixelPosition]
   );
 
   const closePopup = useCallback(() => {
@@ -359,19 +257,19 @@ export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
     (item: T) => {
       if (!activeTrigger || !currentTriggerConfig) return;
 
-      const { startPosition } = activeTrigger;
+      selectionLockRef.current = true;
 
-      // Determine what text to insert
+      const { startPosition } = activeTrigger;
       let insertText = '';
 
-      // Call the onSelect callback if provided
+      // Call custom onSelect if provided
       if (currentTriggerConfig.onSelect) {
         currentTriggerConfig.onSelect(item, (text: string) => {
           insertText = text;
         });
       }
 
-      // If no custom insert text, use default formatting
+      // Default formatting if no custom insert text
       if (!insertText) {
         if ('value' in item && item.value) {
           insertText = item.value as string;
@@ -386,8 +284,15 @@ export function useTriggerManager<T extends InputPluginItem = InputPluginItem>({
       const newValue = beforeTrigger + insertText + ' ' + afterCursor;
       const newCursorPosition = startPosition + insertText.length + 1;
 
-      onChange(newValue, newCursorPosition);
       closePopup();
+      onChange(newValue, newCursorPosition);
+
+      // Release lock after DOM updates
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          selectionLockRef.current = false;
+        });
+      });
     },
     [
       activeTrigger,

@@ -55,11 +55,12 @@ export function parseTriggers(
 
       if (isAtStart || isAfterWhitespace) {
         // Find where this trigger ends (whitespace or end of text)
+        // Non-breaking spaces (\u00A0) are treated as part of the trigger, not delimiters
         let endIndex = triggerIndex + 1;
         while (
           endIndex < text.length &&
-          !/\s/.test(text[endIndex]) &&
-          text[endIndex] !== triggerChar
+          (text[endIndex] === '\u00A0' ||
+            (!/\s/.test(text[endIndex]) && text[endIndex] !== triggerChar))
         ) {
           endIndex++;
         }

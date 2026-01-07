@@ -9,22 +9,24 @@ import {
   useImperativeHandle,
   useEffect,
   useMemo,
-  useCallback,
-  SyntheticEvent
+  useCallback
 } from 'react';
-import { Button, Textarea, cn } from 'reablocks';
+import { Button, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
 import { TriggerPopup } from './TriggerPopup';
-import { useTriggerManager } from './useTriggerManager';
+import { useTriggerManagerContentEditable } from './useTriggerManagerContentEditable';
+import {
+  ContentEditableInput,
+  ContentEditableInputRef
+} from './ContentEditableInput';
 import {
   MentionPluginConfig,
   SlashCommandPluginConfig,
   InputTrigger,
-  InputPluginItem,
-  TextareaImperativeHandle
+  InputPluginItem
 } from './types';
 
 interface ChatInputProps {
@@ -74,6 +76,16 @@ interface ChatInputProps {
    * Custom trigger configurations for additional plugins.
    */
   triggers?: InputTrigger[];
+
+  /**
+   * Minimum height for the input (default: 24px)
+   */
+  minHeight?: number;
+
+  /**
+   * Maximum height for the input (default: 200px)
+   */
+  maxHeight?: number;
 }
 
 export interface ChatInputRef {
@@ -102,14 +114,16 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
   (
     {
       allowedFiles,
-      placeholder,
+      placeholder = 'Type a message...',
       defaultValue,
       sendIcon = <SendIcon />,
       stopIcon = <StopIcon />,
       attachIcon,
       mentions,
       commands,
-      triggers: triggersProp = []
+      triggers: triggersProp = [],
+      minHeight = 24,
+      maxHeight = 200
     },
     ref
   ) => {
@@ -122,9 +136,10 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       fileUpload,
       activeSessionId
     } = useContext(ChatContext);
-    const [message, setMessage] = useState<string>('');
+
+    const [message, setMessage] = useState<string>(defaultValue || '');
     const [cursorPosition, setCursorPosition] = useState<number>(0);
-    const inputRef = useRef<TextareaImperativeHandle | null>(null);
+    const inputRef = useRef<ContentEditableInputRef | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     // Build triggers array from configuration
@@ -161,13 +176,17 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         });
       }
 
-      // Add custom triggers
       result.push(...triggersProp);
 
       return result;
     }, [mentions, commands, triggersProp]);
 
-    // Use trigger manager hook
+    // Extract trigger characters for highlighting
+    const triggerChars = useMemo(() => {
+      return allTriggers.map(t => t.trigger);
+    }, [allTriggers]);
+
+    // Use contenteditable-based trigger manager
     const {
       activeTrigger,
       matchingItems,
@@ -179,21 +198,13 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       selectItem,
       closePopup,
       currentTriggerConfig
-    } = useTriggerManager({
+    } = useTriggerManagerContentEditable({
       triggers: allTriggers,
       value: message,
       cursorPosition,
       onChange: (newValue, newCursorPosition) => {
         setMessage(newValue);
         setCursorPosition(newCursorPosition);
-        // Update cursor position in textarea
-        const textarea = inputRef.current?.textareaRef?.current;
-        if (textarea) {
-          requestAnimationFrame(() => {
-            textarea?.setSelectionRange(newCursorPosition, newCursorPosition);
-            textarea?.focus();
-          });
-        }
       },
       inputRef
     });
@@ -209,23 +220,11 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       getValue: () => message,
       setValue: (value: string) => {
         setMessage(value);
+        inputRef.current?.setValue(value);
         setCursorPosition(value.length);
       },
       insertText: (text: string) => {
-        const textarea = inputRef.current?.textareaRef?.current;
-        if (textarea) {
-          const start = textarea.selectionStart || 0;
-          const end = textarea.selectionEnd || 0;
-          const newValue =
-            message.substring(0, start) + text + message.substring(end);
-          setMessage(newValue);
-          const newPosition = start + text.length;
-          setCursorPosition(newPosition);
-          requestAnimationFrame(() => {
-            textarea.setSelectionRange(newPosition, newPosition);
-            textarea.focus();
-          });
-        }
+        inputRef.current?.insertTextAtCursor(text);
       }
     }));
 
@@ -234,11 +233,13 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         sendMessage?.(message);
         setMessage('');
         setCursorPosition(0);
+        // Clear the contenteditable
+        inputRef.current?.setValue('');
       }
     }, [message, sendMessage]);
 
-    const handleKeyPress = useCallback(
-      (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    const handleKeyDown = useCallback(
+      (e: KeyboardEvent<HTMLDivElement>) => {
         // First, let trigger manager handle navigation
         if (activeTrigger && handleTriggerKeyDown(e)) {
           return;
@@ -254,25 +255,26 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     );
 
     const handleChange = useCallback(
-      (e: ChangeEvent<HTMLTextAreaElement>) => {
-        const newValue = e.target.value;
-        const newCursorPosition = e.target.selectionStart || 0;
-
+      (newValue: string) => {
         setMessage(newValue);
-        setCursorPosition(newCursorPosition);
-
-        // Notify trigger manager of change
-        handleInputChange(newValue, newCursorPosition);
+        // Get actual cursor position from the input element
+        const actualCursorPosition =
+          inputRef.current?.getCursorPosition() ?? newValue.length;
+        // Notify trigger manager of change with current cursor
+        handleInputChange(newValue, actualCursorPosition);
       },
       [handleInputChange]
     );
 
-    const handleSelect = useCallback(
-      (e: SyntheticEvent<HTMLTextAreaElement>) => {
-        const target = e.target as HTMLTextAreaElement;
-        setCursorPosition(target.selectionStart || 0);
+    const handleCursorChange = useCallback(
+      (newPosition: number) => {
+        setCursorPosition(newPosition);
+        // Get actual text content from input to avoid stale closure
+        const actualValue = inputRef.current?.getValue() ?? '';
+        // Re-check for triggers when cursor moves
+        handleInputChange(actualValue, newPosition);
       },
-      []
+      [handleInputChange]
     );
 
     const handleFileUpload = useCallback(
@@ -288,20 +290,20 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     return (
       <div ref={containerRef} className={cn(theme.input.base)}>
         {/* Input Container */}
-        <div className="relative flex-1">
-          <Textarea
+        <div className={cn('relative flex-1', theme.input.input)}>
+          <ContentEditableInput
             ref={inputRef}
-            containerClassName={cn(theme.input.input)}
-            minRows={1}
-            autoFocus
             value={message}
-            defaultValue={defaultValue}
-            onKeyDown={handleKeyPress}
+            onChange={handleChange}
+            onCursorChange={handleCursorChange}
+            onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={isLoading || disabled}
-            onChange={handleChange}
-            onSelect={handleSelect}
-            onClick={handleSelect}
+            autoFocus
+            minHeight={minHeight}
+            maxHeight={maxHeight}
+            className="px-3 py-2 pr-16"
+            triggers={triggerChars}
           />
 
           {/* Action Buttons */}
