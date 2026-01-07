@@ -127,6 +127,11 @@ export interface ChatTheme {
       empty: string;
       loading: string;
     };
+    tag: {
+      base: string;
+      mention: string;
+      command: string;
+    };
   };
   suggestions: {
     base: string;
@@ -323,6 +328,20 @@ export const chatTheme: ChatTheme = {
       loading: [
         'flex items-center justify-center gap-2 px-3 py-4 text-gray-500',
         'dark:text-gray-400'
+      ].join(' ')
+    },
+    tag: {
+      base: [
+        'inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded',
+        'font-medium text-sm'
+      ].join(' '),
+      mention: [
+        'bg-blue-100 dark:bg-blue-900/30',
+        'text-blue-700 dark:text-blue-300'
+      ].join(' '),
+      command: [
+        'bg-purple-100 dark:bg-purple-900/30',
+        'text-purple-700 dark:text-purple-300'
       ].join(' ')
     }
   },

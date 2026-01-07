@@ -124,6 +124,11 @@ export const ChatInputContentEditable = forwardRef<
       return result;
     }, [mentions, commands, triggersProp]);
 
+    // Extract trigger characters for highlighting
+    const triggerChars = useMemo(() => {
+      return allTriggers.map(t => t.trigger);
+    }, [allTriggers]);
+
     // Use contenteditable-based trigger manager
     const {
       activeTrigger,
@@ -241,6 +246,7 @@ export const ChatInputContentEditable = forwardRef<
             minHeight={minHeight}
             maxHeight={maxHeight}
             className="px-3 py-2 pr-16"
+            triggers={triggerChars}
           />
 
           {/* Action Buttons */}

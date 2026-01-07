@@ -6,9 +6,14 @@ import {
   KeyboardEvent,
   ClipboardEvent,
   FormEvent,
-  useImperativeHandle
+  useImperativeHandle,
+  useMemo,
+  useContext
 } from 'react';
 import { cn } from 'reablocks';
+import { ChatContext } from '@/ChatContext';
+import { chatTheme } from '@/theme';
+import { segmentText } from './utils/parseTriggers';
 
 export interface ContentEditableInputRef {
   focus: () => void;
@@ -33,6 +38,14 @@ interface ContentEditableInputProps {
   className?: string;
   minHeight?: number;
   maxHeight?: number;
+  /**
+   * Trigger characters to highlight as tags (e.g., ['@', '/'])
+   */
+  triggers?: string[];
+  /**
+   * Custom className for trigger tags
+   */
+  triggerTagClassName?: string;
 }
 
 export const ContentEditableInput = forwardRef<
@@ -50,18 +63,76 @@ export const ContentEditableInput = forwardRef<
       autoFocus = false,
       className,
       minHeight = 24,
-      maxHeight = 200
+      maxHeight = 200,
+      triggers = [],
+      triggerTagClassName
     },
     ref
   ) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const isInternalChange = useRef(false);
     const lastKnownValue = useRef(value);
+    const isRenderingRef = useRef(false);
 
     const getTextContent = useCallback((): string => {
       if (!editorRef.current) return '';
       return editorRef.current.textContent || '';
     }, []);
+
+    // Get theme from context
+    const { theme } = useContext(ChatContext);
+    const tagTheme = theme?.input?.tag || chatTheme.input.tag;
+
+    // Render HTML with trigger tags highlighted
+    const renderContent = useCallback(
+      (text: string, cursorPos: number): string => {
+        if (!triggers.length) {
+          return text;
+        }
+
+        const segments = segmentText(text, cursorPos, triggers);
+        const htmlParts: string[] = [];
+
+        for (const segment of segments) {
+          if (segment.type === 'trigger' && segment.trigger) {
+            // Render as a tag-like span
+            const trigger = segment.trigger;
+            // Determine tag style based on trigger type
+            const isMention = trigger.trigger === '@';
+            const isCommand = trigger.trigger === '/';
+            const tagStyleClass = isMention
+              ? tagTheme.mention
+              : isCommand
+                ? tagTheme.command
+                : tagTheme.base;
+
+            const tagClass = cn(
+              tagTheme.base,
+              tagStyleClass,
+              triggerTagClassName
+            );
+            // Escape the content for HTML
+            const escapedContent = segment.content
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;');
+            htmlParts.push(
+              `<span class="${tagClass}" data-trigger="${trigger.trigger}" data-value="${trigger.value}">${escapedContent}</span>`
+            );
+          } else {
+            // Escape HTML for text segments
+            const escaped = segment.content
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;');
+            htmlParts.push(escaped);
+          }
+        }
+
+        return htmlParts.join('');
+      },
+      [triggers, triggerTagClassName, tagTheme]
+    );
 
     const getCursorPosition = useCallback((): number => {
       const selection = window.getSelection();
@@ -71,7 +142,14 @@ export const ContentEditableInput = forwardRef<
       const preCaretRange = range.cloneRange();
       preCaretRange.selectNodeContents(editorRef.current);
       preCaretRange.setEnd(range.startContainer, range.startOffset);
-      return preCaretRange.toString().length;
+
+      // Get text content length (ignoring HTML tags)
+      return (
+        editorRef.current.textContent?.substring(
+          0,
+          preCaretRange.toString().length
+        ).length || 0
+      );
     }, []);
 
     const setCursorPosition = useCallback((position: number) => {
@@ -81,24 +159,51 @@ export const ContentEditableInput = forwardRef<
       const selection = window.getSelection();
       if (!selection) return;
 
-      const textNode = editor.firstChild;
-      if (!textNode) {
-        // Empty editor, just focus
-        editor.focus();
-        return;
+      // Get all text nodes in order
+      const walker = document.createTreeWalker(
+        editor,
+        NodeFilter.SHOW_TEXT,
+        null
+      );
+
+      let currentPos = 0;
+      let targetNode: Node | null = null;
+      let targetOffset = 0;
+
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        const nodeLength = node.textContent?.length || 0;
+
+        if (currentPos + nodeLength >= position) {
+          targetNode = node;
+          targetOffset = position - currentPos;
+          break;
+        }
+
+        currentPos += nodeLength;
       }
 
-      const range = document.createRange();
-      const textLength = textNode.textContent?.length || 0;
-      const safePosition = Math.min(position, textLength);
-
-      try {
-        range.setStart(textNode, safePosition);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      } catch {
-        // Fallback: move to end
+      if (targetNode) {
+        try {
+          const range = document.createRange();
+          range.setStart(
+            targetNode,
+            Math.min(targetOffset, targetNode.textContent?.length || 0)
+          );
+          range.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        } catch {
+          // Fallback: move to end
+          const range = document.createRange();
+          range.selectNodeContents(editor);
+          range.collapse(false);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      } else {
+        // Move to end
+        const range = document.createRange();
         range.selectNodeContents(editor);
         range.collapse(false);
         selection.removeAllRanges();
@@ -180,8 +285,17 @@ export const ContentEditableInput = forwardRef<
         const hadFocus = document.activeElement === editor;
         const cursorPos = hadFocus ? getCursorPosition() : 0;
 
-        // Use textContent to avoid XSS and keep it plain text
-        editor.textContent = newValue;
+        isRenderingRef.current = true;
+
+        if (triggers.length > 0) {
+          // Render with trigger tags
+          const html = renderContent(newValue, cursorPos);
+          editor.innerHTML = html;
+        } else {
+          // Use textContent to avoid XSS and keep it plain text
+          editor.textContent = newValue;
+        }
+
         lastKnownValue.current = newValue;
 
         if (hadFocus) {
@@ -189,15 +303,18 @@ export const ContentEditableInput = forwardRef<
           const newPos = Math.min(cursorPos, newValue.length);
           requestAnimationFrame(() => {
             setCursorPosition(newPos);
+            isRenderingRef.current = false;
           });
+        } else {
+          isRenderingRef.current = false;
         }
       },
-      [getCursorPosition, setCursorPosition]
+      [getCursorPosition, setCursorPosition, triggers, renderContent]
     );
 
     // Sync value from props when it changes externally
     useEffect(() => {
-      if (isInternalChange.current) {
+      if (isInternalChange.current || isRenderingRef.current) {
         isInternalChange.current = false;
         return;
       }
@@ -207,6 +324,45 @@ export const ContentEditableInput = forwardRef<
         setValue(value);
       }
     }, [value, getTextContent, setValue]);
+
+    // Re-render when cursor position changes (to update which triggers are highlighted)
+    useEffect(() => {
+      if (
+        triggers.length > 0 &&
+        !isInternalChange.current &&
+        !isRenderingRef.current
+      ) {
+        const currentValue = getTextContent();
+        if (currentValue === value) {
+          const cursorPos = getCursorPosition();
+          const html = renderContent(value, cursorPos);
+          const editor = editorRef.current;
+          if (editor && editor.innerHTML !== html) {
+            const hadFocus = document.activeElement === editor;
+            const savedCursorPos = cursorPos;
+
+            isRenderingRef.current = true;
+            editor.innerHTML = html;
+
+            if (hadFocus) {
+              requestAnimationFrame(() => {
+                setCursorPosition(savedCursorPos);
+                isRenderingRef.current = false;
+              });
+            } else {
+              isRenderingRef.current = false;
+            }
+          }
+        }
+      }
+    }, [
+      value,
+      triggers,
+      getTextContent,
+      getCursorPosition,
+      renderContent,
+      setCursorPosition
+    ]);
 
     // Auto focus
     useEffect(() => {
@@ -232,10 +388,34 @@ export const ContentEditableInput = forwardRef<
         const newValue = e.currentTarget.textContent || '';
         isInternalChange.current = true;
         lastKnownValue.current = newValue;
+
+        // Re-render with trigger tags if needed
+        if (triggers.length > 0 && !isRenderingRef.current) {
+          const cursorPos = getCursorPosition();
+          const html = renderContent(newValue, cursorPos);
+          const editor = editorRef.current;
+          if (editor && editor.innerHTML !== html) {
+            const savedCursorPos = cursorPos;
+            isRenderingRef.current = true;
+            editor.innerHTML = html;
+            requestAnimationFrame(() => {
+              setCursorPosition(savedCursorPos);
+              isRenderingRef.current = false;
+            });
+          }
+        }
+
         onChange(newValue);
         onCursorChange?.(getCursorPosition());
       },
-      [onChange, onCursorChange, getCursorPosition]
+      [
+        onChange,
+        onCursorChange,
+        getCursorPosition,
+        triggers,
+        renderContent,
+        setCursorPosition
+      ]
     );
 
     const handleKeyDown = useCallback(
