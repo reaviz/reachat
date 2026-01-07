@@ -170,7 +170,7 @@ export const WithAllFeatures = () => {
         <SessionMessagePanel>
           <SessionMessages />
           <ChatInput
-            placeholder="Type @ for mentions, / for commands..."
+            placeholder="Type @ for mentions, / for commands. Use Ctrl+B for bold, Ctrl+I for italic..."
             mentions={{
               items: sampleUsers,
               renderHeader: () => <span>Team Members</span>
@@ -179,6 +179,11 @@ export const WithAllFeatures = () => {
               items: sampleCommands,
               onSelect: handleCommandSelect,
               renderHeader: () => <span>Commands</span>
+            }}
+            formatting={{
+              bold: true,
+              italic: true,
+              code: true
             }}
           />
         </SessionMessagePanel>
