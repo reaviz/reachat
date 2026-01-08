@@ -15,37 +15,117 @@ import { chatTheme } from '@/theme';
 import { segmentText } from './utils/parseTriggers';
 
 export interface ContentEditableInputRef {
+  /**
+   * Focuses the input element
+   */
   focus: () => void;
+
+  /**
+   * Blurs the input element
+   */
   blur: () => void;
+
+  /**
+   * Gets the current text value of the input
+   */
   getValue: () => string;
+
+  /**
+   * Sets the value of the input
+   */
   setValue: (value: string) => void;
+
+  /**
+   * Sets the value and cursor position, with optional completion callback
+   */
   setValueWithCursor: (
     value: string,
     cursorPosition: number,
     onComplete?: () => void
   ) => void;
+
+  /**
+   * Inserts text at the current cursor position
+   */
   insertTextAtCursor: (text: string) => void;
+
+  /**
+   * Gets the current cursor position (character index)
+   */
   getCursorPosition: () => number;
+
+  /**
+   * Sets the cursor position to the specified character index
+   */
   setCursorPosition: (position: number) => void;
+
+  /**
+   * Gets the underlying HTML div element
+   */
   getElement: () => HTMLDivElement | null;
+
+  /**
+   * Gets the pixel position of the cursor relative to the input element
+   */
   getCursorPixelPosition: () => { top: number; left: number } | null;
 }
 
 interface ContentEditableInputProps {
+  /**
+   * The current value of the input
+   */
   value: string;
+
+  /**
+   * Callback fired when the input value changes
+   */
   onChange: (value: string) => void;
+
+  /**
+   * Optional callback fired when cursor position changes
+   */
   onCursorChange?: (position: number) => void;
+
+  /**
+   * Optional callback for key down events
+   */
   onKeyDown?: (e: KeyboardEvent<HTMLDivElement>) => void;
+
+  /**
+   * Optional placeholder text displayed when input is empty
+   */
   placeholder?: string;
+
+  /**
+   * Whether the input is disabled
+   */
   disabled?: boolean;
+
+  /**
+   * Whether to automatically focus the input on mount
+   */
   autoFocus?: boolean;
+
+  /**
+   * Optional CSS class name
+   */
   className?: string;
+
+  /**
+   * Minimum height of the input in pixels
+   */
   minHeight?: number;
+
+  /**
+   * Maximum height of the input in pixels
+   */
   maxHeight?: number;
+
   /**
    * Trigger characters to highlight as tags (e.g., ['@', '/'])
    */
   triggers?: string[];
+
   /**
    * Custom className for trigger tags
    */
