@@ -4,6 +4,7 @@ import {
   useRef,
   useMemo,
   useEffect,
+  useLayoutEffect,
   type KeyboardEvent
 } from 'react';
 import { InputPluginItem, InputTrigger, ActiveTriggerState } from './types';
@@ -144,8 +145,10 @@ export function useTriggerManagerCore<
     ? `${activeTrigger.trigger}:${activeTrigger.query}:${activeTrigger.startPosition}`
     : null;
 
-  // Reset highlighted index to 0 whenever popup opens (new trigger detected)
-  useEffect(() => {
+  // Reset highlighted index to 0 whenever popup opens or matching items change
+  // Use useLayoutEffect to ensure it runs synchronously before paint
+  const prevMatchingItemsLengthRef = useRef<number>(0);
+  useLayoutEffect(() => {
     if (activeTrigger) {
       const currentKey = `${activeTrigger.trigger}:${activeTrigger.query}:${activeTrigger.startPosition}`;
       // Always reset to 0 when we detect a new trigger (popup opens)
@@ -153,10 +156,19 @@ export function useTriggerManagerCore<
         setHighlightedIndex(0);
         prevActiveTriggerKeyRef.current = currentKey;
       }
+      // Also reset to 0 when matching items change from empty to non-empty
+      if (
+        matchingItems.length > 0 &&
+        prevMatchingItemsLengthRef.current === 0
+      ) {
+        setHighlightedIndex(0);
+      }
+      prevMatchingItemsLengthRef.current = matchingItems.length;
     } else {
       prevActiveTriggerKeyRef.current = null;
+      prevMatchingItemsLengthRef.current = 0;
     }
-  }, [activeTrigger]);
+  }, [activeTrigger, matchingItems.length]);
 
   // Update matching items when trigger or query changes
   useEffect(() => {
