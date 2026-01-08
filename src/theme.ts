@@ -333,7 +333,7 @@ export const chatTheme: ChatTheme = {
     tag: {
       base: [
         'inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded',
-        'font-medium text-sm'
+        'font-medium text-sm leading-[1.2] relative top-[1px]'
       ].join(' '),
       mention: [
         'bg-blue-100 dark:bg-blue-900/30',

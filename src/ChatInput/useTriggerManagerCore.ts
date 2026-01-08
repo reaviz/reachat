@@ -1,4 +1,11 @@
-import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
+import {
+  useState,
+  useCallback,
+  useRef,
+  useMemo,
+  useEffect,
+  type KeyboardEvent
+} from 'react';
 import { InputPluginItem, InputTrigger, ActiveTriggerState } from './types';
 
 interface UseTriggerManagerCoreProps<
@@ -19,7 +26,7 @@ interface UseTriggerManagerCoreResult<
   isLoading: boolean;
   highlightedIndex: number;
   setHighlightedIndex: (index: number) => void;
-  handleKeyDown: (e: React.KeyboardEvent) => boolean;
+  handleKeyDown: (e: KeyboardEvent) => boolean;
   handleInputChange: (newValue: string, newCursorPosition: number) => void;
   selectItem: (item: T) => void;
   closePopup: () => void;
@@ -117,10 +124,11 @@ export function useTriggerManagerCore<
   const [isLoading, setIsLoading] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
 
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const selectionLockRef = useRef(false);
   const prevTriggerRef = useRef<string | null>(null);
   const prevSearchKeyRef = useRef<string | null>(null);
+  const prevActiveTriggerKeyRef = useRef<string | null>(null);
 
   const currentTriggerConfig = useMemo(() => {
     if (!activeTrigger) return null;
@@ -135,6 +143,31 @@ export function useTriggerManagerCore<
   const searchKey = activeTrigger
     ? `${activeTrigger.trigger}:${activeTrigger.query}:${activeTrigger.startPosition}`
     : null;
+
+  // Reset highlighted index to 0 whenever popup opens (new trigger detected)
+  // or when new matching items are loaded
+  const prevMatchingItemsLengthRef = useRef<number>(0);
+  useEffect(() => {
+    if (activeTrigger) {
+      const currentKey = `${activeTrigger.trigger}:${activeTrigger.query}:${activeTrigger.startPosition}`;
+      // Reset to 0 whenever we detect a new trigger (popup opens)
+      if (prevActiveTriggerKeyRef.current !== currentKey) {
+        setHighlightedIndex(0);
+        prevActiveTriggerKeyRef.current = currentKey;
+      }
+      // Also reset when matching items change from empty to non-empty (new results just loaded)
+      if (
+        matchingItems.length > 0 &&
+        prevMatchingItemsLengthRef.current === 0
+      ) {
+        setHighlightedIndex(0);
+      }
+      prevMatchingItemsLengthRef.current = matchingItems.length;
+    } else {
+      prevActiveTriggerKeyRef.current = null;
+      prevMatchingItemsLengthRef.current = 0;
+    }
+  }, [activeTrigger, matchingItems.length]);
 
   // Update matching items when trigger or query changes
   useEffect(() => {
@@ -289,9 +322,7 @@ export function useTriggerManagerCore<
 
       // Release lock after DOM updates
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          selectionLockRef.current = false;
-        });
+        selectionLockRef.current = false;
       });
     },
     [
@@ -305,7 +336,7 @@ export function useTriggerManagerCore<
   );
 
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent): boolean => {
+    (e: KeyboardEvent): boolean => {
       if (!activeTrigger || matchingItems.length === 0) {
         return false;
       }
