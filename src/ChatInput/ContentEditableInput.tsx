@@ -7,7 +7,6 @@ import {
   ClipboardEvent,
   FormEvent,
   useImperativeHandle,
-  useMemo,
   useContext
 } from 'react';
 import { cn } from 'reablocks';
@@ -420,8 +419,33 @@ export const ContentEditableInput = forwardRef<
     const handlePaste = useCallback((e: ClipboardEvent<HTMLDivElement>) => {
       e.preventDefault();
       const text = e.clipboardData.getData('text/plain');
-      // Use insertText to maintain undo stack
-      document.execCommand('insertText', false, text);
+
+      const selection = window.getSelection();
+      const editor = editorRef.current;
+
+      if (!selection || selection.rangeCount === 0 || !editor) {
+        return;
+      }
+
+      const range = selection.getRangeAt(0);
+
+      // Ensure the paste occurs within the editor
+      if (!editor.contains(range.commonAncestorContainer)) {
+        return;
+      }
+
+      // Replace current selection with the pasted text
+      range.deleteContents();
+      const textNode = document.createTextNode(text);
+      range.insertNode(textNode);
+
+      // Move the caret to the end of the inserted text
+      const newRange = document.createRange();
+      newRange.setStartAfter(textNode);
+      newRange.collapse(true);
+
+      selection.removeAllRanges();
+      selection.addRange(newRange);
     }, []);
 
     const handleSelectionChange = useCallback(() => {
