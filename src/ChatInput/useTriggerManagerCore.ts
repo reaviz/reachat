@@ -25,7 +25,7 @@ interface UseTriggerManagerCoreResult<
   matchingItems: T[];
   isLoading: boolean;
   highlightedIndex: number;
-  setHighlightedIndex: (index: number) => void;
+  setHighlightedIndex: (index: number | ((prev: number) => number)) => void;
   handleKeyDown: (e: KeyboardEvent) => boolean;
   handleInputChange: (newValue: string, newCursorPosition: number) => void;
   selectItem: (item: T) => void;
