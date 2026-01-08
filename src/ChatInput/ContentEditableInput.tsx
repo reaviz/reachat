@@ -7,7 +7,6 @@ import {
   ClipboardEvent,
   FormEvent,
   useImperativeHandle,
-  useMemo,
   useContext
 } from 'react';
 import { cn } from 'reablocks';
