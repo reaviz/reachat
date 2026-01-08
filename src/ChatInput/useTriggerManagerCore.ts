@@ -145,29 +145,18 @@ export function useTriggerManagerCore<
     : null;
 
   // Reset highlighted index to 0 whenever popup opens (new trigger detected)
-  // or when new matching items are loaded
-  const prevMatchingItemsLengthRef = useRef<number>(0);
   useEffect(() => {
     if (activeTrigger) {
       const currentKey = `${activeTrigger.trigger}:${activeTrigger.query}:${activeTrigger.startPosition}`;
-      // Reset to 0 whenever we detect a new trigger (popup opens)
+      // Always reset to 0 when we detect a new trigger (popup opens)
       if (prevActiveTriggerKeyRef.current !== currentKey) {
         setHighlightedIndex(0);
         prevActiveTriggerKeyRef.current = currentKey;
       }
-      // Also reset when matching items change from empty to non-empty (new results just loaded)
-      if (
-        matchingItems.length > 0 &&
-        prevMatchingItemsLengthRef.current === 0
-      ) {
-        setHighlightedIndex(0);
-      }
-      prevMatchingItemsLengthRef.current = matchingItems.length;
     } else {
       prevActiveTriggerKeyRef.current = null;
-      prevMatchingItemsLengthRef.current = 0;
     }
-  }, [activeTrigger, matchingItems.length]);
+  }, [activeTrigger]);
 
   // Update matching items when trigger or query changes
   useEffect(() => {
@@ -204,6 +193,7 @@ export function useTriggerManagerCore<
     // Check minimum query length
     if (query.length < minQueryLength) {
       setMatchingItems((items?.slice(0, maxResults) as T[]) || []);
+      setHighlightedIndex(0);
       return;
     }
 
@@ -219,6 +209,7 @@ export function useTriggerManagerCore<
         try {
           const results = await onSearch(query);
           setMatchingItems(results.slice(0, maxResults) as T[]);
+          setHighlightedIndex(0);
         } catch (error) {
           console.error('Error searching trigger items:', error);
           setMatchingItems([]);
@@ -228,7 +219,9 @@ export function useTriggerManagerCore<
       }, SEARCH_DEBOUNCE_MS);
     } else {
       // Local filter
-      setMatchingItems(filterItems((items as T[]) || [], query, maxResults));
+      const filtered = filterItems((items as T[]) || [], query, maxResults);
+      setMatchingItems(filtered);
+      setHighlightedIndex(0);
     }
   }, [searchKey, activeTrigger, currentTriggerConfig]);
 
