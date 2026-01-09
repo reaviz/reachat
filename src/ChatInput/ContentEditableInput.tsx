@@ -13,6 +13,7 @@ import { cn } from 'reablocks';
 import { ChatContext } from '@/ChatContext';
 import { chatTheme } from '@/theme';
 import { segmentText } from './utils/parseTriggers';
+import { escapeHtmlAttribute } from './utils/escapeHtml';
 
 export interface ContentEditableInputRef {
   /**
@@ -201,8 +202,10 @@ export const ContentEditableInput = forwardRef<
               .replace(/&/g, '&amp;')
               .replace(/</g, '&lt;')
               .replace(/>/g, '&gt;');
+            const escapedTrigger = escapeHtmlAttribute(trigger.trigger);
+            const escapedValue = escapeHtmlAttribute(trigger.value);
             htmlParts.push(
-              `<span class="${tagClass}" data-trigger="${trigger.trigger}" data-value="${trigger.value}">${escapedContent}</span>`
+              `<span class="${tagClass}" data-trigger="${escapedTrigger}" data-value="${escapedValue}">${escapedContent}</span>`
             );
           } else {
             // Escape HTML for text segments

@@ -134,7 +134,7 @@ describe('segmentText', () => {
   });
 
   it('should not segment trigger being typed (cursor inside)', () => {
-    const result = segmentText('hello @jo', 9, triggers);
+    const result = segmentText('hello @jo', 8, triggers);
     expect(result).toHaveLength(1);
     expect(result[0]).toMatchObject({ type: 'text', content: 'hello @jo' });
   });
