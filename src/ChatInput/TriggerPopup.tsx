@@ -10,17 +10,64 @@ import SpinnerIcon from '@/assets/spinner.svg?react';
 export interface TriggerPopupProps<
   T extends InputPluginItem = InputPluginItem
 > {
+  /**
+   * Whether the popup is visible.
+   */
   isOpen: boolean;
+
+  /**
+   * Current search query text after the trigger character.
+   */
   query: string;
+
+  /**
+   * List of items to display in the popup.
+   */
   items: T[];
+
+  /**
+   * Index of the currently highlighted item for keyboard navigation.
+   */
   highlightedIndex: number;
+
+  /**
+   * Pixel position for popup placement relative to the input.
+   */
   position: { top: number; left: number };
+
+  /**
+   * Callback when an item is selected.
+   */
   onSelect: (item: T) => void;
+
+  /**
+   * Callback when the highlighted index changes via mouse hover.
+   */
   onHighlightChange: (index: number) => void;
+
+  /**
+   * Callback to close the popup.
+   */
   onClose: () => void;
+
+  /**
+   * Custom renderer for popup items.
+   */
   renderItem?: (item: T, isHighlighted: boolean) => ReactNode;
+
+  /**
+   * Custom renderer for the popup header.
+   */
   renderHeader?: () => ReactNode;
+
+  /**
+   * Custom renderer for empty state when no items match.
+   */
   renderEmpty?: (query: string) => ReactNode;
+
+  /**
+   * Whether items are currently being loaded asynchronously.
+   */
   isLoading?: boolean;
 }
 
