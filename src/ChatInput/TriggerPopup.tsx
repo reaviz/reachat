@@ -1,11 +1,28 @@
-import { RefObject, useContext, useEffect, useRef } from 'react';
+import { ReactNode, RefObject, useContext, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn, ConnectedOverlay, List, ListItem } from 'reablocks';
 import { offset } from '@floating-ui/react';
 import { ChatContext } from '@/ChatContext';
 import { chatTheme, ChatTheme } from '@/theme';
-import { InputPluginItem, TriggerPopupProps } from './types';
+import { InputPluginItem } from './types';
 import SpinnerIcon from '@/assets/spinner.svg?react';
+
+export interface TriggerPopupProps<
+  T extends InputPluginItem = InputPluginItem
+> {
+  isOpen: boolean;
+  query: string;
+  items: T[];
+  highlightedIndex: number;
+  position: { top: number; left: number };
+  onSelect: (item: T) => void;
+  onHighlightChange: (index: number) => void;
+  onClose: () => void;
+  renderItem?: (item: T, isHighlighted: boolean) => ReactNode;
+  renderHeader?: () => ReactNode;
+  renderEmpty?: (query: string) => ReactNode;
+  isLoading?: boolean;
+}
 
 /**
  * Default item renderer for trigger popup items

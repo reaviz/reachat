@@ -7,7 +7,14 @@ import {
   useLayoutEffect,
   type KeyboardEvent
 } from 'react';
-import { InputPluginItem, InputTrigger, ActiveTriggerState } from './types';
+import { InputPluginItem, InputTrigger } from './types';
+
+export interface ActiveTriggerState {
+  trigger: string;
+  query: string;
+  startPosition: number;
+  cursorPosition: { top: number; left: number };
+}
 
 interface UseTriggerManagerCoreProps<
   T extends InputPluginItem = InputPluginItem
