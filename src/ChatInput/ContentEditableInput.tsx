@@ -440,6 +440,14 @@ export const ContentEditableInput = forwardRef<
       }
     }, [autoFocus]);
 
+    // Initialize content on mount if value is provided
+    useEffect(() => {
+      if (value && editorRef.current) {
+        setValue(value);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const setValueWithCursor = useCallback(
       (newValue: string, cursorPos: number, onComplete?: () => void) => {
         updateContent(newValue, cursorPos, onComplete);

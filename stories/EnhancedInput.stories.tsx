@@ -282,3 +282,67 @@ export const CustomTrigger = () => {
     </div>
   );
 };
+
+export const MultiLineEmpty = () => {
+  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
+  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{ width: 500, height: 400, padding: 20, borderRadius: 5 }}
+    >
+      <Chat
+        viewType="chat"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+      >
+        <SessionMessagePanel>
+          <SessionMessages />
+          <ChatInput
+            placeholder="Type a multi-line message (max 4 lines visible)..."
+            minHeight={88}
+            maxHeight={88}
+          />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const MultiLineWithContent = () => {
+  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
+  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
+
+  const defaultMultiLineText = `This is line one of the input.
+This is line two of the input.
+This is line three of the input.
+This is line four of the input.
+This is line five - you should scroll to see this.
+This is line six - still scrolling!`;
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{ width: 500, height: 400, padding: 20, borderRadius: 5 }}
+    >
+      <Chat
+        viewType="chat"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+      >
+        <SessionMessagePanel>
+          <SessionMessages />
+          <ChatInput
+            placeholder="Type a multi-line message..."
+            defaultValue={defaultMultiLineText}
+            minHeight={88}
+            maxHeight={88}
+          />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
