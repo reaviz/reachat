@@ -1,4 +1,4 @@
-import { useCallback, RefObject, useRef } from 'react';
+import React, { useCallback, RefObject, useRef } from 'react';
 import { InputPluginItem, InputTrigger } from './types';
 import { ContentEditableInputRef } from './ContentEditableInput';
 import { useTriggerManagerCore } from './useTriggerManagerCore';
@@ -29,6 +29,8 @@ export function useTriggerManagerContentEditable<
   // Lock to prevent trigger re-detection while a selection is being inserted
   // This prevents race conditions where onChange triggers handleInputChange before cursor is positioned
   const selectionLockRef = useRef(false);
+  // Track the operation ID to know when it's safe to unlock
+  const currentOperationIdRef = useRef(0);
 
   const getCursorPixelPosition = useCallback(() => {
     return inputRef.current?.getCursorPixelPosition() || null;
@@ -58,6 +60,8 @@ export function useTriggerManagerContentEditable<
   const selectItem = useCallback(
     (item: T) => {
       if (!coreResult.activeTrigger || !coreResult.currentTriggerConfig) return;
+
+      const operationId = ++currentOperationIdRef.current;
 
       // Set lock to prevent trigger re-detection
       selectionLockRef.current = true;
@@ -99,12 +103,27 @@ export function useTriggerManagerContentEditable<
       if (inputRef.current) {
         // Use onComplete to call onChange AFTER cursor is positioned
         inputRef.current.setValueWithCursor(newValue, newCursorPosition, () => {
-          // Now call onChange with the cursor already in the correct position
+          // Only proceed if this is still the current operation (not superseded)
+          if (currentOperationIdRef.current !== operationId) {
+            return;
+          }
+
+          // Call onChange with the cursor already in the correct position
           onChange(newValue, newCursorPosition);
-          // Release lock after a longer delay to ensure everything has settled
-          setTimeout(() => {
+
+          // Release lock after the browser's next paint to ensures all selection/input events have propagated
+          requestAnimationFrame(() => {
+            if (currentOperationIdRef.current !== operationId) {
+              return;
+            }
+
             selectionLockRef.current = false;
-          }, 200);
+
+            // Re-check for triggers in case user typed during the lock period
+            const currentValue = inputRef.current?.getValue() || '';
+            const currentCursor = inputRef.current?.getCursorPosition() || 0;
+            coreResult.handleInputChange(currentValue, currentCursor);
+          });
         });
         inputRef.current.focus();
       }

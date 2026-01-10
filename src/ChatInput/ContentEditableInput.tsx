@@ -231,13 +231,8 @@ export const ContentEditableInput = forwardRef<
       preCaretRange.selectNodeContents(editorRef.current);
       preCaretRange.setEnd(range.startContainer, range.startOffset);
 
-      // Get text content length (ignoring HTML tags)
-      return (
-        editorRef.current.textContent?.substring(
-          0,
-          preCaretRange.toString().length
-        ).length || 0
-      );
+      // Range.toString() correctly extracts plain text from the range, ignoring HTML tags
+      return preCaretRange.toString().length;
     }, []);
 
     const setCursorPosition = useCallback((position: number) => {
@@ -507,6 +502,29 @@ export const ContentEditableInput = forwardRef<
       [onKeyDown]
     );
 
+    const handleCopy = useCallback((e: ClipboardEvent<HTMLDivElement>) => {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return;
+
+      const selectedText = selection.toString().replace(/\u00A0/g, ' ');
+      if (selectedText) {
+        e.clipboardData.setData('text/plain', selectedText);
+        e.preventDefault();
+      }
+    }, []);
+
+    const handleCut = useCallback((e: ClipboardEvent<HTMLDivElement>) => {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return;
+
+      const selectedText = selection.toString().replace(/\u00A0/g, ' ');
+      if (selectedText) {
+        e.clipboardData.setData('text/plain', selectedText);
+        e.preventDefault();
+        selection.deleteFromDocument();
+      }
+    }, []);
+
     const handlePaste = useCallback((e: ClipboardEvent<HTMLDivElement>) => {
       e.preventDefault();
       const text = e.clipboardData.getData('text/plain');
@@ -566,6 +584,8 @@ export const ContentEditableInput = forwardRef<
           onCompositionStart={handleCompositionStart}
           onCompositionEnd={handleCompositionEnd}
           onKeyDown={handleKeyDown}
+          onCopy={handleCopy}
+          onCut={handleCut}
           onPaste={handlePaste}
           className={cn(
             'outline-none whitespace-pre-wrap break-words overflow-y-auto w-full',

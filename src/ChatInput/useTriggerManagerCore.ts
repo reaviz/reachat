@@ -137,6 +137,7 @@ export function useTriggerManagerCore<
   const prevTriggerRef = useRef<string | null>(null);
   const prevSearchKeyRef = useRef<string | null>(null);
   const prevActiveTriggerKeyRef = useRef<string | null>(null);
+  const currentSearchQueryRef = useRef<string | null>(null);
 
   const currentTriggerConfig = useMemo(() => {
     if (!activeTrigger) return null;
@@ -224,15 +225,26 @@ export function useTriggerManagerCore<
         clearTimeout(searchTimeoutRef.current);
       }
 
+      const searchQuery = query;
+      currentSearchQueryRef.current = query;
       searchTimeoutRef.current = setTimeout(async () => {
         try {
-          const results = await onSearch(query);
+          const results = await onSearch(searchQuery);
+          if (currentSearchQueryRef.current !== searchQuery) {
+            return;
+          }
           setMatchingItems(results.slice(0, maxResults) as T[]);
           setHighlightedIndex(0);
         } catch (error) {
           console.error('Error searching trigger items:', error);
+          if (currentSearchQueryRef.current !== searchQuery) {
+            return;
+          }
           setMatchingItems([]);
         } finally {
+          if (currentSearchQueryRef.current !== searchQuery) {
+            return;
+          }
           setIsLoading(false);
         }
       }, SEARCH_DEBOUNCE_MS);
@@ -250,6 +262,7 @@ export function useTriggerManagerCore<
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
+      currentSearchQueryRef.current = null;
     };
   }, []);
 

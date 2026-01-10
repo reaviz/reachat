@@ -217,7 +217,9 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       focus: () => {
         inputRef.current?.focus();
       },
-      getValue: () => message,
+      getValue: () => {
+        return message.replace(/\u00A0/g, ' ');
+      },
       setValue: (value: string) => {
         setMessage(value);
         inputRef.current?.setValue(value);
@@ -230,7 +232,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 
     const handleSendMessage = useCallback(() => {
       if (message.trim()) {
-        sendMessage?.(message);
+        const normalizedMessage = message.replace(/\u00A0/g, ' ');
+        sendMessage?.(normalizedMessage);
         setMessage('');
         setCursorPosition(0);
         // Clear the contenteditable
