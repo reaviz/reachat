@@ -131,6 +131,21 @@ interface ContentEditableInputProps {
    * Custom className for trigger tags
    */
   triggerTagClassName?: string;
+
+  /**
+   * ID of popup controlled by this input (for aria-controls)
+   */
+  ariaControls?: string;
+
+  /**
+   * Whether the popup is expanded (for aria-expanded)
+   */
+  ariaExpanded?: boolean;
+
+  /**
+   * ID of the currently active descendant (for aria-activedescendant)
+   */
+  ariaActiveDescendant?: string;
 }
 
 export const ContentEditableInput = forwardRef<
@@ -150,7 +165,10 @@ export const ContentEditableInput = forwardRef<
       minHeight = 24,
       maxHeight = 200,
       triggers = [],
-      triggerTagClassName
+      triggerTagClassName,
+      ariaControls,
+      ariaExpanded,
+      ariaActiveDescendant
     },
     ref
   ) => {
@@ -597,10 +615,14 @@ export const ContentEditableInput = forwardRef<
             minHeight,
             maxHeight
           }}
-          role="textbox"
+          role={ariaControls ? 'combobox' : 'textbox'}
           aria-placeholder={placeholder}
           aria-disabled={disabled}
           aria-multiline="true"
+          aria-controls={ariaControls}
+          aria-expanded={ariaControls ? ariaExpanded : undefined}
+          aria-activedescendant={ariaActiveDescendant}
+          aria-autocomplete={ariaControls ? 'list' : undefined}
           tabIndex={disabled ? -1 : 0}
           suppressContentEditableWarning
         />

@@ -69,6 +69,11 @@ export interface TriggerPopupProps<
    * Whether items are currently being loaded asynchronously.
    */
   isLoading?: boolean;
+
+  /**
+   * Unique ID for the popup (for ARIA)
+   */
+  popupId?: string;
 }
 
 /**
@@ -143,6 +148,7 @@ export function TriggerPopup<T extends InputPluginItem = InputPluginItem>({
   renderHeader,
   renderEmpty,
   isLoading = false,
+  popupId,
   referenceRef
 }: TriggerPopupInternalProps<T>) {
   const { theme } = useContext(ChatContext);
@@ -175,7 +181,7 @@ export function TriggerPopup<T extends InputPluginItem = InputPluginItem>({
       )}
 
       {/* Content */}
-      <div className={cn(popupTheme.content)}>
+      <div className={cn(popupTheme.content)} role="listbox" id={popupId}>
         {isLoading ? (
           <div className={cn(popupTheme.loading)}>
             <SpinnerIcon className="w-4 h-4 animate-spin" />
@@ -194,6 +200,9 @@ export function TriggerPopup<T extends InputPluginItem = InputPluginItem>({
             {items.map((item, index) => (
               <div
                 key={item.id}
+                id={popupId ? `${popupId}-option-${item.id}` : undefined}
+                role="option"
+                aria-selected={index === highlightedIndex}
                 ref={el => {
                   itemsRef.current[index] = el;
                 }}

@@ -141,6 +141,9 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     const [cursorPosition, setCursorPosition] = useState<number>(0);
     const inputRef = useRef<ContentEditableInputRef | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
+    const popupId = useRef(
+      `trigger-popup-${Math.random().toString(36).substr(2, 9)}`
+    ).current;
 
     // Build triggers array from configuration
     const allTriggers = useMemo<InputTrigger<InputPluginItem>[]>(() => {
@@ -307,6 +310,13 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             maxHeight={maxHeight}
             className="px-3 py-2 pr-16"
             triggers={triggerChars}
+            ariaControls={allTriggers.length > 0 ? popupId : undefined}
+            ariaExpanded={!!activeTrigger}
+            ariaActiveDescendant={
+              activeTrigger && matchingItems[highlightedIndex]
+                ? `${popupId}-option-${matchingItems[highlightedIndex].id}`
+                : undefined
+            }
           />
 
           {/* Action Buttons */}
@@ -357,8 +367,26 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             renderItem={currentTriggerConfig?.renderItem}
             renderHeader={currentTriggerConfig?.renderHeader}
             renderEmpty={currentTriggerConfig?.renderEmpty}
+            popupId={popupId}
           />
         )}
+
+        {/* ARIA live region for screen reader announcements */}
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className="sr-only"
+        >
+          {activeTrigger &&
+            !isTriggerLoading &&
+            matchingItems.length > 0 &&
+            `${matchingItems.length} ${matchingItems.length === 1 ? 'result' : 'results'} available`}
+          {activeTrigger &&
+            !isTriggerLoading &&
+            matchingItems.length === 0 &&
+            'No results found'}
+        </div>
       </div>
     );
   }
