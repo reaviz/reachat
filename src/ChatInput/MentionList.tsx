@@ -166,8 +166,19 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
 );
 
 interface DefaultItemRendererProps {
+  /**
+   * The suggestion item to render
+   */
   item: SuggestionItem;
+
+  /**
+   * Whether this item is currently highlighted/selected
+   */
   isHighlighted: boolean;
+
+  /**
+   * Theme styles for the popup
+   */
   popupTheme: typeof chatTheme.input.popup;
 }
 

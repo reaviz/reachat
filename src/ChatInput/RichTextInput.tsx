@@ -88,6 +88,10 @@ export interface RichTextInputProps {
   onChange?: (value: string) => void;
 }
 
+/**
+ * Updates the position of the suggestion popup relative to the cursor.
+ * Uses floating-ui to compute optimal placement with flip/shift middleware.
+ */
 function updatePopupPosition(editor: any, element: HTMLElement) {
   const virtualElement = {
     getBoundingClientRect: () =>
@@ -99,19 +103,21 @@ function updatePopupPosition(editor: any, element: HTMLElement) {
   };
 
   computePosition(virtualElement, element, {
-    placement: 'top-start',
-    strategy: 'fixed',
+    placement: 'bottom-start',
+    strategy: 'absolute',
     middleware: [shift(), flip()]
   }).then(({ x, y, strategy }) => {
-    Object.assign(element.style, {
-      position: strategy,
-      left: `${x}px`,
-      top: `${y}px`,
-      width: 'max-content'
-    });
+    element.style.width = 'max-content';
+    element.style.position = strategy;
+    element.style.left = `${x}px`;
+    element.style.top = `${y}px`;
   });
 }
 
+/**
+ * Creates a Tiptap suggestion configuration for mentions or slash commands.
+ * Handles item filtering, popup rendering, positioning, and keyboard navigation.
+ */
 function createSuggestionConfig<T extends SuggestionItem>(
   config: SuggestionConfig<T>,
   triggerChar: string,
@@ -120,6 +126,8 @@ function createSuggestionConfig<T extends SuggestionItem>(
   return {
     char: triggerChar,
     allowSpaces: false,
+
+    // Fetch and filter suggestion items based on query
     items: async ({ query }: { query: string }) => {
       if (config.onSearch) {
         return await config.onSearch(query);
@@ -136,10 +144,13 @@ function createSuggestionConfig<T extends SuggestionItem>(
         )
         .slice(0, config.maxResults || 10);
     },
+
+    // Render callbacks for managing the popup lifecycle
     render: () => {
       let component: ReactRenderer<MentionListRef> | null = null;
 
       return {
+        // Called when suggestion is triggered
         onStart: (props: any) => {
           suggestionActiveRef.current = true;
           component = new ReactRenderer(MentionList, {
@@ -154,6 +165,8 @@ function createSuggestionConfig<T extends SuggestionItem>(
           document.body.appendChild(component.element);
           updatePopupPosition(props.editor, component.element);
         },
+
+        // Called when query or items change
         onUpdate: (props: any) => {
           component?.updateProps({
             ...props,
@@ -165,6 +178,8 @@ function createSuggestionConfig<T extends SuggestionItem>(
             updatePopupPosition(props.editor, component.element);
           }
         },
+
+        // Handle keyboard navigation (Escape closes popup)
         onKeyDown: (props: any) => {
           if (props.event.key === 'Escape') {
             component?.destroy();
@@ -172,6 +187,8 @@ function createSuggestionConfig<T extends SuggestionItem>(
           }
           return component?.ref?.onKeyDown(props) ?? false;
         },
+
+        // Cleanup when suggestion is dismissed
         onExit: () => {
           suggestionActiveRef.current = false;
           component?.element?.remove();
