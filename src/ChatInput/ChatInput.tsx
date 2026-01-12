@@ -1,6 +1,5 @@
 import {
   useState,
-  KeyboardEvent,
   ReactElement,
   useRef,
   ChangeEvent,
@@ -8,7 +7,6 @@ import {
   forwardRef,
   useImperativeHandle,
   useEffect,
-  useMemo,
   useCallback
 } from 'react';
 import { Button, cn } from 'reablocks';
@@ -16,20 +14,10 @@ import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
-import { TriggerPopup } from './TriggerPopup';
-import { useTriggerManagerContentEditable } from './useTriggerManagerContentEditable';
-import {
-  ContentEditableInput,
-  ContentEditableInputRef
-} from './ContentEditableInput';
-import {
-  MentionPluginConfig,
-  SlashCommandPluginConfig,
-  InputTrigger,
-  InputPluginItem
-} from './types';
+import { RichTextInput, RichTextInputRef } from './RichTextInput';
+import { SuggestionConfig, MentionItem, SlashCommandItem } from './types';
 
-interface ChatInputProps {
+export interface ChatInputProps {
   /**
    * Default value for the input field.
    */
@@ -64,18 +52,13 @@ interface ChatInputProps {
    * Configuration for mentions (@user).
    * Provide items or an onSearch function to enable mentions.
    */
-  mentions?: MentionPluginConfig;
+  mentions?: SuggestionConfig<MentionItem>;
 
   /**
    * Configuration for commands (/command).
    * Provide items or an onSearch function to enable commands.
    */
-  commands?: SlashCommandPluginConfig;
-
-  /**
-   * Custom trigger configurations for additional plugins.
-   */
-  triggers?: InputTrigger[];
+  commands?: SuggestionConfig<SlashCommandItem>;
 
   /**
    * Minimum height for the input (default: 24px)
@@ -86,6 +69,11 @@ interface ChatInputProps {
    * Maximum height for the input (default: 200px)
    */
   maxHeight?: number;
+
+  /**
+   * Whether to auto-focus the input on mount (default: true)
+   */
+  autoFocus?: boolean;
 }
 
 export interface ChatInputRef {
@@ -121,9 +109,9 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       attachIcon,
       mentions,
       commands,
-      triggers: triggersProp = [],
       minHeight = 24,
-      maxHeight = 200
+      maxHeight = 200,
+      autoFocus = true
     },
     ref
   ) => {
@@ -138,79 +126,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     } = useContext(ChatContext);
 
     const [message, setMessage] = useState<string>(defaultValue || '');
-    const [cursorPosition, setCursorPosition] = useState<number>(0);
-    const inputRef = useRef<ContentEditableInputRef | null>(null);
+    const inputRef = useRef<RichTextInputRef | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const popupId = useRef(
-      `trigger-popup-${Math.random().toString(36).substr(2, 9)}`
-    ).current;
-
-    // Build triggers array from configuration
-    const allTriggers = useMemo<InputTrigger<InputPluginItem>[]>(() => {
-      const result: InputTrigger<InputPluginItem>[] = [];
-
-      if (mentions) {
-        result.push({
-          trigger: mentions.trigger || '@',
-          items: mentions.items || [],
-          onSearch: mentions.onSearch,
-          onSelect: mentions.onSelect,
-          minQueryLength: mentions.minQueryLength,
-          maxResults: mentions.maxResults,
-          renderItem: mentions.renderItem,
-          renderHeader: mentions.renderHeader,
-          renderEmpty: mentions.renderEmpty,
-          allowFreeform: mentions.allowFreeform
-        });
-      }
-
-      if (commands) {
-        result.push({
-          trigger: commands.trigger || '/',
-          items: commands.items || [],
-          onSearch: commands.onSearch,
-          onSelect: commands.onSelect,
-          minQueryLength: commands.minQueryLength,
-          maxResults: commands.maxResults,
-          renderItem: commands.renderItem,
-          renderHeader: commands.renderHeader,
-          renderEmpty: commands.renderEmpty,
-          allowFreeform: commands.allowFreeform
-        });
-      }
-
-      result.push(...triggersProp);
-
-      return result;
-    }, [mentions, commands, triggersProp]);
-
-    // Extract trigger characters for highlighting
-    const triggerChars = useMemo(() => {
-      return allTriggers.map(t => t.trigger);
-    }, [allTriggers]);
-
-    // Use contenteditable-based trigger manager
-    const {
-      activeTrigger,
-      matchingItems,
-      isLoading: isTriggerLoading,
-      highlightedIndex,
-      setHighlightedIndex,
-      handleKeyDown: handleTriggerKeyDown,
-      handleInputChange,
-      selectItem,
-      closePopup,
-      currentTriggerConfig
-    } = useTriggerManagerContentEditable({
-      triggers: allTriggers,
-      value: message,
-      cursorPosition,
-      onChange: (newValue, newCursorPosition) => {
-        setMessage(newValue);
-        setCursorPosition(newCursorPosition);
-      },
-      inputRef
-    });
 
     useEffect(() => {
       inputRef.current?.focus();
@@ -221,67 +138,39 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         inputRef.current?.focus();
       },
       getValue: () => {
-        return message.replace(/\u00A0/g, ' ');
+        return inputRef.current?.getValue() || '';
       },
       setValue: (value: string) => {
         setMessage(value);
         inputRef.current?.setValue(value);
-        setCursorPosition(value.length);
       },
       insertText: (text: string) => {
-        inputRef.current?.insertTextAtCursor(text);
+        inputRef.current?.insertText(text);
       }
     }));
 
     const handleSendMessage = useCallback(() => {
-      if (message.trim()) {
-        const normalizedMessage = message.replace(/\u00A0/g, ' ');
-        sendMessage?.(normalizedMessage);
+      const currentMessage = inputRef.current?.getValue() || message;
+      if (currentMessage.trim()) {
+        sendMessage?.(currentMessage);
         setMessage('');
-        setCursorPosition(0);
-        // Clear the contenteditable
         inputRef.current?.setValue('');
       }
     }, [message, sendMessage]);
 
-    const handleKeyDown = useCallback(
-      (e: KeyboardEvent<HTMLDivElement>) => {
-        // First, let trigger manager handle navigation
-        if (activeTrigger && handleTriggerKeyDown(e)) {
-          return;
-        }
-
-        // Handle send on Enter (without shift)
-        if (e.key === 'Enter' && !e.shiftKey && !activeTrigger) {
-          e.preventDefault();
-          handleSendMessage();
+    const handleSubmit = useCallback(
+      (value: string) => {
+        if (value.trim()) {
+          sendMessage?.(value);
+          setMessage('');
         }
       },
-      [activeTrigger, handleTriggerKeyDown, handleSendMessage]
+      [sendMessage]
     );
 
-    const handleChange = useCallback(
-      (newValue: string) => {
-        setMessage(newValue);
-        // Get actual cursor position from the input element
-        const actualCursorPosition =
-          inputRef.current?.getCursorPosition() ?? newValue.length;
-        // Notify trigger manager of change with current cursor
-        handleInputChange(newValue, actualCursorPosition);
-      },
-      [handleInputChange]
-    );
-
-    const handleCursorChange = useCallback(
-      (newPosition: number) => {
-        setCursorPosition(newPosition);
-        // Get actual text content from input to avoid stale closure
-        const actualValue = inputRef.current?.getValue() ?? '';
-        // Re-check for triggers when cursor moves
-        handleInputChange(actualValue, newPosition);
-      },
-      [handleInputChange]
-    );
+    const handleChange = useCallback((value: string) => {
+      setMessage(value);
+    }, []);
 
     const handleFileUpload = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => {
@@ -293,33 +182,32 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       [fileUpload]
     );
 
+    const mentionsConfig = mentions
+      ? { ...mentions, trigger: mentions.trigger || '@' }
+      : undefined;
+
+    const commandsConfig = commands
+      ? { ...commands, trigger: commands.trigger || '/' }
+      : undefined;
+
     return (
       <div ref={containerRef} className={cn(theme.input.base)}>
-        {/* Input Container */}
         <div className={cn('relative flex-1', theme.input.input)}>
-          <ContentEditableInput
+          <RichTextInput
             ref={inputRef}
             value={message}
             onChange={handleChange}
-            onCursorChange={handleCursorChange}
-            onKeyDown={handleKeyDown}
+            onSubmit={handleSubmit}
             placeholder={placeholder}
             disabled={isLoading || disabled}
-            autoFocus
+            autoFocus={autoFocus}
             minHeight={minHeight}
             maxHeight={maxHeight}
             className="px-3 py-2 pr-16"
-            triggers={triggerChars}
-            ariaControls={allTriggers.length > 0 ? popupId : undefined}
-            ariaExpanded={!!activeTrigger}
-            ariaActiveDescendant={
-              activeTrigger && matchingItems[highlightedIndex]
-                ? `${popupId}-option-${matchingItems[highlightedIndex].id}`
-                : undefined
-            }
+            mentions={mentionsConfig}
+            commands={commandsConfig}
           />
 
-          {/* Action Buttons */}
           <div className={cn(theme.input.actions.base)}>
             {allowedFiles?.length > 0 && (
               <FileInput
@@ -349,43 +237,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
               {sendIcon}
             </Button>
           </div>
-        </div>
-
-        {/* Trigger Popup */}
-        {allTriggers.length > 0 && (
-          <TriggerPopup
-            isOpen={!!activeTrigger}
-            query={activeTrigger?.query || ''}
-            items={matchingItems}
-            highlightedIndex={highlightedIndex}
-            position={activeTrigger?.cursorPosition || { top: 0, left: 0 }}
-            onSelect={selectItem}
-            onHighlightChange={setHighlightedIndex}
-            onClose={closePopup}
-            isLoading={isTriggerLoading}
-            referenceRef={containerRef}
-            renderItem={currentTriggerConfig?.renderItem}
-            renderHeader={currentTriggerConfig?.renderHeader}
-            renderEmpty={currentTriggerConfig?.renderEmpty}
-            popupId={popupId}
-          />
-        )}
-
-        {/* ARIA live region for screen reader announcements */}
-        <div
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-          className="sr-only"
-        >
-          {activeTrigger &&
-            !isTriggerLoading &&
-            matchingItems.length > 0 &&
-            `${matchingItems.length} ${matchingItems.length === 1 ? 'result' : 'results'} available`}
-          {activeTrigger &&
-            !isTriggerLoading &&
-            matchingItems.length === 0 &&
-            'No results found'}
         </div>
       </div>
     );

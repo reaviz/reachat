@@ -1,9 +1,9 @@
 import { ReactElement, ReactNode } from 'react';
 
 /**
- * Base interface for all input plugin items (mentions, commands, etc.)
+ * Base interface for all suggestion items (mentions, commands, etc.)
  */
-export interface InputPluginItem {
+export interface SuggestionItem {
   /**
    * Unique identifier for the item
    */
@@ -31,9 +31,9 @@ export interface InputPluginItem {
 }
 
 /**
- * Configuration for a mention (@) trigger
+ * Configuration for a mention (@) item
  */
-export interface MentionItem extends InputPluginItem {
+export interface MentionItem extends SuggestionItem {
   /**
    * The value to insert when mention is selected
    * Defaults to @{label} if not specified
@@ -42,14 +42,9 @@ export interface MentionItem extends InputPluginItem {
 }
 
 /**
- * Configuration for a slash command (/) trigger
+ * Configuration for a slash command (/) item
  */
-export interface SlashCommandItem extends InputPluginItem {
-  /**
-   * The action to perform when command is selected
-   */
-  onSelect?: (item: SlashCommandItem) => void;
-
+export interface SlashCommandItem extends SuggestionItem {
   /**
    * Optional shortcut hint to display
    */
@@ -67,21 +62,21 @@ export interface SlashCommandItem extends InputPluginItem {
 }
 
 /**
- * Generic trigger configuration for custom plugins
+ * Configuration for a suggestion trigger (mentions, commands, or custom)
  */
-export interface InputTrigger<T extends InputPluginItem = InputPluginItem> {
+export interface SuggestionConfig<T extends SuggestionItem = SuggestionItem> {
   /**
-   * The character that triggers this plugin (e.g., '@', '/', '#')
+   * The character that triggers this suggestion (e.g., '@', '/', '#')
    */
-  trigger: string;
+  trigger?: string;
 
   /**
-   * List of available items for this trigger
+   * Static list of available items for this trigger
    */
-  items: T[];
+  items?: T[];
 
   /**
-   * Optional async function to fetch items dynamically
+   * Async function to fetch items dynamically based on query
    */
   onSearch?: (query: string) => Promise<T[]> | T[];
 
@@ -89,11 +84,6 @@ export interface InputTrigger<T extends InputPluginItem = InputPluginItem> {
    * Callback when an item is selected
    */
   onSelect?: (item: T, insertText: (text: string) => void) => void;
-
-  /**
-   * Whether to allow free-form text that doesn't match any item
-   */
-  allowFreeform?: boolean;
 
   /**
    * Minimum characters before showing suggestions (default: 0)
@@ -123,26 +113,23 @@ export interface InputTrigger<T extends InputPluginItem = InputPluginItem> {
 
 /**
  * Configuration for mentions
+ * @deprecated Use SuggestionConfig directly with trigger: '@'
  */
-export interface MentionPluginConfig extends Omit<
-  InputTrigger<MentionItem>,
-  'trigger'
-> {
-  /**
-   * Custom trigger character (default: '@')
-   */
-  trigger?: string;
-}
+export type MentionPluginConfig = SuggestionConfig<MentionItem>;
 
 /**
  * Configuration for slash commands
+ * @deprecated Use SuggestionConfig directly with trigger: '/'
  */
-export interface SlashCommandPluginConfig extends Omit<
-  InputTrigger<SlashCommandItem>,
-  'trigger'
-> {
-  /**
-   * Custom trigger character (default: '/')
-   */
-  trigger?: string;
-}
+export type SlashCommandPluginConfig = SuggestionConfig<SlashCommandItem>;
+
+/**
+ * @deprecated Use SuggestionItem instead
+ */
+export type InputPluginItem = SuggestionItem;
+
+/**
+ * @deprecated Use SuggestionConfig instead
+ */
+export type InputTrigger<T extends SuggestionItem = SuggestionItem> =
+  SuggestionConfig<T>;
