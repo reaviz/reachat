@@ -107,52 +107,48 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
     const popupId = `mention-list-${triggerChar}`;
 
     return (
-      <div
-        className={cn(popupTheme.base)}
+      <List
+        className={cn(popupTheme.base, popupTheme.content)}
         style={{ zIndex: 9999 }}
         role="listbox"
         id={popupId}
         aria-label={`${triggerChar === '@' ? 'Mentions' : 'Commands'} suggestions`}
       >
-        <div className={cn(popupTheme.content)}>
-          {items.length === 0 ? (
-            <div className={cn(popupTheme.empty)}>
-              {config.renderEmpty
-                ? config.renderEmpty(query || '')
-                : query
-                  ? `No results for "${query}"`
-                  : 'No items available'}
+        {items.length === 0 ? (
+          <ListItem className={cn(popupTheme.empty)} disabled dense>
+            {config.renderEmpty
+              ? config.renderEmpty(query || '')
+              : query
+                ? `No results for "${query}"`
+                : 'No items available'}
+          </ListItem>
+        ) : (
+          items.map((item, index) => (
+            <div
+              key={item.id}
+              id={`${popupId}-option-${item.id}`}
+              role="option"
+              aria-selected={index === selectedIndex}
+              ref={el => {
+                itemRefs.current[index] = el;
+              }}
+              onClick={() => selectItem(index)}
+              onMouseEnter={() => setSelectedIndex(index)}
+              className="cursor-pointer"
+            >
+              {config.renderItem ? (
+                config.renderItem(item, index === selectedIndex)
+              ) : (
+                <DefaultItemRenderer
+                  item={item}
+                  isHighlighted={index === selectedIndex}
+                  popupTheme={popupTheme}
+                />
+              )}
             </div>
-          ) : (
-            <List>
-              {items.map((item, index) => (
-                <div
-                  key={item.id}
-                  id={`${popupId}-option-${item.id}`}
-                  role="option"
-                  aria-selected={index === selectedIndex}
-                  ref={el => {
-                    itemRefs.current[index] = el;
-                  }}
-                  onClick={() => selectItem(index)}
-                  onMouseEnter={() => setSelectedIndex(index)}
-                  className="cursor-pointer"
-                >
-                  {config.renderItem ? (
-                    config.renderItem(item, index === selectedIndex)
-                  ) : (
-                    <DefaultItemRenderer
-                      item={item}
-                      isHighlighted={index === selectedIndex}
-                      popupTheme={popupTheme}
-                    />
-                  )}
-                </div>
-              ))}
-            </List>
-          )}
-        </div>
-      </div>
+          ))
+        )}
+      </List>
     );
   }
 );
