@@ -132,6 +132,11 @@ export interface ChatTheme {
       mention: string;
       command: string;
     };
+    editor: {
+      base: string;
+      container: string;
+      placeholder: string;
+    };
   };
   suggestions: {
     base: string;
@@ -342,6 +347,22 @@ export const chatTheme: ChatTheme = {
       command: [
         'bg-purple-100 dark:bg-purple-900/30',
         'text-purple-700 dark:text-purple-300'
+      ].join(' ')
+    },
+    editor: {
+      base: [
+        'outline-none w-full overflow-y-auto',
+        'text-inherit font-inherit',
+        '[&_.tiptap-paragraph]:m-0'
+      ].join(' '),
+      container: 'px-3 py-2 pr-16',
+      placeholder: [
+        '[&_.is-editor-empty]:before:content-[attr(data-placeholder)]',
+        '[&_.is-editor-empty]:before:text-gray-400',
+        '[&_.is-editor-empty]:before:dark:text-gray-500',
+        '[&_.is-editor-empty]:before:float-left',
+        '[&_.is-editor-empty]:before:h-0',
+        '[&_.is-editor-empty]:before:pointer-events-none'
       ].join(' ')
     }
   },

@@ -203,7 +203,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             autoFocus={autoFocus}
             minHeight={minHeight}
             maxHeight={maxHeight}
-            className="px-3 py-2 pr-16"
+            className={theme.input.editor.container}
             mentions={mentionsConfig}
             commands={commandsConfig}
           />

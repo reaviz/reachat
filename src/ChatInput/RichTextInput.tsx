@@ -140,13 +140,7 @@ export const RichTextInput = forwardRef<RichTextInputRef, RichTextInputProps>(
       extensions.push(
         Mention.configure({
           HTMLAttributes: {
-            class: cn(
-              'inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded',
-              'font-medium text-sm leading-[1.2]',
-              'bg-blue-100 dark:bg-blue-900/30',
-              'text-blue-700 dark:text-blue-300',
-              theme?.input?.tag?.mention
-            )
+            class: cn(theme?.input?.tag?.base, theme?.input?.tag?.mention)
           },
           suggestion: createSuggestionConfig(
             mentions,
@@ -163,13 +157,7 @@ export const RichTextInput = forwardRef<RichTextInputRef, RichTextInputProps>(
       extensions.push(
         Mention.configure({
           HTMLAttributes: {
-            class: cn(
-              'inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded',
-              'font-medium text-sm leading-[1.2]',
-              'bg-purple-100 dark:bg-purple-900/30',
-              'text-purple-700 dark:text-purple-300',
-              theme?.input?.tag?.command
-            )
+            class: cn(theme?.input?.tag?.base, theme?.input?.tag?.command)
           },
           suggestion: createSuggestionConfig(
             commands,
@@ -194,15 +182,8 @@ export const RichTextInput = forwardRef<RichTextInputRef, RichTextInputProps>(
       editorProps: {
         attributes: {
           class: cn(
-            'outline-none w-full overflow-y-auto',
-            'text-inherit font-inherit',
-            '[&_.tiptap-paragraph]:m-0',
-            '[&_.is-editor-empty]:before:content-[attr(data-placeholder)]',
-            '[&_.is-editor-empty]:before:text-gray-400',
-            '[&_.is-editor-empty]:before:dark:text-gray-500',
-            '[&_.is-editor-empty]:before:float-left',
-            '[&_.is-editor-empty]:before:h-0',
-            '[&_.is-editor-empty]:before:pointer-events-none'
+            theme?.input?.editor?.base,
+            theme?.input?.editor?.placeholder
           ),
           style: `min-height: ${minHeight}px; max-height: ${maxHeight}px;`,
           role: 'textbox',
