@@ -119,7 +119,6 @@ export const WithMentions: StoryFn = () => {
             placeholder="Type @ to mention someone..."
             mentions={{
               items: sampleUsers,
-              renderHeader: () => <span>Team Members</span>
             }}
           />
         </SessionMessagePanel>
@@ -162,7 +161,6 @@ export const WithSlashCommands: StoryFn = () => {
             commands={{
               items: sampleCommands,
               onSelect: handleCommandSelect,
-              renderHeader: () => <span>Commands</span>
             }}
           />
         </SessionMessagePanel>
@@ -204,12 +202,10 @@ export const WithAllFeatures: StoryFn = () => {
             placeholder="Type @ for mentions, / for commands..."
             mentions={{
               items: sampleUsers,
-              renderHeader: () => <span>Team Members</span>
             }}
             commands={{
               items: sampleCommands,
               onSelect: handleCommandSelect,
-              renderHeader: () => <span>Commands</span>
             }}
           />
         </SessionMessagePanel>
@@ -252,7 +248,6 @@ export const WithAsyncSearch: StoryFn = () => {
             mentions={{
               items: sampleUsers,
               onSearch: searchUsers,
-              renderHeader: () => <span>Search Team Members</span>,
               renderEmpty: query => <span>No users found matching "{query}"</span>
             }}
           />

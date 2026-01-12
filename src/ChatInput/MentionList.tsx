@@ -114,10 +114,6 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
         id={popupId}
         aria-label={`${triggerChar === '@' ? 'Mentions' : 'Commands'} suggestions`}
       >
-        {config.renderHeader && (
-          <div className={cn(popupTheme.header)}>{config.renderHeader()}</div>
-        )}
-
         <div className={cn(popupTheme.content)}>
           {items.length === 0 ? (
             <div className={cn(popupTheme.empty)}>

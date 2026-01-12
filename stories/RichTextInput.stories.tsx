@@ -129,8 +129,7 @@ export const WithMentions: Story = {
             onChange={setValue}
             mentions={{
               trigger: '@',
-              items: sampleMentions,
-              renderHeader: () => 'People'
+              items: sampleMentions
             }}
             onSubmit={(text) => {
               setSubmitted(text);
@@ -171,8 +170,7 @@ export const WithSlashCommands: Story = {
             onChange={setValue}
             commands={{
               trigger: '/',
-              items: sampleCommands,
-              renderHeader: () => 'Commands'
+              items: sampleCommands
             }}
             onSubmit={(text) => {
               setSubmitted(text);

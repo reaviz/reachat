@@ -101,11 +101,6 @@ export interface SuggestionConfig<T extends SuggestionItem = SuggestionItem> {
   renderItem?: (item: T, isHighlighted: boolean) => ReactNode;
 
   /**
-   * Custom render function for the popup header
-   */
-  renderHeader?: () => ReactNode;
-
-  /**
    * Custom render function for empty state
    */
   renderEmpty?: (query: string) => ReactNode;
