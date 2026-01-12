@@ -239,5 +239,3 @@ export function TriggerPopup<T extends InputPluginItem = InputPluginItem>({
     />
   );
 }
-
-export default TriggerPopup;
