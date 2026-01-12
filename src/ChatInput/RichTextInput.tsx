@@ -162,6 +162,12 @@ function createSuggestionConfig<T extends SuggestionItem>(
             editor: props.editor
           });
 
+          if (!props.clientRect) {
+            return;
+          }
+
+          // Set position before appending to body (important for correct positioning)
+          component.element.style.position = 'absolute';
           document.body.appendChild(component.element);
           updatePopupPosition(props.editor, component.element);
         },
@@ -173,6 +179,10 @@ function createSuggestionConfig<T extends SuggestionItem>(
             triggerChar,
             config
           });
+
+          if (!props.clientRect) {
+            return;
+          }
 
           if (component?.element) {
             updatePopupPosition(props.editor, component.element);
