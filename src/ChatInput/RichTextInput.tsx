@@ -6,7 +6,13 @@ import React, {
   useEffect,
   useMemo
 } from 'react';
-import { useEditor, EditorContent, ReactRenderer } from '@tiptap/react';
+import {
+  useEditor,
+  EditorContent,
+  ReactRenderer,
+  posToDOMRect
+} from '@tiptap/react';
+import { computePosition, flip, shift } from '@floating-ui/dom';
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
@@ -82,6 +88,30 @@ export interface RichTextInputProps {
   onChange?: (value: string) => void;
 }
 
+function updatePopupPosition(editor: any, element: HTMLElement) {
+  const virtualElement = {
+    getBoundingClientRect: () =>
+      posToDOMRect(
+        editor.view,
+        editor.state.selection.from,
+        editor.state.selection.to
+      )
+  };
+
+  computePosition(virtualElement, element, {
+    placement: 'top-start',
+    strategy: 'fixed',
+    middleware: [shift(), flip()]
+  }).then(({ x, y, strategy }) => {
+    Object.assign(element.style, {
+      position: strategy,
+      left: `${x}px`,
+      top: `${y}px`,
+      width: 'max-content'
+    });
+  });
+}
+
 function createSuggestionConfig<T extends SuggestionItem>(
   config: SuggestionConfig<T>,
   triggerChar: string,
@@ -120,6 +150,9 @@ function createSuggestionConfig<T extends SuggestionItem>(
             },
             editor: props.editor
           });
+
+          document.body.appendChild(component.element);
+          updatePopupPosition(props.editor, component.element);
         },
         onUpdate: (props: any) => {
           component?.updateProps({
@@ -127,6 +160,10 @@ function createSuggestionConfig<T extends SuggestionItem>(
             triggerChar,
             config
           });
+
+          if (component?.element) {
+            updatePopupPosition(props.editor, component.element);
+          }
         },
         onKeyDown: (props: any) => {
           if (props.event.key === 'Escape') {
@@ -137,6 +174,7 @@ function createSuggestionConfig<T extends SuggestionItem>(
         },
         onExit: () => {
           suggestionActiveRef.current = false;
+          component?.element?.remove();
           component?.destroy();
         }
       };
