@@ -3,7 +3,8 @@ import React, {
   useImperativeHandle,
   useContext,
   useRef,
-  useEffect
+  useEffect,
+  useMemo
 } from 'react';
 import { useEditor, EditorContent, ReactRenderer } from '@tiptap/react';
 import Document from '@tiptap/extension-document';
@@ -25,16 +26,59 @@ export interface RichTextInputRef {
 }
 
 export interface RichTextInputProps {
+  /**
+   * Current value of the input
+   */
   value?: string;
+
+  /**
+   * Placeholder text when empty
+   */
   placeholder?: string;
+
+  /**
+   * Whether the input is disabled
+   */
   disabled?: boolean;
+
+  /**
+   * Whether to auto-focus on mount (default: true)
+   */
   autoFocus?: boolean;
+
+  /**
+   * Additional CSS classes
+   */
   className?: string;
+
+  /**
+   * Minimum height in pixels (default: 24)
+   */
   minHeight?: number;
+
+  /**
+   * Maximum height in pixels (default: 200)
+   */
   maxHeight?: number;
+
+  /**
+   * Configuration for @ mentions
+   */
   mentions?: SuggestionConfig;
+
+  /**
+   * Configuration for / slash commands
+   */
   commands?: SuggestionConfig;
+
+  /**
+   * Callback when user submits (presses Enter)
+   */
   onSubmit?: (value: string) => void;
+
+  /**
+   * Callback when input value changes
+   */
   onChange?: (value: string) => void;
 }
 
@@ -121,54 +165,58 @@ export const RichTextInput = forwardRef<RichTextInputRef, RichTextInputProps>(
     const containerRef = useRef<HTMLDivElement>(null);
     const suggestionActiveRef = useRef(false);
 
-    const extensions = [
-      Document,
-      Paragraph.configure({
-        HTMLAttributes: {
-          class: 'tiptap-paragraph'
-        }
-      }),
-      Text,
-      HardBreak,
-      Placeholder.configure({
-        placeholder,
-        emptyEditorClass: 'is-editor-empty'
-      })
-    ];
-
-    if (mentions) {
-      extensions.push(
-        Mention.configure({
+    const extensions = useMemo(() => {
+      const exts = [
+        Document,
+        Paragraph.configure({
           HTMLAttributes: {
-            class: cn(theme?.input?.tag?.base, theme?.input?.tag?.mention)
-          },
-          suggestion: createSuggestionConfig(
-            mentions,
-            mentions.trigger || '@',
-            suggestionActiveRef
-          )
-        }).extend({
-          name: 'mention'
+            class: 'tiptap-paragraph'
+          }
+        }),
+        Text,
+        HardBreak,
+        Placeholder.configure({
+          placeholder,
+          emptyEditorClass: 'is-editor-empty'
         })
-      );
-    }
+      ];
 
-    if (commands) {
-      extensions.push(
-        Mention.configure({
-          HTMLAttributes: {
-            class: cn(theme?.input?.tag?.base, theme?.input?.tag?.command)
-          },
-          suggestion: createSuggestionConfig(
-            commands,
-            commands.trigger || '/',
-            suggestionActiveRef
-          )
-        }).extend({
-          name: 'command'
-        })
-      );
-    }
+      if (mentions) {
+        exts.push(
+          Mention.configure({
+            HTMLAttributes: {
+              class: cn(theme?.input?.tag?.base, theme?.input?.tag?.mention)
+            },
+            suggestion: createSuggestionConfig(
+              mentions,
+              mentions.trigger || '@',
+              suggestionActiveRef
+            )
+          }).extend({
+            name: 'mention'
+          })
+        );
+      }
+
+      if (commands) {
+        exts.push(
+          Mention.configure({
+            HTMLAttributes: {
+              class: cn(theme?.input?.tag?.base, theme?.input?.tag?.command)
+            },
+            suggestion: createSuggestionConfig(
+              commands,
+              commands.trigger || '/',
+              suggestionActiveRef
+            )
+          }).extend({
+            name: 'command'
+          })
+        );
+      }
+
+      return exts;
+    }, [placeholder, mentions, commands, theme]);
 
     const editor = useEditor({
       extensions,

@@ -21,11 +21,34 @@ export interface MentionListRef {
 }
 
 export interface MentionListProps {
+  /**
+   * List of suggestion items to display
+   */
   items: SuggestionItem[];
+
+  /**
+   * Callback to execute the selected suggestion command
+   */
   command: (item: { id: string; label: string }) => void;
+
+  /**
+   * Function that returns the cursor position for popup placement
+   */
   clientRect: (() => DOMRect | null) | null;
+
+  /**
+   * The trigger character (e.g., '@' or '/')
+   */
   triggerChar: string;
+
+  /**
+   * Configuration for the suggestion popup
+   */
   config: SuggestionConfig;
+
+  /**
+   * Current search query text
+   */
   query?: string;
 }
 
