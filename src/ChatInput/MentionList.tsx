@@ -8,7 +8,6 @@ import {
   useRef
 } from 'react';
 import { cn, List, ListItem } from 'reablocks';
-import { motion } from 'motion/react';
 import { ChatContext } from '@/ChatContext';
 import { chatTheme } from '@/theme';
 import { SuggestionConfig, SuggestionItem } from './types';
