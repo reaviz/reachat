@@ -107,11 +107,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
     const popupId = `mention-list-${triggerChar}`;
 
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 4 }}
-        transition={{ duration: 0.15 }}
+      <div
         className={cn(popupTheme.base)}
         style={{ zIndex: 9999 }}
         role="listbox"
@@ -160,7 +156,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
             </List>
           )}
         </div>
-      </motion.div>
+      </div>
     );
   }
 );
