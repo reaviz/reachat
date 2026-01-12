@@ -136,3 +136,69 @@ export interface Session {
    */
   conversations: Conversation[];
 }
+
+export interface TriggerOption {
+  /**
+   * Unique identifier for the option
+   */
+  id: string;
+
+  /**
+   * Display label for the option
+   */
+  label: string;
+
+  /**
+   * Optional description shown below the label
+   */
+  description?: string;
+
+  /**
+   * Optional metadata to attach to the selected option
+   */
+  metadata?: Record<string, unknown>;
+}
+
+export interface TriggerConfig {
+  /**
+   * The character that triggers the popup (e.g., '@', '/')
+   */
+  char: string;
+
+  /**
+   * Whether to allow spaces in the search query
+   */
+  allowSpaces?: boolean;
+
+  /**
+   * Static list of options to display
+   */
+  options?: TriggerOption[];
+
+  /**
+   * Async function to fetch options based on query
+   */
+  getOptions?: (query: string) => Promise<TriggerOption[]>;
+
+  /**
+   * Optional placeholder shown in the popup when loading
+   */
+  loadingText?: string;
+
+  /**
+   * Optional placeholder shown when no results found
+   */
+  noResultsText?: string;
+}
+
+export interface SelectedTrigger {
+  /**
+   * The trigger character that was used
+   */
+  trigger: string;
+
+  /**
+   * The selected option
+   */
+  option: TriggerOption;
+}

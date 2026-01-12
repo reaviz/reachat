@@ -108,10 +108,25 @@ export interface ChatTheme {
     base: string;
     upload: string;
     input: string;
+    editor: string;
     actions: {
       base: string;
       send: string;
       stop: string;
+    };
+    trigger: {
+      base: string;
+      item: {
+        base: string;
+        active: string;
+        label: string;
+        description: string;
+      };
+      empty: string;
+      loading: string;
+    };
+    mention: {
+      base: string;
     };
   };
   suggestions: {
@@ -285,6 +300,11 @@ export const chatTheme: ChatTheme = {
       'w-full border rounded-3xl px-3 py-2 pr-16 text-gray-500 border-gray-200 hover:bg-blue-100 hover:border-blue-500 after:hidden after:mx-10! bg-white [&>textarea]:w-full [&>textarea]:flex-none',
       'dark:border-gray-700/50 dark:text-gray-200 dark:bg-gray-950 dark:hover:bg-blue-950/40'
     ].join(' '),
+    editor: [
+      'w-full border rounded-3xl px-3 py-2 pr-16 text-gray-500 border-gray-200 hover:bg-blue-100 hover:border-blue-500 bg-white',
+      'dark:border-gray-700/50 dark:text-gray-200 dark:bg-gray-950 dark:hover:bg-blue-950/40',
+      '[&_.tiptap]:outline-none [&_.tiptap]:min-h-[24px] [&_.tiptap_p]:m-0'
+    ].join(' '),
     actions: {
       base: 'absolute flex gap-2 items-center right-5 inset-y-1/2 -translate-y-1/2 z-10',
       send: [
@@ -292,6 +312,38 @@ export const chatTheme: ChatTheme = {
         'dark:text-white light:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700'
       ].join(' '),
       stop: 'px-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 '
+    },
+    trigger: {
+      base: [
+        'z-50 min-w-[200px] max-w-[300px] max-h-[300px] overflow-y-auto rounded-lg border shadow-lg',
+        'bg-white border-gray-200',
+        'dark:bg-gray-900 dark:border-gray-700'
+      ].join(' '),
+      item: {
+        base: [
+          'flex flex-col px-3 py-2 cursor-pointer',
+          'hover:bg-gray-100',
+          'dark:hover:bg-gray-800'
+        ].join(' '),
+        active: ['bg-blue-50', 'dark:bg-blue-900/30'].join(' '),
+        label: ['text-sm font-medium text-gray-900', 'dark:text-gray-100'].join(
+          ' '
+        ),
+        description: ['text-xs text-gray-500', 'dark:text-gray-400'].join(' ')
+      },
+      empty: ['px-3 py-2 text-sm text-gray-500', 'dark:text-gray-400'].join(
+        ' '
+      ),
+      loading: ['px-3 py-2 text-sm text-gray-500', 'dark:text-gray-400'].join(
+        ' '
+      )
+    },
+    mention: {
+      base: [
+        'inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded text-sm font-medium',
+        'bg-blue-100 text-blue-700',
+        'dark:bg-blue-900/50 dark:text-blue-300'
+      ].join(' ')
     }
   },
   suggestions: {
