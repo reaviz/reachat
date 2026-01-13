@@ -115,7 +115,6 @@ export interface ChatTheme {
     };
     popup: {
       base: string;
-      header: string;
       content: string;
       item: string;
       itemHighlighted: string;
@@ -307,10 +306,6 @@ export const chatTheme: ChatTheme = {
       base: [
         'bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden min-w-[200px] max-w-[300px]',
         'dark:bg-gray-900 dark:border-gray-700'
-      ].join(' '),
-      header: [
-        'px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-200',
-        'dark:text-gray-400 dark:border-gray-700'
       ].join(' '),
       content: 'overflow-y-auto max-h-[250px]',
       item: [
