@@ -1,21 +1,23 @@
 import {
   useState,
-  KeyboardEvent,
   ReactElement,
   useRef,
   ChangeEvent,
   useContext,
   forwardRef,
   useImperativeHandle,
-  useEffect
+  useEffect,
+  useCallback
 } from 'react';
-import { Button, Textarea, cn } from 'reablocks';
+import { Button, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
+import { RichTextInput, RichTextInputRef } from './RichTextInput';
+import { SuggestionConfig, MentionItem, SlashCommandItem } from './types';
 
-interface ChatInputProps {
+export interface ChatInputProps {
   /**
    * Default value for the input field.
    */
@@ -45,6 +47,33 @@ interface ChatInputProps {
    * Icon to show for attach.
    */
   attachIcon?: ReactElement;
+
+  /**
+   * Configuration for mentions (@user).
+   * Provide items or an onSearch function to enable mentions.
+   */
+  mentions?: SuggestionConfig<MentionItem>;
+
+  /**
+   * Configuration for commands (/command).
+   * Provide items or an onSearch function to enable commands.
+   */
+  commands?: SuggestionConfig<SlashCommandItem>;
+
+  /**
+   * Minimum height for the input (default: 24px)
+   */
+  minHeight?: number;
+
+  /**
+   * Maximum height for the input (default: 200px)
+   */
+  maxHeight?: number;
+
+  /**
+   * Whether to auto-focus the input on mount (default: true)
+   */
+  autoFocus?: boolean;
 }
 
 export interface ChatInputRef {
@@ -52,17 +81,37 @@ export interface ChatInputRef {
    * Focus the input.
    */
   focus: () => void;
+
+  /**
+   * Get the current input value.
+   */
+  getValue: () => string;
+
+  /**
+   * Set the input value.
+   */
+  setValue: (value: string) => void;
+
+  /**
+   * Insert text at the current cursor position.
+   */
+  insertText: (text: string) => void;
 }
 
 export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
   (
     {
       allowedFiles,
-      placeholder,
+      placeholder = 'Type a message...',
       defaultValue,
       sendIcon = <SendIcon />,
       stopIcon = <StopIcon />,
-      attachIcon
+      attachIcon,
+      mentions,
+      commands,
+      minHeight = 24,
+      maxHeight = 200,
+      autoFocus = true
     },
     ref
   ) => {
@@ -75,84 +124,121 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       fileUpload,
       activeSessionId
     } = useContext(ChatContext);
-    const [message, setMessage] = useState<string>('');
-    const inputRef = useRef<HTMLTextAreaElement | null>(null);
+
+    const [message, setMessage] = useState<string>(defaultValue || '');
+    const inputRef = useRef<RichTextInputRef | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
+      if (autoFocus) {
+        inputRef.current?.focus();
       }
-    }, [activeSessionId, inputRef]);
+    }, [activeSessionId, autoFocus]);
 
     useImperativeHandle(ref, () => ({
       focus: () => {
         inputRef.current?.focus();
+      },
+      getValue: () => {
+        return inputRef.current?.getValue() || '';
+      },
+      setValue: (value: string) => {
+        setMessage(value);
+        inputRef.current?.setValue(value);
+      },
+      insertText: (text: string) => {
+        inputRef.current?.insertText(text);
       }
     }));
 
-    const handleSendMessage = () => {
-      if (message.trim()) {
-        sendMessage?.(message);
+    const handleSendMessage = useCallback(() => {
+      const currentMessage = inputRef.current?.getValue();
+      if (currentMessage.trim()) {
+        sendMessage?.(currentMessage);
         setMessage('');
+        inputRef.current?.setValue('');
       }
-    };
+    }, [sendMessage]);
 
-    const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSendMessage();
-      }
-    };
+    const handleSubmit = useCallback(
+      (value: string) => {
+        if (value.trim()) {
+          sendMessage?.(value);
+          setMessage('');
+        }
+      },
+      [sendMessage]
+    );
 
-    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file && fileUpload) {
-        fileUpload(file);
-      }
-    };
+    const handleChange = useCallback((value: string) => {
+      setMessage(value);
+    }, []);
+
+    const handleFileUpload = useCallback(
+      (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file && fileUpload) {
+          fileUpload(file);
+        }
+      },
+      [fileUpload]
+    );
+
+    const mentionsConfig = mentions
+      ? { ...mentions, trigger: mentions.trigger || '@' }
+      : undefined;
+
+    const commandsConfig = commands
+      ? { ...commands, trigger: commands.trigger || '/' }
+      : undefined;
 
     return (
-      <div className={cn(theme.input.base)}>
-        <Textarea
-          ref={inputRef}
-          containerClassName={cn(theme.input.input)}
-          minRows={1}
-          autoFocus
-          value={message}
-          defaultValue={defaultValue}
-          onKeyPress={handleKeyPress}
-          placeholder={placeholder}
-          disabled={isLoading || disabled}
-          onChange={e => setMessage(e.target.value)}
-        />
-        <div className={cn(theme.input.actions.base)}>
-          {allowedFiles?.length > 0 && (
-            <FileInput
-              allowedFiles={allowedFiles}
-              onFileUpload={handleFileUpload}
-              isLoading={isLoading}
-              disabled={disabled}
-              attachIcon={attachIcon}
-            />
-          )}
-          {isLoading && (
-            <Button
-              title="Stop"
-              className={cn(theme.input.actions.stop)}
-              onClick={stopMessage}
-              disabled={disabled}
-            >
-              {stopIcon}
-            </Button>
-          )}
-          <Button
-            title="Send"
-            className={cn(theme.input.actions.send)}
-            onClick={handleSendMessage}
+      <div ref={containerRef} className={cn(theme.input.base)}>
+        <div className={cn('relative flex-1', theme.input.input)}>
+          <RichTextInput
+            ref={inputRef}
+            value={message}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+            placeholder={placeholder}
             disabled={isLoading || disabled}
-          >
-            {sendIcon}
-          </Button>
+            autoFocus={autoFocus}
+            minHeight={minHeight}
+            maxHeight={maxHeight}
+            className={theme.input.editor.container}
+            mentions={mentionsConfig}
+            commands={commandsConfig}
+          />
+
+          <div className={cn(theme.input.actions.base)}>
+            {allowedFiles?.length > 0 && (
+              <FileInput
+                allowedFiles={allowedFiles}
+                onFileUpload={handleFileUpload}
+                isLoading={isLoading}
+                disabled={disabled}
+                attachIcon={attachIcon}
+              />
+            )}
+            {isLoading && (
+              <Button
+                title="Stop"
+                className={cn(theme.input.actions.stop)}
+                onClick={stopMessage}
+                disabled={disabled}
+              >
+                {stopIcon}
+              </Button>
+            )}
+            <Button
+              title="Send"
+              className={cn(theme.input.actions.send)}
+              onClick={handleSendMessage}
+              disabled={isLoading || disabled}
+            >
+              {sendIcon}
+            </Button>
+          </div>
         </div>
       </div>
     );

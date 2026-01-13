@@ -132,3 +132,5 @@ dist
 
 # Storybook build output
 storybook-static/
+.cursor
+.playwright-mcp

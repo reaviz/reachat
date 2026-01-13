@@ -52,9 +52,11 @@ export function groupSessionsByDate(sessions: Session[]): GroupedSessions[] {
       grouped['Last Week'].push(session);
     } else if (differenceInYears(now, createdAt) === 0) {
       const monthDiff = now.getMonth() - createdAt.getMonth();
+      const yearDiff = now.getFullYear() - createdAt.getFullYear();
+      const adjustedMonthDiff = yearDiff > 0 ? monthDiff + 12 : monthDiff;
       if (
-        monthDiff === 1 ||
-        (monthDiff === 0 && now.getDate() > createdAt.getDate())
+        adjustedMonthDiff === 1 ||
+        (adjustedMonthDiff === 0 && now.getDate() > createdAt.getDate())
       ) {
         if (!grouped['Last Month']) grouped['Last Month'] = [];
         grouped['Last Month'].push(session);
