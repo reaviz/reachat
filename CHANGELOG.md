@@ -1,3 +1,25 @@
+# 2.1.0 - 1/13/26
+- [feature] Add RichTextInput component with Tiptap v3 integration #78
+- [feature] Add @mentions support with floating suggestion popup
+- [feature] Add /slash commands support with keyboard navigation
+- [feature] Add MentionList component for autocomplete suggestions
+- [feature] Add SuggestionConfig type for dynamic/async search
+- [feature] Add Floating UI integration for smart popup positioning
+- [feature] Add ARIA accessibility attributes to suggestion popups
+- [feature] Add ChartRenderer component with 7 chart types support #73
+- [feature] Add bar, line, area, pie, radialBar, radialArea, and sparkline charts
+- [feature] Add remarkChart plugin for markdown chart rendering
+- [feature] Add ChartError component for validation and error handling
+- [feature] Add chart theme customization support
+- [feature] Add data validation for chart configurations
+- [feature] Add reaviz integration for chart visualizations
+- [feature] Add markdownComponents prop to Chat for custom component overrides
+- [feature] Add ChatSuggestions component for clickable suggestion chips
+- [feature] Add custom render support for suggestion items
+- [feature] Add MessageStatus component with loading/complete/error states
+- [feature] Add multi-step status display with animated transitions
+- [feature] Add MessageStatusItem and StatusIcon for status visualization
+
 # 2.0.2 - 7/23/25
 - [chore] Export stories for docs website #56
 
