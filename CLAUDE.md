@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**reachat** is a React UI library for building chat/LLM experiences. It provides customizable, composable components for building chat interfaces with support for markdown rendering, file uploads, session management, and theming via Tailwind CSS.
+**reachat** is a React UI library for building chat/LLM experiences. It provides customizable, composable components for building chat interfaces with support for markdown rendering, rich text input with mentions and slash commands, file uploads, session management, and theming via Tailwind CSS.
 
 - **Repository**: reaviz/reachat
 - **License**: Apache-2.0
@@ -21,6 +21,9 @@
 | Storybook | 8.x | Component development |
 | Vitest | 1.x | Testing |
 | reablocks | 9.x | Base UI components |
+| Tiptap | 3.x | Rich text editor framework |
+| Floating UI | 0.27.x | Popup positioning |
+| motion | 12.x | Animations |
 
 ## Directory Structure
 
@@ -138,6 +141,130 @@ const chatTheme: ChatTheme = {
 Components use the theme via `useComponentTheme` from reablocks:
 ```typescript
 const theme = useComponentTheme<ChatTheme>('chat', customTheme);
+```
+
+### Rich Text Input Features
+
+The library includes an advanced rich text input system built on **Tiptap v3** with support for mentions and slash commands.
+
+#### RichTextInput Component
+
+Located in `src/ChatInput/RichTextInput.tsx`, this component provides:
+
+- **Auto-expanding textarea** with configurable min/max heights
+- **Mentions support** - Trigger with `@` to mention users, files, or custom entities
+- **Slash commands** - Trigger with `/` for quick actions
+- **Custom keyboard handling** - Shift+Enter for multi-line, Enter to submit
+- **Floating suggestions** - Smart popup positioning using Floating UI
+- **Keyboard navigation** - Arrow keys, Enter/Tab to select, Escape to close
+
+**Exposed Methods via Ref:**
+```typescript
+interface RichTextInputRef {
+  focus: () => void;
+  getValue: () => string;
+  setValue: (value: string) => void;
+  insertText: (text: string) => void;
+}
+```
+
+**Usage Example:**
+```tsx
+<ChatInput
+  mentions={{
+    trigger: '@',
+    items: [
+      { id: '1', label: 'John Doe', description: 'Product Manager' },
+      { id: '2', label: 'Jane Smith', description: 'Engineer' }
+    ]
+  }}
+  commands={{
+    trigger: '/',
+    items: [
+      { id: 'help', label: 'Help', description: 'Get help', type: 'action' },
+      { id: 'search', label: 'Search', description: 'Search docs', type: 'insert' }
+    ]
+  }}
+/>
+```
+
+#### MentionList Component
+
+Located in `src/ChatInput/MentionList.tsx`, this floating popup component:
+
+- Displays suggestion items with keyboard navigation
+- Auto-scrolls to keep selected item visible
+- Supports custom rendering via `renderItem` and `renderEmpty` callbacks
+- Full ARIA accessibility attributes
+- Smart positioning to stay within viewport bounds
+
+#### Suggestion Types
+
+Core types defined in `src/ChatInput/types.ts`:
+
+```typescript
+// Base suggestion item
+interface SuggestionItem {
+  id: string;
+  label: string;
+  description?: string;
+  icon?: ReactNode;
+  metadata?: Record<string, any>;
+}
+
+// For @mentions
+interface MentionItem extends SuggestionItem {
+  value?: string; // Override display value
+}
+
+// For /commands
+interface SlashCommandItem extends SuggestionItem {
+  shortcut?: string; // Keyboard shortcut hint
+  type?: 'insert' | 'action';
+}
+
+// Configuration for suggestions
+interface SuggestionConfig<T = SuggestionItem> {
+  trigger: string;
+  items?: T[];
+  onSearch?: (query: string) => Promise<T[]>;
+  onSelect?: (item: T) => void;
+  maxResults?: number;
+  renderItem?: (item: T) => ReactNode;
+  renderEmpty?: () => ReactNode;
+}
+```
+
+#### Theme Support
+
+New theme sections in `src/theme.ts`:
+
+```typescript
+input: {
+  popup: {
+    base: string;        // Popup container styles
+    content: string;     // List content wrapper
+    item: string;        // Individual item
+    itemHighlighted: string; // Active/selected item
+    itemIcon: string;    // Icon wrapper
+    itemContent: string; // Text content wrapper
+    itemLabel: string;   // Primary label
+    itemDescription: string; // Secondary description
+    itemShortcut: string; // Shortcut hint
+    empty: string;       // Empty state
+    loading: string;     // Loading state
+  },
+  tag: {
+    base: string;        // Tag styles in editor
+    mention: string;     // Mention-specific styles
+    command: string;     // Command-specific styles
+  },
+  editor: {
+    base: string;        // Editor wrapper
+    container: string;   // Content container
+    placeholder: string; // Placeholder text
+  }
+}
 ```
 
 ## Code Conventions
@@ -262,9 +389,13 @@ The build creates three outputs:
 - **reakeys**: Keyboard shortcuts
 - **react-markdown**: Markdown rendering
 - **react-syntax-highlighter**: Code highlighting
-- **motion**: Animations (Framer Motion)
 - **date-fns**: Date utilities
 - **lodash**: Utility functions
+- **@tiptap/react**: Rich text editor framework (v3.x) with extensions for:
+  - Document/paragraph/text structure
+  - Hard breaks and placeholders
+  - Mention support for @mentions
+- **@floating-ui/react**: Smart popup positioning for suggestion dropdowns
 
 ## Common Tasks
 
@@ -289,6 +420,67 @@ The build creates three outputs:
 2. Add new remark/rehype plugins to the `remarkPlugins` prop
 3. Custom renderers go in the Markdown component
 
+### Configuring Mentions and Slash Commands
+
+The `ChatInput` component accepts `mentions` and `commands` props for rich text functionality:
+
+**Static Items:**
+```tsx
+<ChatInput
+  mentions={{
+    trigger: '@',
+    items: [
+      { id: '1', label: 'User Name', description: 'Role', icon: <Icon /> }
+    ]
+  }}
+/>
+```
+
+**Dynamic Search:**
+```tsx
+<ChatInput
+  commands={{
+    trigger: '/',
+    onSearch: async (query) => {
+      const results = await searchAPI(query);
+      return results.map(r => ({ id: r.id, label: r.name }));
+    },
+    maxResults: 10
+  }}
+/>
+```
+
+**Custom Selection Handler:**
+```tsx
+<ChatInput
+  mentions={{
+    trigger: '@',
+    items: mentionItems,
+    onSelect: (item) => {
+      console.log('Selected:', item);
+      // Handle custom logic
+    }
+  }}
+/>
+```
+
+**Custom Rendering:**
+```tsx
+<ChatInput
+  commands={{
+    trigger: '/',
+    items: commandItems,
+    renderItem: (item) => (
+      <div>
+        <strong>{item.label}</strong>
+        <span>{item.shortcut}</span>
+      </div>
+    ),
+    renderEmpty: () => <div>No commands found</div>
+  }}
+/>
+```
+
 ## Important Notes
 
 - The library is designed for React 18+
@@ -296,6 +488,9 @@ The build creates three outputs:
 - CSS is injected via JS for library builds (vite-plugin-css-injected-by-js)
 - SVGs are imported as React components using vite-plugin-svgr
 - The package uses ES modules (`"type": "module"`)
+- **Rich text input** uses Tiptap v3 with a document/paragraph/text node structure
+- **Suggestion popups** use Floating UI with flip/shift middleware for smart positioning
+- **Accessibility**: All interactive components include proper ARIA attributes
 
 ## Git Workflow
 
