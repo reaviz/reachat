@@ -130,8 +130,10 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-      inputRef.current?.focus();
-    }, [activeSessionId]);
+      if (autoFocus) {
+        inputRef.current?.focus();
+      }
+    }, [activeSessionId, autoFocus]);
 
     useImperativeHandle(ref, () => ({
       focus: () => {
@@ -150,13 +152,13 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     }));
 
     const handleSendMessage = useCallback(() => {
-      const currentMessage = inputRef.current?.getValue() || message;
+      const currentMessage = inputRef.current?.getValue();
       if (currentMessage.trim()) {
         sendMessage?.(currentMessage);
         setMessage('');
         inputRef.current?.setValue('');
       }
-    }, [message, sendMessage]);
+    }, [sendMessage]);
 
     const handleSubmit = useCallback(
       (value: string) => {

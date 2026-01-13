@@ -86,11 +86,6 @@ export interface SuggestionConfig<T extends SuggestionItem = SuggestionItem> {
   onSelect?: (item: T, insertText: (text: string) => void) => void;
 
   /**
-   * Minimum characters before showing suggestions (default: 0)
-   */
-  minQueryLength?: number;
-
-  /**
    * Maximum items to show in the popup (default: 10)
    */
   maxResults?: number;

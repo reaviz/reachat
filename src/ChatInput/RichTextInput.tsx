@@ -354,3 +354,5 @@ export const RichTextInput = forwardRef<RichTextInputRef, RichTextInputProps>(
     );
   }
 );
+
+RichTextInput.displayName = 'RichTextInput';

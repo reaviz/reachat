@@ -205,3 +205,5 @@ function DefaultItemRenderer({
     </ListItem>
   );
 }
+
+MentionList.displayName = 'MentionList';
