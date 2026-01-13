@@ -2,10 +2,11 @@ import { FC, PropsWithChildren, useContext, useMemo } from 'react';
 import ReactMarkdown, { Components } from 'react-markdown';
 import { Plugin } from 'unified';
 import { CodeHighlighter } from './CodeHighlighter';
-import { cn } from 'reablocks';
+import { cn, Redact } from 'reablocks';
 import { TableComponent, TableHeaderCell, TableDataCell } from './Table';
 import { ChatContext } from '@/ChatContext';
 import rehypeKatex from 'rehype-katex';
+import rehypeRaw from 'rehype-raw';
 import './Markdown.css';
 
 interface MarkdownWrapperProps extends PropsWithChildren {
@@ -29,7 +30,7 @@ interface MarkdownWrapperProps extends PropsWithChildren {
 export const Markdown: FC<MarkdownWrapperProps> = ({
   children,
   remarkPlugins,
-  rehypePlugins = [rehypeKatex],
+  rehypePlugins = [rehypeRaw, rehypeKatex],
   customComponents
 }) => {
   const { theme, markdownComponents } = useContext(ChatContext);
@@ -80,6 +81,13 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
       ),
       ol: props => (
         <ol {...props} className={cn(theme.messages.message.markdown.ol)} />
+      ),
+      redact: (props: any) => (
+        <Redact
+          value={props['data-redact-value'] || props.children}
+          allowToggle={true}
+          tooltipText={`${props['data-redact-name'] || 'Sensitive'} information - Click to toggle`}
+        />
       )
     };
 
