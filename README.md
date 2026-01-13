@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="650" src=".storybook/logo.png">
+  <img width="650" src=".storybook/logo.svg">
   <br />
   Building Blocks for LLM UI
   <br /><br />
