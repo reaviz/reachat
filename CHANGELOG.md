@@ -1,3 +1,6 @@
+# 2.1.1 - 1/14/26
+- [fix] improve lodash import for esm
+
 # 2.1.0 - 1/13/26
 - [feature] Add RichTextInput component with Tiptap v3 integration #78
 - [feature] Add @mentions support with floating suggestion popup
