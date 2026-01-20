@@ -87,12 +87,13 @@ const sessionWithCharts: Session[] = [
         id: 'conversation-1',
         question:
           'Can you show me the programming language popularity data as a bar chart?',
-        response: [
-          "Sure! Here's a bar chart showing the popularity of programming languages based on recent survey data:",
-          'New Line here',
-          `\`\`\`chart\n${JSON.stringify(barChartData, null, 2)}\n\`\`\``,
-          'As you can see, JavaScript leads the pack with 35% popularity, followed by Python at 28%. TypeScript has been growing rapidly and now sits at 22%.'
-        ],
+        response: `Sure! Here's a bar chart showing the popularity of programming languages based on recent survey data:
+
+\`\`\`chart
+${JSON.stringify(barChartData, null, 2)}
+\`\`\`
+
+As you can see, JavaScript leads the pack with 35% popularity, followed by Python at 28%. TypeScript has been growing rapidly and now sits at 22%.`,
         createdAt: subHours(new Date(), 1)
       },
       {
