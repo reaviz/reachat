@@ -5,12 +5,13 @@ import { cn } from 'reablocks';
 import { FC, PropsWithChildren, useContext } from 'react';
 import { Markdown } from '@/Markdown';
 import { Plugin } from 'unified';
+import { parseResponse } from '@/utils/parseResponse';
 
 export interface MessageResponseProps extends PropsWithChildren {
   /**
    * Response to render.
    */
-  response: string;
+  response: string | string[];
 
   /**
    * Whether the response is loading.
@@ -25,6 +26,7 @@ export const MessageResponse: FC<MessageResponseProps> = ({
 }) => {
   const { theme, isCompact, remarkPlugins } = useContext(ChatContext);
   const Comp = children ? Slot : 'div';
+
   return (
     <Comp
       data-compact={isCompact}
@@ -33,7 +35,7 @@ export const MessageResponse: FC<MessageResponseProps> = ({
       {children || (
         <>
           <Markdown remarkPlugins={remarkPlugins as Plugin[]}>
-            {response}
+            {parseResponse(response)}
           </Markdown>
           {isLoading && (
             <motion.div

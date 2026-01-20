@@ -97,7 +97,7 @@ export interface Conversation {
   /**
    * The AI's response to the user's question
    */
-  response?: string;
+  response?: string | string[];
 
   /**
    * Array of sources referenced in the conversation

@@ -12,18 +12,18 @@
 
 ## Tech Stack
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| React | 18+ | UI framework |
-| TypeScript | 4.9.5 | Type safety |
-| Tailwind CSS | 4.x | Styling |
-| Vite | 5.x | Build tool & dev server |
-| Storybook | 8.x | Component development |
-| Vitest | 1.x | Testing |
-| reablocks | 9.x | Base UI components |
-| Tiptap | 3.x | Rich text editor framework |
-| Floating UI | 0.27.x | Popup positioning |
-| motion | 12.x | Animations |
+| Technology   | Version | Purpose                    |
+| ------------ | ------- | -------------------------- |
+| React        | 18+     | UI framework               |
+| TypeScript   | 4.9.5   | Type safety                |
+| Tailwind CSS | 4.x     | Styling                    |
+| Vite         | 5.x     | Build tool & dev server    |
+| Storybook    | 8.x     | Component development      |
+| Vitest       | 1.x     | Testing                    |
+| reablocks    | 9.x     | Base UI components         |
+| Tiptap       | 3.x     | Rich text editor framework |
+| Floating UI  | 0.27.x  | Popup positioning          |
+| motion       | 12.x    | Animations                 |
 
 ## Directory Structure
 
@@ -113,7 +113,7 @@ interface Conversation {
   id: string;
   createdAt: Date;
   question: string;
-  response?: string;
+  response?: string | string[];
   sources?: ConversationSource[];
   files?: ConversationFile[];
 }
@@ -122,6 +122,7 @@ interface Conversation {
 ### View Types
 
 Three view modes are supported:
+
 - `console` - Full screen with sessions sidebar
 - `companion` - Compact/mobile view
 - `chat` - Chat only, no sessions list
@@ -133,12 +134,13 @@ The theme is defined in `src/theme.ts` using a typed object with Tailwind classe
 ```typescript
 const chatTheme: ChatTheme = {
   base: 'dark:text-white text-gray-500',
-  console: 'flex w-full gap-4 h-full',
+  console: 'flex w-full gap-4 h-full'
   // ... nested theme objects for each component
 };
 ```
 
 Components use the theme via `useComponentTheme` from reablocks:
+
 ```typescript
 const theme = useComponentTheme<ChatTheme>('chat', customTheme);
 ```
@@ -159,6 +161,7 @@ Located in `src/ChatInput/RichTextInput.tsx`, this component provides:
 - **Keyboard navigation** - Arrow keys, Enter/Tab to select, Escape to close
 
 **Exposed Methods via Ref:**
+
 ```typescript
 interface RichTextInputRef {
   focus: () => void;
@@ -169,6 +172,7 @@ interface RichTextInputRef {
 ```
 
 **Usage Example:**
+
 ```tsx
 <ChatInput
   mentions={{
@@ -182,7 +186,12 @@ interface RichTextInputRef {
     trigger: '/',
     items: [
       { id: 'help', label: 'Help', description: 'Get help', type: 'action' },
-      { id: 'search', label: 'Search', description: 'Search docs', type: 'insert' }
+      {
+        id: 'search',
+        label: 'Search',
+        description: 'Search docs',
+        type: 'insert'
+      }
     ]
   }}
 />
@@ -272,6 +281,7 @@ input: {
 ### Import Aliases
 
 Use `@/` for absolute imports from `src/`:
+
 ```typescript
 // Good
 import { ChatContext } from '@/ChatContext';
@@ -285,6 +295,7 @@ The ESLint rule `no-relative-import-paths` enforces this (same folder imports ar
 ### Component Patterns
 
 1. **Functional Components with TypeScript**:
+
 ```typescript
 interface ComponentProps {
   /** JSDoc comment for prop */
@@ -297,19 +308,23 @@ export const Component: FC<ComponentProps> = ({ propName }) => {
 ```
 
 2. **Forward Refs when exposing methods**:
+
 ```typescript
 export interface ComponentRef {
   focus: () => void;
 }
 
-export const Component = forwardRef<ComponentRef, ComponentProps>((props, ref) => {
-  useImperativeHandle(ref, () => ({
-    focus: () => inputRef.current?.focus()
-  }));
-});
+export const Component = forwardRef<ComponentRef, ComponentProps>(
+  (props, ref) => {
+    useImperativeHandle(ref, () => ({
+      focus: () => inputRef.current?.focus()
+    }));
+  }
+);
 ```
 
 3. **Context consumption**:
+
 ```typescript
 const { theme, isLoading, sendMessage } = useContext(ChatContext);
 ```
@@ -317,6 +332,7 @@ const { theme, isLoading, sendMessage } = useContext(ChatContext);
 ### File Organization
 
 Each component module follows this structure:
+
 ```
 ComponentName/
 ├── index.ts           # Re-exports public APIs
@@ -328,6 +344,7 @@ ComponentName/
 
 1. Use Tailwind CSS classes via the theme system
 2. Use `cn()` from reablocks for conditional class merging:
+
 ```typescript
 <div className={cn(theme.base, { [theme.active]: isActive })} />
 ```
@@ -354,6 +371,7 @@ utils/
 ```
 
 Run tests:
+
 ```bash
 npm test              # Watch mode
 npm run test:coverage # With coverage report
@@ -378,6 +396,7 @@ export const WithProps = () => <ComponentName prop="value" />;
 ## Build Process
 
 The build creates three outputs:
+
 1. **ESM** (`dist/index.js`) - Modern ES modules
 2. **UMD** (`dist/index.umd.cjs`) - Universal module
 3. **CSS** (`dist/index.css`) - Tailwind-compiled styles
@@ -425,6 +444,7 @@ The build creates three outputs:
 The `ChatInput` component accepts `mentions` and `commands` props for rich text functionality:
 
 **Static Items:**
+
 ```tsx
 <ChatInput
   mentions={{
@@ -437,11 +457,12 @@ The `ChatInput` component accepts `mentions` and `commands` props for rich text 
 ```
 
 **Dynamic Search:**
+
 ```tsx
 <ChatInput
   commands={{
     trigger: '/',
-    onSearch: async (query) => {
+    onSearch: async query => {
       const results = await searchAPI(query);
       return results.map(r => ({ id: r.id, label: r.name }));
     },
@@ -451,12 +472,13 @@ The `ChatInput` component accepts `mentions` and `commands` props for rich text 
 ```
 
 **Custom Selection Handler:**
+
 ```tsx
 <ChatInput
   mentions={{
     trigger: '@',
     items: mentionItems,
-    onSelect: (item) => {
+    onSelect: item => {
       console.log('Selected:', item);
       // Handle custom logic
     }
@@ -465,12 +487,13 @@ The `ChatInput` component accepts `mentions` and `commands` props for rich text 
 ```
 
 **Custom Rendering:**
+
 ```tsx
 <ChatInput
   commands={{
     trigger: '/',
     items: commandItems,
-    renderItem: (item) => (
+    renderItem: item => (
       <div>
         <strong>{item.label}</strong>
         <span>{item.shortcut}</span>

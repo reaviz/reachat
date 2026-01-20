@@ -57,7 +57,7 @@ export interface ChatTheme {
     message: {
       base: string;
       question: string;
-      response: string;
+      response: string | string[];
       cursor: string;
       overlay: string;
       expand: string;

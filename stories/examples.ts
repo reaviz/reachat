@@ -40,7 +40,7 @@ export const fakeSessions: Session[] = [
       {
         id: '2',
         question: 'What is a component?',
-        response: 'A component is a reusable piece of UI.',
+        response: ['A component is a reusable piece of UI.222'],
         createdAt: new Date(),
         updatedAt: new Date()
       }

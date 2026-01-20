@@ -12,6 +12,7 @@ import CopyIcon from '@/assets/copy.svg?react';
 import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
 import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
 import RefreshIcon from '@/assets/refresh.svg?react';
+import { parseResponse } from '@/utils/parseResponse';
 
 export interface MessageActionsProps extends PropsWithChildren {
   /**
@@ -22,7 +23,7 @@ export interface MessageActionsProps extends PropsWithChildren {
   /**
    * Response to be copied
    */
-  response?: string;
+  response?: string | string[];
 
   /**
    * Icon to show for copy.
@@ -107,7 +108,10 @@ export const MessageActions: FC<MessageActionsProps> = ({
                 title="Copy question and response"
                 className={cn(theme.messages.message.footer.copy)}
                 onClick={
-                  onCopy ? onCopy : () => handleCopy(`${question}\n${response}`)
+                  onCopy
+                    ? onCopy
+                    : () =>
+                        handleCopy(`${question}\n${parseResponse(response)}`)
                 }
               >
                 {copyIcon}
