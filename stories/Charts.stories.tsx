@@ -85,19 +85,20 @@ const sessionWithCharts: Session[] = [
     conversations: [
       {
         id: 'conversation-1',
-        question: 'Can you show me the programming language popularity data as a bar chart?',
-        response: `Sure! Here's a bar chart showing the popularity of programming languages based on recent survey data:
-
-\`\`\`chart
-${JSON.stringify(barChartData, null, 2)}
-\`\`\`
-
-As you can see, JavaScript leads the pack with 35% popularity, followed by Python at 28%. TypeScript has been growing rapidly and now sits at 22%.`,
+        question:
+          'Can you show me the programming language popularity data as a bar chart?',
+        response: [
+          "Sure! Here's a bar chart showing the popularity of programming languages based on recent survey data:",
+          'New Line here',
+          `\`\`\`chart\n${JSON.stringify(barChartData, null, 2)}\n\`\`\``,
+          'As you can see, JavaScript leads the pack with 35% popularity, followed by Python at 28%. TypeScript has been growing rapidly and now sits at 22%.'
+        ],
         createdAt: subHours(new Date(), 1)
       },
       {
         id: 'conversation-2',
-        question: 'What about the monthly revenue growth? Can you visualize that?',
+        question:
+          'What about the monthly revenue growth? Can you visualize that?',
         response: `Absolutely! Here's a line chart showing the monthly revenue growth for the first half of the year:
 
 \`\`\`chart
@@ -109,7 +110,8 @@ The trend shows consistent growth, with revenue increasing from $100K in January
       },
       {
         id: 'conversation-3',
-        question: 'How about device usage? A pie chart would be great for that.',
+        question:
+          'How about device usage? A pie chart would be great for that.',
         response: `Great choice! Pie charts are perfect for showing distribution. Here's the device usage breakdown:
 
 \`\`\`chart
@@ -132,7 +134,8 @@ const sessionWithMultipleCharts: Session[] = [
     conversations: [
       {
         id: 'conversation-1',
-        question: 'Can you give me a comprehensive analysis with multiple charts?',
+        question:
+          'Can you give me a comprehensive analysis with multiple charts?',
         response: `Of course! Let me present the quarterly analysis with multiple visualizations.
 
 ## Revenue Trend

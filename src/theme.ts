@@ -274,7 +274,7 @@ export const chatTheme: ChatTheme = {
       },
       markdown: {
         copy: 'sticky py-1 [&>svg]:w-4 [&>svg]:h-4 opacity-50',
-        p: 'mb-2',
+        p: 'mb-2 whitespace-pre-wrap',
         a: 'text-blue-400 underline',
         table: 'table-auto w-full m-2',
         th: 'px-4 py-2 text-left font-bold border-b border-gray-500',
