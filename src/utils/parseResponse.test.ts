@@ -5,6 +5,10 @@ describe('parseResponse util function', () => {
     expect(parseResponse('')).to.equal('');
   });
 
+  it('should parse undefined', () => {
+    expect(parseResponse(undefined)).to.equal('');
+  });
+
   it('should parse an empty array', () => {
     expect(parseResponse([])).to.equal('');
   });
