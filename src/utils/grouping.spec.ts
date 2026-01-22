@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { groupSessionsByDate } from './grouping';
 import { Session } from '@/types';
 import { subDays } from 'date-fns';
-import MockDate from 'mockdate';
 
 describe('groupSessionsByDate', () => {
   const createSession = (daysAgo: number): Session => ({
@@ -14,11 +13,12 @@ describe('groupSessionsByDate', () => {
   });
 
   beforeEach(() => {
-    MockDate.set('2026-01-02T00:00:00Z');
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-01T00:00:00.000Z'));
   });
 
   afterEach(() => {
-    MockDate.reset();
+    vi.useRealTimers();
   });
 
   it('groups sessions correctly', () => {
