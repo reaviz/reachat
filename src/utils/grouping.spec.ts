@@ -12,6 +12,15 @@ describe('groupSessionsByDate', () => {
     conversations: []
   });
 
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-02T00:00:00.000Z'));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('groups sessions correctly', () => {
     const sessions: Session[] = [
       createSession(0), // Today
