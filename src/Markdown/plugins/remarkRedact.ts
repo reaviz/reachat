@@ -1,4 +1,6 @@
 import { findAndReplace } from 'mdast-util-find-and-replace';
+import type { Plugin } from 'unified';
+import type { Root } from 'mdast';
 
 /**
  * Interface for defining a redaction matcher.
@@ -37,8 +39,8 @@ export interface RedactMatcher {
  * remarkPlugins={[remarkRedact(matchers)]}
  * ```
  */
-export function remarkRedact(matchers: RedactMatcher[]) {
-  return (tree: any, _file: any) => {
+export function remarkRedact(matchers: RedactMatcher[]): ReturnType<Plugin> {
+  return (tree: Root) => {
     if (!tree || !matchers || matchers.length === 0) {
       return;
     }

@@ -74,7 +74,7 @@ I can see you've provided:
         viewType="console"
         sessions={sessionWithRedaction}
         activeSessionId="session-redact"
-        remarkPlugins={[remarkRedact(commonRedactMatchers) as any]}
+        remarkPlugins={[remarkRedact(commonRedactMatchers)]}
       >
         <SessionsList>
           <NewSessionButton />
@@ -157,7 +157,7 @@ This example shows custom matchers:
         viewType="console"
         sessions={sessionWithCustom}
         activeSessionId="session-custom"
-        remarkPlugins={[remarkRedact(customMatchers) as any]}
+        remarkPlugins={[remarkRedact(customMatchers)]}
       >
         <SessionsList>
           <NewSessionButton />
