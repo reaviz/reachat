@@ -39,8 +39,8 @@ export interface RedactMatcher {
  * remarkPlugins={[remarkRedact(matchers)]}
  * ```
  */
-export function remarkRedact(matchers: RedactMatcher[]): ReturnType<Plugin> {
-  return (tree: Root) => {
+export function remarkRedact(matchers: RedactMatcher[]): Plugin<[], Root> {
+  return () => (tree: Root) => {
     if (!tree || !matchers || matchers.length === 0) {
       return;
     }
