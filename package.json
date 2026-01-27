@@ -58,7 +58,7 @@
     "motion": "^12.4.2",
     "reablocks": "^9.0.0",
     "react-markdown": "^9.0.3",
-    "react-syntax-highlighter": "^15.6.1",
+    "react-syntax-highlighter": "^16.1.0",
     "reakeys": "^2.0.3",
     "rehype-katex": "^7.0.0",
     "remark-gfm": "^4.0.0",
