@@ -1,3 +1,6 @@
+# 2.1.2 - 1/29/26
+- [fix] bump vuln package
+
 # 2.1.1 - 1/14/26
 - [fix] improve lodash import for esm
 
