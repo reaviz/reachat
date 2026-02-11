@@ -64,6 +64,26 @@ export const Compact = () => {
         }}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -116,6 +136,26 @@ export const FullScreen = () => {
         }}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -160,6 +200,26 @@ export const Empty = () => {
         }}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionMessagePanel>
           <SessionMessages
@@ -229,6 +289,26 @@ export const WithAppBar = () => {
         }}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <div className="flex flex-col h-full">
           <AppBar

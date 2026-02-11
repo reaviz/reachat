@@ -56,6 +56,9 @@ export default {
 } as Meta;
 
 export const Basic = () => {
+  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
+  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
+
   return (
     <div
       className="dark:bg-gray-950 bg-white"
@@ -71,9 +74,31 @@ export const Basic = () => {
       }}
     >
       <Chat
-        sessions={fakeSessions}
+        sessions={sessions}
+        activeSessionId={activeId}
         viewType="console"
+        onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionsList>
           <NewSessionButton />
@@ -90,6 +115,9 @@ export const Basic = () => {
 };
 
 export const Embeds = () => {
+  const [activeId, setActiveId] = useState<string>('1');
+  const [sessions, setSessions] = useState<Session[]>(fakeSessionsWithEmbeds);
+
   return (
     <div
       className="dark:bg-gray-950 bg-white"
@@ -105,9 +133,30 @@ export const Embeds = () => {
       }}
     >
       <Chat
-        sessions={fakeSessionsWithEmbeds}
-        activeSessionId="1"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionsList>
           <NewSessionButton />
@@ -124,6 +173,9 @@ export const Embeds = () => {
 };
 
 export const DefaultSession = () => {
+  const [activeId, setActiveId] = useState<string>('1');
+  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
+
   return (
     <div
       className="dark:bg-gray-950 bg-white"
@@ -140,9 +192,30 @@ export const DefaultSession = () => {
     >
       <Chat
         viewType="console"
-        sessions={fakeSessions}
-        activeSessionId="1"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionsList>
           <NewSessionButton />
@@ -258,6 +331,9 @@ export const FileUploads = () => {
 };
 
 export const DefaultInputValue = () => {
+  const [activeId, setActiveId] = useState<string>('1');
+  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
+
   return (
     <div
       className="dark:bg-gray-950 bg-white"
@@ -274,9 +350,30 @@ export const DefaultInputValue = () => {
     >
       <Chat
         viewType="console"
-        sessions={fakeSessions}
-        activeSessionId="1"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionsList>
           <NewSessionButton />
@@ -294,6 +391,9 @@ export const DefaultInputValue = () => {
 };
 
 export const UndeleteableSessions = () => {
+  const [activeId, setActiveId] = useState<string>('1');
+  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
+
   return (
     <div
       className="dark:bg-gray-950 bg-white"
@@ -308,7 +408,32 @@ export const UndeleteableSessions = () => {
         borderRadius: 5
       }}
     >
-      <Chat viewType="console" sessions={fakeSessions} activeSessionId="1">
+      <Chat
+        viewType="console"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
+      >
         <SessionsList>
           <NewSessionButton />
           <SessionGroups>
@@ -818,6 +943,9 @@ export const Empty = () => {
 };
 
 export const ConversationSources = () => {
+  const [activeId, setActiveId] = useState<string>('session-sources');
+  const [sessions, setSessions] = useState<Session[]>(sessionWithSources);
+
   return (
     <div
       className="dark:bg-gray-950 bg-white"
@@ -834,8 +962,29 @@ export const ConversationSources = () => {
     >
       <Chat
         viewType="console"
-        sessions={sessionWithSources}
-        activeSessionId="session-sources"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionsList>
           <NewSessionButton />
@@ -955,6 +1104,13 @@ const CustomSessionListItem: FC<SessionListItemProps> = ({
 };
 
 export const CustomComponents = () => {
+  const [activeId, setActiveId] = useState<string>('1');
+  const [sessions, setSessions] = useState<Session[]>([
+    ...fakeSessions,
+    ...sessionsWithFiles,
+    ...sessionWithSources
+  ]);
+
   return (
     <div
       className="dark:bg-gray-950 bg-white"
@@ -970,12 +1126,29 @@ export const CustomComponents = () => {
       }}
     >
       <Chat
-        sessions={[
-          ...fakeSessions,
-          ...sessionsWithFiles,
-          ...sessionWithSources
-        ]}
-        activeSessionId="1"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionsList>
           <NewSessionButton>
@@ -1063,7 +1236,7 @@ export const ImageFiles = () => {
     }
   ];
 
-  const sessionWithImages: Session[] = [
+  const [sessions, setSessions] = useState<Session[]>([
     {
       id: 'session-images',
       title: 'Multiple Image Files Showcase',
@@ -1088,7 +1261,7 @@ export const ImageFiles = () => {
         }
       ]
     }
-  ];
+  ]);
 
   return (
     <div
@@ -1106,8 +1279,28 @@ export const ImageFiles = () => {
     >
       <Chat
         viewType="console"
-        sessions={sessionWithImages}
+        sessions={sessions}
         activeSessionId="session-images"
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === 'session-images'
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionsList>
           <NewSessionButton />
@@ -1125,6 +1318,8 @@ export const ImageFiles = () => {
 };
 
 export const CSVPreview = () => {
+  const [sessions, setSessions] = useState<Session[]>(sessionWithCSVFiles);
+
   return (
     <div
       className="dark:bg-gray-950 bg-white"
@@ -1137,9 +1332,29 @@ export const CSVPreview = () => {
       }}
     >
       <Chat
-        sessions={sessionWithCSVFiles}
+        sessions={sessions}
         activeSessionId="1"
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === '1'
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionsList>
           <NewSessionButton />

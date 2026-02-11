@@ -112,6 +112,26 @@ export const WithMentions: StoryFn = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -153,6 +173,26 @@ export const WithSlashCommands: StoryFn = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -195,6 +235,26 @@ export const WithAllFeatures: StoryFn = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -240,6 +300,26 @@ export const WithAsyncSearch: StoryFn = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -271,6 +351,26 @@ export const MultiLineEmpty: StoryFn = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -306,6 +406,26 @@ This is line six - still scrolling!`;
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={message => {
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          );
+        }}
       >
         <SessionMessagePanel>
           <SessionMessages />
