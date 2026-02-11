@@ -76,7 +76,7 @@ export interface AgUiStepFinishedEvent extends AgUiBaseEvent {
 export interface AgUiTextMessageStartEvent extends AgUiBaseEvent {
   type: AgUiEventType.TEXT_MESSAGE_START;
   messageId: string;
-  role?: string;
+  role?: AgUiRole;
 }
 
 export interface AgUiTextMessageContentEvent extends AgUiBaseEvent {
@@ -93,7 +93,7 @@ export interface AgUiTextMessageEndEvent extends AgUiBaseEvent {
 export interface AgUiTextMessageChunkEvent extends AgUiBaseEvent {
   type: AgUiEventType.TEXT_MESSAGE_CHUNK;
   messageId?: string;
-  role?: string;
+  role?: AgUiRole;
   delta?: string;
 }
 
@@ -122,10 +122,35 @@ export interface AgUiToolCallResultEvent extends AgUiBaseEvent {
   content: string;
 }
 
+export interface AgUiToolCallChunkEvent extends AgUiBaseEvent {
+  type: AgUiEventType.TOOL_CALL_CHUNK;
+  toolCallId?: string;
+  toolCallName?: string;
+  parentMessageId?: string;
+  delta?: string;
+}
+
 // State events
+export interface AgUiStateSnapshotEvent extends AgUiBaseEvent {
+  type: AgUiEventType.STATE_SNAPSHOT;
+  snapshot: unknown;
+}
+
+export interface AgUiStateDeltaEvent extends AgUiBaseEvent {
+  type: AgUiEventType.STATE_DELTA;
+  delta: unknown[];
+}
+
 export interface AgUiMessagesSnapshotEvent extends AgUiBaseEvent {
   type: AgUiEventType.MESSAGES_SNAPSHOT;
   messages: AgUiMessage[];
+}
+
+// Special events
+export interface AgUiRawEvent extends AgUiBaseEvent {
+  type: AgUiEventType.RAW;
+  event: unknown;
+  source?: string;
 }
 
 export interface AgUiCustomEvent extends AgUiBaseEvent {
@@ -148,7 +173,11 @@ export type AgUiEvent =
   | AgUiToolCallArgsEvent
   | AgUiToolCallEndEvent
   | AgUiToolCallResultEvent
+  | AgUiToolCallChunkEvent
+  | AgUiStateSnapshotEvent
+  | AgUiStateDeltaEvent
   | AgUiMessagesSnapshotEvent
+  | AgUiRawEvent
   | AgUiCustomEvent;
 
 // AG-UI message types (used in RunAgentInput)

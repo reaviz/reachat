@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Session, Conversation } from '@/types';
 import {
   AgUiEvent,
@@ -72,7 +72,7 @@ export interface UseAgUiReturn {
   /**
    * The currently active session ID.
    */
-  activeSessionId: string | null;
+  activeSessionId: string | undefined;
 
   /**
    * Whether the agent is currently processing.
@@ -134,6 +134,7 @@ function updateConversationInSession(
     if (s.id !== sessionId) return s;
     return {
       ...s,
+      updatedAt: new Date(),
       conversations: s.conversations.map(c => {
         if (c.id !== conversationId) return c;
         return { ...c, response, updatedAt: new Date() };
@@ -165,12 +166,35 @@ function sessionsToAgUiMessages(session: Session): AgUiMessage[] {
 }
 
 /**
+ * Parses a single SSE data line, returning the event or an Error
+ * if the JSON is malformed.
+ */
+function parseSSELine(line: string): AgUiEvent | Error | null {
+  const trimmed = line.trim();
+  if (!trimmed || trimmed.startsWith(':')) return null;
+
+  if (trimmed.startsWith('data:')) {
+    const data = trimmed.slice(5).trim();
+    if (data === '[DONE]') return null;
+
+    try {
+      return JSON.parse(data) as AgUiEvent;
+    } catch (err) {
+      return new Error(
+        `Failed to parse AG-UI event: ${err instanceof Error ? err.message : err}`
+      );
+    }
+  }
+  return null;
+}
+
+/**
  * Parses an SSE stream from a Response into AG-UI events.
  */
 async function* parseSSE(
   response: Response,
   signal: AbortSignal
-): AsyncGenerator<AgUiEvent> {
+): AsyncGenerator<AgUiEvent | Error> {
   const reader = response.body?.getReader();
   if (!reader) {
     throw new Error('Response body is not readable');
@@ -190,21 +214,15 @@ async function* parseSSE(
       buffer = lines.pop() || '';
 
       for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith(':')) continue;
-
-        if (trimmed.startsWith('data:')) {
-          const data = trimmed.slice(5).trim();
-          if (data === '[DONE]') return;
-
-          try {
-            const event = JSON.parse(data) as AgUiEvent;
-            yield event;
-          } catch {
-            // Skip malformed JSON lines
-          }
-        }
+        const result = parseSSELine(line);
+        if (result !== null) yield result;
       }
+    }
+
+    // Process any remaining data in the buffer after stream ends
+    if (buffer.trim()) {
+      const result = parseSSELine(buffer);
+      if (result !== null) yield result;
     }
   } finally {
     reader.releaseLock();
@@ -249,8 +267,8 @@ export function useAgUi({
   onEvent
 }: UseAgUiOptions): UseAgUiReturn {
   const [sessions, setSessions] = useState<Session[]>(initialSessions);
-  const [activeSessionId, setActiveSessionId] = useState<string | null>(
-    initialActiveSessionId ?? null
+  const [activeSessionId, setActiveSessionId] = useState<string | undefined>(
+    initialActiveSessionId
   );
   const [isLoading, setIsLoading] = useState(false);
 
@@ -263,6 +281,13 @@ export function useAgUi({
   const onEventRef = useRef(onEvent);
   onEventRef.current = onEvent;
 
+  // Abort in-flight requests on unmount
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
+
   const selectSession = useCallback((sessionId: string) => {
     setActiveSessionId(sessionId);
   }, []);
@@ -271,7 +296,7 @@ export function useAgUi({
     (sessionId: string) => {
       setSessions(prev => prev.filter(s => s.id !== sessionId));
       if (activeSessionId === sessionId) {
-        setActiveSessionId(null);
+        setActiveSessionId(undefined);
       }
     },
     [activeSessionId]
@@ -390,7 +415,16 @@ export function useAgUi({
           );
         };
 
-        for await (const event of parseSSE(response, abortController.signal)) {
+        for await (const eventOrError of parseSSE(
+          response,
+          abortController.signal
+        )) {
+          if (eventOrError instanceof Error) {
+            onErrorRef.current?.(eventOrError);
+            continue;
+          }
+
+          const event = eventOrError;
           onEventRef.current?.(event);
 
           switch (event.type) {
