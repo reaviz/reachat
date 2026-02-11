@@ -223,7 +223,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             <IconButton
               onClick={handleScrollToBottom}
               className={theme.messages?.message?.scrollToBottom?.button}
-              size="sm"
+              size="small"
             >
               <ArrowDownIcon />
             </IconButton>

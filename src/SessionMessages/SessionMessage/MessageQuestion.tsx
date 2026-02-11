@@ -93,7 +93,7 @@ export const MessageQuestion: FC<MessageQuestionProps> = ({
           </div>
           {truncated && !showAll && (
             <Button
-              variant="link"
+              variant="text"
               size="small"
               className={theme.messages.message.expand}
               onClick={() => setShowAll(true)}
