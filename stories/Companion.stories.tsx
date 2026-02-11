@@ -16,7 +16,8 @@ import {
   fakeSessions,
   sessionWithSources,
   sessionsWithFiles,
-  chatTemplates
+  chatTemplates,
+  createSendMessageHandler
 } from './examples';
 import { useState, memo, useCallback } from 'react';
 import { IconButton } from 'reablocks';
@@ -69,26 +70,7 @@ export const Basic = () => {
         }}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton />
@@ -181,26 +163,7 @@ export const WithAppBar = () => {
         }}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <AppBar
           content={
@@ -296,26 +259,7 @@ export const TemplatesView = () => {
         activeSessionId={activeId}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <div className="flex flex-col h-full">
           <div className="flex-1 overflow-y-auto">
@@ -381,26 +325,7 @@ export const TemplatesViewWithTitle = () => {
         activeSessionId={activeId}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <div className="dark:text-white text-gray-500 w-full h-full overflow-hidden flex flex-col">
           <div className="flex-1 overflow-y-auto">
@@ -478,26 +403,7 @@ export const TemplatesViewWithAppBar = () => {
           activeSessionId={activeId}
           onSelectSession={setActiveId}
           onDeleteSession={() => alert('delete!')}
-          onSendMessage={message => {
-            setSessions(prev =>
-              prev.map(session =>
-                session.id === activeId
-                  ? {
-                      ...session,
-                      conversations: [
-                        ...session.conversations,
-                        {
-                          id: Date.now().toString(),
-                          question: message,
-                          response: 'This is a response to your question.',
-                          createdAt: new Date()
-                        }
-                      ]
-                    }
-                  : session
-              )
-            );
-          }}
+          onSendMessage={createSendMessageHandler(setSessions, activeId)}
         >
           <div className="dark:text-white text-gray-500 w-full h-full overflow-hidden flex flex-col">
             <div className="flex-1 overflow-y-auto">

@@ -47,7 +47,8 @@ import {
   sessionWithSources,
   sessionsWithFiles,
   sessionsWithPartialConversation,
-  sessionWithCSVFiles
+  sessionWithCSVFiles,
+  createSendMessageHandler
 } from './examples';
 
 export default {
@@ -79,26 +80,7 @@ export const Basic = () => {
         viewType="console"
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton />
@@ -137,26 +119,7 @@ export const Embeds = () => {
         activeSessionId={activeId}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton />
@@ -196,26 +159,7 @@ export const DefaultSession = () => {
         activeSessionId={activeId}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton />
@@ -354,26 +298,7 @@ export const DefaultInputValue = () => {
         activeSessionId={activeId}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton />
@@ -413,26 +338,7 @@ export const UndeleteableSessions = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton />
@@ -965,26 +871,7 @@ export const ConversationSources = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton />
@@ -1129,26 +1016,7 @@ export const CustomComponents = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton>
@@ -1281,26 +1149,7 @@ export const ImageFiles = () => {
         viewType="console"
         sessions={sessions}
         activeSessionId="session-images"
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === 'session-images'
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, 'session-images')}
       >
         <SessionsList>
           <NewSessionButton />
@@ -1335,26 +1184,7 @@ export const CSVPreview = () => {
         sessions={sessions}
         activeSessionId="1"
         onDeleteSession={() => alert('delete!')}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === '1'
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, '1')}
       >
         <SessionsList>
           <NewSessionButton />
