@@ -14,20 +14,21 @@ export const useDimensions = () => {
 
     const resizeObserver = new ResizeObserver(entries => {
       // Batch updates with requestAnimationFrame to avoid layout thrashing
-      if (rafId.current) {
+      if (rafId.current !== null) {
         cancelAnimationFrame(rafId.current);
       }
       rafId.current = requestAnimationFrame(() => {
         for (const entry of entries) {
           setWidth(entry.contentRect.width);
         }
+        rafId.current = null;
       });
     });
 
     resizeObserver.observe(ref);
 
     return () => {
-      if (rafId.current) {
+      if (rafId.current !== null) {
         cancelAnimationFrame(rafId.current);
       }
       resizeObserver.disconnect();

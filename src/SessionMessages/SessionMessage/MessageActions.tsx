@@ -98,7 +98,7 @@ export const MessageActions = memo<MessageActionsProps>(
       if (onCopy) {
         onCopy();
       } else {
-        handleCopy(`${question}\n${response}`);
+        handleCopy(`${question}${response ? `\n${response}` : ''}`);
       }
     }, [onCopy, handleCopy, question, response]);
 

@@ -27,7 +27,7 @@ export const MessageFiles = memo<MessageFilesProps>(({ files, children }) => {
     }
     return files.reduce(
       (acc, file) => {
-        if (file.type.startsWith('image/')) {
+        if (file.type?.startsWith('image/')) {
           acc.imageFiles.push(file);
         } else {
           acc.otherFiles.push(file);
