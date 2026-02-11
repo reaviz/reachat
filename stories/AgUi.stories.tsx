@@ -38,10 +38,13 @@ export const Basic = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        borderRadius: 5
+        borderRadius: 5,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden'
       }}
     >
-      <div style={{ paddingBottom: 8 }}>
+      <div style={{ paddingBottom: 8, flexShrink: 0 }}>
         <Input
           placeholder="AG-UI agent endpoint URL"
           value={endpoint}
@@ -49,6 +52,7 @@ export const Basic = () => {
         />
       </div>
       <Chat
+        style={{ flex: 1, minHeight: 0 }}
         viewType="console"
         sessions={agui.sessions}
         activeSessionId={agui.activeSessionId}
@@ -120,10 +124,13 @@ export const WithToolCalls = () => {
         bottom: 0,
         padding: 20,
         margin: 20,
-        borderRadius: 5
+        borderRadius: 5,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden'
       }}
     >
-      <div style={{ paddingBottom: 8 }}>
+      <div style={{ paddingBottom: 8, flexShrink: 0 }}>
         <Input
           placeholder="AG-UI agent endpoint URL"
           value={endpoint}
@@ -131,6 +138,7 @@ export const WithToolCalls = () => {
         />
       </div>
       <Chat
+        style={{ flex: 1, minHeight: 0 }}
         viewType="console"
         sessions={agui.sessions}
         activeSessionId={agui.activeSessionId}
