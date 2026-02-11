@@ -1,6 +1,8 @@
 import { offset } from '@floating-ui/react';
 import { ConnectedOverlay, Modifiers, Placement } from 'reablocks';
-import { memo, ReactNode, useRef, useState } from 'react';
+import { memo, ReactNode, useCallback, useRef, useState } from 'react';
+
+const DEFAULT_MODIFIERS: Modifiers = [offset({ mainAxis: 0, crossAxis: -40 })];
 
 export interface ChatBubbleProps {
   /**
@@ -36,11 +38,16 @@ export const ChatBubble = memo<ChatBubbleProps>(
     children,
     bubbleContent,
     position = 'right-end',
-    modifiers = [offset({ mainAxis: 0, crossAxis: -40 })],
+    modifiers = DEFAULT_MODIFIERS,
     className
   }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const ref = useRef<HTMLDivElement | null>(null);
+
+    const handleOpen = useCallback(() => setIsOpen(true), []);
+    const handleClose = useCallback(() => setIsOpen(false), []);
+    const handleToggle = useCallback(() => setIsOpen(prev => !prev), []);
+    const renderContent = useCallback(() => <>{children}</>, [children]);
 
     return (
       <>
@@ -49,15 +56,11 @@ export const ChatBubble = memo<ChatBubbleProps>(
           modifiers={modifiers}
           reference={ref.current}
           open={isOpen}
-          onOpen={() => setIsOpen(true)}
-          onClose={() => setIsOpen(false)}
-          content={() => <>{children}</>}
+          onOpen={handleOpen}
+          onClose={handleClose}
+          content={renderContent}
         />
-        <div
-          ref={ref}
-          className={className}
-          onClick={() => setIsOpen(prev => !prev)}
-        >
+        <div ref={ref} className={className} onClick={handleToggle}>
           {bubbleContent}
         </div>
       </>

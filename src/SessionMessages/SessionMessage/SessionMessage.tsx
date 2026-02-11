@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useContext } from 'react';
+import { memo, PropsWithChildren, useContext } from 'react';
 import { ChatContext } from '@/ChatContext';
 import { Card, cn } from 'reablocks';
 import { Conversation } from '@/types';
@@ -35,34 +35,34 @@ interface SessionMessageProps extends PropsWithChildren {
   isLast?: boolean;
 }
 
-export const SessionMessage: FC<SessionMessageProps> = ({
-  conversation,
-  isLast,
-  children
-}) => {
-  const { theme, isLoading } = useContext(ChatContext);
+export const SessionMessage = memo<SessionMessageProps>(
+  ({ conversation, isLast, children }) => {
+    const { theme, isLoading } = useContext(ChatContext);
 
-  return (
-    <motion.div key={conversation.id} variants={messageVariants}>
-      <Card className={cn(theme.messages.message.base)}>
-        {children || (
-          <>
-            <MessageQuestion
-              question={conversation.question}
-              files={conversation.files}
-            />
-            <MessageResponse
-              response={conversation.response}
-              isLoading={isLast && isLoading}
-            />
-            <MessageSources sources={conversation.sources} />
-            <MessageActions
-              question={conversation.question}
-              response={conversation.response}
-            />
-          </>
-        )}
-      </Card>
-    </motion.div>
-  );
-};
+    return (
+      <motion.div key={conversation.id} variants={messageVariants}>
+        <Card className={cn(theme.messages.message.base)}>
+          {children || (
+            <>
+              <MessageQuestion
+                question={conversation.question}
+                files={conversation.files}
+              />
+              <MessageResponse
+                response={conversation.response}
+                isLoading={isLast && isLoading}
+              />
+              <MessageSources sources={conversation.sources} />
+              <MessageActions
+                question={conversation.question}
+                response={conversation.response}
+              />
+            </>
+          )}
+        </Card>
+      </motion.div>
+    );
+  }
+);
+
+SessionMessage.displayName = 'SessionMessage';

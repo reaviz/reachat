@@ -2,6 +2,7 @@ import {
   useState,
   ReactElement,
   useRef,
+  useMemo,
   ChangeEvent,
   useContext,
   forwardRef,
@@ -184,13 +185,21 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       [fileUpload]
     );
 
-    const mentionsConfig = mentions
-      ? { ...mentions, trigger: mentions.trigger || '@' }
-      : undefined;
+    const mentionsConfig = useMemo(
+      () =>
+        mentions
+          ? { ...mentions, trigger: mentions.trigger || '@' }
+          : undefined,
+      [mentions]
+    );
 
-    const commandsConfig = commands
-      ? { ...commands, trigger: commands.trigger || '/' }
-      : undefined;
+    const commandsConfig = useMemo(
+      () =>
+        commands
+          ? { ...commands, trigger: commands.trigger || '/' }
+          : undefined,
+      [commands]
+    );
 
     return (
       <div ref={containerRef} className={cn(theme.input.base)}>
