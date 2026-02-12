@@ -190,7 +190,7 @@ export function parseSSELine(line: string): AgUiEvent | Error | null {
 /**
  * Parses an SSE stream from a Response into AG-UI events.
  */
-async function* parseSSE(
+export async function* parseSSE(
   response: Response,
   signal: AbortSignal
 ): AsyncGenerator<AgUiEvent | Error> {
