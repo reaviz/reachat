@@ -11,7 +11,8 @@ import {
 import {
   fakeSessions,
   sessionWithSources,
-  sessionsWithFiles
+  sessionsWithFiles,
+  createSendMessageHandler
 } from './examples';
 import { useState } from 'react';
 import Placeholder from './assets/placeholder.svg?react';
@@ -64,6 +65,7 @@ export const Compact = () => {
         }}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -116,6 +118,7 @@ export const FullScreen = () => {
         }}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -160,6 +163,7 @@ export const Empty = () => {
         }}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionMessagePanel>
           <SessionMessages
@@ -229,6 +233,7 @@ export const WithAppBar = () => {
         }}
         onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <div className="flex flex-col h-full">
           <AppBar

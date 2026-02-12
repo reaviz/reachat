@@ -3,8 +3,6 @@ import {
   isToday,
   isYesterday,
   isThisWeek,
-  isThisYear,
-  parseISO,
   differenceInYears
 } from 'date-fns';
 import { Session } from '@/types';
@@ -34,22 +32,25 @@ const sortOrder = [
   'Last Year'
 ];
 
+// Pre-compute a Map for O(1) sort order lookup instead of O(n) indexOf
+const sortOrderMap = new Map(sortOrder.map((v, i) => [v, i]));
+
 export function groupSessionsByDate(sessions: Session[]): GroupedSessions[] {
-  const grouped: any = {};
+  const grouped: Record<string, Session[]> = {};
+  const now = new Date();
 
   sessions.forEach(session => {
-    const createdAt = new Date(session.createdAt);
-    const now = new Date();
+    const createdAt = session.createdAt ? new Date(session.createdAt) : null;
 
-    if (isToday(createdAt)) {
-      if (!grouped['Today']) grouped['Today'] = [];
-      grouped['Today'].push(session);
+    let group: string;
+    if (!createdAt || isNaN(createdAt.getTime())) {
+      group = 'Last Year';
+    } else if (isToday(createdAt)) {
+      group = 'Today';
     } else if (isYesterday(createdAt)) {
-      if (!grouped['Yesterday']) grouped['Yesterday'] = [];
-      grouped['Yesterday'].push(session);
+      group = 'Yesterday';
     } else if (isThisWeek(createdAt)) {
-      if (!grouped['Last Week']) grouped['Last Week'] = [];
-      grouped['Last Week'].push(session);
+      group = 'Last Week';
     } else if (differenceInYears(now, createdAt) === 0) {
       const monthDiff = now.getMonth() - createdAt.getMonth();
       const yearDiff = now.getFullYear() - createdAt.getFullYear();
@@ -58,36 +59,29 @@ export function groupSessionsByDate(sessions: Session[]): GroupedSessions[] {
         adjustedMonthDiff === 1 ||
         (adjustedMonthDiff === 0 && now.getDate() > createdAt.getDate())
       ) {
-        if (!grouped['Last Month']) grouped['Last Month'] = [];
-        grouped['Last Month'].push(session);
+        group = 'Last Month';
       } else {
-        const monthName = format(createdAt, 'MMMM');
-        if (!grouped[monthName]) grouped[monthName] = [];
-        grouped[monthName].push(session);
+        group = format(createdAt, 'MMMM');
       }
     } else {
-      if (!grouped['Last Year']) grouped['Last Year'] = [];
-      grouped['Last Year'].push(session);
+      group = 'Last Year';
     }
+
+    if (!grouped[group]) grouped[group] = [];
+    grouped[group].push(session);
   });
 
-  // Remove empty groups
-  Object.keys(grouped).forEach(key => {
-    if (grouped[key].length === 0) {
-      delete grouped[key];
-    }
-  });
-
-  // Sort groups
+  // Sort groups using Map for O(1) lookup per comparison
   const sortedGroups = Object.keys(grouped).sort(
-    (a, b) => sortOrder.indexOf(a) - sortOrder.indexOf(b)
+    (a, b) => (sortOrderMap.get(a) ?? 999) - (sortOrderMap.get(b) ?? 999)
   );
 
   return sortedGroups.map(heading => ({
     heading,
     sessions: grouped[heading].sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        (b.createdAt ? new Date(b.createdAt).getTime() : 0) -
+        (a.createdAt ? new Date(a.createdAt).getTime() : 0)
     )
   }));
 }

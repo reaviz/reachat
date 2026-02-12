@@ -13,7 +13,11 @@ import {
   ChatSuggestions,
   Suggestion
 } from '../src';
-import { defaultSuggestions, sessionWithSuggestions } from './examples';
+import {
+  defaultSuggestions,
+  sessionWithSuggestions,
+  createSendMessageHandler
+} from './examples';
 import Placeholder from './assets/placeholder.svg?react';
 import PlaceholderDark from './assets/placeholder-dark.svg?react';
 import SparklesIcon from './assets/sparkles.svg?react';
@@ -46,26 +50,7 @@ export const Basic = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
@@ -128,26 +113,7 @@ export const LongSuggestions = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
@@ -294,26 +260,7 @@ export const Companion = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>
@@ -360,26 +307,7 @@ export const CustomItemRendering = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
-        onSendMessage={message => {
-          setSessions(prev =>
-            prev.map(session =>
-              session.id === activeId
-                ? {
-                    ...session,
-                    conversations: [
-                      ...session.conversations,
-                      {
-                        id: Date.now().toString(),
-                        question: message,
-                        response: 'This is a response to your question.',
-                        createdAt: new Date()
-                      }
-                    ]
-                  }
-                : session
-            )
-          );
-        }}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
         onDeleteSession={() => alert('delete!')}
       >
         <SessionsList>

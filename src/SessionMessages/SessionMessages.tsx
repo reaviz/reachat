@@ -169,7 +169,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
                   <SessionMessage
                     key={conversation.id}
                     conversation={conversation}
-                    isLast={index === conversation.length - 1}
+                    isLast={index === convosToRender.length - 1}
                   />
                 ))}
           </motion.div>
