@@ -1,6 +1,7 @@
 import {
   useState,
   ReactElement,
+  Ref,
   useRef,
   useMemo,
   ChangeEvent,
@@ -16,6 +17,7 @@ import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
 import { RichTextInput, RichTextInputRef } from './RichTextInput';
+import { BasicInput, BasicInputRef } from './BasicInput';
 import { SuggestionConfig, MentionItem, SlashCommandItem } from './types';
 
 export interface ChatInputProps {
@@ -50,14 +52,23 @@ export interface ChatInputProps {
   attachIcon?: ReactElement;
 
   /**
+   * The type of input to render.
+   * - 'rich': Full rich text editor with Tiptap (supports mentions, commands). Default.
+   * - 'basic': Lightweight plain textarea with no rich text dependencies.
+   */
+  inputType?: 'rich' | 'basic';
+
+  /**
    * Configuration for mentions (@user).
    * Provide items or an onSearch function to enable mentions.
+   * Only used when inputType is 'rich' (default).
    */
   mentions?: SuggestionConfig<MentionItem>;
 
   /**
    * Configuration for commands (/command).
    * Provide items or an onSearch function to enable commands.
+   * Only used when inputType is 'rich' (default).
    */
   commands?: SuggestionConfig<SlashCommandItem>;
 
@@ -108,6 +119,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       sendIcon = <SendIcon />,
       stopIcon = <StopIcon />,
       attachIcon,
+      inputType = 'rich',
       mentions,
       commands,
       minHeight = 24,
@@ -127,7 +139,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     } = useContext(ChatContext);
 
     const [message, setMessage] = useState<string>(defaultValue || '');
-    const inputRef = useRef<RichTextInputRef | null>(null);
+    const inputRef = useRef<RichTextInputRef | BasicInputRef | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -204,20 +216,35 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     return (
       <div ref={containerRef} className={cn(theme.input.base)}>
         <div className={cn('relative flex-1', theme.input.input)}>
-          <RichTextInput
-            ref={inputRef}
-            value={message}
-            onChange={handleChange}
-            onSubmit={handleSubmit}
-            placeholder={placeholder}
-            disabled={isLoading || disabled}
-            autoFocus={autoFocus}
-            minHeight={minHeight}
-            maxHeight={maxHeight}
-            className={theme.input.editor.container}
-            mentions={mentionsConfig}
-            commands={commandsConfig}
-          />
+          {inputType === 'basic' ? (
+            <BasicInput
+              ref={inputRef as Ref<BasicInputRef>}
+              value={message}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              placeholder={placeholder}
+              disabled={isLoading || disabled}
+              autoFocus={autoFocus}
+              minHeight={minHeight}
+              maxHeight={maxHeight}
+              className={theme.input.editor.container}
+            />
+          ) : (
+            <RichTextInput
+              ref={inputRef as Ref<RichTextInputRef>}
+              value={message}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              placeholder={placeholder}
+              disabled={isLoading || disabled}
+              autoFocus={autoFocus}
+              minHeight={minHeight}
+              maxHeight={maxHeight}
+              className={theme.input.editor.container}
+              mentions={mentionsConfig}
+              commands={commandsConfig}
+            />
+          )}
 
           <div className={cn(theme.input.actions.base)}>
             {allowedFiles?.length > 0 && (

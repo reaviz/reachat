@@ -326,3 +326,61 @@ This is line six - still scrolling!`;
     </div>
   );
 };
+
+export const BasicTextarea: StoryFn = () => {
+  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
+  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{ width: 500, height: 400, padding: 20, borderRadius: 5 }}
+    >
+      <Chat
+        viewType="chat"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
+      >
+        <SessionMessagePanel>
+          <SessionMessages />
+          <ChatInput
+            inputType="basic"
+            placeholder="Lightweight textarea (no rich text)..."
+          />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const BasicTextareaMultiLine: StoryFn = () => {
+  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
+  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{ width: 500, height: 400, padding: 20, borderRadius: 5 }}
+    >
+      <Chat
+        viewType="chat"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
+      >
+        <SessionMessagePanel>
+          <SessionMessages />
+          <ChatInput
+            inputType="basic"
+            placeholder="Lightweight textarea with multi-line..."
+            minHeight={88}
+            maxHeight={200}
+          />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
