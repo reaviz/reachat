@@ -2,7 +2,6 @@ import {
   useState,
   ReactElement,
   useRef,
-  useMemo,
   ChangeEvent,
   useContext,
   forwardRef,
@@ -15,10 +14,9 @@ import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
-import { RichTextInput, RichTextInputRef } from './RichTextInput';
-import { SuggestionConfig, MentionItem, SlashCommandItem } from './types';
+import { BasicInput, BasicInputRef } from './BasicInput';
 
-export interface ChatInputProps {
+export interface BasicChatInputProps {
   /**
    * Default value for the input field.
    */
@@ -50,18 +48,6 @@ export interface ChatInputProps {
   attachIcon?: ReactElement;
 
   /**
-   * Configuration for mentions (@user).
-   * Provide items or an onSearch function to enable mentions.
-   */
-  mentions?: SuggestionConfig<MentionItem>;
-
-  /**
-   * Configuration for commands (/command).
-   * Provide items or an onSearch function to enable commands.
-   */
-  commands?: SuggestionConfig<SlashCommandItem>;
-
-  /**
    * Minimum height for the input (default: 24px)
    */
   minHeight?: number;
@@ -77,7 +63,7 @@ export interface ChatInputProps {
   autoFocus?: boolean;
 }
 
-export interface ChatInputRef {
+export interface BasicChatInputRef {
   /**
    * Focus the input.
    */
@@ -99,7 +85,10 @@ export interface ChatInputRef {
   insertText: (text: string) => void;
 }
 
-export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
+export const BasicChatInput = forwardRef<
+  BasicChatInputRef,
+  BasicChatInputProps
+>(
   (
     {
       allowedFiles,
@@ -108,8 +97,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       sendIcon = <SendIcon />,
       stopIcon = <StopIcon />,
       attachIcon,
-      mentions,
-      commands,
       minHeight = 24,
       maxHeight = 200,
       autoFocus = true
@@ -127,7 +114,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     } = useContext(ChatContext);
 
     const [message, setMessage] = useState<string>(defaultValue || '');
-    const inputRef = useRef<RichTextInputRef | null>(null);
+    const inputRef = useRef<BasicInputRef | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -185,26 +172,10 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       [fileUpload]
     );
 
-    const mentionsConfig = useMemo(
-      () =>
-        mentions
-          ? { ...mentions, trigger: mentions.trigger || '@' }
-          : undefined,
-      [mentions]
-    );
-
-    const commandsConfig = useMemo(
-      () =>
-        commands
-          ? { ...commands, trigger: commands.trigger || '/' }
-          : undefined,
-      [commands]
-    );
-
     return (
       <div ref={containerRef} className={cn(theme.input.base)}>
         <div className={cn('relative flex-1', theme.input.input)}>
-          <RichTextInput
+          <BasicInput
             ref={inputRef}
             value={message}
             onChange={handleChange}
@@ -215,8 +186,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             minHeight={minHeight}
             maxHeight={maxHeight}
             className={theme.input.editor.container}
-            mentions={mentionsConfig}
-            commands={commandsConfig}
           />
 
           <div className={cn(theme.input.actions.base)}>
