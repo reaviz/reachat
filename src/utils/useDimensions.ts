@@ -30,6 +30,7 @@ export const useDimensions = () => {
     return () => {
       if (rafId.current !== null) {
         cancelAnimationFrame(rafId.current);
+        rafId.current = null;
       }
       resizeObserver.disconnect();
     };

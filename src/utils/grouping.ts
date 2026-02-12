@@ -40,10 +40,12 @@ export function groupSessionsByDate(sessions: Session[]): GroupedSessions[] {
   const now = new Date();
 
   sessions.forEach(session => {
-    const createdAt = new Date(session.createdAt);
+    const createdAt = session.createdAt ? new Date(session.createdAt) : null;
 
     let group: string;
-    if (isToday(createdAt)) {
+    if (!createdAt || isNaN(createdAt.getTime())) {
+      group = 'Last Year';
+    } else if (isToday(createdAt)) {
       group = 'Today';
     } else if (isYesterday(createdAt)) {
       group = 'Yesterday';
@@ -78,7 +80,8 @@ export function groupSessionsByDate(sessions: Session[]): GroupedSessions[] {
     heading,
     sessions: grouped[heading].sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        (b.createdAt ? new Date(b.createdAt).getTime() : 0) -
+        (a.createdAt ? new Date(a.createdAt).getTime() : 0)
     )
   }));
 }
