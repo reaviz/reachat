@@ -48,14 +48,14 @@ export interface BasicChatInputProps {
   attachIcon?: ReactElement;
 
   /**
-   * Minimum height for the input (default: 24px)
+   * Minimum number of rows (default: 1)
    */
-  minHeight?: number;
+  minRows?: number;
 
   /**
-   * Maximum height for the input (default: 200px)
+   * Maximum number of rows before scrolling (default: 8)
    */
-  maxHeight?: number;
+  maxRows?: number;
 
   /**
    * Whether to auto-focus the input on mount (default: true)
@@ -97,8 +97,8 @@ export const BasicChatInput = forwardRef<
       sendIcon = <SendIcon />,
       stopIcon = <StopIcon />,
       attachIcon,
-      minHeight = 24,
-      maxHeight = 200,
+      minRows = 1,
+      maxRows = 8,
       autoFocus = true
     },
     ref
@@ -183,8 +183,8 @@ export const BasicChatInput = forwardRef<
             placeholder={placeholder}
             disabled={isLoading || disabled}
             autoFocus={autoFocus}
-            minHeight={minHeight}
-            maxHeight={maxHeight}
+            minRows={minRows}
+            maxRows={maxRows}
             className={theme.input.editor.container}
           />
 

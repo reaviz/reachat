@@ -375,8 +375,8 @@ export const BasicTextareaMultiLine: StoryFn = () => {
           <SessionMessages />
           <BasicChatInput
             placeholder="Lightweight textarea with multi-line..."
-            minHeight={88}
-            maxHeight={200}
+            minRows={4}
+            maxRows={8}
           />
         </SessionMessagePanel>
       </Chat>

@@ -119,8 +119,8 @@ Line four - you should scroll to see this.`
             placeholder="Type a multi-line message..."
             value={value}
             onChange={setValue}
-            minHeight={88}
-            maxHeight={88}
+            minRows={4}
+            maxRows={4}
             onSubmit={text => {
               console.log('Submitted:', text);
               setValue('');

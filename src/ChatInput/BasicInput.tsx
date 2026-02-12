@@ -5,10 +5,9 @@ import {
   useRef,
   useEffect,
   useCallback,
-  KeyboardEvent,
-  ChangeEvent
+  KeyboardEvent
 } from 'react';
-import { cn } from 'reablocks';
+import { Textarea, TextAreaRef, cn } from 'reablocks';
 import { ChatContext } from '@/ChatContext';
 
 export interface BasicInputRef {
@@ -45,14 +44,14 @@ export interface BasicInputProps {
   className?: string;
 
   /**
-   * Minimum height in pixels (default: 24)
+   * Minimum number of rows (default: 1)
    */
-  minHeight?: number;
+  minRows?: number;
 
   /**
-   * Maximum height in pixels (default: 200)
+   * Maximum number of rows before scrolling (default: 8)
    */
-  maxHeight?: number;
+  maxRows?: number;
 
   /**
    * Callback when user submits (presses Enter)
@@ -73,28 +72,15 @@ export const BasicInput = forwardRef<BasicInputRef, BasicInputProps>(
       disabled = false,
       autoFocus = true,
       className,
-      minHeight = 24,
-      maxHeight = 200,
+      minRows = 1,
+      maxRows = 8,
       onSubmit,
       onChange
     },
     ref
   ) => {
     const { theme } = useContext(ChatContext);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-    const adjustHeight = useCallback(() => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
-
-      // Reset height to auto to get the correct scrollHeight
-      textarea.style.height = 'auto';
-      const newHeight = Math.min(
-        Math.max(textarea.scrollHeight, minHeight),
-        maxHeight
-      );
-      textarea.style.height = `${newHeight}px`;
-    }, [minHeight, maxHeight]);
+    const textareaRef = useRef<TextAreaRef>(null);
 
     useEffect(() => {
       if (autoFocus) {
@@ -104,26 +90,21 @@ export const BasicInput = forwardRef<BasicInputRef, BasicInputProps>(
       }
     }, [autoFocus]);
 
-    useEffect(() => {
-      adjustHeight();
-    }, [value, adjustHeight]);
-
     useImperativeHandle(ref, () => ({
       focus: () => {
         textareaRef.current?.focus();
       },
       getValue: () => {
-        return textareaRef.current?.value || '';
+        return textareaRef.current?.inputRef?.current?.value || '';
       },
       setValue: (newValue: string) => {
-        if (textareaRef.current) {
-          textareaRef.current.value = newValue;
+        const textarea = textareaRef.current?.inputRef?.current;
+        if (textarea) {
           onChange?.(newValue);
-          adjustHeight();
         }
       },
       insertText: (text: string) => {
-        const textarea = textareaRef.current;
+        const textarea = textareaRef.current?.inputRef?.current;
         if (!textarea) return;
 
         const start = textarea.selectionStart;
@@ -132,64 +113,55 @@ export const BasicInput = forwardRef<BasicInputRef, BasicInputProps>(
         const newValue =
           current.substring(0, start) + text + current.substring(end);
 
-        textarea.value = newValue;
-        const cursorPos = start + text.length;
-        textarea.setSelectionRange(cursorPos, cursorPos);
         onChange?.(newValue);
-        adjustHeight();
+        setTimeout(() => {
+          const cursorPos = start + text.length;
+          textarea.setSelectionRange(cursorPos, cursorPos);
+        }, 0);
       }
     }));
-
-    const handleChange = useCallback(
-      (e: ChangeEvent<HTMLTextAreaElement>) => {
-        onChange?.(e.target.value);
-        adjustHeight();
-      },
-      [onChange, adjustHeight]
-    );
 
     const handleKeyDown = useCallback(
       (e: KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
-          const text = textareaRef.current?.value || '';
+          const text = textareaRef.current?.inputRef?.current?.value || '';
           if (text.trim() && onSubmit) {
             onSubmit(text);
-            if (textareaRef.current) {
-              textareaRef.current.value = '';
-              adjustHeight();
-            }
           }
         }
       },
-      [onSubmit, adjustHeight]
+      [onSubmit]
     );
 
     return (
       <div className={cn('relative w-full', className)}>
-        <textarea
+        <Textarea
           ref={textareaRef}
           value={value}
           placeholder={placeholder}
           disabled={disabled}
-          onChange={handleChange}
+          onChange={e => onChange?.(e.target.value)}
           onKeyDown={handleKeyDown}
-          rows={1}
-          className={cn(
-            'outline-none w-full overflow-y-auto resize-none',
-            'text-inherit font-inherit bg-transparent',
-            'placeholder:text-gray-400 dark:placeholder:text-gray-500',
-            theme?.input?.editor?.base
-          )}
-          style={{
-            minHeight: `${minHeight}px`,
-            maxHeight: `${maxHeight}px`
+          minRows={minRows}
+          maxRows={maxRows}
+          theme={{
+            base: '',
+            input: cn(
+              'outline-none w-full resize-none',
+              'text-inherit font-inherit bg-transparent',
+              'placeholder:text-gray-400 dark:placeholder:text-gray-500',
+              theme?.input?.editor?.base
+            ),
+            fullWidth: '',
+            error: '',
+            disabled: '',
+            sizes: {
+              small: '',
+              medium: '',
+              large: ''
+            }
           }}
-          role="textbox"
-          aria-multiline="true"
-          aria-placeholder={placeholder}
-          aria-disabled={disabled || undefined}
-          tabIndex={disabled ? -1 : 0}
         />
       </div>
     );
