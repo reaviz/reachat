@@ -10,6 +10,8 @@ export const createSendMessageHandler = (
   setSessions: Dispatch<SetStateAction<Session[]>>,
   activeId: string | undefined
 ) => (message: string) => {
+  if (!activeId) return;
+
   setSessions(prev =>
     prev.map(session =>
       session.id === activeId
