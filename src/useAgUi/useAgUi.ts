@@ -48,9 +48,8 @@ export interface UseAgUiOptions {
 
   /**
    * Called when a tool call is received from the agent.
-   * Return the tool result as a string.
    */
-  onToolCall?: (toolCall: AgUiToolCallInfo) => Promise<string> | string;
+  onToolCall?: (toolCall: AgUiToolCallInfo) => Promise<void> | void;
 
   /**
    * Called when the agent run encounters an error.
@@ -109,7 +108,7 @@ function generateId(): string {
   return Math.random().toString(36).substring(2, 11);
 }
 
-function addConversationToSession(
+export function addConversationToSession(
   sessions: Session[],
   sessionId: string,
   conversation: Conversation
@@ -124,7 +123,7 @@ function addConversationToSession(
   });
 }
 
-function updateConversationInSession(
+export function updateConversationInSession(
   sessions: Session[],
   sessionId: string,
   conversationId: string,
@@ -146,7 +145,7 @@ function updateConversationInSession(
 /**
  * Converts reachat Session/Conversation history into AG-UI messages.
  */
-function sessionsToAgUiMessages(session: Session): AgUiMessage[] {
+export function sessionsToAgUiMessages(session: Session): AgUiMessage[] {
   const messages: AgUiMessage[] = [];
   for (const conv of session.conversations) {
     messages.push({
@@ -169,7 +168,7 @@ function sessionsToAgUiMessages(session: Session): AgUiMessage[] {
  * Parses a single SSE data line, returning the event or an Error
  * if the JSON is malformed.
  */
-function parseSSELine(line: string): AgUiEvent | Error | null {
+export function parseSSELine(line: string): AgUiEvent | Error | null {
   const trimmed = line.trim();
   if (!trimmed || trimmed.startsWith(':')) return null;
 

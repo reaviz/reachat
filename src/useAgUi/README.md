@@ -97,8 +97,8 @@ interface UseAgUiOptions {
   /** Custom headers for the HTTP request. */
   headers?: Record<string, string>;
 
-  /** Called when a tool call is received. Return the result as a string. */
-  onToolCall?: (toolCall: AgUiToolCallInfo) => Promise<string> | string;
+  /** Called when a tool call is received. */
+  onToolCall?: (toolCall: AgUiToolCallInfo) => Promise<void> | void;
 
   /** Called when the agent run encounters an error. */
   onError?: (error: Error) => void;
