@@ -1,6 +1,6 @@
 import React, { FC, useContext, useMemo } from 'react';
 import { ChatContext } from '@/ChatContext';
-import { ComponentError } from './ComponentError';
+import { ChartError } from '@/Markdown/charts/ChartError';
 import { validateSpec } from './validateSpec';
 import type {
   ComponentDefinitions,
@@ -43,7 +43,13 @@ export const ComponentRenderer: FC<ComponentRendererProps> = ({
     if (custom !== undefined) {
       return <>{custom}</>;
     }
-    return <ComponentError error={error} />;
+    return (
+      <ChartError
+        title={errorTitle(error.type)}
+        message={error.message}
+        code={error.raw}
+      />
+    );
   }
 
   const { specs } = result as { ok: true; specs: ComponentSpec[] };
@@ -89,7 +95,9 @@ const SpecRenderer: FC<SpecRendererProps> = ({
     if (custom !== undefined) {
       return <>{custom}</>;
     }
-    return <ComponentError error={error} />;
+    return (
+      <ChartError title={errorTitle(error.type)} message={error.message} />
+    );
   }
 
   const Component = definition.component;
@@ -122,6 +130,21 @@ const SpecRenderer: FC<SpecRendererProps> = ({
     if (custom !== undefined) {
       return <>{custom}</>;
     }
-    return <ComponentError error={error} />;
+    return (
+      <ChartError title={errorTitle(error.type)} message={error.message} />
+    );
   }
 };
+
+function errorTitle(type: ComponentCatalogError['type']): string {
+  switch (type) {
+    case 'unknown_component':
+      return 'Unknown Component';
+    case 'invalid_props':
+      return 'Invalid Props';
+    case 'render_error':
+      return 'Render Error';
+    default:
+      return 'Invalid Component';
+  }
+}

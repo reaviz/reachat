@@ -17,9 +17,8 @@ export interface RemarkComponentOptions {
  * A remark plugin that identifies fenced code blocks with the configured
  * language tag (default: `component`) and validates their JSON content.
  *
- * This mirrors the pattern used by `remarkChart` — the plugin preprocesses
- * the AST node while the actual rendering is handled by `ComponentPre`
- * via `markdownComponents`.
+ * The plugin preprocesses the AST node while the actual rendering is
+ * handled by `ComponentPre` via `markdownComponents`.
  *
  * Usage in markdown:
  * ```component

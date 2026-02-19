@@ -161,12 +161,6 @@ export interface ChatTheme {
   };
   component?: {
     base?: string;
-    error?: {
-      base?: string;
-      title?: string;
-      message?: string;
-      issues?: string;
-    };
   };
 }
 
@@ -420,16 +414,6 @@ export const chatTheme: ChatTheme = {
     }
   },
   component: {
-    base: 'my-4',
-    error: {
-      base: [
-        'my-4 p-4 border rounded',
-        'border-red-300 bg-red-50 text-red-700',
-        'dark:border-red-700 dark:bg-red-900/20 dark:text-red-300'
-      ].join(' '),
-      title: 'text-red-600 dark:text-red-400 text-sm font-medium mb-1',
-      message: 'text-sm',
-      issues: 'mt-2 text-xs list-disc list-inside space-y-0.5'
-    }
+    base: 'my-4'
   }
 };

@@ -18,7 +18,7 @@ import {
   LinearYAxis
 } from 'reaviz';
 import { cn } from 'reablocks';
-import type { ChartConfig, ChartType } from '@/Markdown/plugins/remarkChart';
+import type { ChartConfig, ChartType } from './types';
 import { ChatContext } from '@/ChatContext';
 import { ChartError } from './ChartError';
 

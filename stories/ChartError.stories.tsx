@@ -2,15 +2,19 @@ import React from 'react';
 import { Meta } from '@storybook/react';
 import {
   Chat,
-  remarkChart,
-  chartComponents,
-  ChartError
+  ChartError,
+  componentCatalog,
+  createChartComponentDef
 } from '../src';
 
 export default {
   title: 'Components/ChartError',
   component: ChartError
 } as Meta;
+
+const catalog = componentCatalog({
+  Chart: createChartComponentDef()
+});
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <div
@@ -28,8 +32,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
       viewType="chat"
       sessions={[]}
       activeSessionId=""
-      remarkPlugins={[remarkChart]}
-      markdownComponents={chartComponents}
+      components={catalog}
     >
       <div style={{ maxWidth: 500 }}>{children}</div>
     </Chat>
