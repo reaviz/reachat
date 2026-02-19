@@ -16,9 +16,17 @@ import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
 import { RichTextInput, RichTextInputRef } from './RichTextInput';
+import { BasicInput, BasicInputRef } from './BasicInput';
 import { SuggestionConfig, MentionItem, SlashCommandItem } from './types';
 
 export interface ChatInputProps {
+  /**
+   * Input type to use. 'rich' uses the Tiptap rich text editor with
+   * mentions and slash commands. 'basic' uses a plain textarea powered
+   * by the reablocks Textarea component. (default: 'rich')
+   */
+  inputType?: 'rich' | 'basic';
+
   /**
    * Default value for the input field.
    */
@@ -52,24 +60,40 @@ export interface ChatInputProps {
   /**
    * Configuration for mentions (@user).
    * Provide items or an onSearch function to enable mentions.
+   * Only used when inputType is 'rich'.
    */
   mentions?: SuggestionConfig<MentionItem>;
 
   /**
    * Configuration for commands (/command).
    * Provide items or an onSearch function to enable commands.
+   * Only used when inputType is 'rich'.
    */
   commands?: SuggestionConfig<SlashCommandItem>;
 
   /**
-   * Minimum height for the input (default: 24px)
+   * Minimum height for the input in pixels (default: 24).
+   * Only used when inputType is 'rich'.
    */
   minHeight?: number;
 
   /**
-   * Maximum height for the input (default: 200px)
+   * Maximum height for the input in pixels (default: 200).
+   * Only used when inputType is 'rich'.
    */
   maxHeight?: number;
+
+  /**
+   * Minimum number of rows (default: 1).
+   * Only used when inputType is 'basic'.
+   */
+  minRows?: number;
+
+  /**
+   * Maximum number of rows before scrolling (default: 8).
+   * Only used when inputType is 'basic'.
+   */
+  maxRows?: number;
 
   /**
    * Whether to auto-focus the input on mount (default: true)
@@ -102,6 +126,7 @@ export interface ChatInputRef {
 export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
   (
     {
+      inputType = 'rich',
       allowedFiles,
       placeholder = 'Type a message...',
       defaultValue,
@@ -112,6 +137,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       commands,
       minHeight = 24,
       maxHeight = 200,
+      minRows = 1,
+      maxRows = 8,
       autoFocus = true
     },
     ref
@@ -127,7 +154,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     } = useContext(ChatContext);
 
     const [message, setMessage] = useState<string>(defaultValue || '');
-    const inputRef = useRef<RichTextInputRef | null>(null);
+    const inputRef = useRef<RichTextInputRef | BasicInputRef | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -204,20 +231,35 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     return (
       <div ref={containerRef} className={cn(theme.input.base)}>
         <div className={cn('relative flex-1', theme.input.input)}>
-          <RichTextInput
-            ref={inputRef}
-            value={message}
-            onChange={handleChange}
-            onSubmit={handleSubmit}
-            placeholder={placeholder}
-            disabled={isLoading || disabled}
-            autoFocus={autoFocus}
-            minHeight={minHeight}
-            maxHeight={maxHeight}
-            className={theme.input.editor.container}
-            mentions={mentionsConfig}
-            commands={commandsConfig}
-          />
+          {inputType === 'basic' ? (
+            <BasicInput
+              ref={inputRef as React.Ref<BasicInputRef>}
+              value={message}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              placeholder={placeholder}
+              disabled={isLoading || disabled}
+              autoFocus={autoFocus}
+              minRows={minRows}
+              maxRows={maxRows}
+              className={theme.input.editor.container}
+            />
+          ) : (
+            <RichTextInput
+              ref={inputRef as React.Ref<RichTextInputRef>}
+              value={message}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              placeholder={placeholder}
+              disabled={isLoading || disabled}
+              autoFocus={autoFocus}
+              minHeight={minHeight}
+              maxHeight={maxHeight}
+              className={theme.input.editor.container}
+              mentions={mentionsConfig}
+              commands={commandsConfig}
+            />
+          )}
 
           <div className={cn(theme.input.actions.base)}>
             {allowedFiles?.length > 0 && (

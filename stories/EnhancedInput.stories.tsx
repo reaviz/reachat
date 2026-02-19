@@ -4,7 +4,6 @@ import {
   Chat,
   SessionMessages,
   ChatInput,
-  BasicChatInput,
   SessionMessagePanel,
   Session,
   MentionItem,
@@ -346,7 +345,8 @@ export const BasicTextarea: StoryFn = () => {
       >
         <SessionMessagePanel>
           <SessionMessages />
-          <BasicChatInput
+          <ChatInput
+            inputType="basic"
             placeholder="Lightweight textarea (no rich text)..."
           />
         </SessionMessagePanel>
@@ -373,7 +373,8 @@ export const BasicTextareaMultiLine: StoryFn = () => {
       >
         <SessionMessagePanel>
           <SessionMessages />
-          <BasicChatInput
+          <ChatInput
+            inputType="basic"
             placeholder="Lightweight textarea with multi-line..."
             minRows={4}
             maxRows={8}
