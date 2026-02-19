@@ -1,3 +1,3 @@
 export * from './types';
 export * from './ChartRenderer';
-export * from './ChartError';
+export * from './ComponentError';

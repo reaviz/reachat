@@ -2,14 +2,14 @@ import React from 'react';
 import { Meta } from '@storybook/react';
 import {
   Chat,
-  ChartError,
+  ComponentError,
   componentCatalog,
   createChartComponentDef
 } from '../src';
 
 export default {
-  title: 'Components/ChartError',
-  component: ChartError
+  title: 'Components/ComponentError',
+  component: ComponentError
 } as Meta;
 
 const catalog = componentCatalog({
@@ -41,7 +41,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 
 export const Default = () => (
   <Wrapper>
-    <ChartError
+    <ComponentError
       title="Failed to render chart"
       message="The chart data could not be parsed. Please check the JSON format."
     />
@@ -50,7 +50,7 @@ export const Default = () => (
 
 export const WithCode = () => (
   <Wrapper>
-    <ChartError
+    <ComponentError
       title="Invalid chart configuration"
       message="The 'type' field is missing from the chart configuration."
       code={`{
@@ -65,7 +65,7 @@ export const WithCode = () => (
 
 export const Warning = () => (
   <Wrapper>
-    <ChartError
+    <ComponentError
       variant="warning"
       title="Chart data incomplete"
       message="Some data points are missing values. The chart may not display correctly."
@@ -75,7 +75,7 @@ export const Warning = () => (
 
 export const WarningWithCode = () => (
   <Wrapper>
-    <ChartError
+    <ComponentError
       variant="warning"
       title="Unsupported chart type"
       message="The chart type 'scatter' is not supported. Falling back to bar chart."

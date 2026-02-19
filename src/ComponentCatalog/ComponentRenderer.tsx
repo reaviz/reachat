@@ -1,6 +1,6 @@
 import React, { FC, useContext, useMemo } from 'react';
 import { ChatContext } from '@/ChatContext';
-import { ChartError } from '@/Markdown/charts/ChartError';
+import { ComponentError } from '@/Markdown/charts/ComponentError';
 import { validateSpec } from './validateSpec';
 import type {
   ComponentDefinitions,
@@ -44,7 +44,7 @@ export const ComponentRenderer: FC<ComponentRendererProps> = ({
       return <>{custom}</>;
     }
     return (
-      <ChartError
+      <ComponentError
         title={errorTitle(error.type)}
         message={error.message}
         code={error.raw}
@@ -96,7 +96,7 @@ const SpecRenderer: FC<SpecRendererProps> = ({
       return <>{custom}</>;
     }
     return (
-      <ChartError title={errorTitle(error.type)} message={error.message} />
+      <ComponentError title={errorTitle(error.type)} message={error.message} />
     );
   }
 
@@ -131,7 +131,7 @@ const SpecRenderer: FC<SpecRendererProps> = ({
       return <>{custom}</>;
     }
     return (
-      <ChartError title={errorTitle(error.type)} message={error.message} />
+      <ComponentError title={errorTitle(error.type)} message={error.message} />
     );
   }
 };
