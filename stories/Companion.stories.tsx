@@ -1,31 +1,31 @@
-import { Meta } from '@storybook/react';
-import {
-  Chat,
-  SessionsList,
-  NewSessionButton,
-  SessionMessages,
-  SessionGroups,
-  ChatInput,
-  SessionMessagePanel,
-  SessionMessagesHeader,
-  Session,
-  AppBar,
-  SessionListItem
-} from '../src';
-import {
-  fakeSessions,
-  sessionWithSources,
-  sessionsWithFiles,
-  chatTemplates
-} from './examples';
-import { useState, memo, useCallback } from 'react';
+import type { Meta } from '@storybook/react';
 import { IconButton } from 'reablocks';
+import { memo, useCallback, useState } from 'react';
 
+import type { Session } from '../src';
+import {
+  AppBar,
+  Chat,
+  ChatInput,
+  NewSessionButton,
+  SessionGroups,
+  SessionListItem,
+  SessionMessagePanel,
+  SessionMessages,
+  SessionMessagesHeader,
+  SessionsList
+} from '../src';
+import IconClose from './assets/close-fill.svg?react';
+import ReachatLogo from './assets/logo.svg?react';
 import Placeholder from './assets/placeholder.svg?react';
 import PlaceholderDark from './assets/placeholder-dark.svg?react';
-import ReachatLogo from './assets/logo.svg?react';
 import IconSearch from './assets/search.svg?react';
-import IconClose from './assets/close-fill.svg?react';
+import {
+  chatTemplates,
+  fakeSessions,
+  sessionsWithFiles,
+  sessionWithSources
+} from './examples';
 
 export default {
   title: 'Demos/Companion',
@@ -166,8 +166,12 @@ export const WithAppBar = () => {
           content={
             <div className="flex items-center justify-between w-full">
               <div className="flex-shrink-0">
-                <IconButton size="small" variant="outline" className='rounded-full p-3'>
-                  <IconSearch className='w-4 h-4' />
+                <IconButton
+                  size="small"
+                  variant="outline"
+                  className="rounded-full p-3"
+                >
+                  <IconSearch className="w-4 h-4" />
                 </IconButton>
               </div>
               <div className="flex-grow flex justify-center items-center">
@@ -177,9 +181,9 @@ export const WithAppBar = () => {
                 <IconButton
                   variant="text"
                   size="small"
-                  className='rounded-full p-3'
+                  className="rounded-full p-3"
                 >
-                  <IconClose className='w-4 h-4' />
+                  <IconClose className="w-4 h-4" />
                 </IconButton>
               </div>
             </div>
@@ -202,7 +206,7 @@ export const WithAppBar = () => {
 const AppBarContent = memo(({ onClose }: { onClose?: () => void }) => (
   <div className="flex items-center justify-between w-full">
     <div className="flex-shrink-0">
-      <IconButton size="small" variant="outline" className='rounded-full p-3'>
+      <IconButton size="small" variant="outline" className="rounded-full p-3">
         <IconSearch className="size-4" />
       </IconButton>
     </div>
@@ -213,10 +217,10 @@ const AppBarContent = memo(({ onClose }: { onClose?: () => void }) => (
       <IconButton
         variant="text"
         size="small"
-        className='rounded-full p-3'
+        className="rounded-full p-3"
         onClick={onClose}
       >
-        <IconClose className='w-4 h-4' />
+        <IconClose className="w-4 h-4" />
       </IconButton>
     </div>
   </div>
@@ -261,13 +265,17 @@ export const TemplatesView = () => {
           <div className="flex-1 overflow-y-auto">
             <SessionsList>
               <SessionGroups>
-                {(groups) => (
+                {groups => (
                   <>
-                    {groups.map(({ sessions }) => (
+                    {groups.map(({ sessions }) =>
                       sessions.map(session => (
-                        <SessionListItem key={session.id} session={session} deletable={false} />
+                        <SessionListItem
+                          key={session.id}
+                          session={session}
+                          deletable={false}
+                        />
                       ))
-                    ))}
+                    )}
                   </>
                 )}
               </SessionGroups>
@@ -332,13 +340,17 @@ export const TemplatesViewWithTitle = () => {
             </div>
             <SessionsList>
               <SessionGroups>
-                {(groups) => (
+                {groups => (
                   <>
-                    {groups.map(({ sessions }) => (
+                    {groups.map(({ sessions }) =>
                       sessions.map(session => (
-                        <SessionListItem key={session.id} session={session} deletable={false} />
+                        <SessionListItem
+                          key={session.id}
+                          session={session}
+                          deletable={false}
+                        />
                       ))
-                    ))}
+                    )}
                   </>
                 )}
               </SessionGroups>
@@ -409,13 +421,17 @@ export const TemplatesViewWithAppBar = () => {
               </div>
               <SessionsList>
                 <SessionGroups>
-                  {(groups) => (
+                  {groups => (
                     <>
-                      {groups.map(({ sessions }) => (
+                      {groups.map(({ sessions }) =>
                         sessions.map(session => (
-                          <SessionListItem key={session.id} session={session} deletable={false} />
+                          <SessionListItem
+                            key={session.id}
+                            session={session}
+                            deletable={false}
+                          />
                         ))
-                      ))}
+                      )}
                     </>
                   )}
                 </SessionGroups>

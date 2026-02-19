@@ -1,5 +1,5 @@
-import { Button, cn, Textarea } from 'reablocks';
-import type { ChangeEvent, KeyboardEvent, ReactElement } from 'react';
+import { Button, cn } from 'reablocks';
+import type { ChangeEvent, ReactElement } from 'react';
 import {
   forwardRef,
   useCallback,
@@ -16,8 +16,11 @@ import { ChatContext } from '@/ChatContext';
 
 import { FileDropzone } from './FileDropzone';
 import { FileInput } from './FileInput';
+import type { RichTextInputRef } from './RichTextInput';
+import { RichTextInput } from './RichTextInput';
+import type { MentionItem, SlashCommandItem, SuggestionConfig } from './types';
 
-interface ChatInputProps {
+export interface ChatInputProps {
   /**
    * Default value for the input field.
    */
@@ -77,6 +80,33 @@ interface ChatInputProps {
    * Callback function to handle message change.
    */
   onMessageChange?: (message: string) => void;
+
+  /**
+   * Configuration for mentions (@user).
+   * Provide items or an onSearch function to enable mentions.
+   */
+  mentions?: SuggestionConfig<MentionItem>;
+
+  /**
+   * Configuration for commands (/command).
+   * Provide items or an onSearch function to enable commands.
+   */
+  commands?: SuggestionConfig<SlashCommandItem>;
+
+  /**
+   * Minimum height for the input (default: 24px)
+   */
+  minHeight?: number;
+
+  /**
+   * Maximum height for the input (default: 200px)
+   */
+  maxHeight?: number;
+
+  /**
+   * Whether to auto-focus the input on mount (default: true)
+   */
+  autoFocus?: boolean;
 }
 
 export interface ChatInputRef {
@@ -91,14 +121,19 @@ export interface ChatInputRef {
   send: () => void;
 
   /**
-   * Set the input value programmatically.
+   * Get the current input value.
+   */
+  getValue: () => string;
+
+  /**
+   * Set the input value.
    */
   setValue: (value: string) => void;
 
   /**
-   * Get the input value programmatically.
+   * Insert text at the current cursor position.
    */
-  getValue: () => string;
+  insertText: (text: string) => void;
 }
 
 export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
@@ -106,16 +141,21 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     {
       allowedFiles,
       allowMultipleFiles = false,
-      placeholder,
+      placeholder = 'Type a message...',
       defaultValue,
       className,
-      message,
+      message: externalMessage,
       sendIcon = <SendIcon />,
       stopIcon = <StopIcon />,
       attachIcon,
       dropIcon,
       dropText,
-      onMessageChange
+      onMessageChange,
+      mentions,
+      commands,
+      minHeight = 24,
+      maxHeight = 200,
+      autoFocus = true
     },
     ref
   ) => {
@@ -128,25 +168,32 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       fileUpload,
       activeSessionId
     } = useContext(ChatContext);
-    const [internalMessage, setInternalMessage] = useState<string>('');
-    const inputRef = useRef<HTMLTextAreaElement | null>(null);
+
+    const [message, setMessage] = useState<string>(defaultValue || '');
+    const inputRef = useRef<RichTextInputRef | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-      setInternalMessage(message);
-    }, [message]);
+      if (externalMessage !== undefined) {
+        setMessage(externalMessage);
+        inputRef.current?.setValue(externalMessage);
+      }
+    }, [externalMessage]);
 
     useEffect(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
+      if (autoFocus) {
+        inputRef.current?.focus();
       }
-    }, [activeSessionId, inputRef]);
+    }, [activeSessionId, autoFocus]);
 
-    const handleSendMessage = () => {
-      if (internalMessage.trim()) {
-        sendMessage?.(internalMessage);
-        setInternalMessage('');
+    const handleSendMessage = useCallback(() => {
+      const currentMessage = inputRef.current?.getValue() || '';
+      if (currentMessage.trim()) {
+        sendMessage?.(currentMessage);
+        setMessage('');
+        inputRef.current?.setValue('');
       }
-    };
+    }, [sendMessage]);
 
     useImperativeHandle(ref, () => ({
       focus: () => {
@@ -155,46 +202,64 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       send: () => {
         handleSendMessage();
       },
+      getValue: () => {
+        return inputRef.current?.getValue() || '';
+      },
       setValue: (value: string) => {
-        setInternalMessage(value);
+        setMessage(value);
+        inputRef.current?.setValue(value);
         onMessageChange?.(value);
       },
-      getValue: () => {
-        return internalMessage;
+      insertText: (text: string) => {
+        inputRef.current?.insertText(text);
       }
     }));
 
-    const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSendMessage();
-      }
-    };
-
-    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-      const files = event.target.files;
-      if (files && fileUpload) {
-        if (allowMultipleFiles) {
-          Array.from(files).forEach(file => fileUpload(file));
-        } else {
-          const file = files[0];
-          if (file) {
-            fileUpload(file);
-          }
+    const handleSubmit = useCallback(
+      (value: string) => {
+        if (value.trim()) {
+          sendMessage?.(value);
+          setMessage('');
         }
-      }
-    };
+      },
+      [sendMessage]
+    );
 
-    const handleMessageChange = useCallback(
-      (event: ChangeEvent<HTMLTextAreaElement>) => {
-        setInternalMessage(event.target.value);
-        onMessageChange?.(event.target.value);
+    const handleChange = useCallback(
+      (value: string) => {
+        setMessage(value);
+        onMessageChange?.(value);
       },
       [onMessageChange]
     );
 
+    const handleFileUpload = useCallback(
+      (event: ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (files && fileUpload) {
+          if (allowMultipleFiles) {
+            Array.from(files).forEach(file => fileUpload(file));
+          } else {
+            const file = files[0];
+            if (file) {
+              fileUpload(file);
+            }
+          }
+        }
+      },
+      [fileUpload, allowMultipleFiles]
+    );
+
+    const mentionsConfig = mentions
+      ? { ...mentions, trigger: mentions.trigger || '@' }
+      : undefined;
+
+    const commandsConfig = commands
+      ? { ...commands, trigger: commands.trigger || '/' }
+      : undefined;
+
     return (
-      <div className={cn(theme.input.base, className)}>
+      <div ref={containerRef} className={cn(theme.input.base, className)}>
         <FileDropzone
           allowedFiles={allowedFiles}
           multiple={allowMultipleFiles}
@@ -203,46 +268,51 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
           dropText={dropText}
           onFileDrop={fileUpload}
         >
-          <Textarea
-            ref={inputRef}
-            containerClassName={cn(theme.input.input)}
-            minRows={1}
-            autoFocus
-            value={internalMessage}
-            defaultValue={defaultValue}
-            onKeyPress={handleKeyPress}
-            placeholder={placeholder}
-            disabled={isLoading || disabled}
-            onChange={handleMessageChange}
-          />
-          <div className={cn(theme.input.actions.base)}>
-            {allowedFiles?.length > 0 && (
-              <FileInput
-                allowedFiles={allowedFiles}
-                multiple={allowMultipleFiles}
-                onFileUpload={handleFileUpload}
-                disabled={disabled || isLoading}
-                attachIcon={attachIcon}
-              />
-            )}
-            {isLoading && (
-              <Button
-                title="Stop"
-                className={cn(theme.input.actions.stop)}
-                onClick={stopMessage}
-                disabled={disabled}
-              >
-                {stopIcon}
-              </Button>
-            )}
-            <Button
-              title="Send"
-              className={cn(theme.input.actions.send)}
-              onClick={handleSendMessage}
+          <div className={cn('relative flex-1', theme.input.input)}>
+            <RichTextInput
+              ref={inputRef}
+              value={message}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              placeholder={placeholder}
               disabled={isLoading || disabled}
-            >
-              {sendIcon}
-            </Button>
+              autoFocus={autoFocus}
+              minHeight={minHeight}
+              maxHeight={maxHeight}
+              className={theme.input.editor.container}
+              mentions={mentionsConfig}
+              commands={commandsConfig}
+            />
+
+            <div className={cn(theme.input.actions.base)}>
+              {allowedFiles?.length > 0 && (
+                <FileInput
+                  allowedFiles={allowedFiles}
+                  multiple={allowMultipleFiles}
+                  onFileUpload={handleFileUpload}
+                  disabled={disabled || isLoading}
+                  attachIcon={attachIcon}
+                />
+              )}
+              {isLoading && (
+                <Button
+                  title="Stop"
+                  className={cn(theme.input.actions.stop)}
+                  onClick={stopMessage}
+                  disabled={disabled}
+                >
+                  {stopIcon}
+                </Button>
+              )}
+              <Button
+                title="Send"
+                className={cn(theme.input.actions.send)}
+                onClick={handleSendMessage}
+                disabled={isLoading || disabled}
+              >
+                {sendIcon}
+              </Button>
+            </div>
           </div>
         </FileDropzone>
       </div>

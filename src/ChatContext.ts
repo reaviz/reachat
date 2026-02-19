@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import type { Components } from 'react-markdown';
 import type { Plugin } from 'unified';
 
 import type { ChatTheme } from './theme';
@@ -16,6 +17,7 @@ export interface ChatContextProps {
   viewType?: ChatViewType;
   activeSession?: Session | null;
   remarkPlugins?: Plugin[];
+  markdownComponents?: Components;
   selectSession?: (sessionId: string) => void;
   deleteSession?: (sessionId: string) => void;
   createSession?: () => void;

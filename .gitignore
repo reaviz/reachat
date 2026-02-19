@@ -133,3 +133,5 @@ dist
 storybook-static/
 
 .idea/
+.cursor
+.playwright-mcp

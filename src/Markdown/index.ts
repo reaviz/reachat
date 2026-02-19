@@ -1,3 +1,4 @@
+export * from './charts';
 export * from './CodeHighlighter';
 export * from './Markdown';
 export * from './plugins';

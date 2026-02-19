@@ -1,4 +1,4 @@
-import debounce from 'lodash/debounce';
+import debounce from 'lodash/debounce.js';
 import { AnimatePresence, motion } from 'motion/react';
 import { Button, cn, IconButton, useInfinityList } from 'reablocks';
 import type { ReactNode, UIEventHandler } from 'react';

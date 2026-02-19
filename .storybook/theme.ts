@@ -1,5 +1,5 @@
 import { create } from '@storybook/theming/create';
-import ReachatLogo from '../src/assets/logo/logo.svg?react';
+import ReachatLogo from './logo.svg';
 
 export default create({
   base: 'dark',

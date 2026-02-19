@@ -1,0 +1,85 @@
+import React from 'react';
+import { Meta } from '@storybook/react';
+import {
+  Chat,
+  remarkChart,
+  chartComponents,
+  ChartError
+} from '../src';
+
+export default {
+  title: 'Components/ChartError',
+  component: ChartError
+} as Meta;
+
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
+  <div
+    className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      padding: 20
+    }}
+  >
+    <Chat
+      viewType="chat"
+      sessions={[]}
+      activeSessionId=""
+      remarkPlugins={[remarkChart]}
+      markdownComponents={chartComponents}
+    >
+      <div style={{ maxWidth: 500 }}>{children}</div>
+    </Chat>
+  </div>
+);
+
+export const Default = () => (
+  <Wrapper>
+    <ChartError
+      title="Failed to render chart"
+      message="The chart data could not be parsed. Please check the JSON format."
+    />
+  </Wrapper>
+);
+
+export const WithCode = () => (
+  <Wrapper>
+    <ChartError
+      title="Invalid chart configuration"
+      message="The 'type' field is missing from the chart configuration."
+      code={`{
+  "data": [
+    { "key": "A", "data": 10 },
+    { "key": "B", "data": 20 }
+  ]
+}`}
+    />
+  </Wrapper>
+);
+
+export const Warning = () => (
+  <Wrapper>
+    <ChartError
+      variant="warning"
+      title="Chart data incomplete"
+      message="Some data points are missing values. The chart may not display correctly."
+    />
+  </Wrapper>
+);
+
+export const WarningWithCode = () => (
+  <Wrapper>
+    <ChartError
+      variant="warning"
+      title="Unsupported chart type"
+      message="The chart type 'scatter' is not supported. Falling back to bar chart."
+      code={`{
+  "type": "scatter",
+  "data": [{ "key": "X", "data": 50 }]
+}`}
+    />
+  </Wrapper>
+);

@@ -186,7 +186,7 @@ export const DragAndDrop = () => {
                 {uploadedFiles.map((file, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full text-sm"
+                    className="flex items-center gap-2 bg-gradient-neutral-200 px-3 py-1 rounded-full text-sm"
                   >
                     <span>{file.name}</span>
                     <button
@@ -195,7 +195,7 @@ export const DragAndDrop = () => {
                           prev.filter((_, i) => i !== idx)
                         )
                       }
-                      className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                      className="text-content-text-neutral-2 hover:text-content-text-neutral-base"
                     >
                       ×
                     </button>

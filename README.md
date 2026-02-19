@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="650" src=".storybook/logo.png">
+  <img width="650" src=".storybook/logo.svg">
   <br />
   Building Blocks for LLM UI
   <br /><br />
@@ -62,10 +62,12 @@ theme via Tailwind.
 - Conversation Pagination
 - Smart/Dynamic Grouping of Sessions
 - Keyboard shortcuts
-- Animations via Framer Motion
+- Animations via Motion.dev
 - Responsive
 - Tailwind for Themeing
 - Customizable via Slots
+- Conversation Charting via Reaviz.dev
+- Mentions and Commands via Tiptap
 
 ## 📦 Install
 

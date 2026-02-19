@@ -141,6 +141,29 @@ export interface ChatTheme {
       text: string;
       icon: string;
     };
+    popup: {
+      base: string;
+      content: string;
+      item: string;
+      itemHighlighted: string;
+      itemIcon: string;
+      itemContent: string;
+      itemLabel: string;
+      itemDescription: string;
+      itemShortcut: string;
+      empty: string;
+      loading: string;
+    };
+    tag: {
+      base: string;
+      mention: string;
+      command: string;
+    };
+    editor: {
+      base: string;
+      container: string;
+      placeholder: string;
+    };
   };
   suggestions: {
     base: string;
@@ -148,6 +171,20 @@ export interface ChatTheme {
       base: string;
       icon: string;
       text: string;
+    };
+  };
+  chart: {
+    base: string;
+    title: string;
+    content: string;
+    error: {
+      base: string;
+      title: string;
+      code: string;
+    };
+    warning: {
+      base: string;
+      title: string;
     };
   };
 }
@@ -294,7 +331,7 @@ export const chatTheme: ChatTheme = {
     upload:
       'px-5 py-2 size-10 text-content-text-neutral-2 hover:text-content-text-neutral-base',
     input:
-      'w-full border rounded-3xl px-3 py-2 pr-16 after:hidden after:mx-10! [&>textarea]:w-full [&>textarea]:flex-none [&>textarea]:outline-none [&>textarea]:resize-none',
+      'w-full border border-(--color-inputs-colors-normal-stroke-resting) rounded-3xl px-3 py-1 pr-16 hover:border-(--color-inputs-colors-normal-stroke-hover) focus-within:border-(--color-inputs-colors-normal-stroke-selected) focus-within:bg-(--color-inputs-colors-normal-background-selected) text-(--color-inputs-colors-normal-text-input-text-filled) placeholder:text-(--color-inputs-colors-normal-text-input-text-resting) after:hidden after:mx-10! [&>textarea]:w-full [&>textarea]:flex-none [&>textarea]:outline-none [&>textarea]:resize-none',
     actions: {
       base: 'absolute flex gap-2 items-center right-2 inset-y-1/2 -translate-y-1/2 z-10',
       send: 'px-3 py-3 hover:bg-primary-hover rounded-full size-8',
@@ -307,6 +344,38 @@ export const chatTheme: ChatTheme = {
         'absolute inset-0 bg-primary/10 border-2 border-dashed border-primary rounded-3xl flex items-center justify-center gap-1.5 z-20 backdrop-blur-sm',
       text: 'text-primary font-medium text-sm',
       icon: '[&>svg]:w-4 [&>svg]:h-4 text-primary'
+    },
+    popup: {
+      base: 'rounded-lg shadow-lg overflow-hidden min-w-[200px] max-w-[300px] border border-stroke-neutral-4',
+      content: 'overflow-y-auto max-h-[250px]',
+      item: 'flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors',
+      itemHighlighted: 'bg-gradient-neutral-200',
+      itemIcon:
+        'flex-shrink-0 w-5 h-5 text-content-text-neutral-2 [&>svg]:w-full [&>svg]:h-full',
+      itemContent: 'flex flex-col min-w-0 flex-1',
+      itemLabel: 'text-sm font-medium text-content-text-neutral-base truncate',
+      itemDescription: 'text-xs text-content-text-neutral-2 truncate',
+      itemShortcut: 'text-xs text-content-text-neutral-3 ml-auto',
+      empty: 'px-3 py-4 text-sm text-center text-content-text-neutral-2',
+      loading:
+        'flex items-center justify-center gap-2 px-3 py-4 text-content-text-neutral-2'
+    },
+    tag: {
+      base: 'inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded font-medium text-sm leading-[1.2] relative top-[1px]',
+      mention:
+        'bg-background-semantic-info-5/30 text-content-assets-semantic-info-base',
+      command: 'bg-background-accent-1-5/30 text-content-text-accent-1-base'
+    },
+    editor: {
+      base: 'outline-none w-full overflow-y-auto text-inherit font-inherit [&_.tiptap-paragraph]:m-0',
+      container: 'px-3 py-2 pr-16',
+      placeholder: [
+        '[&_.is-editor-empty]:before:content-[attr(data-placeholder)]',
+        '[&_.is-editor-empty]:before:text-content-text-neutral-3',
+        '[&_.is-editor-empty]:before:float-left',
+        '[&_.is-editor-empty]:before:h-0',
+        '[&_.is-editor-empty]:before:pointer-events-none'
+      ].join(' ')
     }
   },
   suggestions: {
@@ -320,6 +389,21 @@ export const chatTheme: ChatTheme = {
       ].join(' '),
       icon: 'w-4 h-4 text-blue-500 dark:text-blue-400 flex-shrink-0',
       text: 'text-sm truncate'
+    }
+  },
+  chart: {
+    base: 'my-6',
+    title: 'text-sm font-medium mb-2 text-content-text-neutral-2',
+    content: 'flex items-center justify-center',
+    error: {
+      base: 'my-4 p-4 border rounded border-stroke-semantic-error-4 bg-background-semantic-error-5/20 text-content-assets-semantic-error-base',
+      title: 'text-content-assets-semantic-error-base text-sm font-medium mb-2',
+      code: 'text-xs overflow-auto'
+    },
+    warning: {
+      base: 'my-4 p-4 border rounded border-stroke-semantic-warning-4 bg-background-semantic-warning-5/20 text-content-assets-semantic-warning-base',
+      title:
+        'text-content-assets-semantic-warning-base text-sm font-medium mb-2'
     }
   }
 };

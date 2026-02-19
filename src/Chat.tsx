@@ -1,5 +1,6 @@
 import { AnimatePresence } from 'motion/react';
 import { cn } from 'reablocks';
+import type { Components } from 'react-markdown';
 import type { CSSProperties, FC, PropsWithChildren } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'reakeys';
@@ -56,6 +57,12 @@ export interface ChatProps extends PropsWithChildren {
   remarkPlugins?: Plugin[];
 
   /**
+   * Custom markdown components to override default rendering.
+   * Use this to add support for custom elements like charts.
+   */
+  markdownComponents?: Components;
+
+  /**
    * Whether to display a loading state.
    */
   isLoading?: boolean;
@@ -110,6 +117,7 @@ export const Chat: FC<ChatProps> = ({
   theme = chatTheme,
   onNewSession,
   remarkPlugins = [remarkGfm, remarkYoutube, remarkMath],
+  markdownComponents,
   disabled,
   style,
   className
@@ -168,6 +176,7 @@ export const Chat: FC<ChatProps> = ({
       sessions,
       activeSession,
       remarkPlugins: remarkPlugins as Plugin[],
+      markdownComponents,
       theme,
       disabled,
       isLoading,
@@ -188,6 +197,7 @@ export const Chat: FC<ChatProps> = ({
       disabled,
       theme,
       remarkPlugins,
+      markdownComponents,
       sessions,
       activeSession,
       internalActiveSessionID,

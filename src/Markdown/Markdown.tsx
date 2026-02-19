@@ -1,11 +1,14 @@
 import './Markdown.css';
 
-import { cn } from 'reablocks';
+import { cn, Redact } from 'reablocks';
 import type { FC, PropsWithChildren } from 'react';
-import ReactMarkdown from 'react-markdown';
+import { useContext, useMemo } from 'react';
+import ReactMarkdown, { Components } from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
+import rehypeRaw from 'rehype-raw';
 import type { Plugin } from 'unified';
 
+import { ChatContext } from '@/ChatContext';
 import type { ChatTheme } from '@/theme';
 
 import { CodeHighlighter } from './CodeHighlighter';
@@ -25,29 +28,38 @@ interface MarkdownWrapperProps extends PropsWithChildren {
   /**
    * Theme to apply to the markdown content.
    */
-  theme: ChatTheme;
+  theme?: ChatTheme;
+
+  /**
+   * Custom components to override default markdown rendering.
+   * These will be merged with the default components.
+   */
+  customComponents?: Components;
 }
 
 export const Markdown: FC<MarkdownWrapperProps> = ({
   children,
   remarkPlugins,
-  rehypePlugins = [rehypeKatex],
-  theme
-}) => (
-  <ReactMarkdown
-    remarkPlugins={remarkPlugins as Plugin[]}
-    rehypePlugins={rehypePlugins as Plugin[]}
-    components={{
-      code: ({ className, ...props }) => (
+  rehypePlugins = [rehypeRaw, rehypeKatex],
+  theme: themeProp,
+  customComponents
+}) => {
+  const { theme: contextTheme, markdownComponents } = useContext(ChatContext);
+  const theme = themeProp || contextTheme;
+
+  const components = useMemo<Components>(() => {
+    const defaultComponents: Record<string, any> = {
+      code: ({ className, children, ...props }) => (
         <CodeHighlighter
           {...props}
-          // Ref: https://github.com/remarkjs/react-markdown?tab=readme-ov-file#use-custom-components-syntax-highlight
           language={cn(className)}
           inlineClassName={cn(theme.messages.message.markdown.inlineCode)}
           className={cn(theme.messages.message.markdown.code, className)}
           copyClassName={cn(theme.messages.message.markdown.copy)}
           toolbarClassName={cn(theme.messages.message.markdown.toolbar)}
-        />
+        >
+          {children}
+        </CodeHighlighter>
       ),
       table: props => (
         <TableComponent
@@ -102,9 +114,30 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
       ),
       h6: props => (
         <h6 {...props} className={cn(theme.messages.message.markdown.h6)} />
+      ),
+      redact: (props: any) => (
+        <Redact
+          value={props['data-redact-value'] || props.children}
+          allowToggle={true}
+          tooltipText={`${props['data-redact-name'] || 'Sensitive'} information - Click to toggle`}
+        />
       )
-    }}
-  >
-    {children as string}
-  </ReactMarkdown>
-);
+    };
+
+    return {
+      ...defaultComponents,
+      ...markdownComponents,
+      ...customComponents
+    } as Components;
+  }, [theme, markdownComponents, customComponents]);
+
+  return (
+    <ReactMarkdown
+      remarkPlugins={remarkPlugins as Plugin[]}
+      rehypePlugins={rehypePlugins as Plugin[]}
+      components={components}
+    >
+      {children as string}
+    </ReactMarkdown>
+  );
+};
