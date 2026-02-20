@@ -10,4 +10,5 @@ export * from './SessionMessages';
 export * from './SessionsList';
 export * from './theme';
 export * from './types';
+export * from './useAgUi';
 export * from './utils';

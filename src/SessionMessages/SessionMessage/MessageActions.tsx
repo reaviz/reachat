@@ -1,7 +1,7 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cn, IconButton } from 'reablocks';
 import type { FC, PropsWithChildren, ReactElement } from 'react';
-import { useContext } from 'react';
+import { memo, useCallback, useContext } from 'react';
 
 import CopyIcon from '@/assets/copy.svg?react';
 import RefreshIcon from '@/assets/refresh.svg?react';
@@ -61,90 +61,97 @@ export interface MessageActionsProps extends PropsWithChildren {
   onRefresh?: () => void;
 }
 
-export const MessageActions: FC<MessageActionsProps> = ({
-  children,
-  ...props
-}) => {
-  const { theme } = useContext(ChatContext);
-  const {
-    question,
-    response,
-    copyIcon = <CopyIcon />,
-    thumbsUpIcon = <ThumbUpIcon />,
-    thumbsDownIcon = <ThumbsDownIcon />,
-    refreshIcon = <RefreshIcon />,
-    onCopy,
-    onUpvote,
-    onDownvote,
-    onRefresh
-  } = props;
-  const Comp = children ? Slot : 'div';
+export const MessageActions = memo<MessageActionsProps>(
+  ({ children, ...props }) => {
+    const { theme } = useContext(ChatContext);
+    const {
+      question,
+      response,
+      copyIcon = <CopyIcon />,
+      thumbsUpIcon = <ThumbUpIcon />,
+      thumbsDownIcon = <ThumbsDownIcon />,
+      refreshIcon = <RefreshIcon />,
+      onCopy,
+      onUpvote,
+      onDownvote,
+      onRefresh
+    } = props;
+    const Comp = children ? Slot : 'div';
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        console.log('Text copied to clipboard');
-      })
-      .catch(err => {
-        console.error('Could not copy text: ', err);
-      });
-  };
+    const handleCopy = useCallback((text: string) => {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          console.log('Text copied to clipboard');
+        })
+        .catch(err => {
+          console.error('Could not copy text: ', err);
+        });
+    }, []);
 
-  return (
-    (copyIcon || thumbsDownIcon || thumbsUpIcon || refreshIcon) && (
-      <Comp className={cn(theme.messages.message.footer.base)}>
-        {children || (
-          <>
-            {copyIcon && (
-              <IconButton
-                variant="ghost"
-                disablePadding
-                title="Copy question and response"
-                className={cn(theme.messages.message.footer.copy)}
-                onClick={
-                  onCopy ? onCopy : () => handleCopy(`${question}\n${response}`)
-                }
-              >
-                {copyIcon}
-              </IconButton>
-            )}
-            {thumbsUpIcon && (
-              <IconButton
-                variant="ghost"
-                disablePadding
-                title="Upvote"
-                className={cn(theme.messages.message.footer.upvote)}
-                onClick={onUpvote}
-              >
-                {thumbsUpIcon}
-              </IconButton>
-            )}
-            {thumbsDownIcon && (
-              <IconButton
-                variant="ghost"
-                disablePadding
-                title="Downvote"
-                className={cn(theme.messages.message.footer.downvote)}
-                onClick={onDownvote}
-              >
-                {thumbsDownIcon}
-              </IconButton>
-            )}
-            {refreshIcon && (
-              <IconButton
-                variant="ghost"
-                disablePadding
-                title="Refresh"
-                className={cn(theme.messages.message.footer.refresh)}
-                onClick={onRefresh}
-              >
-                {refreshIcon}
-              </IconButton>
-            )}
-          </>
-        )}
-      </Comp>
-    )
-  );
-};
+    const handleCopyClick = useCallback(() => {
+      if (onCopy) {
+        onCopy();
+      } else {
+        handleCopy(`${question}${response ? `\n${response}` : ''}`);
+      }
+    }, [onCopy, handleCopy, question, response]);
+
+    return (
+      (copyIcon || thumbsDownIcon || thumbsUpIcon || refreshIcon) && (
+        <Comp className={cn(theme.messages.message.footer.base)}>
+          {children || (
+            <>
+              {copyIcon && (
+                <IconButton
+                  variant="ghost"
+                  disablePadding
+                  title="Copy question and response"
+                  className={cn(theme.messages.message.footer.copy)}
+                  onClick={handleCopyClick}
+                >
+                  {copyIcon}
+                </IconButton>
+              )}
+              {thumbsUpIcon && (
+                <IconButton
+                  variant="ghost"
+                  disablePadding
+                  title="Upvote"
+                  className={cn(theme.messages.message.footer.upvote)}
+                  onClick={onUpvote}
+                >
+                  {thumbsUpIcon}
+                </IconButton>
+              )}
+              {thumbsDownIcon && (
+                <IconButton
+                  variant="ghost"
+                  disablePadding
+                  title="Downvote"
+                  className={cn(theme.messages.message.footer.downvote)}
+                  onClick={onDownvote}
+                >
+                  {thumbsDownIcon}
+                </IconButton>
+              )}
+              {refreshIcon && (
+                <IconButton
+                  variant="ghost"
+                  disablePadding
+                  title="Refresh"
+                  className={cn(theme.messages.message.footer.refresh)}
+                  onClick={onRefresh}
+                >
+                  {refreshIcon}
+                </IconButton>
+              )}
+            </>
+          )}
+        </Comp>
+      )
+    );
+  }
+);
+
+MessageActions.displayName = 'MessageActions';

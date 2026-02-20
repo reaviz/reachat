@@ -1,7 +1,7 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cn } from 'reablocks';
-import type { FC, PropsWithChildren } from 'react';
-import { useContext, useState } from 'react';
+import type { PropsWithChildren } from 'react';
+import { memo, useContext, useMemo, useState } from 'react';
 
 import { ChatContext } from '@/ChatContext';
 import type { ConversationFile } from '@/types';
@@ -15,31 +15,38 @@ interface MessageFilesProps extends PropsWithChildren {
   files: ConversationFile[];
 }
 
-export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
+export const MessageFiles = memo<MessageFilesProps>(({ files, children }) => {
   const { theme } = useContext(ChatContext);
   const Comp = children ? Slot : MessageFile;
   const [expanded, setExpanded] = useState<boolean>(false);
 
+  // Group image and other files
+  const { imageFiles, otherFiles } = useMemo(() => {
+    if (!files || files.length === 0) {
+      return {
+        imageFiles: [] as ConversationFile[],
+        otherFiles: [] as ConversationFile[]
+      };
+    }
+    return files.reduce(
+      (acc, file) => {
+        if (file.type?.startsWith('image/')) {
+          acc.imageFiles.push(file);
+        } else {
+          acc.otherFiles.push(file);
+        }
+        return acc;
+      },
+      {
+        imageFiles: [] as ConversationFile[],
+        otherFiles: [] as ConversationFile[]
+      }
+    );
+  }, [files]);
+
   if (!files || files.length === 0) {
     return null;
   }
-
-  // Group image and other files
-  const { imageFiles, otherFiles } = files.reduce(
-    (acc, file) => {
-      if (file.type?.startsWith('image/')) {
-        acc.imageFiles.push(file);
-      } else {
-        acc.otherFiles.push(file);
-      }
-
-      return acc;
-    },
-    {
-      imageFiles: [] as ConversationFile[],
-      otherFiles: [] as ConversationFile[]
-    }
-  );
 
   const maxImageLength = 3;
   const truncateImages = !expanded && imageFiles.length > maxImageLength;
@@ -91,4 +98,6 @@ export const MessageFiles: FC<MessageFilesProps> = ({ files, children }) => {
         ))}
     </div>
   );
-};
+});
+
+MessageFiles.displayName = 'MessageFiles';

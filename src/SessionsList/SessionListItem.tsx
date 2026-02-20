@@ -1,7 +1,7 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cn, Ellipsis, IconButton, ListItem } from 'reablocks';
-import type { FC, PropsWithChildren, ReactElement } from 'react';
-import { useContext } from 'react';
+import type { MouseEvent, PropsWithChildren, ReactElement } from 'react';
+import { memo, useCallback, useContext } from 'react';
 
 import ChatIcon from '@/assets/chat.svg?react';
 import TrashIcon from '@/assets/trash.svg?react';
@@ -35,47 +35,60 @@ export interface SessionListItemProps extends PropsWithChildren {
   limit?: number;
 }
 
-export const SessionListItem: FC<SessionListItemProps> = ({
-  children,
-  session,
-  deletable = true,
-  limit = 100,
-  deleteIcon = <TrashIcon />,
-  chatIcon = <ChatIcon className="mr-2" />
-}) => {
-  const { activeSessionId, selectSession, deleteSession, theme } =
-    useContext(ChatContext);
-  const Comp = children ? Slot : ListItem;
+export const SessionListItem = memo<SessionListItemProps>(
+  ({
+    children,
+    session,
+    deletable = true,
+    limit = 100,
+    deleteIcon = <TrashIcon />,
+    chatIcon = <ChatIcon className="mr-2" />
+  }) => {
+    const { activeSessionId, selectSession, deleteSession, theme } =
+      useContext(ChatContext);
+    const Comp = children ? Slot : ListItem;
 
-  return (
-    <Comp
-      dense
-      disableGutters
-      active={session.id === activeSessionId}
-      className={cn(theme.sessions.session.base, {
-        [theme.sessions.session.active]: session.id === activeSessionId
-      })}
-      onClick={() => selectSession?.(session.id)}
-      start={chatIcon}
-      end={
-        <>
-          {deletable && (
-            <IconButton
-              size="small"
-              variant="ghost"
-              onClick={e => {
-                e.stopPropagation();
-                deleteSession(session.id);
-              }}
-              className={cn(theme.sessions.session.delete)}
-            >
-              {deleteIcon}
-            </IconButton>
-          )}
-        </>
-      }
-    >
-      {children || <Ellipsis value={session.title} limit={limit} />}
-    </Comp>
-  );
-};
+    const handleSelect = useCallback(() => {
+      selectSession?.(session.id);
+    }, [selectSession, session.id]);
+
+    const handleDelete = useCallback(
+      (e: MouseEvent) => {
+        e.stopPropagation();
+        deleteSession(session.id);
+      },
+      [deleteSession, session.id]
+    );
+
+    return (
+      <Comp
+        dense
+        disableGutters
+        active={session.id === activeSessionId}
+        className={cn(theme.sessions.session.base, {
+          [theme.sessions.session.active]: session.id === activeSessionId
+        })}
+        onClick={handleSelect}
+        start={chatIcon}
+        end={
+          <>
+            {deletable && (
+              <IconButton
+                size="small"
+                variant="ghost"
+                onClick={handleDelete}
+                className={cn(theme.sessions.session.delete)}
+              >
+                {deleteIcon}
+              </IconButton>
+            )}
+          </>
+        }
+      >
+        {children || <Ellipsis value={session.title} limit={limit} />}
+      </Comp>
+    );
+  }
+);
+
+SessionListItem.displayName = 'SessionListItem';

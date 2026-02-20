@@ -40,6 +40,7 @@
   "browser": "dist/index.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
+    "@floating-ui/dom": "^1.6.0",
     "@floating-ui/react": "^0.27.6",
     "@radix-ui/react-slot": "^1.1.0",
     "@tiptap/core": "^3.15.3",

@@ -1,3 +1,8 @@
+# 2.2.0 - 2/17/26
+- [feature] ag-ui protocol adapter
+- [feature] redact plugin and support for other plugins
+- [improvement] improve performance and rendering
+
 # 2.1.2 - 1/29/26
 - [fix] bump vuln package
 

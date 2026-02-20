@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { Card, cn, Divider } from 'reablocks';
-import type { FC, PropsWithChildren } from 'react';
-import { useContext } from 'react';
+import type { PropsWithChildren } from 'react';
+import { memo, useContext } from 'react';
 
 import { ChatContext } from '@/ChatContext';
 import type { Conversation } from '@/types';
@@ -43,36 +43,35 @@ interface SessionMessageProps extends PropsWithChildren {
   isLast?: boolean;
 }
 
-export const SessionMessage: FC<SessionMessageProps> = ({
-  className,
-  conversation,
-  isLast,
-  children
-}) => {
-  const { theme, isLoading } = useContext(ChatContext);
+export const SessionMessage = memo<SessionMessageProps>(
+  ({ className, conversation, isLast, children }) => {
+    const { theme, isLoading } = useContext(ChatContext);
 
-  return (
-    <motion.div key={conversation.id} variants={messageVariants}>
-      <Card className={cn(theme.messages.message.base, className)}>
-        {children || (
-          <>
-            <MessageQuestion
-              question={conversation.question}
-              files={conversation.files}
-            />
-            <MessageResponse
-              response={conversation.response}
-              isLoading={isLast && isLoading}
-            />
-            <MessageSources sources={conversation.sources} />
-            <MessageActions
-              question={conversation.question}
-              response={conversation.response}
-            />
-          </>
-        )}
-      </Card>
-      {!isLast && <Divider />}
-    </motion.div>
-  );
-};
+    return (
+      <motion.div key={conversation.id} variants={messageVariants}>
+        <Card className={cn(theme.messages.message.base, className)}>
+          {children || (
+            <>
+              <MessageQuestion
+                question={conversation.question}
+                files={conversation.files}
+              />
+              <MessageResponse
+                response={conversation.response}
+                isLoading={isLast && isLoading}
+              />
+              <MessageSources sources={conversation.sources} />
+              <MessageActions
+                question={conversation.question}
+                response={conversation.response}
+              />
+            </>
+          )}
+        </Card>
+        {!isLast && <Divider />}
+      </motion.div>
+    );
+  }
+);
+
+SessionMessage.displayName = 'SessionMessage';

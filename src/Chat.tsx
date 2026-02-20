@@ -16,6 +16,8 @@ import { chatTheme } from './theme';
 import type { Session } from './types';
 import { useDimensions } from './utils/useDimensions';
 
+const defaultRemarkPlugins: Plugin[] = [remarkGfm, remarkYoutube, remarkMath];
+
 export interface ChatProps extends PropsWithChildren {
   /**
    * The style to apply to the root element.
@@ -116,7 +118,7 @@ export const Chat: FC<ChatProps> = ({
   activeSessionId,
   theme = chatTheme,
   onNewSession,
-  remarkPlugins = [remarkGfm, remarkYoutube, remarkMath],
+  remarkPlugins = defaultRemarkPlugins,
   markdownComponents,
   disabled,
   style,

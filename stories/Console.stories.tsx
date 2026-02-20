@@ -40,7 +40,9 @@ import { MessageQuestion } from '@/SessionMessages';
 import { MessageResponse } from '@/SessionMessages';
 import { MessageSources } from '@/SessionMessages';
 import {
+  createSendMessageHandler,
   fakeSessions,
+  sessionWithCSVFiles,
   sessionWithSources,
   sessionsWithFiles,
   sessionsWithPartialConversation
@@ -52,6 +54,9 @@ export default {
 } as Meta;
 
 export const Basic = () => {
+  const [activeId, setActiveId] = useState<string>(fakeSessions[0].id);
+  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
+
   return (
     <div
       className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
@@ -67,9 +72,12 @@ export const Basic = () => {
       }}
     >
       <Chat
-        sessions={fakeSessions}
+        sessions={sessions}
+        activeSessionId={activeId}
         viewType="console"
+        onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton />
@@ -123,6 +131,9 @@ export const Loading = () => {
 };
 
 export const DefaultInputValue = () => {
+  const [activeId, setActiveId] = useState<string>('1');
+  const [sessions, setSessions] = useState<Session[]>(fakeSessions);
+
   return (
     <div
       className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
@@ -139,9 +150,11 @@ export const DefaultInputValue = () => {
     >
       <Chat
         viewType="console"
-        sessions={fakeSessions}
-        activeSessionId="1"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
         onDeleteSession={() => alert('delete!')}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton />
@@ -277,6 +290,9 @@ export const Empty = () => {
 };
 
 export const ConversationSources = () => {
+  const [activeId, setActiveId] = useState<string>('session-sources');
+  const [sessions, setSessions] = useState<Session[]>(sessionWithSources);
+
   return (
     <div
       className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
@@ -293,8 +309,10 @@ export const ConversationSources = () => {
     >
       <Chat
         viewType="console"
-        sessions={sessionWithSources}
-        activeSessionId="session-sources"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton />
@@ -414,6 +432,13 @@ const CustomSessionListItem: FC<SessionListItemProps> = ({
 };
 
 export const CustomComponents = () => {
+  const [activeId, setActiveId] = useState<string>('1');
+  const [sessions, setSessions] = useState<Session[]>([
+    ...fakeSessions,
+    ...sessionsWithFiles,
+    ...sessionWithSources
+  ]);
+
   return (
     <div
       className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
@@ -429,12 +454,10 @@ export const CustomComponents = () => {
       }}
     >
       <Chat
-        sessions={[
-          ...fakeSessions,
-          ...sessionsWithFiles,
-          ...sessionWithSources
-        ]}
-        activeSessionId="1"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionsList>
           <NewSessionButton>
@@ -488,6 +511,41 @@ export const CustomComponents = () => {
             }
           </SessionMessages>
           <ChatInput />
+        </SessionMessagePanel>
+      </Chat>
+    </div>
+  );
+};
+
+export const CSVPreview = () => {
+  const [sessions, setSessions] = useState<Session[]>(sessionWithCSVFiles);
+
+  return (
+    <div
+      className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
+      style={{
+        position: 'absolute',
+        inset: 0,
+        padding: 20,
+        margin: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        sessions={sessions}
+        activeSessionId="1"
+        onDeleteSession={() => alert('delete!')}
+        onSendMessage={createSendMessageHandler(setSessions, '1')}
+      >
+        <SessionsList>
+          <NewSessionButton />
+          <SessionGroups />
+        </SessionsList>
+
+        <SessionMessagePanel>
+          <SessionMessagesHeader />
+          <SessionMessages />
+          <ChatInput allowedFiles={['.pdf', '.docx', '.csv']} />
         </SessionMessagePanel>
       </Chat>
     </div>

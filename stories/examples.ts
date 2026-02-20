@@ -1,6 +1,38 @@
+import { Dispatch, SetStateAction } from 'react';
 import { subHours } from 'date-fns';
 
 import type { Session } from '@/types';
+
+/**
+ * Creates an onSendMessage handler for story demos.
+ * Appends a new conversation with a canned response to the active session.
+ */
+export const createSendMessageHandler = (
+  setSessions: Dispatch<SetStateAction<Session[]>>,
+  activeId: string | undefined
+) =>
+  (message: string) => {
+    if (!activeId) return;
+
+    setSessions(prev =>
+      prev.map(session =>
+        session.id === activeId
+          ? {
+              ...session,
+              conversations: [
+                ...session.conversations,
+                {
+                  id: Date.now().toString(),
+                  question: message,
+                  response: 'This is a response to your question.',
+                  createdAt: new Date()
+                }
+              ]
+            }
+          : session
+      )
+    );
+  };
 
 export const fakeSessions: Session[] = [
   {

@@ -9,7 +9,7 @@ import {
   MentionItem,
   SlashCommandItem
 } from '../src';
-import { fakeSessions } from './examples';
+import { createSendMessageHandler, fakeSessions } from './examples';
 
 const UserIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full">
@@ -112,6 +112,7 @@ export const WithMentions: StoryFn = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -153,6 +154,7 @@ export const WithSlashCommands: StoryFn = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -195,6 +197,7 @@ export const WithAllFeatures: StoryFn = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -240,6 +243,7 @@ export const WithAsyncSearch: StoryFn = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -271,6 +275,7 @@ export const MultiLineEmpty: StoryFn = () => {
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionMessagePanel>
           <SessionMessages />
@@ -306,6 +311,7 @@ This is line six - still scrolling!`;
         sessions={sessions}
         activeSessionId={activeId}
         onSelectSession={setActiveId}
+        onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
         <SessionMessagePanel>
           <SessionMessages />

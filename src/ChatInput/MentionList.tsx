@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  memo,
   useEffect,
   useImperativeHandle,
   useState,
@@ -11,6 +12,8 @@ import { cn, List, ListItem } from 'reablocks';
 import { ChatContext } from '@/ChatContext';
 import { chatTheme } from '@/theme';
 import { SuggestionConfig, SuggestionItem } from './types';
+
+const POPUP_STYLE = { zIndex: 9999 } as const;
 
 export interface MentionListRef {
   onKeyDown: (props: { event: KeyboardEvent }) => boolean;
@@ -108,7 +111,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
     return (
       <List
         className={cn(popupTheme.base, popupTheme.content)}
-        style={{ zIndex: 9999 }}
+        style={POPUP_STYLE}
         role="listbox"
         id={popupId}
         aria-label={`${triggerChar === '@' ? 'Mentions' : 'Commands'} suggestions`}
@@ -169,41 +172,41 @@ interface DefaultItemRendererProps {
   popupTheme: typeof chatTheme.input.popup;
 }
 
-function DefaultItemRenderer({
-  item,
-  isHighlighted,
-  popupTheme
-}: DefaultItemRendererProps) {
-  const shortcut = 'shortcut' in item ? (item as any).shortcut : undefined;
+const DefaultItemRenderer = memo<DefaultItemRendererProps>(
+  ({ item, isHighlighted, popupTheme }) => {
+    const shortcut = 'shortcut' in item ? (item as any).shortcut : undefined;
 
-  return (
-    <ListItem
-      className={cn(
-        popupTheme.item,
-        isHighlighted && popupTheme.itemHighlighted
-      )}
-      dense
-      start={
-        item.icon ? (
-          <span className={cn(popupTheme.itemIcon)}>{item.icon}</span>
-        ) : undefined
-      }
-      end={
-        shortcut ? (
-          <span className={cn(popupTheme.itemShortcut)}>{shortcut}</span>
-        ) : undefined
-      }
-    >
-      <div className={cn(popupTheme.itemContent)}>
-        <span className={cn(popupTheme.itemLabel)}>{item.label}</span>
-        {item.description && (
-          <span className={cn(popupTheme.itemDescription)}>
-            {item.description}
-          </span>
+    return (
+      <ListItem
+        className={cn(
+          popupTheme.item,
+          isHighlighted && popupTheme.itemHighlighted
         )}
-      </div>
-    </ListItem>
-  );
-}
+        dense
+        start={
+          item.icon ? (
+            <span className={cn(popupTheme.itemIcon)}>{item.icon}</span>
+          ) : undefined
+        }
+        end={
+          shortcut ? (
+            <span className={cn(popupTheme.itemShortcut)}>{shortcut}</span>
+          ) : undefined
+        }
+      >
+        <div className={cn(popupTheme.itemContent)}>
+          <span className={cn(popupTheme.itemLabel)}>{item.label}</span>
+          {item.description && (
+            <span className={cn(popupTheme.itemDescription)}>
+              {item.description}
+            </span>
+          )}
+        </div>
+      </ListItem>
+    );
+  }
+);
+
+DefaultItemRenderer.displayName = 'DefaultItemRenderer';
 
 MentionList.displayName = 'MentionList';
