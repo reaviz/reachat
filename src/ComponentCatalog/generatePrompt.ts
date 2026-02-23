@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import type { ComponentDefinitions } from './types';
 
 /**
@@ -63,9 +62,13 @@ function describeJsonSchemaProperty(
 /**
  * Converts a Zod schema into a concise, human-readable props description
  * using Zod's public `z.toJSONSchema()` API.
+ *
+ * Zod is loaded lazily so that modules importing `generatePrompt` do not
+ * crash at load time when zod is not installed.
  */
-function describeProps(schema: z.ZodType): string {
+function describeProps(schema: { _def?: unknown }): string {
   try {
+    const { z } = require('zod');
     const jsonSchema = z.toJSONSchema(schema) as Record<string, any>;
     if (jsonSchema.type === 'object' && jsonSchema.properties) {
       return describeJsonSchemaProperty(jsonSchema);

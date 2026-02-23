@@ -1,5 +1,7 @@
 export { componentCatalog } from './componentCatalog';
 export { ComponentRenderer } from './ComponentRenderer';
+export { ComponentError } from './ComponentError';
+export type { ComponentErrorProps } from './ComponentError';
 export { createComponentPre } from './ComponentPre';
 export { createChartComponentDef } from './chartComponentDef';
 export { validateSpec } from './validateSpec';

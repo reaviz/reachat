@@ -1,7 +1,7 @@
-import React, { FC, useContext, useMemo } from 'react';
+import React, { Component, FC, ReactNode, useContext, useMemo } from 'react';
 import { ChatContext } from '@/ChatContext';
-import { ComponentError } from '@/Markdown/charts/ComponentError';
-import { validateSpec, type ValidateResult } from './validateSpec';
+import { ComponentError } from './ComponentError';
+import { validateSpec } from './validateSpec';
 import type {
   ComponentDefinitions,
   ComponentSpec,
@@ -56,9 +56,9 @@ export const ComponentRenderer: FC<ComponentRendererProps> = ({
 
   return (
     <div className={theme.component?.base}>
-      {specs.map(spec => (
+      {specs.map((spec, index) => (
         <SpecRenderer
-          key={`${spec.type}-${stableKey(spec)}`}
+          key={`${spec.type}-${index}-${stableKey(spec)}`}
           spec={spec}
           definitions={definitions}
           options={options}
@@ -102,12 +102,12 @@ const SpecRenderer: FC<SpecRendererProps> = ({
     );
   }
 
-  const Component = definition.component;
+  const RenderedComponent = definition.component;
 
   // Render children recursively
-  const children = spec.children?.map(child => (
+  const children = spec.children?.map((child, index) => (
     <SpecRenderer
-      key={`${child.type}-${stableKey(child)}`}
+      key={`${child.type}-${index}-${stableKey(child)}`}
       spec={child}
       definitions={definitions}
       options={options}
@@ -115,32 +115,74 @@ const SpecRenderer: FC<SpecRendererProps> = ({
     />
   ));
 
-  try {
-    return (
-      <Component {...spec.props} sendMessage={sendMessage}>
+  return (
+    <SpecErrorBoundary spec={spec} options={options}>
+      <RenderedComponent {...spec.props} sendMessage={sendMessage}>
         {children}
-      </Component>
-    );
-  } catch (err) {
-    const error: ComponentCatalogError = {
-      type: 'render_error',
-      message: `Error rendering "${spec.type}": ${String(err)}`,
-      raw: JSON.stringify(spec),
-      componentType: spec.type
-    };
-    const custom = options?.onError?.(error);
-    if (custom !== undefined) {
-      return <>{custom}</>;
-    }
-    return (
-      <ComponentError title={errorTitle(error.type)} message={error.message} />
-    );
-  }
+      </RenderedComponent>
+    </SpecErrorBoundary>
+  );
 };
+
+// ---------------------------------------------------------------------------
+// Error boundary for catching render-time errors from dynamic components.
+// ---------------------------------------------------------------------------
+
+interface SpecErrorBoundaryProps {
+  spec: ComponentSpec;
+  options?: ComponentCatalogOptions;
+  children: ReactNode;
+}
+
+interface SpecErrorBoundaryState {
+  error: Error | null;
+}
+
+class SpecErrorBoundary extends Component<
+  SpecErrorBoundaryProps,
+  SpecErrorBoundaryState
+> {
+  state: SpecErrorBoundaryState = { error: null };
+
+  static getDerivedStateFromError(error: Error): SpecErrorBoundaryState {
+    return { error };
+  }
+
+  render() {
+    if (this.state.error) {
+      const { spec, options } = this.props;
+      const catalogError: ComponentCatalogError = {
+        type: 'render_error',
+        message: `Error rendering "${spec.type}": ${this.state.error.message}`,
+        raw: JSON.stringify(spec),
+        componentType: spec.type
+      };
+      const custom = options?.onError?.(catalogError);
+      if (custom !== undefined) {
+        return <>{custom}</>;
+      }
+      return (
+        <ComponentError
+          title={errorTitle(catalogError.type)}
+          message={catalogError.message}
+        />
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
 /** Simple string hash for a stable, content-based React key. */
 function stableKey(spec: ComponentSpec): string {
-  const str = JSON.stringify({ t: spec.type, p: spec.props });
+  const str = JSON.stringify({
+    t: spec.type,
+    p: spec.props,
+    c: spec.children
+  });
   let h = 0;
   for (let i = 0; i < str.length; i++) {
     h = (h * 31 + str.charCodeAt(i)) | 0;
