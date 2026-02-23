@@ -4,6 +4,14 @@ import type {
   ComponentCatalogError
 } from './types';
 
+export type ValidateResult =
+  | { ok: true; specs: ComponentSpec[]; error?: undefined }
+  | { ok: false; error: ComponentCatalogError; specs?: undefined };
+
+type SingleResult =
+  | { ok: true; spec: ComponentSpec; error?: undefined }
+  | { ok: false; error: ComponentCatalogError; spec?: undefined };
+
 /**
  * Attempts to parse a raw string (from a ```component code block)
  * into one or more ComponentSpec objects.
@@ -13,9 +21,7 @@ import type {
 export function validateSpec(
   raw: string,
   definitions: ComponentDefinitions
-):
-  | { ok: true; specs: ComponentSpec[] }
-  | { ok: false; error: ComponentCatalogError } {
+): ValidateResult {
   // 1. Parse JSON
   let parsed: unknown;
   try {
@@ -39,10 +45,9 @@ export function validateSpec(
   for (const item of specArray) {
     const result = validateSingleSpec(item, raw, definitions);
     if (!result.ok) {
-      const err = (result as { ok: false; error: ComponentCatalogError }).error;
-      return { ok: false as const, error: err };
+      return { ok: false as const, error: result.error };
     }
-    validated.push((result as { ok: true; spec: ComponentSpec }).spec);
+    validated.push(result.spec);
   }
 
   return { ok: true, specs: validated };
@@ -52,9 +57,7 @@ function validateSingleSpec(
   item: unknown,
   raw: string,
   definitions: ComponentDefinitions
-):
-  | { ok: true; spec: ComponentSpec }
-  | { ok: false; error: ComponentCatalogError } {
+): SingleResult {
   if (!item || typeof item !== 'object' || !('type' in item)) {
     return {
       ok: false,
@@ -96,6 +99,8 @@ function validateSingleSpec(
   }
 
   // 3. Validate props via Zod schema
+  // Fall back to empty object for missing/non-object props — Zod will
+  // reject if required fields are absent.
   const props =
     spec.props && typeof spec.props === 'object' && !Array.isArray(spec.props)
       ? spec.props
@@ -147,7 +152,7 @@ function validateSingleSpec(
     ok: true,
     spec: {
       type: componentType,
-      props: (parseResult as { success: true; data: any }).data,
+      props: parseResult.data as Record<string, any>,
       ...(validatedChildren ? { children: validatedChildren } : {})
     }
   };

@@ -1,7 +1,7 @@
 import React, { FC, useContext, useMemo } from 'react';
 import { ChatContext } from '@/ChatContext';
 import { ComponentError } from '@/Markdown/charts/ComponentError';
-import { validateSpec } from './validateSpec';
+import { validateSpec, type ValidateResult } from './validateSpec';
 import type {
   ComponentDefinitions,
   ComponentSpec,
@@ -38,7 +38,7 @@ export const ComponentRenderer: FC<ComponentRendererProps> = ({
   );
 
   if (!result.ok) {
-    const error = (result as { ok: false; error: ComponentCatalogError }).error;
+    const error = result.error;
     const custom = options?.onError?.(error);
     if (custom !== undefined) {
       return <>{custom}</>;
@@ -52,13 +52,13 @@ export const ComponentRenderer: FC<ComponentRendererProps> = ({
     );
   }
 
-  const { specs } = result as { ok: true; specs: ComponentSpec[] };
+  const specs = result.specs;
 
   return (
     <div className={theme.component?.base}>
-      {specs.map((spec, i) => (
+      {specs.map(spec => (
         <SpecRenderer
-          key={`${spec.type}-${i}-${stableKey(spec)}`}
+          key={`${spec.type}-${stableKey(spec)}`}
           spec={spec}
           definitions={definitions}
           options={options}
@@ -105,9 +105,9 @@ const SpecRenderer: FC<SpecRendererProps> = ({
   const Component = definition.component;
 
   // Render children recursively
-  const children = spec.children?.map((child, i) => (
+  const children = spec.children?.map(child => (
     <SpecRenderer
-      key={`${child.type}-${i}-${stableKey(child)}`}
+      key={`${child.type}-${stableKey(child)}`}
       spec={child}
       definitions={definitions}
       options={options}
@@ -140,7 +140,7 @@ const SpecRenderer: FC<SpecRendererProps> = ({
 
 /** Simple string hash for a stable, content-based React key. */
 function stableKey(spec: ComponentSpec): string {
-  const str = JSON.stringify(spec.props);
+  const str = JSON.stringify({ t: spec.type, p: spec.props });
   let h = 0;
   for (let i = 0; i < str.length; i++) {
     h = (h * 31 + str.charCodeAt(i)) | 0;

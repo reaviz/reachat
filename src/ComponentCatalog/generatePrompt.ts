@@ -1,89 +1,78 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import type { ComponentDefinitions } from './types';
 
 /**
- * Generates a human-readable description of a Zod schema's shape
- * by inspecting its internal `_def` structure.
- *
- * Falls back to `Record<string, any>` if the schema internals are
- * not accessible.
+ * Converts a JSON Schema property into a concise, human-readable type string.
+ * Handles objects, arrays, enums, nullable, primitives, and descriptions.
  */
-function describeZodShape(schema: z.ZodType): string {
-  try {
-    const def = (schema as any)._def;
-    if (!def) {
-      return 'Record<string, any>';
+function describeJsonSchemaProperty(
+  prop: Record<string, any>,
+  indent = ''
+): string {
+  const description = prop.description ? ` // ${prop.description}` : '';
+
+  // Nullable (anyOf with null)
+  if (prop.anyOf) {
+    const nonNull = prop.anyOf.filter((s: any) => !(s.type === 'null'));
+    const hasNull = prop.anyOf.some((s: any) => s.type === 'null');
+    if (nonNull.length === 1 && hasNull) {
+      return `${describeJsonSchemaProperty(nonNull[0], indent)} | null${description}`;
     }
-
-    // ZodObject — the most common case
-    if (def.shape || def.typeName === 'ZodObject') {
-      const shape = typeof def.shape === 'function' ? def.shape() : def.shape;
-      if (!shape || typeof shape !== 'object') {
-        return 'Record<string, any>';
-      }
-
-      const fields: string[] = [];
-      for (const [key, value] of Object.entries(shape)) {
-        fields.push(`  ${key}: ${describeZodField(value as z.ZodType)}`);
-      }
-      return `{\n${fields.join(',\n')}\n}`;
-    }
-
-    return 'Record<string, any>';
-  } catch {
-    return 'Record<string, any>';
+    const parts = prop.anyOf.map((s: any) =>
+      describeJsonSchemaProperty(s, indent)
+    );
+    return `${parts.join(' | ')}${description}`;
   }
+
+  // Enum
+  if (prop.enum) {
+    return `${prop.enum.map((v: any) => `"${v}"`).join(' | ')}${description}`;
+  }
+
+  // Array
+  if (prop.type === 'array') {
+    const items = prop.items
+      ? describeJsonSchemaProperty(prop.items, indent)
+      : 'any';
+    return `${items}[]${description}`;
+  }
+
+  // Object
+  if (prop.type === 'object' && prop.properties) {
+    const required = new Set(prop.required ?? []);
+    const fields: string[] = [];
+    for (const [key, value] of Object.entries(prop.properties)) {
+      const opt = required.has(key) ? '' : '?';
+      fields.push(
+        `${indent}  ${key}: ${describeJsonSchemaProperty(value as Record<string, any>, indent + '  ')}${opt}`
+      );
+    }
+    return `{\n${fields.join(',\n')}\n${indent}}${description}`;
+  }
+
+  // Primitives
+  if (prop.type === 'string') return `string${description}`;
+  if (prop.type === 'number' || prop.type === 'integer')
+    return `number${description}`;
+  if (prop.type === 'boolean') return `boolean${description}`;
+  if (prop.type === 'null') return `null${description}`;
+
+  return `any${description}`;
 }
 
-function describeZodField(field: z.ZodType): string {
+/**
+ * Converts a Zod schema into a concise, human-readable props description
+ * using Zod's public `z.toJSONSchema()` API.
+ */
+function describeProps(schema: z.ZodType): string {
   try {
-    const def = (field as any)?._def;
-    if (!def) {
-      return 'any';
+    const jsonSchema = z.toJSONSchema(schema) as Record<string, any>;
+    if (jsonSchema.type === 'object' && jsonSchema.properties) {
+      return describeJsonSchemaProperty(jsonSchema);
     }
-
-    const typeName: string = def.typeName ?? '';
-    const description: string = def.description ?? '';
-    const suffix = description ? ` // ${description}` : '';
-
-    // Handle optional wrapper
-    if (typeName === 'ZodOptional') {
-      return `${describeZodField(def.innerType)}?${suffix}`;
-    }
-
-    // Handle nullable wrapper
-    if (typeName === 'ZodNullable') {
-      return `${describeZodField(def.innerType)} | null${suffix}`;
-    }
-
-    // Handle default wrapper
-    if (typeName === 'ZodDefault') {
-      return `${describeZodField(def.innerType)}${suffix}`;
-    }
-
-    // Primitives
-    if (typeName === 'ZodString') return `string${suffix}`;
-    if (typeName === 'ZodNumber') return `number${suffix}`;
-    if (typeName === 'ZodBoolean') return `boolean${suffix}`;
-
-    // Enum
-    if (typeName === 'ZodEnum' && def.values) {
-      return `${(def.values as string[]).map(v => `"${v}"`).join(' | ')}${suffix}`;
-    }
-
-    // Array
-    if (typeName === 'ZodArray' && def.type) {
-      return `${describeZodField(def.type)}[]${suffix}`;
-    }
-
-    // Object (nested)
-    if (typeName === 'ZodObject') {
-      return describeZodShape(field) + suffix;
-    }
-
-    return `any${suffix}`;
+    return 'Record<string, any>';
   } catch {
-    return 'any';
+    return 'Record<string, any>';
   }
 }
 
@@ -107,7 +96,7 @@ export function generatePrompt(
   const componentDocs = names
     .map(name => {
       const def = definitions[name];
-      const propsDesc = describeZodShape(def.props);
+      const propsDesc = describeProps(def.props);
       return `- **${name}**: ${def.description}\n  Props: ${propsDesc}`;
     })
     .join('\n\n');

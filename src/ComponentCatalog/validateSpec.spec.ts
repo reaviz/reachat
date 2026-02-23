@@ -126,4 +126,115 @@ describe('validateSpec', () => {
     expect(result.ok).toBe(false);
     expect(getError(result).type).toBe('invalid_props');
   });
+
+  it('returns error when children is not an array', () => {
+    const raw = JSON.stringify({
+      type: 'AlertBox',
+      props: { title: 'T', message: 'M' },
+      children: { type: 'WeatherCard', props: { city: 'SF', temperature: 72 } }
+    });
+    const result = validateSpec(raw, definitions);
+    expect(result.ok).toBe(false);
+    expect(getError(result).type).toBe('invalid_json');
+    expect(getError(result).message).toContain('"children" must be an array');
+  });
+
+  it('handles non-object props (string) by falling back to empty object', () => {
+    const raw = JSON.stringify({
+      type: 'WeatherCard',
+      props: 'invalid'
+    });
+    const result = validateSpec(raw, definitions);
+    // Falls back to {} which Zod rejects due to missing required fields
+    expect(result.ok).toBe(false);
+    expect(getError(result).type).toBe('invalid_props');
+  });
+
+  it('handles array props by falling back to empty object', () => {
+    const raw = JSON.stringify({
+      type: 'WeatherCard',
+      props: [1, 2, 3]
+    });
+    const result = validateSpec(raw, definitions);
+    expect(result.ok).toBe(false);
+    expect(getError(result).type).toBe('invalid_props');
+  });
+
+  it('validates an empty array as valid', () => {
+    const raw = JSON.stringify([]);
+    const result = validateSpec(raw, definitions);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.specs).toHaveLength(0);
+    }
+  });
+
+  it('returns error for non-string type field', () => {
+    const raw = JSON.stringify({ type: 123, props: {} });
+    const result = validateSpec(raw, definitions);
+    expect(result.ok).toBe(false);
+    expect(getError(result).type).toBe('invalid_json');
+  });
+
+  it('returns error for null item in array', () => {
+    const raw = JSON.stringify([null]);
+    const result = validateSpec(raw, definitions);
+    expect(result.ok).toBe(false);
+    expect(getError(result).type).toBe('invalid_json');
+  });
+
+  it('fails on first invalid item in array', () => {
+    const raw = JSON.stringify([
+      { type: 'WeatherCard', props: { city: 'SF', temperature: 72 } },
+      { type: 'NonExistent', props: {} }
+    ]);
+    const result = validateSpec(raw, definitions);
+    expect(result.ok).toBe(false);
+    expect(getError(result).componentType).toBe('NonExistent');
+  });
+
+  it('includes available component names in unknown_component error', () => {
+    const raw = JSON.stringify({ type: 'Missing', props: {} });
+    const result = validateSpec(raw, definitions);
+    expect(result.ok).toBe(false);
+    const error = getError(result);
+    expect(error.message).toContain('WeatherCard');
+    expect(error.message).toContain('AlertBox');
+  });
+
+  it('strips extra fields from props via Zod', () => {
+    const raw = JSON.stringify({
+      type: 'WeatherCard',
+      props: { city: 'SF', temperature: 72, extra: 'field' }
+    });
+    const result = validateSpec(raw, definitions);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      // Zod strips unknown keys by default
+      expect(result.specs[0].props).toEqual({ city: 'SF', temperature: 72 });
+    }
+  });
+
+  it('validates deeply nested children', () => {
+    const raw = JSON.stringify({
+      type: 'AlertBox',
+      props: { title: 'L1', message: 'M' },
+      children: [
+        {
+          type: 'AlertBox',
+          props: { title: 'L2', message: 'M' },
+          children: [
+            { type: 'WeatherCard', props: { city: 'SF', temperature: 72 } }
+          ]
+        }
+      ]
+    });
+    const result = validateSpec(raw, definitions);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.specs[0].children?.[0].children?.[0].type).toBe(
+        'WeatherCard'
+      );
+    }
+  });
 });

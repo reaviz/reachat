@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ChartRenderer } from '@/Markdown/charts/ChartRenderer';
+import type { ChartConfig } from '@/Markdown/charts/types';
 import type { ComponentDefinition } from './types';
 
 const chartPropsSchema = z.object({
@@ -63,6 +64,6 @@ export function createChartComponentDef(): ComponentDefinition {
       children: _children,
       sendMessage: _sendMessage,
       ...config
-    }) => ChartRenderer({ config: config as any })
+    }) => ChartRenderer({ config: config as ChartConfig })
   };
 }

@@ -1,7 +1,6 @@
 import { remarkComponent } from '@/Markdown/plugins/remarkComponent';
 import { createComponentPre } from './ComponentPre';
 import { generatePrompt } from './generatePrompt';
-import type { Plugin } from 'unified';
 import type {
   ComponentCatalog,
   ComponentCatalogOptions,
@@ -56,10 +55,12 @@ export function componentCatalog(
 ): ComponentCatalog {
   const language = options?.language ?? 'component';
 
-  // remarkComponent is a unified attacher: calling it with options returns
-  // a transformer.  We need to wrap it so unified receives a proper Plugin.
-  const plugin: Plugin = () =>
-    (remarkComponent as (opts?: { language?: string }) => any)({ language });
+  // remarkComponent is a pass-through plugin (rendering is handled by
+  // ComponentPre). We cast to Plugin to satisfy unified's type system —
+  // the plugin is a no-op that does not use the processor context.
+  const plugin = remarkComponent.bind(undefined, {
+    language
+  }) as typeof remarkComponent;
 
   const Pre = createComponentPre(definitions, options);
 

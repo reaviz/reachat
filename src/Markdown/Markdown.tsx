@@ -89,7 +89,7 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
           tooltipText={`${props['data-redact-name'] || 'Sensitive'} information - Click to toggle`}
         />
       )
-    };
+    } as any;
 
     // Merge: defaults < context components < prop components
     return {

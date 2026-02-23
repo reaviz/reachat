@@ -1,6 +1,5 @@
-import { visit } from 'unist-util-visit';
 import type { Plugin } from 'unified';
-import type { Root, Code } from 'mdast';
+import type { Root } from 'mdast';
 
 /**
  * Options for the remarkComponent plugin.
@@ -14,11 +13,13 @@ export interface RemarkComponentOptions {
 }
 
 /**
- * A remark plugin that identifies fenced code blocks with the configured
- * language tag (default: `component`) and validates their JSON content.
+ * A remark plugin that acts as a pass-through for fenced code blocks with
+ * the configured language tag (default: `component`).
  *
- * The plugin preprocesses the AST node while the actual rendering is
- * handled by `ComponentPre` via `markdownComponents`.
+ * The actual rendering is handled entirely by `ComponentPre` which
+ * intercepts `<pre>` elements with a matching `language-{tag}` class.
+ * This plugin exists as an integration point so the catalog can expose
+ * a standard `remarkPlugin` property; it does not transform the AST.
  *
  * Usage in markdown:
  * ```component
@@ -26,27 +27,8 @@ export interface RemarkComponentOptions {
  * ```
  */
 export const remarkComponent: Plugin<[RemarkComponentOptions?], Root> = (
-  options = {}
+  _options = {}
 ) => {
-  const { language = 'component' } = options;
-
-  return (tree: Root) => {
-    visit(tree, 'code', (node: Code) => {
-      if (node.lang !== language) {
-        return;
-      }
-
-      // Attempt to parse JSON so we fail fast on obvious syntax errors.
-      // The code block value is left as-is for the ComponentPre handler
-      // to parse and render.
-      try {
-        JSON.parse(node.value);
-      } catch (error) {
-        console.warn(
-          'remarkComponent: Invalid JSON in component block:',
-          error
-        );
-      }
-    });
-  };
+  // Intentional no-op — ComponentPre handles rendering via markdownComponents.
+  return () => {};
 };

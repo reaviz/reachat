@@ -198,6 +198,8 @@ export const Chat: FC<ChatProps> = ({
     return [...(remarkPlugins as Plugin[]), componentCatalog.remarkPlugin];
   }, [remarkPlugins, componentCatalog]);
 
+  // User-provided markdownComponents spread last so they can override
+  // catalog defaults (e.g. a custom `pre` handler).
   const mergedMarkdownComponents = useMemo(() => {
     if (!componentCatalog) return markdownComponents;
     return {

@@ -59,4 +59,120 @@ describe('generatePrompt', () => {
     expect(prompt).toContain('"primary"');
     expect(prompt).toContain('"secondary"');
   });
+
+  it('describes optional fields', () => {
+    const defs: ComponentDefinitions = {
+      Card: {
+        description: 'A card',
+        props: z.object({
+          title: z.string(),
+          subtitle: z.string().optional()
+        }),
+        component: () => null
+      }
+    };
+
+    const prompt = generatePrompt(defs);
+    expect(prompt).toContain('title: string');
+    expect(prompt).toContain('subtitle: string?');
+  });
+
+  it('describes nested objects', () => {
+    const defs: ComponentDefinitions = {
+      Panel: {
+        description: 'A panel',
+        props: z.object({
+          config: z.object({
+            color: z.string()
+          })
+        }),
+        component: () => null
+      }
+    };
+
+    const prompt = generatePrompt(defs);
+    expect(prompt).toContain('config');
+    expect(prompt).toContain('color');
+  });
+
+  it('describes array fields', () => {
+    const defs: ComponentDefinitions = {
+      List: {
+        description: 'A list',
+        props: z.object({
+          items: z.array(z.string())
+        }),
+        component: () => null
+      }
+    };
+
+    const prompt = generatePrompt(defs);
+    expect(prompt).toContain('items: string[]');
+  });
+
+  it('describes nullable fields', () => {
+    const defs: ComponentDefinitions = {
+      Card: {
+        description: 'A card',
+        props: z.object({
+          label: z.string().nullable()
+        }),
+        component: () => null
+      }
+    };
+
+    const prompt = generatePrompt(defs);
+    expect(prompt).toContain('label: string | null');
+  });
+
+  it('includes field descriptions', () => {
+    const defs: ComponentDefinitions = {
+      Card: {
+        description: 'A card',
+        props: z.object({
+          city: z.string().describe('City name')
+        }),
+        component: () => null
+      }
+    };
+
+    const prompt = generatePrompt(defs);
+    expect(prompt).toContain('// City name');
+  });
+
+  it('describes boolean fields', () => {
+    const defs: ComponentDefinitions = {
+      Toggle: {
+        description: 'A toggle',
+        props: z.object({
+          enabled: z.boolean()
+        }),
+        component: () => null
+      }
+    };
+
+    const prompt = generatePrompt(defs);
+    expect(prompt).toContain('enabled: boolean');
+  });
+
+  it('handles multiple components', () => {
+    const defs: ComponentDefinitions = {
+      Alpha: {
+        description: 'First component',
+        props: z.object({ a: z.string() }),
+        component: () => null
+      },
+      Beta: {
+        description: 'Second component',
+        props: z.object({ b: z.number() }),
+        component: () => null
+      }
+    };
+
+    const prompt = generatePrompt(defs);
+    expect(prompt).toContain('Alpha');
+    expect(prompt).toContain('Beta');
+    expect(prompt).toContain('First component');
+    expect(prompt).toContain('Second component');
+  });
 });
