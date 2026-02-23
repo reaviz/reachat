@@ -24,6 +24,7 @@
 | Tiptap | 3.x | Rich text editor framework |
 | Floating UI | 0.27.x | Popup positioning |
 | motion | 12.x | Animations |
+| Zod | 3.x / 4.x | Runtime prop validation (optional peer dep) |
 
 ## Directory Structure
 
@@ -39,6 +40,7 @@ reachat/
 │   ├── ChatBubble/        # Chat bubble component
 │   ├── ChatInput/         # Input field components
 │   ├── ChatSuggestions/   # Suggestion chips component
+│   ├── ComponentCatalog/  # Dynamic component rendering system
 │   ├── Markdown/          # Markdown rendering (code, tables, etc.)
 │   ├── MessageStatus/     # Loading/status indicators
 │   ├── SessionMessages/   # Message display components
@@ -267,6 +269,87 @@ input: {
 }
 ```
 
+### Dynamic Component Rendering (ComponentCatalog)
+
+The library includes a **ComponentCatalog** system that allows LLMs to render custom React components via JSON specifications inside fenced code blocks. Located in `src/ComponentCatalog/`.
+
+See `src/ComponentCatalog/README.md` for full usage documentation with examples.
+
+#### How It Works
+
+1. Developer defines components with Zod schemas via `componentCatalog()`
+2. The catalog is passed to `<Chat components={catalog}>` which wires in a remark plugin and `<pre>` override
+3. When the LLM emits a ` ```component` code block containing JSON, the system validates the spec against the Zod schema and renders the matching React component
+4. `catalog.systemPrompt()` generates LLM instructions describing available components
+
+#### Key Files
+
+| File | Purpose |
+|------|---------|
+| `componentCatalog.ts` | Main factory function — creates the catalog object |
+| `types.ts` | TypeScript interfaces (`ComponentDefinition`, `ComponentSpec`, etc.) |
+| `ComponentPre.tsx` | `<pre>` override that intercepts code blocks by language tag |
+| `ComponentRenderer.tsx` | Validates JSON and renders components with error boundary |
+| `validateSpec.ts` | Four-step validation pipeline (JSON parse, lookup, Zod, children) |
+| `generatePrompt.ts` | Generates LLM system prompt from definitions |
+| `ComponentError.tsx` | Default error display component |
+| `chartComponentDef.tsx` | Pre-built chart component definition using reaviz |
+
+#### Quick Example
+
+```tsx
+import { componentCatalog } from 'reachat';
+import { z } from 'zod';
+
+const catalog = componentCatalog({
+  WeatherCard: {
+    description: 'Displays weather for a city',
+    props: z.object({
+      city: z.string(),
+      temperature: z.number()
+    }),
+    component: ({ city, temperature }) => (
+      <div>{city}: {temperature}°F</div>
+    )
+  }
+});
+
+<Chat sessions={sessions} components={catalog}>
+  <SessionMessages />
+  <ChatInput />
+</Chat>
+```
+
+The LLM emits:
+```
+\`\`\`component
+{ "type": "WeatherCard", "props": { "city": "SF", "temperature": 68 } }
+\`\`\`
+```
+
+#### JSON Spec Format
+
+- **Single**: `{ "type": "Name", "props": { ... } }`
+- **Multiple**: `[{ "type": "A", "props": {} }, { "type": "B", "props": {} }]`
+- **Nested**: `{ "type": "Parent", "props": {}, "children": [{ "type": "Child", "props": {} }] }`
+
+#### Error Handling
+
+Four error types: `invalid_json`, `unknown_component`, `invalid_props`, `render_error`. Each component is wrapped in a React error boundary. Custom error UI via `onError` callback in options.
+
+#### Dependencies
+
+- **zod** (optional peer dep) — required when using `componentCatalog()`
+- **reaviz** (optional peer dep) — required only when using `createChartComponentDef()`
+
+#### Test Coverage
+
+Tests are co-located in the `ComponentCatalog/` directory:
+- `componentCatalog.spec.ts` — factory function tests
+- `validateSpec.spec.ts` — 18 validation pipeline test cases
+- `generatePrompt.spec.ts` — system prompt generation tests
+- `chartComponentDef.spec.ts` — chart definition validation tests
+
 ## Code Conventions
 
 ### Import Aliases
@@ -396,6 +479,7 @@ The build creates three outputs:
   - Hard breaks and placeholders
   - Mention support for @mentions
 - **@floating-ui/react**: Smart popup positioning for suggestion dropdowns
+- **zod**: Runtime prop validation for ComponentCatalog (optional peer dependency)
 
 ## Common Tasks
 
