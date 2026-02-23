@@ -23,8 +23,8 @@ export default {
 // ---------------------------------------------------------------------------
 
 function zodString() {
-  return {
-    _def: { typeName: 'ZodString', description: undefined },
+  const schema = {
+    _def: { typeName: 'ZodString', description: undefined as string | undefined },
     parse: (v: unknown) => String(v),
     safeParse: (v: unknown) => {
       if (typeof v === 'string') return { success: true as const, data: v };
@@ -34,14 +34,15 @@ function zodString() {
       };
     },
     describe(d: string) {
-      return { ...this, _def: { ...this._def, description: d } };
+      return { ...schema, _def: { ...schema._def, description: d } };
     }
   };
+  return schema;
 }
 
 function zodNumber() {
-  return {
-    _def: { typeName: 'ZodNumber', description: undefined },
+  const schema = {
+    _def: { typeName: 'ZodNumber', description: undefined as string | undefined },
     parse: (v: unknown) => Number(v),
     safeParse: (v: unknown) => {
       if (typeof v === 'number') return { success: true as const, data: v };
@@ -51,14 +52,15 @@ function zodNumber() {
       };
     },
     describe(d: string) {
-      return { ...this, _def: { ...this._def, description: d } };
+      return { ...schema, _def: { ...schema._def, description: d } };
     }
   };
+  return schema;
 }
 
 function zodEnum(values: string[]) {
-  return {
-    _def: { typeName: 'ZodEnum', values, description: undefined },
+  const schema = {
+    _def: { typeName: 'ZodEnum', values, description: undefined as string | undefined },
     parse: (v: unknown) => String(v),
     safeParse: (v: unknown) => {
       if (values.includes(String(v)))
@@ -73,9 +75,10 @@ function zodEnum(values: string[]) {
       };
     },
     describe(d: string) {
-      return { ...this, _def: { ...this._def, description: d } };
+      return { ...schema, _def: { ...schema._def, description: d } };
     }
   };
+  return schema;
 }
 
 function zodOptional(inner: any) {
@@ -99,7 +102,23 @@ function zodArray(inner: any) {
           success: false as const,
           error: { issues: [{ message: 'Expected array', path: [] }] }
         };
-      return { success: true as const, data: v.map(inner.parse) };
+      const results: any[] = [];
+      for (let i = 0; i < v.length; i++) {
+        const r = inner.safeParse(v[i]);
+        if (!r.success) {
+          return {
+            success: false as const,
+            error: {
+              issues: r.error.issues.map((issue: any) => ({
+                ...issue,
+                path: [i, ...issue.path]
+              }))
+            }
+          };
+        }
+        results.push(r.data);
+      }
+      return { success: true as const, data: results };
     }
   };
 }

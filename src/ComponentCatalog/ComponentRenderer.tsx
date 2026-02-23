@@ -58,7 +58,7 @@ export const ComponentRenderer: FC<ComponentRendererProps> = ({
     <div className={theme.component?.base}>
       {specs.map((spec, i) => (
         <SpecRenderer
-          key={`${spec.type}-${i}`}
+          key={`${spec.type}-${i}-${stableKey(spec)}`}
           spec={spec}
           definitions={definitions}
           options={options}
@@ -84,6 +84,8 @@ const SpecRenderer: FC<SpecRendererProps> = ({
 }) => {
   const definition = definitions[spec.type];
 
+  // Defensive: validateSpec checks top-level specs, but SpecRenderer is also
+  // called recursively for children and may be used standalone in the future.
   if (!definition) {
     const error: ComponentCatalogError = {
       type: 'unknown_component',
@@ -105,7 +107,7 @@ const SpecRenderer: FC<SpecRendererProps> = ({
   // Render children recursively
   const children = spec.children?.map((child, i) => (
     <SpecRenderer
-      key={`${child.type}-${i}`}
+      key={`${child.type}-${i}-${stableKey(child)}`}
       spec={child}
       definitions={definitions}
       options={options}
@@ -135,6 +137,16 @@ const SpecRenderer: FC<SpecRendererProps> = ({
     );
   }
 };
+
+/** Simple string hash for a stable, content-based React key. */
+function stableKey(spec: ComponentSpec): string {
+  const str = JSON.stringify(spec.props);
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 31 + str.charCodeAt(i)) | 0;
+  }
+  return (h >>> 0).toString(36);
+}
 
 function errorTitle(type: ComponentCatalogError['type']): string {
   switch (type) {

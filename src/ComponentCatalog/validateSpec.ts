@@ -96,7 +96,10 @@ function validateSingleSpec(
   }
 
   // 3. Validate props via Zod schema
-  const props = spec.props && typeof spec.props === 'object' ? spec.props : {};
+  const props =
+    spec.props && typeof spec.props === 'object' && !Array.isArray(spec.props)
+      ? spec.props
+      : {};
   const parseResult = definition.props.safeParse(props);
 
   if (!parseResult.success) {

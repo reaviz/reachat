@@ -56,14 +56,10 @@ export function componentCatalog(
 ): ComponentCatalog {
   const language = options?.language ?? 'component';
 
-  // Create a pre-configured remark plugin with the language option baked in.
-  // This is a unified Plugin: a function that returns a transformer.
-  const plugin: Plugin = () => {
-    // remarkComponent returns a plugin function; calling it with
-    // options produces the transformer.
-    const transform = (remarkComponent as Function)({ language });
-    return transform;
-  };
+  // remarkComponent is a unified attacher: calling it with options returns
+  // a transformer.  We need to wrap it so unified receives a proper Plugin.
+  const plugin: Plugin = () =>
+    (remarkComponent as (opts?: { language?: string }) => any)({ language });
 
   const Pre = createComponentPre(definitions, options);
 
