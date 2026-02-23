@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { z } from 'zod';
 import { generatePrompt } from './generatePrompt';
 import type { ComponentDefinitions } from './types';
 
@@ -11,17 +12,10 @@ describe('generatePrompt', () => {
     const defs: ComponentDefinitions = {
       WeatherCard: {
         description: 'Shows weather for a city',
-        props: {
-          _def: {
-            typeName: 'ZodObject',
-            shape: {
-              city: { _def: { typeName: 'ZodString' } },
-              temperature: { _def: { typeName: 'ZodNumber' } }
-            }
-          },
-          parse: (v: unknown) => v,
-          safeParse: (v: unknown) => ({ success: true, data: v })
-        },
+        props: z.object({
+          city: z.string(),
+          temperature: z.number()
+        }),
         component: () => null
       }
     };
@@ -40,11 +34,7 @@ describe('generatePrompt', () => {
     const defs: ComponentDefinitions = {
       Test: {
         description: 'A test component',
-        props: {
-          _def: { typeName: 'ZodObject', shape: {} },
-          parse: (v: unknown) => v,
-          safeParse: (v: unknown) => ({ success: true, data: v })
-        },
+        props: z.object({}),
         component: () => null
       }
     };
@@ -58,21 +48,9 @@ describe('generatePrompt', () => {
     const defs: ComponentDefinitions = {
       Card: {
         description: 'A card',
-        props: {
-          _def: {
-            typeName: 'ZodObject',
-            shape: {
-              variant: {
-                _def: {
-                  typeName: 'ZodEnum',
-                  values: ['primary', 'secondary']
-                }
-              }
-            }
-          },
-          parse: (v: unknown) => v,
-          safeParse: (v: unknown) => ({ success: true, data: v })
-        },
+        props: z.object({
+          variant: z.enum(['primary', 'secondary'])
+        }),
         component: () => null
       }
     };

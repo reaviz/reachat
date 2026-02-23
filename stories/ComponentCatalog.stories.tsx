@@ -1,5 +1,6 @@
 import { Meta } from '@storybook/react';
 import { subHours } from 'date-fns';
+import { z } from 'zod';
 import {
   Chat,
   Session,
@@ -17,158 +18,6 @@ export default {
   title: 'Demos/ComponentCatalog',
   component: Chat
 } as Meta;
-
-// ---------------------------------------------------------------------------
-// Simple Zod-like schemas (inline, no zod dependency needed for stories)
-// ---------------------------------------------------------------------------
-
-function zodString() {
-  const schema = {
-    _def: { typeName: 'ZodString', description: undefined as string | undefined },
-    parse: (v: unknown) => String(v),
-    safeParse: (v: unknown) => {
-      if (typeof v === 'string') return { success: true as const, data: v };
-      return {
-        success: false as const,
-        error: { issues: [{ message: 'Expected string', path: [] }] }
-      };
-    },
-    describe(d: string) {
-      return { ...schema, _def: { ...schema._def, description: d } };
-    }
-  };
-  return schema;
-}
-
-function zodNumber() {
-  const schema = {
-    _def: { typeName: 'ZodNumber', description: undefined as string | undefined },
-    parse: (v: unknown) => Number(v),
-    safeParse: (v: unknown) => {
-      if (typeof v === 'number') return { success: true as const, data: v };
-      return {
-        success: false as const,
-        error: { issues: [{ message: 'Expected number', path: [] }] }
-      };
-    },
-    describe(d: string) {
-      return { ...schema, _def: { ...schema._def, description: d } };
-    }
-  };
-  return schema;
-}
-
-function zodEnum(values: string[]) {
-  const schema = {
-    _def: { typeName: 'ZodEnum', values, description: undefined as string | undefined },
-    parse: (v: unknown) => String(v),
-    safeParse: (v: unknown) => {
-      if (values.includes(String(v)))
-        return { success: true as const, data: String(v) };
-      return {
-        success: false as const,
-        error: {
-          issues: [
-            { message: `Expected one of: ${values.join(', ')}`, path: [] }
-          ]
-        }
-      };
-    },
-    describe(d: string) {
-      return { ...schema, _def: { ...schema._def, description: d } };
-    }
-  };
-  return schema;
-}
-
-function zodOptional(inner: any) {
-  return {
-    _def: { typeName: 'ZodOptional', innerType: inner },
-    parse: (v: unknown) => (v === undefined ? undefined : inner.parse(v)),
-    safeParse: (v: unknown) => {
-      if (v === undefined) return { success: true as const, data: undefined };
-      return inner.safeParse(v);
-    }
-  };
-}
-
-function zodArray(inner: any) {
-  return {
-    _def: { typeName: 'ZodArray', type: inner },
-    parse: (v: unknown) => (v as any[]).map(inner.parse),
-    safeParse: (v: unknown) => {
-      if (!Array.isArray(v))
-        return {
-          success: false as const,
-          error: { issues: [{ message: 'Expected array', path: [] }] }
-        };
-      const results: any[] = [];
-      for (let i = 0; i < v.length; i++) {
-        const r = inner.safeParse(v[i]);
-        if (!r.success) {
-          return {
-            success: false as const,
-            error: {
-              issues: r.error.issues.map((issue: any) => ({
-                ...issue,
-                path: [i, ...issue.path]
-              }))
-            }
-          };
-        }
-        results.push(r.data);
-      }
-      return { success: true as const, data: results };
-    }
-  };
-}
-
-function zodObject(shape: Record<string, any>) {
-  return {
-    _def: { typeName: 'ZodObject', shape },
-    parse: (v: unknown) => {
-      const obj = v as Record<string, unknown>;
-      const result: Record<string, any> = {};
-      for (const [key, schema] of Object.entries(shape)) {
-        result[key] = schema.parse(obj[key]);
-      }
-      return result;
-    },
-    safeParse: (v: unknown) => {
-      try {
-        if (!v || typeof v !== 'object') {
-          return {
-            success: false as const,
-            error: { issues: [{ message: 'Expected object', path: [] }] }
-          };
-        }
-        const obj = v as Record<string, unknown>;
-        const result: Record<string, any> = {};
-        for (const [key, schema] of Object.entries(shape)) {
-          const r = schema.safeParse(obj[key]);
-          if (!r.success) {
-            return {
-              success: false as const,
-              error: {
-                issues: r.error.issues.map((i: any) => ({
-                  ...i,
-                  path: [key, ...i.path]
-                }))
-              }
-            };
-          }
-          result[key] = r.data;
-        }
-        return { success: true as const, data: result };
-      } catch {
-        return {
-          success: false as const,
-          error: { issues: [{ message: 'Validation failed', path: [] }] }
-        };
-      }
-    }
-  };
-}
 
 // ---------------------------------------------------------------------------
 // Sample components
@@ -335,10 +184,10 @@ const RowLayout = ({
 const catalog = componentCatalog({
   WeatherCard: {
     description: 'Displays current weather conditions for a city',
-    props: zodObject({
-      city: zodString().describe('City name'),
-      temperature: zodNumber().describe('Temperature in Fahrenheit'),
-      condition: zodEnum(['sunny', 'cloudy', 'rainy']).describe(
+    props: z.object({
+      city: z.string().describe('City name'),
+      temperature: z.number().describe('Temperature in Fahrenheit'),
+      condition: z.enum(['sunny', 'cloudy', 'rainy']).describe(
         'Current weather condition'
       )
     }),
@@ -346,10 +195,10 @@ const catalog = componentCatalog({
   },
   AlertBox: {
     description: 'Displays an alert or notification box',
-    props: zodObject({
-      title: zodString().describe('Alert title'),
-      message: zodString().describe('Alert message body'),
-      severity: zodEnum(['info', 'warning', 'error', 'success']).describe(
+    props: z.object({
+      title: z.string().describe('Alert title'),
+      message: z.string().describe('Alert message body'),
+      severity: z.enum(['info', 'warning', 'error', 'success']).describe(
         'Severity level'
       )
     }),
@@ -357,9 +206,9 @@ const catalog = componentCatalog({
   },
   StatusBadge: {
     description: 'Displays a status indicator badge',
-    props: zodObject({
-      label: zodString().describe('Display label'),
-      status: zodEnum(['online', 'offline', 'away', 'busy']).describe(
+    props: z.object({
+      label: z.string().describe('Display label'),
+      status: z.enum(['online', 'offline', 'away', 'busy']).describe(
         'Current status'
       )
     }),
@@ -367,18 +216,18 @@ const catalog = componentCatalog({
   },
   DataCard: {
     description: 'Displays a single metric or KPI',
-    props: zodObject({
-      title: zodString().describe('Metric name'),
-      value: zodNumber().describe('Metric value'),
-      unit: zodOptional(zodString()),
-      trend: zodOptional(zodString())
+    props: z.object({
+      title: z.string().describe('Metric name'),
+      value: z.number().describe('Metric value'),
+      unit: z.string().optional(),
+      trend: z.string().optional()
     }),
     component: DataCard as any
   },
   Row: {
     description:
       'A horizontal flex layout container — use as a parent to lay out child components side-by-side',
-    props: zodObject({}),
+    props: z.object({}),
     component: RowLayout as any
   }
 });
