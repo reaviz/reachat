@@ -1,15 +1,16 @@
-import type { ComponentDefinitions, ZodLike } from './types';
+import type { z } from 'zod';
+import type { ComponentDefinitions } from './types';
 
 /**
  * Generates a human-readable description of a Zod schema's shape
  * by inspecting its internal `_def` structure.
  *
  * Falls back to `Record<string, any>` if the schema internals are
- * not accessible (non-Zod schema, or a version we don't recognise).
+ * not accessible.
  */
-function describeZodShape(schema: ZodLike): string {
+function describeZodShape(schema: z.ZodType): string {
   try {
-    const def = schema._def;
+    const def = (schema as any)._def;
     if (!def) {
       return 'Record<string, any>';
     }
@@ -23,7 +24,7 @@ function describeZodShape(schema: ZodLike): string {
 
       const fields: string[] = [];
       for (const [key, value] of Object.entries(shape)) {
-        fields.push(`  ${key}: ${describeZodField(value as ZodLike)}`);
+        fields.push(`  ${key}: ${describeZodField(value as z.ZodType)}`);
       }
       return `{\n${fields.join(',\n')}\n}`;
     }
@@ -34,7 +35,7 @@ function describeZodShape(schema: ZodLike): string {
   }
 }
 
-function describeZodField(field: ZodLike): string {
+function describeZodField(field: z.ZodType): string {
   try {
     const def = (field as any)?._def;
     if (!def) {

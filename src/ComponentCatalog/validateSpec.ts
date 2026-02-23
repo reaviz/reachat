@@ -103,18 +103,17 @@ function validateSingleSpec(
   const parseResult = definition.props.safeParse(props);
 
   if (!parseResult.success) {
-    const err = parseResult as {
-      success: false;
-      error: { issues: { message: string; path: (string | number)[] }[] };
-    };
     return {
       ok: false,
       error: {
         type: 'invalid_props',
-        message: `Invalid props for "${componentType}": ${err.error.issues.map(i => i.message).join(', ')}`,
+        message: `Invalid props for "${componentType}": ${parseResult.error.issues.map(i => i.message).join(', ')}`,
         raw,
         componentType,
-        issues: err.error.issues
+        issues: parseResult.error.issues.map(i => ({
+          message: i.message,
+          path: i.path as (string | number)[]
+        }))
       }
     };
   }

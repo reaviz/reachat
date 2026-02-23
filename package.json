@@ -72,7 +72,8 @@
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18",
-    "reaviz": ">=16"
+    "reaviz": ">=16",
+    "zod": "^3.22.0"
   },
   "peerDependenciesMeta": {
     "reaviz": {

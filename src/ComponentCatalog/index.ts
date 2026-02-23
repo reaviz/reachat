@@ -10,6 +10,5 @@ export type {
   ComponentCatalogOptions,
   ComponentDefinition,
   ComponentDefinitions,
-  ComponentSpec,
-  ZodLike
+  ComponentSpec
 } from './types';

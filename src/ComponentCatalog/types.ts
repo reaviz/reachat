@@ -1,26 +1,7 @@
 import { FC, ReactNode } from 'react';
 import { Components } from 'react-markdown';
 import { Plugin } from 'unified';
-
-/**
- * A Zod-like schema object. We only depend on the `.parse()` and
- * `.safeParse()` interface so any Zod-compatible library works and
- * the `zod` package itself can be tree-shaken if the consumer
- * doesn't use schema validation.
- */
-export interface ZodLike<T = any> {
-  parse: (data: unknown) => T;
-  safeParse: (
-    data: unknown
-  ) =>
-    | { success: true; data: T }
-    | {
-        success: false;
-        error: { issues: { message: string; path: (string | number)[] }[] };
-      };
-  /** Optional — used by `generatePrompt` to produce a JSON Schema. */
-  _def?: any;
-}
+import type { z } from 'zod';
 
 /**
  * Definition for a single component in the catalog.
@@ -35,10 +16,10 @@ export interface ComponentDefinition<
   description: string;
 
   /**
-   * Zod (or Zod-compatible) schema that validates the props the LLM provides.
+   * Zod schema that validates the props the LLM provides.
    * Used for runtime validation and system-prompt generation.
    */
-  props: ZodLike<TProps>;
+  props: z.ZodType<TProps>;
 
   /**
    * The React component to render. Receives validated props and optional

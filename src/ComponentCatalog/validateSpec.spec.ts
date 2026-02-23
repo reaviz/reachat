@@ -1,55 +1,23 @@
 import { describe, it, expect } from 'vitest';
+import { z } from 'zod';
 import { validateSpec } from './validateSpec';
-import type {
-  ComponentDefinitions,
-  ComponentCatalogError,
-  ZodLike
-} from './types';
-
-// Minimal Zod-like schema for testing
-function mockSchema(expectedKeys: string[]): ZodLike {
-  return {
-    parse: (v: unknown) => v,
-    safeParse: (v: unknown) => {
-      if (!v || typeof v !== 'object') {
-        return {
-          success: false as const,
-          error: {
-            issues: [
-              { message: 'Expected object', path: [] as (string | number)[] }
-            ]
-          }
-        };
-      }
-      for (const key of expectedKeys) {
-        if (!(key in (v as Record<string, unknown>))) {
-          return {
-            success: false as const,
-            error: {
-              issues: [
-                {
-                  message: `Missing "${key}"`,
-                  path: [key] as (string | number)[]
-                }
-              ]
-            }
-          };
-        }
-      }
-      return { success: true as const, data: v };
-    }
-  };
-}
+import type { ComponentDefinitions, ComponentCatalogError } from './types';
 
 const definitions: ComponentDefinitions = {
   WeatherCard: {
     description: 'Weather display',
-    props: mockSchema(['city', 'temperature']),
+    props: z.object({
+      city: z.string(),
+      temperature: z.number()
+    }),
     component: () => null
   },
   AlertBox: {
     description: 'Alert display',
-    props: mockSchema(['title', 'message']),
+    props: z.object({
+      title: z.string(),
+      message: z.string()
+    }),
     component: () => null
   }
 };
