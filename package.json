@@ -78,6 +78,9 @@
   "peerDependenciesMeta": {
     "reaviz": {
       "optional": true
+    },
+    "zod": {
+      "optional": true
     }
   },
   "devDependencies": {
