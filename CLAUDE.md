@@ -24,7 +24,7 @@
 | Tiptap | 3.x | Rich text editor framework |
 | Floating UI | 0.27.x | Popup positioning |
 | motion | 12.x | Animations |
-| Zod | 3.x / 4.x | Runtime prop validation (optional peer dep) |
+| Zod | 3.x / 4.x | Runtime prop validation |
 
 ## Directory Structure
 
@@ -339,7 +339,7 @@ Four error types: `invalid_json`, `unknown_component`, `invalid_props`, `render_
 
 #### Dependencies
 
-- **zod** (optional peer dep) — required when using `componentCatalog()`
+- **zod** — regular dependency, used for runtime prop validation and system prompt generation
 - **reaviz** (optional peer dep) — required only when using `createChartComponentDef()`
 
 #### Test Coverage
@@ -479,7 +479,7 @@ The build creates three outputs:
   - Hard breaks and placeholders
   - Mention support for @mentions
 - **@floating-ui/react**: Smart popup positioning for suggestion dropdowns
-- **zod**: Runtime prop validation for ComponentCatalog (optional peer dependency)
+- **zod**: Runtime prop validation for ComponentCatalog
 
 ## Common Tasks
 

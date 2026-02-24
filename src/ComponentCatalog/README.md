@@ -61,11 +61,12 @@ Here's the current weather:
 
 ## Installation
 
-The ComponentCatalog requires **zod** as a peer dependency for runtime prop
-validation. If you use the built-in chart helper, **reaviz** is also needed.
+**zod** is included as a regular dependency of reachat — no extra install needed.
+If you use the built-in chart helper, **reaviz** is also required (optional peer
+dep).
 
 ```bash
-npm install reachat zod
+npm install reachat
 # Optional, for chart support:
 npm install reaviz
 ```

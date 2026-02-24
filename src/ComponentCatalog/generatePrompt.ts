@@ -63,9 +63,6 @@ function describeJsonSchemaProperty(
 /**
  * Converts a Zod schema into a concise, human-readable props description
  * using Zod's public `z.toJSONSchema()` API.
- *
- * Zod is loaded lazily so that modules importing `generatePrompt` do not
- * crash at load time when zod is not installed.
  */
 function describeProps(schema: z.ZodType): string {
   try {
