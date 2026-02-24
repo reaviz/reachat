@@ -1,4 +1,5 @@
 import React from 'react';
+import { z } from 'zod';
 import { ChartRenderer } from '@/Markdown/charts/ChartRenderer';
 import type { ChartConfig } from '@/Markdown/charts/types';
 import type { ComponentDefinition } from './types';
@@ -13,10 +14,7 @@ import type { ComponentDefinition } from './types';
  * Because reaviz is an optional peer dependency, this adapter is
  * fully tree-shakeable — it only loads reaviz code when imported.
  *
- * Both `zod` and `reaviz` are required when this helper is used;
- * the imports are deferred to the call site so that consumers who
- * never call `createChartComponentDef()` are not forced to install
- * either dependency.
+ * Both `zod` and `reaviz` are required when this helper is used.
  *
  * @example
  * ```tsx
@@ -41,10 +39,6 @@ import type { ComponentDefinition } from './types';
  * ```
  */
 export function createChartComponentDef(): ComponentDefinition {
-  // Lazy-require zod so the module can be loaded without zod installed.
-  // Consumers who never call this function won't trigger the import.
-  const { z } = require('zod');
-
   const chartPropsSchema = z.object({
     type: z
       .enum([

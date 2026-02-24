@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import type { ComponentDefinitions } from './types';
 
 /**
@@ -68,7 +69,6 @@ function describeJsonSchemaProperty(
  */
 function describeProps(schema: { _def?: unknown }): string {
   try {
-    const { z } = require('zod');
     const jsonSchema = z.toJSONSchema(schema) as Record<string, any>;
     if (jsonSchema.type === 'object' && jsonSchema.properties) {
       return describeJsonSchemaProperty(jsonSchema);
