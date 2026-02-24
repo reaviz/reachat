@@ -36,7 +36,7 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
   const { theme, markdownComponents } = useContext(ChatContext);
 
   const components = useMemo<Components>(() => {
-    const defaultComponents: Components = {
+    const defaultComponents: Components & Record<string, unknown> = {
       code: ({ className, children, ...props }) => (
         <CodeHighlighter
           {...props}
@@ -82,13 +82,17 @@ export const Markdown: FC<MarkdownWrapperProps> = ({
       ol: props => (
         <ol {...props} className={cn(theme.messages.message.markdown.ol)} />
       ),
-      redact: (props: any) => (
+      // 'redact' is a custom element created by remarkRedact, not a standard
+      // HTML tag, so it falls outside react-markdown's Components type.
+      redact: ((props: Record<string, unknown>) => (
         <Redact
-          value={props['data-redact-value'] || props.children}
+          value={
+            (props['data-redact-value'] as string) || (props.children as string)
+          }
           allowToggle={true}
-          tooltipText={`${props['data-redact-name'] || 'Sensitive'} information - Click to toggle`}
+          tooltipText={`${(props['data-redact-name'] as string) || 'Sensitive'} information - Click to toggle`}
         />
-      )
+      )) as unknown
     };
 
     // Merge: defaults < context components < prop components

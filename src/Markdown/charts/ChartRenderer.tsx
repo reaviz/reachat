@@ -18,9 +18,9 @@ import {
   LinearYAxis
 } from 'reaviz';
 import { cn } from 'reablocks';
-import type { ChartConfig, ChartType } from '@/Markdown/plugins/remarkChart';
+import type { ChartConfig, ChartType } from './types';
 import { ChatContext } from '@/ChatContext';
-import { ChartError } from './ChartError';
+import { ComponentError } from './ComponentError';
 
 export interface ChartRendererProps {
   /**
@@ -52,13 +52,15 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
       }));
 
     if (!chartData || chartData.length === 0) {
-      return <ChartError variant="warning" message="No chart data available" />;
+      return (
+        <ComponentError variant="warning" message="No chart data available" />
+      );
     }
 
     for (const point of chartData) {
       if (typeof point.data !== 'number' || isNaN(point.data)) {
         return (
-          <ChartError
+          <ComponentError
             message={`Invalid data point: ${JSON.stringify(point)}`}
           />
         );
@@ -132,10 +134,12 @@ export const ChartRenderer: FC<ChartRendererProps> = ({
           );
 
         default:
-          return <ChartError message={`Unknown chart type: ${type}`} />;
+          return <ComponentError message={`Unknown chart type: ${type}`} />;
       }
     } catch (error) {
-      return <ChartError message={`Chart render error: ${String(error)}`} />;
+      return (
+        <ComponentError message={`Chart render error: ${String(error)}`} />
+      );
     }
   }, [type, data, width, height]);
 

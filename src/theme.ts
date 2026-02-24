@@ -159,6 +159,9 @@ export interface ChatTheme {
       title: string;
     };
   };
+  component?: {
+    base?: string;
+  };
 }
 
 export const chatTheme: ChatTheme = {
@@ -409,5 +412,8 @@ export const chatTheme: ChatTheme = {
       ].join(' '),
       title: 'text-yellow-600 dark:text-yellow-400 text-sm font-medium mb-2'
     }
+  },
+  component: {
+    base: 'my-4'
   }
 };

@@ -11,3 +11,4 @@ export * from './ChatBubble';
 export * from './ChatSuggestions';
 export * from './MessageStatus';
 export * from './useAgUi';
+export * from './ComponentCatalog';

@@ -3,15 +3,15 @@ import { subHours } from 'date-fns';
 import {
   Chat,
   Session,
-  remarkChart,
-  chartComponents,
   SessionsList,
   SessionGroups,
   NewSessionButton,
   SessionMessages,
   ChatInput,
   SessionMessagePanel,
-  SessionMessagesHeader
+  SessionMessagesHeader,
+  componentCatalog,
+  createChartComponentDef
 } from '../src';
 
 export default {
@@ -19,61 +19,78 @@ export default {
   component: Chat
 } as Meta;
 
+// Register charts via the component catalog
+const catalog = componentCatalog({
+  Chart: createChartComponentDef()
+});
+
 const barChartData = {
-  type: 'bar',
-  data: [
-    { key: 'JavaScript', data: 35 },
-    { key: 'Python', data: 28 },
-    { key: 'TypeScript', data: 22 },
-    { key: 'Go', data: 15 },
-    { key: 'Rust', data: 10 }
-  ],
-  width: 450,
-  height: 300,
-  title: 'Programming Language Popularity'
+  type: 'Chart',
+  props: {
+    type: 'bar',
+    data: [
+      { key: 'JavaScript', data: 35 },
+      { key: 'Python', data: 28 },
+      { key: 'TypeScript', data: 22 },
+      { key: 'Go', data: 15 },
+      { key: 'Rust', data: 10 }
+    ],
+    width: 450,
+    height: 300,
+    title: 'Programming Language Popularity'
+  }
 };
 
 const lineChartData = {
-  type: 'line',
-  data: [
-    { key: 'Jan', data: 100 },
-    { key: 'Feb', data: 150 },
-    { key: 'Mar', data: 180 },
-    { key: 'Apr', data: 220 },
-    { key: 'May', data: 280 },
-    { key: 'Jun', data: 350 }
-  ],
-  width: 450,
-  height: 250,
-  title: 'Monthly Revenue Growth'
+  type: 'Chart',
+  props: {
+    type: 'line',
+    data: [
+      { key: 'Jan', data: 100 },
+      { key: 'Feb', data: 150 },
+      { key: 'Mar', data: 180 },
+      { key: 'Apr', data: 220 },
+      { key: 'May', data: 280 },
+      { key: 'Jun', data: 350 }
+    ],
+    width: 450,
+    height: 250,
+    title: 'Monthly Revenue Growth'
+  }
 };
 
 const pieChartData = {
-  type: 'pie',
-  data: [
-    { key: 'Desktop', data: 45 },
-    { key: 'Mobile', data: 35 },
-    { key: 'Tablet', data: 15 },
-    { key: 'Other', data: 5 }
-  ],
-  width: 350,
-  height: 300,
-  title: 'Device Usage Distribution'
+  type: 'Chart',
+  props: {
+    type: 'pie',
+    data: [
+      { key: 'Desktop', data: 45 },
+      { key: 'Mobile', data: 35 },
+      { key: 'Tablet', data: 15 },
+      { key: 'Other', data: 5 }
+    ],
+    width: 350,
+    height: 300,
+    title: 'Device Usage Distribution'
+  }
 };
 
 const areaChartData = {
-  type: 'area',
-  data: [
-    { key: 'Week 1', data: 50 },
-    { key: 'Week 2', data: 80 },
-    { key: 'Week 3', data: 65 },
-    { key: 'Week 4', data: 95 },
-    { key: 'Week 5', data: 120 },
-    { key: 'Week 6', data: 140 }
-  ],
-  width: 450,
-  height: 250,
-  title: 'Weekly User Engagement'
+  type: 'Chart',
+  props: {
+    type: 'area',
+    data: [
+      { key: 'Week 1', data: 50 },
+      { key: 'Week 2', data: 80 },
+      { key: 'Week 3', data: 65 },
+      { key: 'Week 4', data: 95 },
+      { key: 'Week 5', data: 120 },
+      { key: 'Week 6', data: 140 }
+    ],
+    width: 450,
+    height: 250,
+    title: 'Weekly User Engagement'
+  }
 };
 
 const sessionWithCharts: Session[] = [
@@ -85,10 +102,11 @@ const sessionWithCharts: Session[] = [
     conversations: [
       {
         id: 'conversation-1',
-        question: 'Can you show me the programming language popularity data as a bar chart?',
+        question:
+          'Can you show me the programming language popularity data as a bar chart?',
         response: `Sure! Here's a bar chart showing the popularity of programming languages based on recent survey data:
 
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(barChartData, null, 2)}
 \`\`\`
 
@@ -97,10 +115,11 @@ As you can see, JavaScript leads the pack with 35% popularity, followed by Pytho
       },
       {
         id: 'conversation-2',
-        question: 'What about the monthly revenue growth? Can you visualize that?',
+        question:
+          'What about the monthly revenue growth? Can you visualize that?',
         response: `Absolutely! Here's a line chart showing the monthly revenue growth for the first half of the year:
 
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(lineChartData, null, 2)}
 \`\`\`
 
@@ -109,10 +128,11 @@ The trend shows consistent growth, with revenue increasing from $100K in January
       },
       {
         id: 'conversation-3',
-        question: 'How about device usage? A pie chart would be great for that.',
+        question:
+          'How about device usage? A pie chart would be great for that.',
         response: `Great choice! Pie charts are perfect for showing distribution. Here's the device usage breakdown:
 
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(pieChartData, null, 2)}
 \`\`\`
 
@@ -132,24 +152,25 @@ const sessionWithMultipleCharts: Session[] = [
     conversations: [
       {
         id: 'conversation-1',
-        question: 'Can you give me a comprehensive analysis with multiple charts?',
+        question:
+          'Can you give me a comprehensive analysis with multiple charts?',
         response: `Of course! Let me present the quarterly analysis with multiple visualizations.
 
 ## Revenue Trend
 
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(lineChartData, null, 2)}
 \`\`\`
 
 ## User Engagement
 
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(areaChartData, null, 2)}
 \`\`\`
 
 ## Market Share by Device
 
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(pieChartData, null, 2)}
 \`\`\`
 
@@ -163,27 +184,25 @@ ${JSON.stringify(pieChartData, null, 2)}
   }
 ];
 
+const storyStyle = {
+  position: 'absolute' as const,
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  padding: 20,
+  margin: 20,
+  borderRadius: 5
+};
+
 export const BarChartExample = () => {
   return (
-    <div
-      className="dark:bg-gray-950 bg-white"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        borderRadius: 5
-      }}
-    >
+    <div className="dark:bg-gray-950 bg-white" style={storyStyle}>
       <Chat
         viewType="console"
         sessions={sessionWithCharts}
         activeSessionId="session-charts"
-        remarkPlugins={[remarkChart]}
-        markdownComponents={chartComponents}
+        components={catalog}
       >
         <SessionsList>
           <NewSessionButton />
@@ -201,25 +220,12 @@ export const BarChartExample = () => {
 
 export const MultipleCharts = () => {
   return (
-    <div
-      className="dark:bg-gray-950 bg-white"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        borderRadius: 5
-      }}
-    >
+    <div className="dark:bg-gray-950 bg-white" style={storyStyle}>
       <Chat
         viewType="console"
         sessions={sessionWithMultipleCharts}
         activeSessionId="session-multi-charts"
-        remarkPlugins={[remarkChart]}
-        markdownComponents={chartComponents}
+        components={catalog}
       >
         <SessionsList>
           <NewSessionButton />
@@ -237,18 +243,21 @@ export const MultipleCharts = () => {
 
 export const AllChartTypes = () => {
   const sparklineData = {
-    type: 'sparkline',
-    data: [
-      { key: '1', data: 10 },
-      { key: '2', data: 25 },
-      { key: '3', data: 15 },
-      { key: '4', data: 35 },
-      { key: '5', data: 30 },
-      { key: '6', data: 45 },
-      { key: '7', data: 40 }
-    ],
-    width: 200,
-    height: 50
+    type: 'Chart',
+    props: {
+      type: 'sparkline',
+      data: [
+        { key: '1', data: 10 },
+        { key: '2', data: 25 },
+        { key: '3', data: 15 },
+        { key: '4', data: 35 },
+        { key: '5', data: 30 },
+        { key: '6', data: 45 },
+        { key: '7', data: 40 }
+      ],
+      width: 200,
+      height: 50
+    }
   };
 
   const sessionAllCharts: Session[] = [
@@ -264,27 +273,27 @@ export const AllChartTypes = () => {
           response: `Here's a showcase of all available chart types:
 
 ## Bar Chart
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(barChartData, null, 2)}
 \`\`\`
 
 ## Line Chart
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(lineChartData, null, 2)}
 \`\`\`
 
 ## Area Chart
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(areaChartData, null, 2)}
 \`\`\`
 
 ## Pie Chart
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(pieChartData, null, 2)}
 \`\`\`
 
 ## Sparkline (inline mini-chart)
-\`\`\`chart
+\`\`\`component
 ${JSON.stringify(sparklineData, null, 2)}
 \`\`\`
 
@@ -301,25 +310,12 @@ Each chart type is optimized for different use cases:
   ];
 
   return (
-    <div
-      className="dark:bg-gray-950 bg-white"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        borderRadius: 5
-      }}
-    >
+    <div className="dark:bg-gray-950 bg-white" style={storyStyle}>
       <Chat
         viewType="console"
         sessions={sessionAllCharts}
         activeSessionId="session-all-charts"
-        remarkPlugins={[remarkChart]}
-        markdownComponents={chartComponents}
+        components={catalog}
       >
         <SessionsList>
           <NewSessionButton />
@@ -340,14 +336,7 @@ export const ChatViewWithCharts = () => {
     <div
       className="dark:bg-gray-950 bg-white"
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        padding: 20,
-        margin: 20,
-        borderRadius: 5,
+        ...storyStyle,
         maxWidth: 800,
         marginLeft: 'auto',
         marginRight: 'auto'
@@ -357,8 +346,7 @@ export const ChatViewWithCharts = () => {
         viewType="chat"
         sessions={sessionWithCharts}
         activeSessionId="session-charts"
-        remarkPlugins={[remarkChart]}
-        markdownComponents={chartComponents}
+        components={catalog}
       >
         <SessionMessagePanel>
           <SessionMessagesHeader />
