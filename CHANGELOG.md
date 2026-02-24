@@ -1,3 +1,8 @@
+# 3.0.0 - 2/24/26
+- [feature] implement component catalog for dynamic components
+- [breaking] update charts components to leverage new component library
+- [chore] upgrade typescript
+
 # 2.2.0 - 2/17/26
 - [feature] ag-ui protocol adapter
 - [feature] redact plugin and support for other plugins
