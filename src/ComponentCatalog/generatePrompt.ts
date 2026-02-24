@@ -67,7 +67,7 @@ function describeJsonSchemaProperty(
  * Zod is loaded lazily so that modules importing `generatePrompt` do not
  * crash at load time when zod is not installed.
  */
-function describeProps(schema: { _def?: unknown }): string {
+function describeProps(schema: z.ZodType): string {
   try {
     const jsonSchema = z.toJSONSchema(schema) as Record<string, any>;
     if (jsonSchema.type === 'object' && jsonSchema.properties) {
