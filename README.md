@@ -92,3 +92,22 @@ Thanks to all our contributors!
 
 <a href="https://github.com/reaviz/reachat/graphs/contributors"><img src="https://opencollective.com/reaviz/contributors.svg?width=890" /></a>
 
+
+
+## Installation
+
+```bash
+# Installation instructions
+```
+
+
+## Usage
+
+```python
+# Usage examples
+```
+
+
+## Contributing
+
+Contributions are welcome!
