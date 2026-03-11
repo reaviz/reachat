@@ -12,4 +12,5 @@ export * from './SessionsList';
 export * from './theme';
 export * from './types';
 export * from './useAgUi';
+export * from './ComponentCatalog';
 export * from './utils';

@@ -9,6 +9,7 @@ import remarkMath from 'remark-math';
 import remarkYoutube from 'remark-youtube';
 import type { Plugin } from 'unified';
 
+import type { ComponentCatalog } from './ComponentCatalog/types';
 import type { ChatViewType } from './ChatContext';
 import { ChatContext } from './ChatContext';
 import { ChatThemeContext } from './ChatThemeContext';
@@ -63,6 +64,18 @@ export interface ChatProps extends PropsWithChildren {
    * Use this to add support for custom elements like charts.
    */
   markdownComponents?: Components;
+
+  /**
+   * A component catalog created via `componentCatalog()`.
+   * Enables dynamic component rendering from LLM responses using
+   * fenced code blocks (e.g. ```component).
+   *
+   * This automatically wires in the necessary remark plugin and
+   * markdown component overrides. For advanced control, use the
+   * catalog's `remarkPlugin` and `components` properties directly
+   * via the `remarkPlugins` and `markdownComponents` props instead.
+   */
+  components?: ComponentCatalog;
 
   /**
    * Whether to display a loading state.
@@ -120,6 +133,7 @@ export const Chat: FC<ChatProps> = ({
   onNewSession,
   remarkPlugins = defaultRemarkPlugins,
   markdownComponents,
+  components: componentCatalog,
   disabled,
   style,
   className
@@ -176,12 +190,28 @@ export const Chat: FC<ChatProps> = ({
     [sessions, internalActiveSessionID]
   );
 
+  // Merge catalog plugin/components when a componentCatalog is provided
+  const mergedRemarkPlugins = useMemo(() => {
+    if (!componentCatalog) return remarkPlugins as Plugin[];
+    return [...(remarkPlugins as Plugin[]), componentCatalog.remarkPlugin];
+  }, [remarkPlugins, componentCatalog]);
+
+  // User-provided markdownComponents spread last so they can override
+  // catalog defaults (e.g. a custom `pre` handler).
+  const mergedMarkdownComponents = useMemo(() => {
+    if (!componentCatalog) return markdownComponents;
+    return {
+      ...componentCatalog.components,
+      ...markdownComponents
+    };
+  }, [markdownComponents, componentCatalog]);
+
   const contextValue = useMemo(
     () => ({
       sessions,
       activeSession,
-      remarkPlugins: remarkPlugins as Plugin[],
-      markdownComponents,
+      remarkPlugins: mergedRemarkPlugins,
+      markdownComponents: mergedMarkdownComponents,
       theme,
       disabled,
       isLoading,
@@ -201,8 +231,8 @@ export const Chat: FC<ChatProps> = ({
       viewType,
       disabled,
       theme,
-      remarkPlugins,
-      markdownComponents,
+      mergedRemarkPlugins,
+      mergedMarkdownComponents,
       sessions,
       activeSession,
       internalActiveSessionID,

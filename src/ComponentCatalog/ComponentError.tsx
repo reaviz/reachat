@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react';
 import { ChatContext } from '@/ChatContext';
 
-export interface ChartErrorProps {
+export interface ComponentErrorProps {
   /**
    * The visual style variant of the error display.
    * Defaults to 'error'.
@@ -24,7 +24,7 @@ export interface ChartErrorProps {
   code?: string;
 }
 
-export const ChartError: FC<ChartErrorProps> = ({
+export const ComponentError: FC<ComponentErrorProps> = ({
   variant = 'error',
   title,
   message,

@@ -187,6 +187,9 @@ export interface ChatTheme {
       title: string;
     };
   };
+  component?: {
+    base?: string;
+  };
 }
 
 export const unifyChatTheme: ChatTheme = {
@@ -614,5 +617,8 @@ export const chatTheme: ChatTheme = {
       base: 'my-4 p-4 border rounded border-warning bg-warning-background/20 text-warning',
       title: 'text-warning text-sm font-medium mb-2'
     }
+  },
+  component: {
+    base: 'my-4'
   }
 };
