@@ -189,26 +189,26 @@ export interface ChatTheme {
   };
 }
 
-export const chatTheme: ChatTheme = {
+export const unifyChatTheme: ChatTheme = {
   base: 'text-content-text-neutral-base',
   console: 'flex w-full gap-4 h-full',
   companion: 'w-full h-full overflow-hidden',
   empty: 'text-center flex-1 min-h-0',
   appbar: 'flex p-5',
   status: {
-    base: 'py-2 px-3 rounded-lg bg-gray-100/50 dark:bg-gray-800/30',
+    base: 'py-2 px-3 rounded-lg bg-background-neutral-raised-4/50',
     header: 'flex items-center gap-2',
     icon: {
       base: 'flex-shrink-0 w-4 h-4',
-      loading: 'text-primary',
-      complete: 'text-success',
-      error: 'text-error'
+      loading: 'text-content-assets-brand-base',
+      complete: 'text-content-assets-semantic-success-base',
+      error: 'text-content-assets-semantic-error-base'
     },
     text: {
       base: 'text-sm',
-      loading: 'text-gray-600 dark:text-gray-400',
-      complete: 'text-gray-600 dark:text-gray-400',
-      error: 'text-red-600 dark:text-red-400'
+      loading: 'text-content-text-neutral-2',
+      complete: 'text-content-assets-semantic-success-base',
+      error: 'text-content-assets-semantic-error-base'
     },
     steps: {
       base: 'mt-1 ml-6 space-y-0.5',
@@ -216,9 +216,9 @@ export const chatTheme: ChatTheme = {
         base: 'flex items-center gap-2',
         icon: 'flex-shrink-0 w-3.5 h-3.5',
         text: 'text-sm',
-        loading: 'text-gray-500 dark:text-gray-500',
-        complete: 'text-gray-500 dark:text-gray-500',
-        error: 'text-red-500 dark:text-red-400'
+        loading: 'text-content-text-neutral-3',
+        complete: 'text-content-assets-semantic-success-base',
+        error: 'text-content-assets-semantic-error-base'
       }
     }
   },
@@ -230,9 +230,8 @@ export const chatTheme: ChatTheme = {
     group: 'text-xs text-content-text-neutral-3 mt-4 hover:bg-transparent mb-1',
     create: 'relative mb-4 rounded-[10px] text-white',
     session: {
-      base: 'group my-1 rounded-[10px] p-2 text-content-text-neutral-1 border border-transparent',
-      active:
-        'border-select-menu-items-color-item-stroke-row-hover [&_button]:opacity-100!',
+      base: 'group my-1 rounded-[10px] p-2 text-content-text-neutral-1 border border-transparent hover:border-stroke-neutral-4',
+      active: 'border-stroke-focused-highlight [&_button]:opacity-100!',
       delete: '[&>svg]:w-4 [&>svg]:h-4 opacity-0 group-hover:opacity-50!'
     }
   },
@@ -250,11 +249,11 @@ export const chatTheme: ChatTheme = {
     message: {
       base: 'mt-4 mb-4 flex flex-col p-0 rounded-sm border-none bg-transparent',
       question:
-        'relative font-semibold mb-4 px-4 py-4 pb-2 rounded-3xl rounded-br-none text-typography border bg-(--background-neutral-raised-5) border-(--stroke-neutral-5)',
+        'relative font-semibold mb-4 px-4 py-4 pb-2 rounded-3xl rounded-br-none text-content-text-neutral-base border bg-(--background-neutral-raised-5) border-(--stroke-neutral-5)',
       response:
         'relative data-[compact=false]:px-4 text-content-text-neutral-base',
       overlay:
-        "overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-linear-to-b after:from-transparent after:to-effects-shadows-base-2-xl",
+        "overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-linear-to-b after:from-transparent after:to-effects-shadows-base-base",
       cursor: 'inline-block w-1 h-4 bg-current',
       expand: 'absolute bottom-1 right-1 z-10',
       scrollToBottom: {
@@ -334,16 +333,16 @@ export const chatTheme: ChatTheme = {
       'w-full border border-(--color-inputs-colors-normal-stroke-resting) rounded-3xl px-3 py-1 pr-16 hover:border-(--color-inputs-colors-normal-stroke-hover) focus-within:border-(--color-inputs-colors-normal-stroke-selected) focus-within:bg-(--color-inputs-colors-normal-background-selected) text-(--color-inputs-colors-normal-text-input-text-filled) placeholder:text-(--color-inputs-colors-normal-text-input-text-resting) after:hidden after:mx-10! [&>textarea]:w-full [&>textarea]:flex-none [&>textarea]:outline-none [&>textarea]:resize-none',
     actions: {
       base: 'absolute flex gap-2 items-center right-2 inset-y-1/2 -translate-y-1/2 z-10',
-      send: 'px-3 py-3 hover:bg-primary-hover rounded-full size-8',
+      send: 'px-3 py-3 hover:bg-background-brand-1 rounded-full size-8',
       stop: 'px-2 py-2 bg-content-assets-semantic-error-base text-white rounded-full hover:bg-content-assets-semantic-error-1 size-8'
     },
     dropzone: {
       base: 'relative w-full',
-      active: 'ring-1 ring-primary ring-offset-2 rounded-3xl',
+      active: 'ring-1 ring-stroke-brand-base ring-offset-2 rounded-3xl',
       overlay:
-        'absolute inset-0 bg-primary/10 border-2 border-dashed border-primary rounded-3xl flex items-center justify-center gap-1.5 z-20 backdrop-blur-sm',
-      text: 'text-primary font-medium text-sm',
-      icon: '[&>svg]:w-4 [&>svg]:h-4 text-primary'
+        'absolute inset-0 bg-background-brand-base/10 border-2 border-dashed border-stroke-brand-base rounded-3xl flex items-center justify-center gap-1.5 z-20 backdrop-blur-sm',
+      text: 'text-content-assets-brand-base font-medium text-sm',
+      icon: '[&>svg]:w-4 [&>svg]:h-4 text-content-assets-brand-base'
     },
     popup: {
       base: 'rounded-lg shadow-lg overflow-hidden min-w-[200px] max-w-[300px] border border-stroke-neutral-4',
@@ -383,11 +382,10 @@ export const chatTheme: ChatTheme = {
     item: {
       base: [
         'rounded-full! max-w-full py-2 px-4',
-        'bg-gray-100 border-gray-200 hover:bg-gray-200 hover:border-gray-300 text-gray-700',
-        'dark:bg-gray-800/50 dark:border-gray-700 dark:hover:bg-gray-700/70 dark:hover:border-gray-600 dark:text-gray-200',
-        '[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-primary [&>svg]:flex-shrink-0'
+        'bg-background-neutral-raised-3 border-stroke-neutral-2 hover:bg-background-neutral-raised-4 hover:border-stroke-neutral-3 text-content-text-neutral-base',
+        '[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-content-assets-brand-base [&>svg]:flex-shrink-0'
       ].join(' '),
-      icon: 'w-4 h-4 text-primary flex-shrink-0',
+      icon: 'w-4 h-4 text-content-assets-brand-base flex-shrink-0',
       text: 'text-sm truncate'
     }
   },
@@ -407,3 +405,5 @@ export const chatTheme: ChatTheme = {
     }
   }
 };
+
+export const chatTheme = unifyChatTheme;

@@ -265,9 +265,7 @@ export const Empty = () => {
                 ))}
                 {groups.length === 0 && (
                   <div className="flex flex-1 items-center justify-center">
-                    <p className="text-gray-500">
-                      No sessions yet. Start a new session!
-                    </p>
+                    <p>No sessions yet. Start a new session!</p>
                   </div>
                 )}
               </>
@@ -280,7 +278,7 @@ export const Empty = () => {
               <div className="flex flex-col gap-2 items-center justify-center h-full">
                 <Placeholder className="block dark:hidden" />
                 <PlaceholderDark className="hidden dark:block" />
-                <p className="text-gray-500 max-w-[400px] text-center">
+                <p className="max-w-[400px] text-center">
                   Welcome to Reachat, a UI library for effortlessly building and
                   customizing chat experiences with Tailwind.
                 </p>
@@ -339,7 +337,7 @@ const CustomMessagesHeader: FC<any> = () => {
 
   return (
     <div>
-      <h6 className="text-gray-400">
+      <h6 className="">
         <DateFormat date={activeSession?.createdAt} format="MMMM dd, yyyy" />
       </h6>
       <h1 className="text-2xl font-semibold">{activeSession?.title}</h1>
@@ -349,7 +347,7 @@ const CustomMessagesHeader: FC<any> = () => {
 
 const CustomMessageQuestion: FC<any> = ({ question, files }) => (
   <>
-    <span className="text-lg font-semibold text-primary">
+    <span className="text-lg font-semibold">
       This is my question: {question}
     </span>
     <MessageFiles files={files}>
@@ -359,13 +357,13 @@ const CustomMessageQuestion: FC<any> = ({ question, files }) => (
 );
 
 const CustomMessageResponse: FC<any> = ({ response }) => (
-  <blockquote className="border-l border-blue-500 pl-2">
+  <blockquote className="border-l pl-2">
     This is the response: {response}
   </blockquote>
 );
 
 const CustomMessageFile: FC<any> = ({ name, type }) => (
-  <Chip size="small" className="rounded-full border border-gray-700">
+  <Chip size="small" className="rounded-full border">
     {name || type}
   </Chip>
 );
@@ -375,7 +373,7 @@ const CustomMessageSource: FC<any> = ({ title, url, image }) => {
   return (
     <Chip
       size="small"
-      className="rounded-full border border-blue-500 border-opacity-50"
+      className="rounded-full border"
       onClick={() => alert('take me to ' + url)}
       start={
         image && (
@@ -467,7 +465,7 @@ export const CustomComponents = () => {
       >
         <SessionsList>
           <NewSessionButton>
-            <button className="text-primary">New Session</button>
+            <button>New Session</button>
           </NewSessionButton>
           <Divider variant="secondary" />
           <SessionGroups>

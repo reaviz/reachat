@@ -108,7 +108,7 @@ export const Empty = () => {
               <div className="flex flex-col gap-2 items-center justify-center h-full">
                 <Placeholder className="h-[50%] block dark:hidden" />
                 <PlaceholderDark className="h-[50%] hidden dark:block" />
-                <p className="text-gray-500 max-w-[400px] text-center">
+                <p className="max-w-[400px] text-center">
                   Welcome to Reachat, a UI library for effortlessly building and
                   customizing chat experiences with Tailwind.
                 </p>
@@ -331,10 +331,10 @@ export const TemplatesViewWithTitle = () => {
         onDeleteSession={() => alert('delete!')}
         onSendMessage={createSendMessageHandler(setSessions, activeId)}
       >
-        <div className="dark:text-white text-gray-500 w-full h-full overflow-hidden flex flex-col">
+        <div className="w-full h-full overflow-hidden flex flex-col">
           <div className="flex-1 overflow-y-auto">
             <div className="flex flex-col gap-2 items-center justify-center py-8">
-              <p className="text-gray-500 max-w-[400px] text-center mb-4">
+              <p className="max-w-[400px] text-center mb-4">
                 Welcome to Reachat, a UI library for effortlessly building and
                 customizing chat experiences with Tailwind.
               </p>
@@ -413,10 +413,10 @@ export const TemplatesViewWithAppBar = () => {
           onDeleteSession={() => alert('delete!')}
           onSendMessage={createSendMessageHandler(setSessions, activeId)}
         >
-          <div className="dark:text-white text-gray-500 w-full h-full overflow-hidden flex flex-col">
+          <div className="w-full h-full overflow-hidden flex flex-col">
             <div className="flex-1 overflow-y-auto">
               <div className="flex flex-col gap-2 items-center justify-center pb-2">
-                <p className="text-gray-500 max-w-[400px] text-center mb-4">
+                <p className="max-w-[400px] text-center mb-4">
                   Welcome to Reachat, a UI library for effortlessly building and
                   customizing chat experiences with Tailwind.
                 </p>

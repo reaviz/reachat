@@ -227,7 +227,7 @@ export const EmptySession = () => {
               <div className="flex flex-col gap-4 items-center justify-center h-full">
                 <Placeholder className="w-48 block dark:hidden" />
                 <PlaceholderDark className="w-48 hidden dark:block" />
-                <p className="text-gray-500 max-w-[400px] text-center">
+                <p className="max-w-[400px] text-center">
                   Welcome! Start a conversation or choose one of the suggestions
                   below.
                 </p>
@@ -336,7 +336,7 @@ const CustomSuggestionItem = ({
   onClick?: (c: string) => void;
 }) => (
   <button
-    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-md hover:shadow-lg"
+    className="px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
     onClick={() => onClick?.(content || '')}
   >
     <span className="flex items-center gap-2">

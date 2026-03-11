@@ -135,8 +135,8 @@ export const Basic: Story = {
 export const PortalExample: Story = {
   render: args => (
     <>
-      <div className="relative w-[400px] h-[300px] border-2 border-gray-300 flex justify-center items-center">
-        <p className="text-gray-600">The ChatBubble will portal here!</p>
+      <div className="relative w-[400px] h-[300px] border-2 flex justify-center items-center">
+        <p className="">The ChatBubble will portal here!</p>
         <ChatBubble className="absolute left-5 bottom-5" {...args}>
           <ChatSample />
         </ChatBubble>
@@ -215,8 +215,8 @@ export const WithChildrenPortal: Story = {
 
     return (
       <>
-        <div className="relative w-[400px] h-[300px] border-2 border-gray-300 flex flex-col justify-center items-center">
-          <p className="text-gray-600">The ChatBubble will portal here!</p>
+        <div className="relative w-[400px] h-[300px] border-2 flex flex-col justify-center items-center">
+          <p className="">The ChatBubble will portal here!</p>
           <ChatBubble {...args} className="absolute left-5 bottom-5">
             <div
               className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"

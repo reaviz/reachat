@@ -89,7 +89,7 @@ export const FileUploads = () => {
           <SessionMessages />
           <ChatInput
             attachIcon={
-              <AttachIcon className={cn({ 'text-green-500': selectedFile })} />
+              <AttachIcon />
             }
             allowedFiles={['.pdf', '.docx']}
           />
