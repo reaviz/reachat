@@ -240,19 +240,19 @@ export const WithAppBar = () => {
           <AppBar
             content={
               <div className="flex items-center justify-between w-full">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <IconButton
                     size="small"
                     variant="outline"
-                    className="rounded-full p-3"
+                    className="rounded-full p-3 border-secondary"
                   >
                     <IconSearch className="w-4 h-4" />
                   </IconButton>
                 </div>
-                <div className="flex-grow flex justify-center items-center">
+                <div className="grow flex justify-center items-center">
                   <ReachatLogo className="h-6 w-auto" />
                 </div>
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <IconButton
                     variant="text"
                     size="small"

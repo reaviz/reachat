@@ -1,24 +1,5 @@
-import { useState, useRef, FC, useContext, useEffect } from 'react';
-import { Meta } from '@storybook/react';
-import {
-  Chat,
-  Session,
-  SessionsList,
-  SessionsGroup,
-  SessionListItem,
-  NewSessionButton,
-  SessionMessages,
-  SessionGroups,
-  ChatInput,
-  SessionListItemProps,
-  SessionMessagePanel,
-  SessionMessagesHeader,
-  ChatContext,
-  SessionMessage,
-  MessageStatus,
-  MessageStatusStep,
-  MessageStatusState
-} from '../src';
+import type { Meta } from '@storybook/react';
+import { subHours, subMinutes } from 'date-fns';
 import {
   Card,
   Chip,
@@ -30,22 +11,46 @@ import {
   ListItem,
   Menu
 } from 'reablocks';
-import { subMinutes, subHours } from 'date-fns';
-import MenuIcon from './assets/menu.svg?react';
-import Placeholder from './assets/placeholder.svg?react';
-import PlaceholderDark from './assets/placeholder-dark.svg?react';
+import type { FC } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+
 import { MessageActions } from '@/SessionMessages';
 import { MessageFiles } from '@/SessionMessages';
 import { MessageQuestion } from '@/SessionMessages';
 import { MessageResponse } from '@/SessionMessages';
 import { MessageSources } from '@/SessionMessages';
+
+import type {
+  MessageStatusState,
+  MessageStatusStep,
+  Session,
+  SessionListItemProps
+} from '../src';
+import {
+  Chat,
+  ChatContext,
+  ChatInput,
+  MessageStatus,
+  NewSessionButton,
+  SessionGroups,
+  SessionListItem,
+  SessionMessage,
+  SessionMessagePanel,
+  SessionMessages,
+  SessionMessagesHeader,
+  SessionsGroup,
+  SessionsList
+} from '../src';
+import MenuIcon from './assets/menu.svg?react';
+import Placeholder from './assets/placeholder.svg?react';
+import PlaceholderDark from './assets/placeholder-dark.svg?react';
 import {
   createSendMessageHandler,
   fakeSessions,
-  sessionWithCSVFiles,
-  sessionWithSources,
   sessionsWithFiles,
-  sessionsWithPartialConversation
+  sessionsWithPartialConversation,
+  sessionWithCSVFiles,
+  sessionWithSources
 } from './examples';
 
 export default {
@@ -344,7 +349,7 @@ const CustomMessagesHeader: FC<any> = () => {
 
 const CustomMessageQuestion: FC<any> = ({ question, files }) => (
   <>
-    <span className="text-lg font-semibold text-blue-500">
+    <span className="text-lg font-semibold text-primary">
       This is my question: {question}
     </span>
     <MessageFiles files={files}>
@@ -403,6 +408,7 @@ const CustomSessionListItem: FC<SessionListItemProps> = ({
             ref={btnRef}
             size="small"
             variant="text"
+            className="text-secondary"
             onClick={e => {
               e.stopPropagation();
               setOpen(true);
@@ -461,7 +467,7 @@ export const CustomComponents = () => {
       >
         <SessionsList>
           <NewSessionButton>
-            <button className="text-blue-500">New Session</button>
+            <button className="text-primary">New Session</button>
           </NewSessionButton>
           <Divider variant="secondary" />
           <SessionGroups>
@@ -564,7 +570,9 @@ export const WithToolStatus = () => {
         delay: 1500,
         action: () => {
           setSteps(prev =>
-            prev.map(s => (s.id === '1' ? { ...s, status: 'complete' as const } : s))
+            prev.map(s =>
+              s.id === '1' ? { ...s, status: 'complete' as const } : s
+            )
           );
         }
       },
@@ -573,7 +581,11 @@ export const WithToolStatus = () => {
         action: () => {
           setSteps(prev => [
             ...prev,
-            { id: '2', text: 'Searching for dependencies', status: 'loading' as const }
+            {
+              id: '2',
+              text: 'Searching for dependencies',
+              status: 'loading' as const
+            }
           ]);
         }
       },
@@ -581,7 +593,9 @@ export const WithToolStatus = () => {
         delay: 3500,
         action: () => {
           setSteps(prev =>
-            prev.map(s => (s.id === '2' ? { ...s, status: 'complete' as const } : s))
+            prev.map(s =>
+              s.id === '2' ? { ...s, status: 'complete' as const } : s
+            )
           );
         }
       },
@@ -590,7 +604,11 @@ export const WithToolStatus = () => {
         action: () => {
           setSteps(prev => [
             ...prev,
-            { id: '3', text: 'Analyzing code patterns', status: 'loading' as const }
+            {
+              id: '3',
+              text: 'Analyzing code patterns',
+              status: 'loading' as const
+            }
           ]);
         }
       },
@@ -598,7 +616,9 @@ export const WithToolStatus = () => {
         delay: 6000,
         action: () => {
           setSteps(prev =>
-            prev.map(s => (s.id === '3' ? { ...s, status: 'complete' as const } : s))
+            prev.map(s =>
+              s.id === '3' ? { ...s, status: 'complete' as const } : s
+            )
           );
           setStatus('complete');
         }
@@ -620,7 +640,7 @@ export const WithToolStatus = () => {
           id: 'conversation-1',
           question: 'Can you analyze my codebase and find any issues?',
           response:
-            'I\'ll analyze your codebase now. Let me read through the files and check for any potential issues.',
+            "I'll analyze your codebase now. Let me read through the files and check for any potential issues.",
           createdAt: new Date()
         }
       ]
@@ -670,7 +690,11 @@ export const WithToolStatus = () => {
                   <div className="mt-4">
                     <MessageStatus
                       status={status}
-                      text={status === 'complete' ? 'Analysis complete' : 'Analyzing codebase...'}
+                      text={
+                        status === 'complete'
+                          ? 'Analysis complete'
+                          : 'Analyzing codebase...'
+                      }
                       steps={steps}
                     />
                   </div>

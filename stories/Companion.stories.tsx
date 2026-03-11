@@ -102,11 +102,7 @@ export const Empty = () => {
         viewType="companion"
         onDeleteSession={() => alert('delete!')}
       >
-        <SessionsList>
-          <NewSessionButton />
-          <SessionGroups />
-        </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
+        <div className="flex flex-col h-full">
           <SessionMessages
             newSessionContent={
               <div className="flex flex-col gap-2 items-center justify-center h-full">
@@ -119,8 +115,8 @@ export const Empty = () => {
               </div>
             }
           />
+          <ChatInput />
         </div>
-        <ChatInput />
       </Chat>
     </div>
   );
@@ -168,19 +164,19 @@ export const WithAppBar = () => {
         <AppBar
           content={
             <div className="flex items-center justify-between w-full">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <IconButton
                   size="small"
                   variant="outline"
-                  className="rounded-full p-3"
+                  className="rounded-full p-3 border-secondary"
                 >
                   <IconSearch className="w-4 h-4" />
                 </IconButton>
               </div>
-              <div className="flex-grow flex justify-center items-center">
+              <div className="grow flex justify-center items-center">
                 <ReachatLogo className="h-6 w-auto" />
               </div>
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <IconButton
                   variant="text"
                   size="small"
@@ -208,15 +204,15 @@ export const WithAppBar = () => {
 
 const AppBarContent = memo(({ onClose }: { onClose?: () => void }) => (
   <div className="flex items-center justify-between w-full">
-    <div className="flex-shrink-0">
+    <div className="shrink-0">
       <IconButton size="small" variant="outline" className="rounded-full p-3">
         <IconSearch className="size-4" />
       </IconButton>
     </div>
-    <div className="flex-grow flex justify-center items-center">
+    <div className="grow flex justify-center items-center">
       <ReachatLogo className="h-6 w-auto" />
     </div>
-    <div className="flex-shrink-0">
+    <div className="shrink-0">
       <IconButton
         variant="text"
         size="small"

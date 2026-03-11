@@ -193,16 +193,16 @@ export const chatTheme: ChatTheme = {
   base: 'text-content-text-neutral-base',
   console: 'flex w-full gap-4 h-full',
   companion: 'w-full h-full overflow-hidden',
-  empty: 'text-center flex-1',
+  empty: 'text-center flex-1 min-h-0',
   appbar: 'flex p-5',
   status: {
     base: 'py-2 px-3 rounded-lg bg-gray-100/50 dark:bg-gray-800/30',
     header: 'flex items-center gap-2',
     icon: {
       base: 'flex-shrink-0 w-4 h-4',
-      loading: 'text-blue-500 dark:text-blue-400',
-      complete: 'text-green-500 dark:text-green-400',
-      error: 'text-red-500 dark:text-red-400'
+      loading: 'text-primary',
+      complete: 'text-success',
+      error: 'text-error'
     },
     text: {
       base: 'text-sm',
@@ -385,9 +385,9 @@ export const chatTheme: ChatTheme = {
         'rounded-full! max-w-full py-2 px-4',
         'bg-gray-100 border-gray-200 hover:bg-gray-200 hover:border-gray-300 text-gray-700',
         'dark:bg-gray-800/50 dark:border-gray-700 dark:hover:bg-gray-700/70 dark:hover:border-gray-600 dark:text-gray-200',
-        '[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-blue-500 [&>svg]:dark:text-blue-400 [&>svg]:flex-shrink-0'
+        '[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-primary [&>svg]:flex-shrink-0'
       ].join(' '),
-      icon: 'w-4 h-4 text-blue-500 dark:text-blue-400 flex-shrink-0',
+      icon: 'w-4 h-4 text-primary flex-shrink-0',
       text: 'text-sm truncate'
     }
   },

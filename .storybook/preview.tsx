@@ -1,8 +1,11 @@
-import { Preview } from '@storybook/react';
-import { ThemeProvider, theme } from 'reablocks';
-import { withThemeByClassName } from '@storybook/addon-themes';
-import sbTheme from './theme';
 import '../src/index.css';
+
+import { withThemeByClassName } from '@storybook/addon-themes';
+import type { Preview } from '@storybook/react';
+import { theme, ThemeProvider } from 'reablocks';
+import React from 'react';
+
+import sbTheme from './theme';
 
 const preview: Preview = {
   decorators: [
@@ -14,10 +17,10 @@ const preview: Preview = {
     withThemeByClassName({
       themes: {
         light: 'theme-light',
-        dark: 'theme-dark',
+        dark: 'theme-dark'
       },
-      defaultTheme: 'dark',
-    }),
+      defaultTheme: 'dark'
+    })
   ],
   parameters: {
     layout: 'centered',
@@ -37,7 +40,7 @@ const preview: Preview = {
             'Markdown Plugins',
             'API',
             'Changelog',
-            'Support',
+            'Support'
           ],
           'Demos',
           '*'
