@@ -1,6 +1,7 @@
 import {
   useState,
   ReactElement,
+  ReactNode,
   useRef,
   useMemo,
   ChangeEvent,
@@ -8,7 +9,8 @@ import {
   forwardRef,
   useImperativeHandle,
   useEffect,
-  useCallback
+  useCallback,
+  FC
 } from 'react';
 import { Button, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
@@ -17,6 +19,123 @@ import { ChatContext } from '@/ChatContext';
 import { FileInput } from './FileInput';
 import { RichTextInput, RichTextInputRef } from './RichTextInput';
 import { SuggestionConfig, MentionItem, SlashCommandItem } from './types';
+
+/**
+ * Context provided to render props (actions, prepend, append)
+ * for building custom input layouts.
+ */
+export interface ChatInputRenderContext {
+  /**
+   * Whether the chat is currently loading/streaming a response.
+   */
+  isLoading: boolean;
+
+  /**
+   * Whether the input is disabled.
+   */
+  disabled: boolean;
+
+  /**
+   * The current input message value.
+   */
+  message: string;
+
+  /**
+   * Send the current message.
+   */
+  sendMessage: () => void;
+
+  /**
+   * Stop the current response generation.
+   */
+  stopMessage: () => void;
+}
+
+export type ChatInputSlot =
+  | ReactNode
+  | ((context: ChatInputRenderContext) => ReactNode);
+
+export interface SendButtonProps {
+  /**
+   * Custom icon for the send button.
+   */
+  icon?: ReactElement;
+
+  /**
+   * Whether the button is disabled.
+   */
+  disabled?: boolean;
+
+  /**
+   * Click handler.
+   */
+  onClick?: () => void;
+
+  /**
+   * Additional CSS class names.
+   */
+  className?: string;
+}
+
+export const SendButton: FC<SendButtonProps> = ({
+  icon = <SendIcon />,
+  disabled,
+  onClick,
+  className
+}) => {
+  const { theme } = useContext(ChatContext);
+  return (
+    <Button
+      title="Send"
+      className={cn(theme.input.actions.send, className)}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {icon}
+    </Button>
+  );
+};
+
+export interface StopButtonProps {
+  /**
+   * Custom icon for the stop button.
+   */
+  icon?: ReactElement;
+
+  /**
+   * Whether the button is disabled.
+   */
+  disabled?: boolean;
+
+  /**
+   * Click handler.
+   */
+  onClick?: () => void;
+
+  /**
+   * Additional CSS class names.
+   */
+  className?: string;
+}
+
+export const StopButton: FC<StopButtonProps> = ({
+  icon = <StopIcon />,
+  disabled,
+  onClick,
+  className
+}) => {
+  const { theme } = useContext(ChatContext);
+  return (
+    <Button
+      title="Stop"
+      className={cn(theme.input.actions.stop, className)}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {icon}
+    </Button>
+  );
+};
 
 export interface ChatInputProps {
   /**
@@ -75,6 +194,25 @@ export interface ChatInputProps {
    * Whether to auto-focus the input on mount (default: true)
    */
   autoFocus?: boolean;
+
+  /**
+   * Custom content rendered above the editor, inside the input container.
+   * Accepts a ReactNode or a render function receiving ChatInputRenderContext.
+   */
+  prepend?: ChatInputSlot;
+
+  /**
+   * Custom content rendered below the editor, inside the input container.
+   * Accepts a ReactNode or a render function receiving ChatInputRenderContext.
+   */
+  append?: ChatInputSlot;
+
+  /**
+   * Custom actions area replacing the default send/stop/file buttons.
+   * Accepts a ReactNode or a render function receiving ChatInputRenderContext.
+   * When provided, the default action buttons are not rendered.
+   */
+  actions?: ChatInputSlot;
 }
 
 export interface ChatInputRef {
@@ -99,6 +237,19 @@ export interface ChatInputRef {
   insertText: (text: string) => void;
 }
 
+function resolveSlot(
+  slot: ChatInputSlot | undefined,
+  context: ChatInputRenderContext
+): ReactNode {
+  if (slot === undefined || slot === null) {
+    return null;
+  }
+  if (typeof slot === 'function') {
+    return slot(context);
+  }
+  return slot;
+}
+
 export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
   (
     {
@@ -112,7 +263,10 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       commands,
       minHeight = 24,
       maxHeight = 200,
-      autoFocus = true
+      autoFocus = true,
+      prepend,
+      append,
+      actions
     },
     ref
   ) => {
@@ -201,9 +355,57 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       [commands]
     );
 
+    const renderContext: ChatInputRenderContext = useMemo(
+      () => ({
+        isLoading: isLoading ?? false,
+        disabled: disabled ?? false,
+        message,
+        sendMessage: handleSendMessage,
+        stopMessage: stopMessage ?? (() => {})
+      }),
+      [isLoading, disabled, message, handleSendMessage, stopMessage]
+    );
+
+    const defaultActions = (
+      <>
+        {allowedFiles?.length > 0 && (
+          <FileInput
+            allowedFiles={allowedFiles}
+            onFileUpload={handleFileUpload}
+            isLoading={isLoading}
+            disabled={disabled}
+            attachIcon={attachIcon}
+          />
+        )}
+        {isLoading && (
+          <StopButton
+            icon={stopIcon}
+            onClick={stopMessage}
+            disabled={disabled}
+          />
+        )}
+        <SendButton
+          icon={sendIcon}
+          onClick={handleSendMessage}
+          disabled={isLoading || disabled}
+        />
+      </>
+    );
+
+    const resolvedPrepend = resolveSlot(prepend, renderContext);
+    const resolvedAppend = resolveSlot(append, renderContext);
+    const resolvedActions =
+      actions !== undefined
+        ? resolveSlot(actions, renderContext)
+        : defaultActions;
+
     return (
       <div ref={containerRef} className={cn(theme.input.base)}>
         <div className={cn('relative flex-1', theme.input.input)}>
+          {resolvedPrepend && (
+            <div className={cn(theme.input.prepend)}>{resolvedPrepend}</div>
+          )}
+
           <RichTextInput
             ref={inputRef}
             value={message}
@@ -219,35 +421,11 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             commands={commandsConfig}
           />
 
-          <div className={cn(theme.input.actions.base)}>
-            {allowedFiles?.length > 0 && (
-              <FileInput
-                allowedFiles={allowedFiles}
-                onFileUpload={handleFileUpload}
-                isLoading={isLoading}
-                disabled={disabled}
-                attachIcon={attachIcon}
-              />
-            )}
-            {isLoading && (
-              <Button
-                title="Stop"
-                className={cn(theme.input.actions.stop)}
-                onClick={stopMessage}
-                disabled={disabled}
-              >
-                {stopIcon}
-              </Button>
-            )}
-            <Button
-              title="Send"
-              className={cn(theme.input.actions.send)}
-              onClick={handleSendMessage}
-              disabled={isLoading || disabled}
-            >
-              {sendIcon}
-            </Button>
-          </div>
+          {resolvedAppend && (
+            <div className={cn(theme.input.append)}>{resolvedAppend}</div>
+          )}
+
+          <div className={cn(theme.input.actions.base)}>{resolvedActions}</div>
         </div>
       </div>
     );

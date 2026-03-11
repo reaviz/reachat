@@ -108,6 +108,8 @@ export interface ChatTheme {
     base: string;
     upload: string;
     input: string;
+    prepend: string;
+    append: string;
     actions: {
       base: string;
       send: string;
@@ -307,6 +309,8 @@ export const chatTheme: ChatTheme = {
   input: {
     base: 'flex mt-4 relative',
     upload: ['px-5 py-2 text-gray-400 size-10', 'dark:gray-500'].join(' '),
+    prepend: '',
+    append: '',
     input: [
       'w-full border rounded-3xl px-3 py-2 pr-16 text-gray-500 border-gray-200 hover:bg-blue-100 hover:border-blue-500 after:hidden after:mx-10! bg-white [&>textarea]:w-full [&>textarea]:flex-none',
       'dark:border-gray-700/50 dark:text-gray-200 dark:bg-gray-950 dark:hover:bg-blue-950/40'
