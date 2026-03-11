@@ -112,6 +112,10 @@ export interface ChatTheme {
     append: string;
     actions: {
       base: string;
+      top: string;
+      bottom: string;
+      before: string;
+      after: string;
       send: string;
       stop: string;
     };
@@ -317,6 +321,10 @@ export const chatTheme: ChatTheme = {
     ].join(' '),
     actions: {
       base: 'absolute flex gap-2 items-center right-5 inset-y-1/2 -translate-y-1/2 z-10',
+      top: 'flex gap-2 items-center justify-end px-2 pt-1',
+      bottom: 'flex gap-2 items-center justify-end px-2 pb-1',
+      before: 'flex gap-2 items-center',
+      after: 'flex gap-2 items-center',
       send: [
         'px-3 py-3 hover:bg-primary-hover rounded-full bg-gray-200 hover:bg-gray-300 text-gray-500',
         'dark:text-white light:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700'

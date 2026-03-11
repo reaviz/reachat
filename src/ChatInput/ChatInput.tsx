@@ -213,6 +213,16 @@ export interface ChatInputProps {
    * When provided, the default action buttons are not rendered.
    */
   actions?: ChatInputSlot;
+
+  /**
+   * Where to place the actions relative to the editor.
+   * - 'inline': Absolutely positioned over the editor (default)
+   * - 'top': Rendered as a block row above the editor
+   * - 'bottom': Rendered as a block row below the editor
+   * - 'before': Rendered to the left of the editor
+   * - 'after': Rendered to the right of the editor
+   */
+  actionsPlacement?: 'inline' | 'top' | 'bottom' | 'before' | 'after';
 }
 
 export interface ChatInputRef {
@@ -266,7 +276,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       autoFocus = true,
       prepend,
       append,
-      actions
+      actions,
+      actionsPlacement = 'inline'
     },
     ref
   ) => {
@@ -399,6 +410,35 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         ? resolveSlot(actions, renderContext)
         : defaultActions;
 
+    const actionsTheme =
+      actionsPlacement === 'inline'
+        ? theme.input.actions.base
+        : theme.input.actions[actionsPlacement];
+
+    const actionsBlock = (
+      <div className={cn(actionsTheme)}>{resolvedActions}</div>
+    );
+
+    const isHorizontal =
+      actionsPlacement === 'before' || actionsPlacement === 'after';
+
+    const editorNode = (
+      <RichTextInput
+        ref={inputRef}
+        value={message}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        placeholder={placeholder}
+        disabled={isLoading || disabled}
+        autoFocus={autoFocus}
+        minHeight={minHeight}
+        maxHeight={maxHeight}
+        className={theme.input.editor.container}
+        mentions={mentionsConfig}
+        commands={commandsConfig}
+      />
+    );
+
     return (
       <div ref={containerRef} className={cn(theme.input.base)}>
         <div className={cn('relative flex-1', theme.input.input)}>
@@ -406,26 +446,25 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             <div className={cn(theme.input.prepend)}>{resolvedPrepend}</div>
           )}
 
-          <RichTextInput
-            ref={inputRef}
-            value={message}
-            onChange={handleChange}
-            onSubmit={handleSubmit}
-            placeholder={placeholder}
-            disabled={isLoading || disabled}
-            autoFocus={autoFocus}
-            minHeight={minHeight}
-            maxHeight={maxHeight}
-            className={theme.input.editor.container}
-            mentions={mentionsConfig}
-            commands={commandsConfig}
-          />
+          {actionsPlacement === 'top' && actionsBlock}
+
+          {isHorizontal ? (
+            <div className="flex items-center gap-2">
+              {actionsPlacement === 'before' && actionsBlock}
+              <div className="flex-1">{editorNode}</div>
+              {actionsPlacement === 'after' && actionsBlock}
+            </div>
+          ) : (
+            editorNode
+          )}
+
+          {actionsPlacement === 'bottom' && actionsBlock}
 
           {resolvedAppend && (
             <div className={cn(theme.input.append)}>{resolvedAppend}</div>
           )}
 
-          <div className={cn(theme.input.actions.base)}>{resolvedActions}</div>
+          {actionsPlacement === 'inline' && actionsBlock}
         </div>
       </div>
     );
