@@ -417,7 +417,7 @@ const storyStyle = {
 };
 
 export const BasicExample = () => (
-  <div className="dark:bg-gray-950 bg-white" style={storyStyle}>
+  <div className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)" style={storyStyle}>
     <Chat
       viewType="console"
       sessions={sessions}
@@ -438,7 +438,7 @@ export const BasicExample = () => (
 );
 
 export const ErrorHandling = () => (
-  <div className="dark:bg-gray-950 bg-white" style={storyStyle}>
+  <div className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)" style={storyStyle}>
     <Chat
       viewType="console"
       sessions={errorSessions}
@@ -460,7 +460,7 @@ export const ErrorHandling = () => (
 
 export const ChatViewOnly = () => (
   <div
-    className="dark:bg-gray-950 bg-white"
+    className="dark:bg-(--color-background-basic-black) bg-(--color-background-basic-white)"
     style={{ ...storyStyle, maxWidth: 800, marginLeft: 'auto', marginRight: 'auto' }}
   >
     <Chat

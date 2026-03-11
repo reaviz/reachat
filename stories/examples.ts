@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction } from 'react';
 import { subHours } from 'date-fns';
+import type { Dispatch, SetStateAction } from 'react';
 
 import type { Session } from '@/types';
 
@@ -7,10 +7,11 @@ import type { Session } from '@/types';
  * Creates an onSendMessage handler for story demos.
  * Appends a new conversation with a canned response to the active session.
  */
-export const createSendMessageHandler = (
-  setSessions: Dispatch<SetStateAction<Session[]>>,
-  activeId: string | undefined
-) =>
+export const createSendMessageHandler =
+  (
+    setSessions: Dispatch<SetStateAction<Session[]>>,
+    activeId: string | undefined
+  ) =>
   (message: string) => {
     if (!activeId) return;
 
@@ -132,7 +133,7 @@ These activities increase the concentration of greenhouse gases in the atmospher
           {
             title: 'NASA: Causes of Climate Change',
             image:
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1224px-NASA_logo.svg.png',
+              'https://www.nasa.gov/wp-content/themes/nasa/assets/images/nasa-logo.svg',
             url: 'https://climate.nasa.gov/causes/'
           },
           {

@@ -233,7 +233,7 @@ export const unifyChatTheme: ChatTheme = {
     group: 'text-xs text-content-text-neutral-3 mt-4 hover:bg-transparent mb-1',
     create: 'relative mb-4 rounded-[10px] text-white',
     session: {
-      base: 'group my-1 rounded-[10px] p-2 text-content-text-neutral-1 border border-transparent hover:border-stroke-neutral-4',
+      base: 'group my-1 rounded-[10px] p-2 text-content-text-neutral-1 border border-transparent hover:border-stroke-neutral-4 hover:bg-navigation-colors-background-row-items-hover/20!',
       active: 'border-stroke-focused-highlight [&_button]:opacity-100!',
       delete: '[&>svg]:w-4 [&>svg]:h-4 opacity-0 group-hover:opacity-50!'
     }
@@ -450,7 +450,7 @@ export const chatTheme: ChatTheme = {
     group: 'text-xs text-secondary-content mt-4 hover:bg-transparent mb-1',
     create: 'relative mb-4 rounded-[10px] text-white',
     session: {
-      base: 'group my-1 rounded-[10px] p-2 text-text-primary border border-transparent hover:border-border-secondary-hover',
+      base: 'group my-1 rounded-[10px] p-2 text-text-primary border border-transparent hover:border-border-secondary-hover hover:text-secondary!',
       active: 'border-primary [&_button]:opacity-100!',
       delete: '[&>svg]:w-4 [&>svg]:h-4 opacity-0 group-hover:opacity-50!'
     }
