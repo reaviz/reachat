@@ -2,7 +2,7 @@ import '../src/index.css';
 
 import { withThemeByClassName } from '@storybook/addon-themes';
 import type { Preview } from '@storybook/react';
-import { theme, ThemeProvider } from 'reablocks';
+import { ThemeProvider, themeUnify } from 'reablocks';
 import React from 'react';
 
 import sbTheme from './theme';
@@ -10,7 +10,7 @@ import sbTheme from './theme';
 const preview: Preview = {
   decorators: [
     Story => (
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={themeUnify}>
         <Story />
       </ThemeProvider>
     ),
