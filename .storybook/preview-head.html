@@ -1,4 +1,7 @@
 <title>reachat</title>
+<script>
+  document.documentElement.classList.add('theme-dark');
+</script>
 <style>
   body {
     font-weight: 400;
@@ -7,18 +10,16 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
+    /* Dark by default — no JS needed */
+    background: #11111F;
+    color: #F7F7FA;
+    --body-color: #F7F7FA;
     --color-layer-transparent: rgba(0, 0, 0, 0.5);
 
     &.theme-light {
       background: #E6E6F0;
       color: #000000;
       --body-color: #000000;
-    }
-
-    &.theme-dark {
-      background: #11111F;
-      color: #F7F7FA;
-      --body-color: #F7F7FA;
     }
   }
 
@@ -34,14 +35,14 @@
     font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace !important;
   }
 
+  .sb-show-main.sb-main-centered {
+    color: #F7F7FA;
+    background: #11111F;
+  }
+
   .theme-light .sb-show-main.sb-main-centered {
     color: #11111F;
     background: #F7F7FA;
-  }
-
-  .theme-dark .sb-show-main.sb-main-centered {
-    color: #F7F7FA;
-    background: #11111F;
   }
 
   svg {

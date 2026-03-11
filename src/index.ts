@@ -2,6 +2,7 @@ export * from './AppBar';
 export * from './Chat';
 export * from './ChatBubble';
 export * from './ChatContext';
+export * from './ChatThemeContext';
 export * from './ChatInput';
 export * from './ChatSuggestions';
 export * from './Markdown';

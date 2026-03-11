@@ -2,7 +2,7 @@ import { AnimatePresence } from 'motion/react';
 import { cn } from 'reablocks';
 import type { Components } from 'react-markdown';
 import type { CSSProperties, FC, PropsWithChildren } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'reakeys';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -11,8 +11,8 @@ import type { Plugin } from 'unified';
 
 import type { ChatViewType } from './ChatContext';
 import { ChatContext } from './ChatContext';
+import { ChatThemeContext } from './ChatThemeContext';
 import type { ChatTheme } from './theme';
-import { chatTheme } from './theme';
 import type { Session } from './types';
 import { useDimensions } from './utils/useDimensions';
 
@@ -116,7 +116,7 @@ export const Chat: FC<ChatProps> = ({
   onFileUpload,
   isLoading,
   activeSessionId,
-  theme = chatTheme,
+  theme: themeProp,
   onNewSession,
   remarkPlugins = defaultRemarkPlugins,
   markdownComponents,
@@ -124,6 +124,9 @@ export const Chat: FC<ChatProps> = ({
   style,
   className
 }) => {
+  const contextTheme = useContext(ChatThemeContext);
+  const theme = themeProp ?? contextTheme;
+
   const [internalActiveSessionID, setInternalActiveSessionID] = useState<
     string | null
   >(activeSessionId);
