@@ -132,5 +132,8 @@ dist
 
 # Storybook build output
 storybook-static/
+
+# Visual regression testing
+.storybook/snapshots/
 .cursor
 .playwright-mcp
