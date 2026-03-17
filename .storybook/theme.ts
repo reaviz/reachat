@@ -1,4 +1,4 @@
-import { create } from '@storybook/theming/create';
+import { create } from 'storybook/theming/create';
 import ReachatLogo from '../src/assets/logo/logo.svg?react';
 
 export default create({

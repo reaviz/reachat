@@ -121,7 +121,7 @@ function updatePopupPosition(editor: any, element: HTMLElement) {
 function createSuggestionConfig<T extends SuggestionItem>(
   config: SuggestionConfig<T>,
   triggerChar: string,
-  suggestionActiveRef: React.MutableRefObject<boolean>
+  suggestionActiveRef: React.RefObject<boolean>
 ) {
   return {
     char: triggerChar,
