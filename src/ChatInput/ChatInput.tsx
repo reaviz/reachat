@@ -16,6 +16,7 @@ import { Button, cn } from 'reablocks';
 import SendIcon from '@/assets/send.svg?react';
 import StopIcon from '@/assets/stop.svg?react';
 import { ChatContext } from '@/ChatContext';
+import { chatTheme as defaultTheme } from '@/theme';
 import { FileInput } from './FileInput';
 import { RichTextInput, RichTextInputRef } from './RichTextInput';
 import { SuggestionConfig, MentionItem, SlashCommandItem } from './types';
@@ -84,10 +85,12 @@ export const SendButton: FC<SendButtonProps> = ({
   className
 }) => {
   const { theme } = useContext(ChatContext);
+  const sendClass =
+    theme?.input?.actions?.send ?? defaultTheme.input.actions.send;
   return (
     <Button
       title="Send"
-      className={cn(theme.input.actions.send, className)}
+      className={cn(sendClass, className)}
       onClick={onClick}
       disabled={disabled}
     >
@@ -125,10 +128,12 @@ export const StopButton: FC<StopButtonProps> = ({
   className
 }) => {
   const { theme } = useContext(ChatContext);
+  const stopClass =
+    theme?.input?.actions?.stop ?? defaultTheme.input.actions.stop;
   return (
     <Button
       title="Stop"
-      className={cn(theme.input.actions.stop, className)}
+      className={cn(stopClass, className)}
       onClick={onClick}
       disabled={disabled}
     >
@@ -441,8 +446,14 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 
     return (
       <div ref={containerRef} className={cn(theme.input.base)}>
-        <div className={cn('relative flex-1', theme.input.input)}>
-          {resolvedPrepend && (
+        <div
+          className={cn(
+            'relative flex-1',
+            theme.input.input,
+            actionsPlacement === 'inline' && 'pr-16'
+          )}
+        >
+          {resolvedPrepend != null && (
             <div className={cn(theme.input.prepend)}>{resolvedPrepend}</div>
           )}
 
@@ -460,7 +471,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 
           {actionsPlacement === 'bottom' && actionsBlock}
 
-          {resolvedAppend && (
+          {resolvedAppend != null && (
             <div className={cn(theme.input.append)}>{resolvedAppend}</div>
           )}
 
