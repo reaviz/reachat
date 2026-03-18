@@ -1,3 +1,19 @@
+# 3.1.0 - 3/18/26
+- [breaking] upgrade reablocks to v10 (Button `startAdornment`/`endAdornment` renamed to `start`/`end`)
+- [breaking] upgrade React to v19
+- [breaking] upgrade Storybook to v10
+- [breaking] upgrade Vite to v7
+- [chore] upgrade react-markdown to v10
+- [chore] upgrade vitest to v3
+- [chore] upgrade TypeScript to v5.9
+- [chore] upgrade @vitejs/plugin-react to v5
+- [chore] switch tsconfig moduleResolution to bundler
+- [chore] add @tiptap/suggestion and @tiptap/extensions as dependencies
+- [chore] remove deprecated @types/classnames
+- [chore] remove consolidated Storybook packages (addon-essentials, addon-mdx-gfm, addon-storysource, manager-api, preview-api, theming)
+- [chore] update CI workflows to Node.js 22
+- [feature] add visual regression testing with @storybook/test-runner
+
 # 3.0.0 - 2/24/26
 - [feature] implement component catalog for dynamic components
 - [breaking] update charts components to leverage new component library
