@@ -24,6 +24,9 @@ module.exports = {
     '@typescript-eslint',
     'no-relative-import-paths'
   ],
+  ignorePatterns: [
+    '.storybook/test-runner.ts'
+  ],
   overrides: [{
     files: ['*.test.*'],
     env: {

@@ -22,8 +22,13 @@ export function getChildText(children: React.ReactNode): string {
     return children.map(getChildText).join('');
   }
   if (typeof children === 'object') {
-    if ('props' in children && (children as React.ReactElement).props) {
-      const element = children as React.ReactElement;
+    if (
+      'props' in children &&
+      (children as React.ReactElement<{ children?: React.ReactNode }>).props
+    ) {
+      const element = children as React.ReactElement<{
+        children?: React.ReactNode;
+      }>;
       return getChildText(element.props.children);
     }
   }

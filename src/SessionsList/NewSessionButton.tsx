@@ -25,7 +25,7 @@ export const NewSessionButton: FC<NewSessionButtonProps> = ({
         fullWidth
         disableMargins
         color="primary"
-        startAdornment={<PlusIcon />}
+        start={<PlusIcon />}
         className={cn(theme.sessions.create)}
         disabled={disabled}
         onClick={createSession}

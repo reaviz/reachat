@@ -1,4 +1,4 @@
-import { Preview } from '@storybook/react';
+import { Preview } from 'storybook/preview-api';
 import { ThemeProvider, theme } from 'reablocks';
 import { withThemeByClassName } from '@storybook/addon-themes';
 import sbTheme from './theme';
@@ -21,7 +21,6 @@ const preview: Preview = {
   ],
   parameters: {
     layout: 'centered',
-    actions: { argTypesRegex: '^on.*' },
     docs: {
       theme: sbTheme
     },
