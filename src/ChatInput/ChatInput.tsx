@@ -183,15 +183,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 
     const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
-      if (files && fileUpload) {
-        if (allowMultipleFiles) {
-          Array.from(files).forEach(file => fileUpload(file));
-        } else {
-          const file = files[0];
-          if (file) {
-            fileUpload(file);
-          }
-        }
+      if (files?.length && fileUpload) {
+        fileUpload(allowMultipleFiles ? Array.from(files) : files[0]);
       }
     };
 
