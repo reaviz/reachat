@@ -164,7 +164,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   }
 
   return (
-    <div className="relative flex-1 overflow-y-hidden">
+    <div className={cn('relative flex-1 overflow-y-hidden', className)}>
       <div
         className={cn(theme.messages.content, className, 'h-full')}
         ref={contentRef}
