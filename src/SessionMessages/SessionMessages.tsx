@@ -1,19 +1,15 @@
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import { SessionEmpty } from './SessionEmpty';
-import { ChatContext } from '@/ChatContext';
-import { Button, cn, IconButton, useInfinityList } from 'reablocks';
-import { AnimatePresence, motion } from 'motion/react';
-import { Conversation } from '@/types';
 import debounce from 'lodash/debounce.js';
-import { SessionMessage } from './SessionMessage/SessionMessage';
+import { AnimatePresence, motion } from 'motion/react';
+import { Button, cn, IconButton, useInfinityList } from 'reablocks';
+import type { ReactNode, UIEventHandler } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+
 import ArrowDownIcon from '@/assets/arrow-down.svg?react';
+import { ChatContext } from '@/ChatContext';
+import type { Conversation } from '@/types';
+
+import { SessionEmpty } from './SessionEmpty';
+import { SessionMessage } from './SessionMessage/SessionMessage';
 
 const containerVariants = {
   hidden: {},
@@ -26,6 +22,11 @@ const containerVariants = {
 };
 
 interface SessionMessagesProps {
+  /**
+   * Class name to apply to the root element.
+   */
+  className?: string;
+
   /**
    * Content to display when there are no sessions selected or a new session is started.
    */
@@ -42,6 +43,11 @@ interface SessionMessagesProps {
   showMoreText?: string;
 
   /**
+   * Whether to automatically scroll to the bottom of the content.
+   */
+  autoScroll?: boolean;
+
+  /**
    * Whether to display the scroll to bottom button.
    */
   showScrollBottomButton?: boolean;
@@ -50,20 +56,48 @@ interface SessionMessagesProps {
    * Render function for the session messages.
    */
   children?: (conversations: Conversation[]) => ReactNode;
+
+  /**
+   * Whether to show the load more button.
+   */
+  showLoadMoreButton?: boolean;
+
+  /**
+   * Whether to disable the load more button.
+   */
+  loadMoreButtonDisabled?: boolean;
+
+  /**
+   * Scroll event handler.
+   * @param e
+   */
+  onScroll?: UIEventHandler<HTMLDivElement>;
+
+  /**
+   * Load more event handler.
+   */
+  onLoadMore?: () => void;
 }
 
 export const SessionMessages: React.FC<SessionMessagesProps> = ({
   children,
   newSessionContent,
   limit = 10,
+  className,
   showMoreText = 'Show more',
-  showScrollBottomButton = false
+  autoScroll = true,
+  showLoadMoreButton = false,
+  showScrollBottomButton,
+  loadMoreButtonDisabled,
+  onScroll,
+  onLoadMore
 }) => {
   const { activeSession, theme } = useContext(ChatContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const messagesRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
   const [iAtBottom, setIsAtBottom] = useState(true);
+
   useEffect(() => {
     if (!contentRef.current || !showScrollBottomButton) {
       return;
@@ -84,7 +118,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   }, [showScrollBottomButton]);
 
   useEffect(() => {
-    if (contentRef.current) {
+    if (contentRef.current && autoScroll) {
       // Scroll to the bottom of the content in animation queue
       requestAnimationFrame(
         () => (contentRef.current.scrollTop = contentRef.current.scrollHeight)
@@ -92,7 +126,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
     }
     // If we update the active session or load the page initially ( onAnimationComplete )
     // let's scroll to the bottom of the page.
-  }, [activeSession, isAnimating]);
+  }, [activeSession, autoScroll, isAnimating]);
 
   const handleShowMore = () => {
     showNext(limit);
@@ -132,16 +166,18 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   return (
     <div className="relative flex-1 overflow-y-hidden">
       <div
-        className={cn(theme.messages.content, 'h-full')}
+        className={cn(theme.messages.content, className, 'h-full')}
         ref={contentRef}
         id={activeSession?.id}
+        onScrollCapture={onScroll}
       >
-        {hasMore && (
+        {(showLoadMoreButton || hasMore) && (
           <Button
+            disabled={loadMoreButtonDisabled}
             variant="outline"
             className={cn(theme.messages.showMore)}
             fullWidth
-            onClick={handleShowMore}
+            onClick={onLoadMore ?? handleShowMore}
           >
             {showMoreText}
           </Button>
@@ -156,7 +192,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             onAnimationComplete={() =>
               requestAnimationFrame(() => {
                 setIsAnimating(false);
-                if (contentRef.current) {
+                if (contentRef.current && autoScroll) {
                   contentRef.current.scrollTop =
                     contentRef.current.scrollHeight;
                 }
@@ -187,7 +223,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             <IconButton
               onClick={handleScrollToBottom}
               className={theme.messages?.message?.scrollToBottom?.button}
-              size="sm"
+              size="small"
             >
               <ArrowDownIcon />
             </IconButton>
