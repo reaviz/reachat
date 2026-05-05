@@ -1,3 +1,10 @@
+# 3.2.0 - 5/5/26
+- [feature] Add autoScroll for SessionMessages #93 
+- [feature] Add multi-file support #91 
+- [feature] Extend Markdown theme and CodeHighlighter functionality #90 
+- [fix] export PartialChatTheme #94
+- [fix] Misc Improvements #92
+
 # 3.1.0 - 3/18/26
 - [breaking] upgrade reablocks to v10 (Button `startAdornment`/`endAdornment` renamed to `start`/`end`)
 - [breaking] upgrade React to v19
