@@ -83,17 +83,25 @@ export interface ChatTheme {
         };
       };
       markdown: {
+        hr: string;
         p: string;
         a: string;
         table: string;
         th: string;
         td: string;
         code: string;
+        inlineCode: string;
         toolbar: string;
         li: string;
         ul: string;
         ol: string;
         copy: string;
+        h1: string;
+        h2: string;
+        h3: string;
+        h4: string;
+        h5: string;
+        h6: string;
       };
       footer: {
         base: string;
@@ -276,18 +284,26 @@ export const chatTheme: ChatTheme = {
         }
       },
       markdown: {
+        hr: 'my-4 border-t border-stroke-neutral-4',
         copy: 'sticky py-1 [&>svg]:w-4 [&>svg]:h-4 opacity-50',
         p: 'mb-2',
-        a: 'text-blue-400 underline',
+        a: 'text-buttons-colors-link-primary-text-resting underline',
         table: 'table-auto w-full m-2',
-        th: 'px-4 py-2 text-left font-bold border-b border-gray-500',
+        th: 'px-4 py-2 text-left font-bold border-b border-stroke-neutral-4',
         td: 'px-4 py-2',
         code: 'm-2 rounded-b relative',
+        inlineCode: 'bg-gradient-neutral-200 p-1 rounded',
         toolbar:
-          'text-xs dark:bg-gray-700/50 flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md bg-gray-200 ',
+          'text-xs flex items-center justify-between px-2 py-1 rounded-t sticky top-0 backdrop-blur-md bg-gradient-neutral-500/50',
         li: 'mb-2 ml-6',
         ul: 'mb-4 list-disc',
-        ol: 'mb-4 list-decimal'
+        ol: 'mb-4 list-decimal',
+        h1: 'text-4xl font-bold mb-4 mt-6',
+        h2: 'text-3xl font-bold mb-3 mt-5',
+        h3: 'text-2xl font-bold mb-3 mt-4',
+        h4: 'text-xl font-bold mb-2 mt-3',
+        h5: 'text-lg font-bold mb-2 mt-2',
+        h6: 'text-base font-bold mb-2 mt-2'
       },
       footer: {
         base: 'mt-3 flex gap-1.5',

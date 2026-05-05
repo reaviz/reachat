@@ -1,7 +1,10 @@
-import React, { FC, PropsWithChildren, ReactElement } from 'react';
 import { Button, cn } from 'reablocks';
+import type { FC, PropsWithChildren, ReactElement } from 'react';
+import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+
 import CopyIcon from '@/assets/copy.svg?react';
+
 import { dark } from './themes';
 
 export interface CodeHighlighterProps extends PropsWithChildren {
@@ -9,6 +12,11 @@ export interface CodeHighlighterProps extends PropsWithChildren {
    * The class name to apply to the code block.
    */
   className?: string;
+
+  /**
+   * The class name to apply to the inline code.
+   */
+  inlineClassName?: string;
 
   /**
    * The language of the code block.
@@ -39,14 +47,18 @@ export interface CodeHighlighterProps extends PropsWithChildren {
 export const CodeHighlighter: FC<CodeHighlighterProps> = ({
   className,
   children,
+  inlineClassName,
   copyClassName,
   copyIcon = <CopyIcon />,
   language,
   toolbarClassName,
-  theme = dark
+  theme = dark,
+  ...props
 }) => {
   const match = language?.match(/language-(\w+)/);
   const lang = match ? match[1] : 'text';
+  // If we can't match a language type, its probably not a code block
+  const isInline = !match;
 
   const handleCopy = (text: string) => {
     navigator.clipboard
@@ -59,12 +71,18 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
       });
   };
 
+  if (isInline) {
+    return (
+      <code className={cn(inlineClassName)} {...props}>
+        {children}
+      </code>
+    );
+  }
+
   return (
     <div className={cn('relative', className)}>
       <div className={cn(toolbarClassName)}>
-        <div>
-          {lang}
-        </div>
+        <div>{lang}</div>
         {copyIcon && (
           <Button
             className={cn(copyClassName)}
@@ -77,10 +95,7 @@ export const CodeHighlighter: FC<CodeHighlighterProps> = ({
           </Button>
         )}
       </div>
-      <SyntaxHighlighter
-        language={lang}
-        style={theme}
-      >
+      <SyntaxHighlighter language={lang} style={theme}>
         {children}
       </SyntaxHighlighter>
     </div>
