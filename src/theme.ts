@@ -1,3 +1,5 @@
+import { DeepPartial } from 'reablocks';
+
 export interface ChatTheme {
   base: string;
   console: string;
@@ -171,6 +173,8 @@ export interface ChatTheme {
     base?: string;
   };
 }
+
+export type PartialChatTheme = DeepPartial<ChatTheme>;
 
 export const chatTheme: ChatTheme = {
   base: 'dark:text-white text-gray-500',
