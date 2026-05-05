@@ -30,6 +30,11 @@ export interface ChatInputProps {
   allowedFiles?: string[];
 
   /**
+   * Allow multiple file uploads.
+   */
+  allowMultipleFiles?: boolean;
+
+  /**
    * Placeholder text for the input field.
    */
   placeholder?: string;
@@ -104,6 +109,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     {
       allowedFiles,
       placeholder = 'Type a message...',
+      allowMultipleFiles = false,
       defaultValue,
       sendIcon = <SendIcon />,
       stopIcon = <StopIcon />,
@@ -175,15 +181,12 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       setMessage(value);
     }, []);
 
-    const handleFileUpload = useCallback(
-      (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file && fileUpload) {
-          fileUpload(file);
-        }
-      },
-      [fileUpload]
-    );
+    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
+      if (files?.length && fileUpload) {
+        fileUpload(allowMultipleFiles ? Array.from(files) : files[0]);
+      }
+    };
 
     const mentionsConfig = useMemo(
       () =>
@@ -223,6 +226,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             {allowedFiles?.length > 0 && (
               <FileInput
                 allowedFiles={allowedFiles}
+                multiple={allowMultipleFiles}
                 onFileUpload={handleFileUpload}
                 isLoading={isLoading}
                 disabled={disabled}

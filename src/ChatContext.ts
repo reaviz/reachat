@@ -22,7 +22,7 @@ export interface ChatContextProps {
   createSession?: () => void;
   sendMessage?: (message: string) => void;
   stopMessage?: () => void;
-  fileUpload?: (file: File) => void;
+  fileUpload?: (file: File | File[]) => void;
 }
 
 export const ChatContext = createContext<ChatContextProps>({
