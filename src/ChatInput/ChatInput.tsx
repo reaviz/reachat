@@ -85,6 +85,11 @@ export interface ChatInputProps {
    * Whether to auto-focus the input on mount (default: true)
    */
   autoFocus?: boolean;
+
+  /**
+   * Callback function to handle message change.
+   */
+  onMessageChange?: (message: string) => void;
 }
 
 export interface ChatInputRef {
@@ -124,7 +129,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       commands,
       minHeight = 24,
       maxHeight = 200,
-      autoFocus = true
+      autoFocus = true,
+      onMessageChange
     },
     ref
   ) => {
@@ -158,6 +164,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       setValue: (value: string) => {
         setMessage(value);
         inputRef.current?.setValue(value);
+        onMessageChange?.(value);
       },
       insertText: (text: string) => {
         inputRef.current?.insertText(text);
@@ -183,9 +190,13 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       [sendMessage]
     );
 
-    const handleChange = useCallback((value: string) => {
-      setMessage(value);
-    }, []);
+    const handleChange = useCallback(
+      (value: string) => {
+        setMessage(value);
+        onMessageChange?.(value);
+      },
+      [onMessageChange]
+    );
 
     const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
