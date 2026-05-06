@@ -1,3 +1,8 @@
+# 3.2.1 - 5/6/26
+- [feature] Add onMessageChange callback to ChatInput #96
+- [fix] Fix remarkCve to produce valid inline link nodes #97
+- [fix] Add className prop to ChatInput component #95
+
 # 3.2.0 - 5/5/26
 - [feature] Add autoScroll for SessionMessages #93 
 - [feature] Add multi-file support #91 
