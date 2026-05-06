@@ -768,7 +768,7 @@ export const CVEExample = () => {
         viewType="console"
         sessions={sessionWithMarkdown}
         activeSessionId="session-cve"
-        remarkPlugins={[remarkCve as any]}
+        remarkPlugins={[remarkCve]}
       >
         <SessionsList>
           <NewSessionButton />
