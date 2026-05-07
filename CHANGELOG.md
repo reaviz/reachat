@@ -1,3 +1,6 @@
+# 3.2.2 - 5/7/26
+- [chore] upgrade depedencies
+
 # 3.2.1 - 5/6/26
 - [feature] Add onMessageChange callback to ChatInput #96
 - [fix] Fix remarkCve to produce valid inline link nodes #97
