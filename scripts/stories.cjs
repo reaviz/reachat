@@ -10,7 +10,7 @@ const EXCLUDED_PATHS = ['./examples', './assets'];
  */
 function replacePaths() {
   // Grep all the stories
-  const files = fg.sync(['dist/stories/*.tsx', 'dist/blocks/*.tsx']);
+  const files = fg.sync(['dist/stories/*.tsx', 'dist/stories/*.ts', 'dist/blocks/*.tsx']);
 
   files.forEach((file) => {
     const code = fs.readFileSync(file, { encoding: 'utf-8' });
