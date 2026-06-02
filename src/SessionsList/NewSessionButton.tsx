@@ -8,6 +8,7 @@ import PlusIcon from '@/assets/plus.svg?react';
 interface NewSessionButtonProps extends PropsWithChildren {
   /**
    * Text for the new session button.
+   * @default 'New Session'
    */
   newSessionText?: string | ReactNode;
 }

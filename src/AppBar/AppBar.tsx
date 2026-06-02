@@ -10,6 +10,7 @@ export interface AppBarProps {
 
   /**
    * Custom theme for the appbar
+   * @default chatTheme
    */
   theme?: ChatTheme;
 }

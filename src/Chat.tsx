@@ -40,6 +40,7 @@ export interface ChatProps extends PropsWithChildren {
    * - Companion: Smaller prompt screen with session lists.
    * - Console: Full screen experience.
    * - Chat: Only chat, no sessions.
+   * @default 'console'
    */
   viewType?: ChatViewType;
 
@@ -55,11 +56,13 @@ export interface ChatProps extends PropsWithChildren {
 
   /**
    * Custom theme for the chat.
+   * @default chatTheme
    */
   theme?: ChatTheme;
 
   /**
    * Remark plugins to apply to the request/response.
+   * @default defaultRemarkPlugins
    */
   remarkPlugins?: Plugin[];
 

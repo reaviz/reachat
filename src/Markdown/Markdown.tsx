@@ -22,6 +22,7 @@ interface MarkdownWrapperProps extends PropsWithChildren {
 
   /**
    * Rehype plugins to apply to the markdown content.
+   * @default [rehypeRaw, rehypeKatex]
    */
   rehypePlugins?: Plugin[];
 
