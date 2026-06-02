@@ -21,21 +21,25 @@ export interface SessionListItemProps extends PropsWithChildren {
 
   /**
    * Indicates whether the session is deletable.
+   * @default true
    */
   deletable?: boolean;
 
   /**
    * Icon to show for delete.
+   * @default <TrashIcon />
    */
   deleteIcon?: ReactElement;
 
   /**
    * Icon to show for chat.
+   * @default <ChatIcon className="mr-2" />
    */
   chatIcon?: ReactElement;
 
   /**
    * Limit for the ellipsis.
+   * @default 100
    */
   limit?: number;
 }

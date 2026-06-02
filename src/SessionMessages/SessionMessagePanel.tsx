@@ -5,6 +5,10 @@ import { motion } from 'motion/react';
 import BackIcon from '@/assets/back.svg?react';
 
 interface SessionMessagePanelProps extends PropsWithChildren {
+  /**
+   * Whether to show the back button to return to the session list in compact mode.
+   * @default true
+   */
   allowBack?: boolean;
 }
 

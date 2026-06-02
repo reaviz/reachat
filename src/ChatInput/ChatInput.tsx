@@ -31,21 +31,25 @@ export interface ChatInputProps {
 
   /**
    * Allow multiple file uploads.
+   * @default false
    */
   allowMultipleFiles?: boolean;
 
   /**
    * Placeholder text for the input field.
+   * @default 'Type a message...'
    */
   placeholder?: string;
 
   /**
    * Icon to show for send.
+   * @default <SendIcon />
    */
   sendIcon?: ReactElement;
 
   /**
    * Icon to show for stop.
+   * @default <StopIcon />
    */
   stopIcon?: ReactElement;
 
@@ -72,17 +76,20 @@ export interface ChatInputProps {
   commands?: SuggestionConfig<SlashCommandItem>;
 
   /**
-   * Minimum height for the input (default: 24px)
+   * Minimum height for the input.
+   * @default 24
    */
   minHeight?: number;
 
   /**
-   * Maximum height for the input (default: 200px)
+   * Maximum height for the input.
+   * @default 200
    */
   maxHeight?: number;
 
   /**
-   * Whether to auto-focus the input on mount (default: true)
+   * Whether to auto-focus the input on mount.
+   * @default true
    */
   autoFocus?: boolean;
 

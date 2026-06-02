@@ -35,11 +35,13 @@ export interface CodeHighlighterProps extends PropsWithChildren {
 
   /**
    * Icon to show for copy.
+   * @default <CopyIcon />
    */
   copyIcon?: ReactElement;
 
   /**
    * The theme to use for the code block.
+   * @default dark
    */
   theme?: Record<string, string>;
 }

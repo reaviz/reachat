@@ -34,16 +34,19 @@ interface SessionMessagesProps {
 
   /**
    * Limit the number of results returned. Clientside pagination.
+   * @default 10
    */
   limit?: number | null;
 
   /**
    * Text to display for the show more button.
+   * @default 'Show more'
    */
   showMoreText?: string;
 
   /**
    * Whether to automatically scroll to the bottom of the content.
+   * @default true
    */
   autoScroll?: boolean;
 
@@ -59,6 +62,7 @@ interface SessionMessagesProps {
 
   /**
    * Whether to show the load more button.
+   * @default false
    */
   showLoadMoreButton?: boolean;
 

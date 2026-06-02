@@ -34,21 +34,25 @@ export interface RichTextInputRef {
 export interface RichTextInputProps {
   /**
    * Current value of the input
+   * @default ''
    */
   value?: string;
 
   /**
    * Placeholder text when empty
+   * @default 'Type a message...'
    */
   placeholder?: string;
 
   /**
    * Whether the input is disabled
+   * @default false
    */
   disabled?: boolean;
 
   /**
-   * Whether to auto-focus on mount (default: true)
+   * Whether to auto-focus on mount.
+   * @default true
    */
   autoFocus?: boolean;
 
@@ -58,12 +62,14 @@ export interface RichTextInputProps {
   className?: string;
 
   /**
-   * Minimum height in pixels (default: 24)
+   * Minimum height in pixels.
+   * @default 24
    */
   minHeight?: number;
 
   /**
-   * Maximum height in pixels (default: 200)
+   * Maximum height in pixels.
+   * @default 200
    */
   maxHeight?: number;
 
