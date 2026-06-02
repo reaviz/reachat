@@ -1,3 +1,6 @@
+# 3.2.3 - 6/2/26
+- [chore] improve docs
+
 # 3.2.2 - 5/7/26
 - [chore] upgrade depedencies
 
