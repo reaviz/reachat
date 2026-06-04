@@ -15,38 +15,6 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Stable window-global names for externalized deps in the UMD build
-// (without these, Rolldown guesses snake_cased names and warns)
-const umdGlobals = {
-  react: 'React',
-  'react/jsx-runtime': 'ReactJSXRuntime',
-  reablocks: 'reablocks',
-  reaviz: 'reaviz',
-  reakeys: 'reakeys',
-  zod: 'zod',
-  'date-fns': 'dateFns',
-  'lodash/debounce.js': 'debounce',
-  'motion/react': 'motionReact',
-  '@floating-ui/dom': 'FloatingUIDOM',
-  '@floating-ui/react': 'FloatingUIReact',
-  '@radix-ui/react-slot': 'RadixReactSlot',
-  '@tiptap/react': 'TiptapReact',
-  '@tiptap/extension-document': 'TiptapExtensionDocument',
-  '@tiptap/extension-paragraph': 'TiptapExtensionParagraph',
-  '@tiptap/extension-text': 'TiptapExtensionText',
-  '@tiptap/extension-hard-break': 'TiptapExtensionHardBreak',
-  '@tiptap/extension-placeholder': 'TiptapExtensionPlaceholder',
-  '@tiptap/extension-mention': 'TiptapExtensionMention',
-  'react-markdown': 'ReactMarkdown',
-  'react-syntax-highlighter': 'ReactSyntaxHighlighter',
-  'rehype-katex': 'rehypeKatex',
-  'rehype-raw': 'rehypeRaw',
-  'remark-gfm': 'remarkGfm',
-  'remark-math': 'remarkMath',
-  'remark-youtube': 'remarkYoutube',
-  'mdast-util-find-and-replace': 'mdastUtilFindAndReplace'
-};
-
 export default defineConfig(({ mode }) =>
   mode === 'library'
     ? {
@@ -94,7 +62,8 @@ export default defineConfig(({ mode }) =>
         copyPublicDir: false,
         lib: {
           entry: resolve('src', 'index.ts'),
-          name: 'reachat',
+          // ESM-only — no UMD/CJS build
+          formats: ['es'],
           fileName: 'index'
         },
         rollupOptions: {
@@ -103,9 +72,6 @@ export default defineConfig(({ mode }) =>
               includeDependencies: true
             })
           ],
-          output: {
-            globals: umdGlobals
-          },
           checks: {
             // Rolldown profiling note, not a defect: svgr/checker/dts are
             // JS plugins doing necessary work (SVG compile, tsc, d.ts emit)
