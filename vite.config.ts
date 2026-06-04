@@ -3,7 +3,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgrPlugin from 'vite-plugin-svgr';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import { resolve } from 'path';
 import external from 'rollup-plugin-peer-deps-external';
@@ -16,13 +15,44 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Stable window-global names for externalized deps in the UMD build
+// (without these, Rolldown guesses snake_cased names and warns)
+const umdGlobals = {
+  react: 'React',
+  'react/jsx-runtime': 'ReactJSXRuntime',
+  reablocks: 'reablocks',
+  reaviz: 'reaviz',
+  reakeys: 'reakeys',
+  zod: 'zod',
+  'date-fns': 'dateFns',
+  'lodash/debounce.js': 'debounce',
+  'motion/react': 'motionReact',
+  '@floating-ui/dom': 'FloatingUIDOM',
+  '@floating-ui/react': 'FloatingUIReact',
+  '@radix-ui/react-slot': 'RadixReactSlot',
+  '@tiptap/react': 'TiptapReact',
+  '@tiptap/extension-document': 'TiptapExtensionDocument',
+  '@tiptap/extension-paragraph': 'TiptapExtensionParagraph',
+  '@tiptap/extension-text': 'TiptapExtensionText',
+  '@tiptap/extension-hard-break': 'TiptapExtensionHardBreak',
+  '@tiptap/extension-placeholder': 'TiptapExtensionPlaceholder',
+  '@tiptap/extension-mention': 'TiptapExtensionMention',
+  'react-markdown': 'ReactMarkdown',
+  'react-syntax-highlighter': 'ReactSyntaxHighlighter',
+  'rehype-katex': 'rehypeKatex',
+  'rehype-raw': 'rehypeRaw',
+  'remark-gfm': 'remarkGfm',
+  'remark-math': 'remarkMath',
+  'remark-youtube': 'remarkYoutube',
+  'mdast-util-find-and-replace': 'mdastUtilFindAndReplace'
+};
+
 export default defineConfig(({ mode }) =>
   mode === 'library'
     ? {
       plugins: [
         tailwindcss(),
         svgrPlugin(),
-        tsconfigPaths(),
         cssInjectedByJsPlugin(),
         react(),
         dts({
@@ -54,9 +84,9 @@ export default defineConfig(({ mode }) =>
         exclude: ['node_modules', 'dist']
       },
       resolve: {
-        alias: {
-          '@': path.resolve(__dirname, './src')
-        }
+        // Vite 8 resolves tsconfig "paths" natively (replaces the
+        // vite-tsconfig-paths plugin); covers the '@/*' -> './src/*' alias
+        tsconfigPaths: true
       },
       build: {
         minify: false,
@@ -72,19 +102,24 @@ export default defineConfig(({ mode }) =>
             external({
               includeDependencies: true
             })
-          ]
+          ],
+          output: {
+            globals: umdGlobals
+          }
         }
       }
     }
     : {
       plugins: [
         svgrPlugin(),
-        tsconfigPaths(),
         react(),
         checker({
           typescript: true
         })
       ],
+      resolve: {
+        tsconfigPaths: true
+      },
       test: {
         globals: true,
         environment: 'jsdom',
