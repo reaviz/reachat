@@ -1,13 +1,15 @@
 import { readFileSync, writeFileSync } from 'fs';
 import fg from 'fast-glob';
-import { resolve } from 'path';
+import { basename, resolve } from 'path';
 import docgen from 'react-docgen-typescript';
 
 /**
  * Builds the doc types.
  */
 function buildDocs() {
-  const files = fg.sync('src/**/!(*.stories).tsx');
+  // TS 6 requires consistently absolute paths (mixing styles trips
+  // "Paths must either both be absolute or both be relative" in the compiler)
+  const files = fg.sync('src/**/!(*.stories).tsx', { absolute: true });
 
   const result = [];
   let count = 0;
@@ -29,7 +31,7 @@ function buildDocs() {
   };
 
   const docgenWithTSConfig = docgen.withCustomConfig(
-    './tsconfig.json',
+    resolve('tsconfig.json'),
     options
   );
 
@@ -39,7 +41,24 @@ function buildDocs() {
     try {
       const documentation = docgenWithTSConfig.parse(file, options);
       if (documentation) {
-        result.push(...documentation);
+        // Absolute input paths surface in filePath/fileName fields — strip
+        // the cwd (and project-dir) prefixes so docs.json stays
+        // machine-independent and matches the historical relative format
+        const cwdPrefix = process.cwd() + '/';
+        const projPrefix = basename(process.cwd()) + '/';
+        const normalize = value => {
+          if (value.startsWith(cwdPrefix)) return value.slice(cwdPrefix.length);
+          if (value.startsWith(projPrefix)) return value.slice(projPrefix.length);
+          return value;
+        };
+        const normalized = JSON.parse(
+          JSON.stringify(documentation),
+          (key, value) =>
+            (key === 'filePath' || key === 'fileName') && typeof value === 'string'
+              ? normalize(value)
+              : value
+        );
+        result.push(...normalized);
         count++;
       }
     } catch (e) {

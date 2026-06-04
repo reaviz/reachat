@@ -26,8 +26,12 @@ export default defineConfig(({ mode }) =>
         cssInjectedByJsPlugin(),
         react(),
         dts({
-          insertTypesEntry: true,
-          include: ['src']
+          // vite-plugin-dts 5 (unplugin-dts): entryRoot + rootDir keep
+          // declarations flat at dist/ (TS 6 otherwise roots them at the
+          // project dir, emitting dist/src/** with no usable types entry)
+          include: ['src/**/*'],
+          entryRoot: 'src',
+          compilerOptions: { rootDir: 'src' }
         }),
         checker({
           typescript: true
