@@ -39,8 +39,11 @@ export default defineConfig(({ mode }) =>
         viteStaticCopy({
           targets: [
             {
-              src: 'stories/*',
-              dest: 'stories/'
+              // static-copy v4: globs match files only ('stories/*' drops the
+              // assets subdirectory) and matches keep their full path under
+              // dest — so dest must be '' to land at dist/stories/**
+              src: 'stories/**/*',
+              dest: ''
             },
           ]
         })
