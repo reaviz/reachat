@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { useState, useCallback } from 'react';
 import {
   Chat,
@@ -252,7 +252,9 @@ export const WithAsyncSearch: StoryFn = () => {
             mentions={{
               items: sampleUsers,
               onSearch: searchUsers,
-              renderEmpty: query => <span>No users found matching "{query}"</span>
+              renderEmpty: query => (
+                <span>No users found matching &quot;{query}&quot;</span>
+              )
             }}
           />
         </SessionMessagePanel>

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { RichTextInput, MentionItem, SlashCommandItem } from '../src';
 import { ChatContext } from '../src/ChatContext';

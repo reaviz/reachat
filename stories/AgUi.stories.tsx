@@ -1,5 +1,5 @@
 import { FC, ReactNode, useState } from 'react';
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-vite';
 import {
   Chat,
   SessionsList,

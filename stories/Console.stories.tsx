@@ -1,6 +1,6 @@
 import { useState, useRef, FC, useContext, useEffect } from 'react';
 import AttachIcon from './assets/paperclip.svg?react';
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-vite';
 import {
   Chat,
   Session,
