@@ -1,4 +1,4 @@
-/// <reference types="vitest" />
+/// <reference types="vitest/config" />
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -88,7 +88,12 @@ export default defineConfig(({ mode }) =>
       test: {
         globals: true,
         environment: 'jsdom',
-        exclude: ['node_modules', 'dist']
+        exclude: ['node_modules', 'dist'],
+        coverage: {
+          // vitest 4 removed coverage.all (whole-project reporting);
+          // restore it by including all source files explicitly
+          include: ['src/**']
+        }
       }
     }
 );
