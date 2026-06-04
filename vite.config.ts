@@ -105,6 +105,11 @@ export default defineConfig(({ mode }) =>
           ],
           output: {
             globals: umdGlobals
+          },
+          checks: {
+            // Rolldown profiling note, not a defect: svgr/checker/dts are
+            // JS plugins doing necessary work (SVG compile, tsc, d.ts emit)
+            pluginTimings: false
           }
         }
       }
