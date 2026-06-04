@@ -4,9 +4,8 @@
   "description": "Chat UI for Building LLMs",
   "scripts": {
     "build-storybook": "storybook build",
-    "build": "npm run build:js && npm run build:styles && npm run build:docs && npm run rewrite:stories",
+    "build": "npm run build:js && npm run build:styles && npm run rewrite:stories",
     "build:js": "vite build --mode library",
-    "build:docs": "node scripts/docs.js",
     "build:styles": "npx @tailwindcss/cli -i ./src/index.css -o ./dist/index.css",
     "lint": "eslint src stories",
     "lint:fix": "eslint src stories --fix",
@@ -35,7 +34,6 @@
       "import": "./dist/index.js",
       "require": "./dist/index.umd.cjs"
     },
-    "./docs.json": "./dist/docs.json",
     "./stories/*": "./dist/stories/*",
     "./index.css": "./dist/index.css"
   },
@@ -118,7 +116,6 @@
     "postcss": "^8.4.39",
     "prettier": "^3.2.5",
     "react": "^19.0.0",
-    "react-docgen-typescript": "^2.2.2",
     "react-dom": "^19.0.0",
     "reaviz": "^16.1.1",
     "rollup-plugin-peer-deps-external": "2.2.4",
