@@ -58,7 +58,7 @@ export default [
       ],
       // react-hooks v7 enables the React Compiler rules by default; the
       // patterns they flag here predate the upgrade — surfaced as warnings
-      // until the code is refactored (see UPGRADE_PLAN.md)
+      // until the code is refactored
       'react-hooks/error-boundaries': 'warn',
       'react-hooks/refs': 'warn',
       'react-hooks/set-state-in-effect': 'warn',
