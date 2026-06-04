@@ -14,10 +14,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 22.x
+      - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version-file: .nvmrc
 
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1

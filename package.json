@@ -18,7 +18,7 @@
     "test:coverage": "vitest run --coverage --passWithNoTests",
     "test:visual": "test-storybook --url http://localhost:9009",
     "test:visual:update": "test-storybook --url http://localhost:9009 --updateSnapshot",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "license": "Apache-2.0",
   "files": [
@@ -45,23 +45,23 @@
     "@floating-ui/dom": "^1.6.0",
     "@floating-ui/react": "^0.27.6",
     "@radix-ui/react-slot": "^1.1.0",
-    "@tiptap/core": "^3.15.3",
-    "@tiptap/extension-document": "^3.15.3",
-    "@tiptap/extension-hard-break": "^3.15.3",
-    "@tiptap/extension-mention": "^3.15.3",
-    "@tiptap/extension-paragraph": "^3.15.3",
-    "@tiptap/extension-placeholder": "^3.15.3",
-    "@tiptap/extension-text": "^3.15.3",
-    "@tiptap/extensions": "^3.20.4",
-    "@tiptap/pm": "^3.15.3",
-    "@tiptap/react": "^3.15.3",
-    "@tiptap/suggestion": "^3.20.4",
+    "@tiptap/core": "^3.25.0",
+    "@tiptap/extension-document": "^3.25.0",
+    "@tiptap/extension-hard-break": "^3.25.0",
+    "@tiptap/extension-mention": "^3.25.0",
+    "@tiptap/extension-paragraph": "^3.25.0",
+    "@tiptap/extension-placeholder": "^3.25.0",
+    "@tiptap/extension-text": "^3.25.0",
+    "@tiptap/extensions": "^3.25.0",
+    "@tiptap/pm": "^3.25.0",
+    "@tiptap/react": "^3.25.0",
+    "@tiptap/suggestion": "^3.25.0",
     "date-fns": "^4.1.0",
     "katex": "^0.16.11",
     "lodash": "^4.17.21",
     "mdast-util-find-and-replace": "^3.0.1",
     "motion": "^12.4.2",
-    "reablocks": "^10.0.0",
+    "reablocks": "^10.2.0",
     "react-markdown": "^10.0.0",
     "react-syntax-highlighter": "^16.1.0",
     "reakeys": "^2.0.3",
@@ -85,10 +85,10 @@
     }
   },
   "devDependencies": {
-    "@storybook/addon-docs": "^10.0.0",
-    "@storybook/addon-themes": "^10.0.0",
-    "@storybook/react": "^10.0.0",
-    "@storybook/react-vite": "^10.0.0",
+    "@storybook/addon-docs": "^10.4.2",
+    "@storybook/addon-themes": "^10.4.2",
+    "@storybook/react": "^10.4.2",
+    "@storybook/react-vite": "^10.4.2",
     "@storybook/test-runner": "^0.24.0",
     "@tailwindcss/cli": "^4.0.3",
     "@tailwindcss/postcss": "^4.0.1",
@@ -101,7 +101,7 @@
     "@typescript-eslint/parser": "^7.6.0",
     "@vitejs/plugin-react": "^5.0.0",
     "@vitest/coverage-v8": "^3.2.0",
-    "autoprefixer": "^10.4.19",
+    "ajv": "^8.18.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-no-relative-import-paths": "^1.5.4",
@@ -112,19 +112,16 @@
     "husky": "^9.0.11",
     "jest-image-snapshot": "^6.4.0",
     "jsdom": "^24.0.0",
-    "lint-staged": "^15.2.2",
+    "lint-staged": "^16.4.0",
     "postcss": "^8.4.39",
-    "postcss-nested": "^6.0.1",
-    "postcss-preset-env": "^9.5.2",
     "prettier": "^3.2.5",
     "react": "^19.0.0",
     "react-docgen-typescript": "^2.2.2",
     "react-dom": "^19.0.0",
     "reaviz": "^16.1.1",
     "rollup-plugin-peer-deps-external": "2.2.4",
-    "storybook": "^10.0.0",
+    "storybook": "^10.4.2",
     "tailwindcss": "^4.0.0",
-    "tw-colors": "^3.3.1",
     "typescript": "^5.9.3",
     "typescript-rewrite-paths": "^1.3.1",
     "vite": "^7.0.0",
@@ -146,13 +143,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }
