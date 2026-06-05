@@ -8,12 +8,8 @@ import { resolve } from 'path';
 import external from 'rollup-plugin-peer-deps-external';
 import dts from 'vite-plugin-dts';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import tailwindcss from '@tailwindcss/vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) =>
   mode === 'library'
@@ -46,11 +42,6 @@ export default defineConfig(({ mode }) =>
           ]
         })
       ],
-      test: {
-        globals: true,
-        environment: 'jsdom',
-        exclude: ['node_modules', 'dist']
-      },
       resolve: {
         // Vite 8 resolves tsconfig "paths" natively (replaces the
         // vite-tsconfig-paths plugin); covers the '@/*' -> './src/*' alias

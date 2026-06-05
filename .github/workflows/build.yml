@@ -21,9 +21,6 @@ jobs:
 
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1
-        with:
-          # Note: this is for npm dep mismatch
-          install-command: npm i --force
 
       - name: Build Prod
         run: npm run build
