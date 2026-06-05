@@ -100,13 +100,10 @@ export const Empty = () => {
       <Chat
         sessions={[]}
         viewType="companion"
+        className="flex flex-col"
         onDeleteSession={() => alert('delete!')}
       >
-        <SessionsList>
-          <NewSessionButton />
-          <SessionGroups />
-        </SessionsList>
-        <div className="flex-1 h-full flex flex-col">
+        <div className="flex-1 min-h-0 flex flex-col">
           <SessionMessages
             newSessionContent={
               <div className="flex flex-col gap-2 items-center justify-center h-full">
