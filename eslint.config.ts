@@ -1,11 +1,11 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
+import type { Linter } from 'eslint';
 import js from '@eslint/js';
 import globals from 'globals';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import storybook from 'eslint-plugin-storybook';
 import tsParser from '@typescript-eslint/parser';
-import tsPlugin from '@typescript-eslint/eslint-plugin';
 import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
 import prettier from 'eslint-config-prettier/flat';
 
@@ -24,7 +24,9 @@ export default defineConfig([
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
   reactHooks.configs.flat.recommended,
-  storybook.configs['flat/recommended'],
+  // type-only cast: the plugin types its rules with @typescript-eslint's
+  // RuleModule, which is structurally incompatible with ESLint core's types
+  storybook.configs['flat/recommended'] as unknown as Linter.Config[],
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
@@ -39,7 +41,8 @@ export default defineConfig([
       }
     },
     plugins: {
-      '@typescript-eslint': tsPlugin,
+      // note: no '@typescript-eslint' plugin registration — only the parser
+      // is used; no @typescript-eslint/* rules are enabled
       'no-relative-import-paths': noRelativeImportPaths
     },
     settings: {
