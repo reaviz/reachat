@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-vite';
 import { subHours } from 'date-fns';
 import { z } from 'zod';
 import {

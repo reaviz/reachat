@@ -1,20 +1,15 @@
-/// <reference types="vitest" />
+/// <reference types="vitest/config" />
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgrPlugin from 'vite-plugin-svgr';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import { resolve } from 'path';
 import external from 'rollup-plugin-peer-deps-external';
 import dts from 'vite-plugin-dts';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import tailwindcss from '@tailwindcss/vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) =>
   mode === 'library'
@@ -22,12 +17,15 @@ export default defineConfig(({ mode }) =>
       plugins: [
         tailwindcss(),
         svgrPlugin(),
-        tsconfigPaths(),
         cssInjectedByJsPlugin(),
         react(),
         dts({
-          insertTypesEntry: true,
-          include: ['src']
+          // vite-plugin-dts 5 (unplugin-dts): entryRoot + rootDir keep
+          // declarations flat at dist/ (TS 6 otherwise roots them at the
+          // project dir, emitting dist/src/** with no usable types entry)
+          include: ['src/**/*'],
+          entryRoot: 'src',
+          compilerOptions: { rootDir: 'src' }
         }),
         checker({
           typescript: true
@@ -35,21 +33,19 @@ export default defineConfig(({ mode }) =>
         viteStaticCopy({
           targets: [
             {
-              src: 'stories/*',
-              dest: 'stories/'
+              // static-copy v4: globs match files only ('stories/*' drops the
+              // assets subdirectory) and matches keep their full path under
+              // dest — so dest must be '' to land at dist/stories/**
+              src: 'stories/**/*',
+              dest: ''
             },
           ]
         })
       ],
-      test: {
-        globals: true,
-        environment: 'jsdom',
-        exclude: ['node_modules', 'dist']
-      },
       resolve: {
-        alias: {
-          '@': path.resolve(__dirname, './src')
-        }
+        // Vite 8 resolves tsconfig "paths" natively (replaces the
+        // vite-tsconfig-paths plugin); covers the '@/*' -> './src/*' alias
+        tsconfigPaths: true
       },
       build: {
         minify: false,
@@ -57,7 +53,8 @@ export default defineConfig(({ mode }) =>
         copyPublicDir: false,
         lib: {
           entry: resolve('src', 'index.ts'),
-          name: 'reachat',
+          // ESM-only — no UMD/CJS build
+          formats: ['es'],
           fileName: 'index'
         },
         rollupOptions: {
@@ -65,23 +62,35 @@ export default defineConfig(({ mode }) =>
             external({
               includeDependencies: true
             })
-          ]
+          ],
+          checks: {
+            // Rolldown profiling note, not a defect: svgr/checker/dts are
+            // JS plugins doing necessary work (SVG compile, tsc, d.ts emit)
+            pluginTimings: false
+          }
         }
       }
     }
     : {
       plugins: [
         svgrPlugin(),
-        tsconfigPaths(),
         react(),
         checker({
           typescript: true
         })
       ],
+      resolve: {
+        tsconfigPaths: true
+      },
       test: {
         globals: true,
         environment: 'jsdom',
-        exclude: ['node_modules', 'dist']
+        exclude: ['node_modules', 'dist'],
+        coverage: {
+          // vitest 4 removed coverage.all (whole-project reporting);
+          // restore it by including all source files explicitly
+          include: ['src/**']
+        }
       }
     }
 );

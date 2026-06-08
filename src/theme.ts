@@ -180,7 +180,7 @@ export const chatTheme: ChatTheme = {
   base: 'dark:text-white text-gray-500',
   console: 'flex w-full gap-4 h-full',
   companion: 'w-full h-full overflow-hidden',
-  empty: 'text-center flex-1',
+  empty: 'text-center flex-1 min-h-0',
   appbar: 'flex p-5',
   status: {
     base: 'py-2 px-3 rounded-lg bg-gray-100/50 dark:bg-gray-800/30',

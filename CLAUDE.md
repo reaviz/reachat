@@ -460,11 +460,10 @@ export const WithProps = () => <ComponentName prop="value" />;
 
 ## Build Process
 
-The build creates three outputs:
+The build creates three outputs (ESM-only — no UMD/CJS):
 1. **ESM** (`dist/index.js`) - Modern ES modules
-2. **UMD** (`dist/index.umd.cjs`) - Universal module
-3. **CSS** (`dist/index.css`) - Tailwind-compiled styles
-4. **Types** (`dist/index.d.ts`) - TypeScript declarations
+2. **CSS** (`dist/index.css`) - Tailwind-compiled styles
+3. **Types** (`dist/index.d.ts`) - TypeScript declarations
 
 ## Key Dependencies
 
