@@ -1,3 +1,6 @@
+# 3.3.0 - 6/9/26
+- [breaking] Remove UMD build (ESM-only) and modernize build tooling — Vite 8/Rolldown, ESLint 9 flat config, TypeScript 6, Vitest 4 #100
+
 # 3.2.3 - 6/2/26
 - [chore] improve docs
 
