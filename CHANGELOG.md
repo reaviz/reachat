@@ -1,3 +1,6 @@
+# 3.4.1 - 6/15/26
+- [chore] improve `Markdown` to supply its own defaults rather than rely on `Chat` to provide them
+
 # 3.4.0 - 6/15/26
 - [chore] decouple `Markdown` from `ChatContext` and `ChatTheme` so it can live on its own.
 
