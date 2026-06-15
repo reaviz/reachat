@@ -1,3 +1,6 @@
+# 3.4.0 - 6/15/26
+- [chore] decouple `Markdown` from `ChatContext` and `ChatTheme` so it can live on its own.
+
 # 3.3.0 - 6/9/26
 - [breaking] Remove UMD build (ESM-only) and modernize build tooling — Vite 8/Rolldown, ESLint 9 flat config, TypeScript 6, Vitest 4 #100
 
