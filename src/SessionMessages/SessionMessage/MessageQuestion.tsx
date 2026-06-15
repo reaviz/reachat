@@ -21,7 +21,8 @@ export interface MessageQuestionProps extends PropsWithChildren {
 
 export const MessageQuestion = memo<MessageQuestionProps>(
   ({ children, ...props }) => {
-    const { theme, remarkPlugins } = useContext(ChatContext);
+    const { theme, remarkPlugins, markdownComponents } =
+      useContext(ChatContext);
     const { question, files } = props;
     const Comp = children ? Slot : 'div';
     const [expanded, setExpanded] = useState(false);
@@ -37,7 +38,11 @@ export const MessageQuestion = memo<MessageQuestionProps>(
         {children || (
           <>
             <MessageFiles files={files} />
-            <Markdown remarkPlugins={remarkPlugins as Plugin[]} theme={theme}>
+            <Markdown
+              remarkPlugins={remarkPlugins as Plugin[]}
+              theme={theme.messages.message.markdown}
+              customComponents={markdownComponents}
+            >
               {question}
             </Markdown>
             {isLong && !expanded && (

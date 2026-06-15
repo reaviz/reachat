@@ -20,7 +20,8 @@ export interface MessageResponseProps extends PropsWithChildren {
 
 export const MessageResponse = memo<MessageResponseProps>(
   ({ response, isLoading, children }) => {
-    const { theme, isCompact, remarkPlugins } = useContext(ChatContext);
+    const { theme, isCompact, remarkPlugins, markdownComponents } =
+      useContext(ChatContext);
     const Comp = children ? Slot : 'div';
     return (
       <Comp
@@ -29,7 +30,11 @@ export const MessageResponse = memo<MessageResponseProps>(
       >
         {children || (
           <>
-            <Markdown remarkPlugins={remarkPlugins as Plugin[]} theme={theme}>
+            <Markdown
+              remarkPlugins={remarkPlugins as Plugin[]}
+              theme={theme.messages.message.markdown}
+              customComponents={markdownComponents}
+            >
               {response}
             </Markdown>
             {isLoading && (
