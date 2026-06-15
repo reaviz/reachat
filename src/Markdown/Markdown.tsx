@@ -6,6 +6,9 @@ import { useMemo } from 'react';
 import ReactMarkdown, { Components } from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import rehypeRaw from 'rehype-raw';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import remarkYoutube from 'remark-youtube';
 import type { Plugin } from 'unified';
 
 import type { MarkdownTheme } from './types';
@@ -13,9 +16,12 @@ import type { MarkdownTheme } from './types';
 import { CodeHighlighter } from './CodeHighlighter';
 import { TableComponent, TableDataCell, TableHeaderCell } from './Table';
 
+const defaultRemarkPlugins: Plugin[] = [remarkGfm, remarkYoutube, remarkMath];
+
 interface MarkdownWrapperProps extends PropsWithChildren {
   /**
    * Remark plugins to apply to the markdown content.
+   * @default [remarkGfm, remarkYoutube, remarkMath]
    */
   remarkPlugins?: Plugin[];
 
@@ -39,7 +45,7 @@ interface MarkdownWrapperProps extends PropsWithChildren {
 
 export const Markdown: FC<MarkdownWrapperProps> = ({
   children,
-  remarkPlugins,
+  remarkPlugins = defaultRemarkPlugins,
   rehypePlugins = [rehypeRaw, rehypeKatex],
   theme,
   customComponents

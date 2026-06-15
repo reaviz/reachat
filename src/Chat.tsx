@@ -16,12 +16,7 @@ import { ChatContext, ChatViewType } from './ChatContext';
 import { Plugin } from 'unified';
 import { AnimatePresence } from 'motion/react';
 import { useDimensions } from './utils/useDimensions';
-import remarkGfm from 'remark-gfm';
-import remarkYoutube from 'remark-youtube';
-import remarkMath from 'remark-math';
 import type { ComponentCatalog } from './ComponentCatalog/types';
-
-const defaultRemarkPlugins: Plugin[] = [remarkGfm, remarkYoutube, remarkMath];
 
 export interface ChatProps extends PropsWithChildren {
   /**
@@ -62,7 +57,7 @@ export interface ChatProps extends PropsWithChildren {
 
   /**
    * Remark plugins to apply to the request/response.
-   * @default defaultRemarkPlugins
+   * @default undefined
    */
   remarkPlugins?: Plugin[];
 
@@ -138,7 +133,7 @@ export const Chat: FC<ChatProps> = ({
   activeSessionId,
   theme: customTheme = chatTheme,
   onNewSession,
-  remarkPlugins = defaultRemarkPlugins,
+  remarkPlugins,
   markdownComponents,
   components: componentCatalog,
   disabled,
@@ -197,8 +192,15 @@ export const Chat: FC<ChatProps> = ({
 
   // Merge catalog plugin/components when a componentCatalog is provided
   const mergedRemarkPlugins = useMemo(() => {
-    if (!componentCatalog) return remarkPlugins as Plugin[];
-    return [...(remarkPlugins as Plugin[]), componentCatalog.remarkPlugin];
+    if (!componentCatalog) {
+      return remarkPlugins;
+    }
+    // Keep markdown defaults in Markdown component when users don't supply
+    // explicit remark plugins.
+    if (!remarkPlugins) {
+      return undefined;
+    }
+    return [...(remarkPlugins ?? []), componentCatalog.remarkPlugin];
   }, [remarkPlugins, componentCatalog]);
 
   // User-provided markdownComponents spread last so they can override
