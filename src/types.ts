@@ -73,6 +73,56 @@ export interface Suggestion {
   content: string;
 }
 
+export type MessageRole =
+  'user' | 'assistant' | 'system' | 'tool' | (string & {});
+
+export interface Message {
+  /**
+   * Unique identifier for the message
+   */
+  id: string;
+
+  /**
+   * Who authored the message
+   */
+  role: MessageRole;
+
+  /**
+   * Markdown content of the message
+   */
+  content: string;
+
+  /**
+   * Date and time when the message was created
+   */
+  createdAt?: Date;
+
+  /**
+   * Date and time when the message was last updated
+   */
+  updatedAt?: Date;
+
+  /**
+   * Sources referenced by this message (typically assistant messages)
+   */
+  sources?: ConversationSource[];
+
+  /**
+   * Files attached to this message (typically user messages)
+   */
+  files?: ConversationFile[];
+
+  /**
+   * Arbitrary structured data, e.g. tool call info:
+   * `{ toolCallId, toolCallName, args }`
+   */
+  metadata?: Record<string, any>;
+}
+
+/**
+ * @deprecated Use `Message` instead. Kept for backwards compatibility;
+ * converted internally via `conversationsToMessages()`.
+ */
 export interface Conversation {
   /**
    * Unique identifier for the conversation
@@ -132,7 +182,15 @@ export interface Session {
   updatedAt?: Date;
 
   /**
-   * Array of conversations within this session
+   * Ordered list of messages in this session
    */
-  conversations: Conversation[];
+  messages?: Message[];
+
+  /**
+   * Array of conversations within this session
+   *
+   * @deprecated Use `messages`. Kept for backwards compatibility;
+   * converted internally via `conversationsToMessages()`.
+   */
+  conversations?: Conversation[];
 }

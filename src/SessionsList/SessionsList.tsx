@@ -48,7 +48,7 @@ export const SessionsList: FC<SessionsListProps> = ({
                   session={{
                     id: template.id,
                     title: template.title,
-                    conversations: []
+                    messages: []
                   }}
                   chatIcon={template.icon}
                   deletable={false}

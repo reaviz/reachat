@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Session, Conversation } from '@/types';
+import { Message, Session } from '@/types';
+import { getSessionMessages } from '@/utils/messages';
 import {
   AgUiEvent,
   AgUiEventType,
   AgUiContext,
   AgUiMessage,
+  AgUiRole,
   AgUiRunAgentInput,
   AgUiTool,
   AgUiToolCallInfo
@@ -108,60 +110,88 @@ function generateId(): string {
   return Math.random().toString(36).substring(2, 11);
 }
 
-export function addConversationToSession(
+/**
+ * Appends a message to the given session.
+ */
+export function addMessageToSession(
   sessions: Session[],
   sessionId: string,
-  conversation: Conversation
+  message: Message
 ): Session[] {
   return sessions.map(s => {
     if (s.id !== sessionId) return s;
     return {
       ...s,
-      updatedAt: conversation.createdAt,
-      conversations: [...s.conversations, conversation]
-    };
-  });
-}
-
-export function updateConversationInSession(
-  sessions: Session[],
-  sessionId: string,
-  conversationId: string,
-  response: string
-): Session[] {
-  return sessions.map(s => {
-    if (s.id !== sessionId) return s;
-    return {
-      ...s,
-      updatedAt: new Date(),
-      conversations: s.conversations.map(c => {
-        if (c.id !== conversationId) return c;
-        return { ...c, response, updatedAt: new Date() };
-      })
+      updatedAt: message.createdAt ?? new Date(),
+      messages: [...getSessionMessages(s), message]
     };
   });
 }
 
 /**
- * Converts reachat Session/Conversation history into AG-UI messages.
+ * Replaces the content of a message within the given session.
+ */
+export function updateMessageInSession(
+  sessions: Session[],
+  sessionId: string,
+  messageId: string,
+  content: string
+): Session[] {
+  return sessions.map(s => {
+    if (s.id !== sessionId) return s;
+    const updatedAt = new Date();
+    return {
+      ...s,
+      updatedAt,
+      messages: getSessionMessages(s).map(m => {
+        if (m.id !== messageId) return m;
+        return { ...m, content, updatedAt };
+      })
+    };
+  });
+}
+
+const AG_UI_ROLES: AgUiRole[] = [
+  'developer',
+  'system',
+  'assistant',
+  'user',
+  'tool'
+];
+
+/**
+ * Maps a reachat message role onto an AG-UI role. Custom roles that have
+ * no AG-UI equivalent are sent as `assistant`.
+ */
+function toAgUiRole(role: string): AgUiRole {
+  return AG_UI_ROLES.includes(role as AgUiRole)
+    ? (role as AgUiRole)
+    : 'assistant';
+}
+
+/**
+ * Converts reachat Session history into AG-UI messages.
  */
 export function sessionsToAgUiMessages(session: Session): AgUiMessage[] {
-  const messages: AgUiMessage[] = [];
-  for (const conv of session.conversations) {
-    messages.push({
-      id: `${conv.id}-q`,
-      role: 'user',
-      content: conv.question
-    });
-    if (conv.response) {
-      messages.push({
-        id: `${conv.id}-r`,
-        role: 'assistant',
-        content: conv.response
-      });
+  return getSessionMessages(session).map(message => {
+    const result: AgUiMessage = {
+      id: message.id,
+      role: toAgUiRole(message.role),
+      content: message.content
+    };
+
+    if (message.role === 'tool') {
+      const { toolCallId, toolCallName } = message.metadata ?? {};
+      if (toolCallId) {
+        result.toolCallId = toolCallId;
+      }
+      if (toolCallName) {
+        result.name = toolCallName;
+      }
     }
-  }
-  return messages;
+
+    return result;
+  });
 }
 
 /**
@@ -308,7 +338,7 @@ export function useAgUi({
       title: 'New Session',
       createdAt: new Date(),
       updatedAt: new Date(),
-      conversations: []
+      messages: []
     };
     setSessions(prev => [newSession, ...prev]);
     setActiveSessionId(id);
@@ -337,20 +367,21 @@ export function useAgUi({
           title: message.slice(0, 50),
           createdAt: new Date(),
           updatedAt: new Date(),
-          conversations: []
+          messages: []
         };
         setSessions(prev => [newSession, ...prev]);
         setActiveSessionId(sessionId);
       }
 
-      const conversationId = generateId();
+      const userMessageId = generateId();
       const now = new Date();
 
-      // Add the user's question immediately
+      // Add the user's message immediately
       setSessions(prev =>
-        addConversationToSession(prev, sessionId, {
-          id: conversationId,
-          question: message,
+        addMessageToSession(prev, sessionId, {
+          id: userMessageId,
+          role: 'user',
+          content: message,
           createdAt: now
         })
       );
@@ -358,18 +389,14 @@ export function useAgUi({
       setIsLoading(true);
 
       // Build the history for the agent
-      const currentSession = [
-        ...(sessions.find(s => s.id === sessionId)?.conversations ?? [])
-      ];
-
-      const historyMessages = sessionsToAgUiMessages({
-        id: sessionId,
-        conversations: currentSession
-      });
+      const currentSession = sessions.find(s => s.id === sessionId);
+      const historyMessages = currentSession
+        ? sessionsToAgUiMessages(currentSession)
+        : [];
 
       // Add the new message
       historyMessages.push({
-        id: `${conversationId}-q`,
+        id: userMessageId,
         role: 'user',
         content: message
       });
@@ -403,15 +430,35 @@ export function useAgUi({
           );
         }
 
-        // Track streaming response text and tool calls
-        let responseText = '';
+        // Track the in-flight assistant message and any tool calls
+        let assistantMessageId: string | null = null;
+        let assistantText = '';
         const toolCalls = new Map<string, { name: string; args: string }>();
 
-        // Helper to update the conversation response in-place
-        const updateResponse = (text: string) => {
-          setSessions(prev =>
-            updateConversationInSession(prev, sessionId, conversationId, text)
-          );
+        // Appends a text delta, starting a new assistant message when
+        // there is not one streaming (eg. after a tool call).
+        const appendAssistantText = (delta: string) => {
+          if (assistantMessageId === null) {
+            assistantMessageId = generateId();
+            assistantText = delta;
+            const id = assistantMessageId;
+            const content = assistantText;
+            setSessions(prev =>
+              addMessageToSession(prev, sessionId, {
+                id,
+                role: 'assistant',
+                content,
+                createdAt: new Date()
+              })
+            );
+          } else {
+            assistantText += delta;
+            const id = assistantMessageId;
+            const content = assistantText;
+            setSessions(prev =>
+              updateMessageInSession(prev, sessionId, id, content)
+            );
+          }
         };
 
         for await (const eventOrError of parseSSE(
@@ -428,15 +475,13 @@ export function useAgUi({
 
           switch (event.type) {
             case AgUiEventType.TEXT_MESSAGE_CONTENT: {
-              responseText += event.delta;
-              updateResponse(responseText);
+              appendAssistantText(event.delta);
               break;
             }
 
             case AgUiEventType.TEXT_MESSAGE_CHUNK: {
               if (event.delta) {
-                responseText += event.delta;
-                updateResponse(responseText);
+                appendAssistantText(event.delta);
               }
               break;
             }
@@ -459,15 +504,36 @@ export function useAgUi({
 
             case AgUiEventType.TOOL_CALL_END: {
               const tc = toolCalls.get(event.toolCallId);
-              if (tc && onToolCallRef.current) {
-                try {
-                  await onToolCallRef.current({
-                    toolCallId: event.toolCallId,
-                    toolCallName: tc.name,
-                    args: tc.args
-                  });
-                } catch {
-                  // Tool call handler errors are non-fatal
+              if (tc) {
+                // Tool activity becomes its own message in the transcript
+                setSessions(prev =>
+                  addMessageToSession(prev, sessionId, {
+                    id: generateId(),
+                    role: 'tool',
+                    content: tc.name,
+                    createdAt: new Date(),
+                    metadata: {
+                      toolCallId: event.toolCallId,
+                      toolCallName: tc.name,
+                      args: tc.args
+                    }
+                  })
+                );
+
+                // Any text that follows starts a new assistant message
+                assistantMessageId = null;
+                assistantText = '';
+
+                if (onToolCallRef.current) {
+                  try {
+                    await onToolCallRef.current({
+                      toolCallId: event.toolCallId,
+                      toolCallName: tc.name,
+                      args: tc.args
+                    });
+                  } catch {
+                    // Tool call handler errors are non-fatal
+                  }
                 }
               }
               toolCalls.delete(event.toolCallId);

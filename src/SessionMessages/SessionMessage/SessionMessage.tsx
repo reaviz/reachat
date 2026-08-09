@@ -1,10 +1,9 @@
-import { memo, PropsWithChildren, useContext } from 'react';
+import { memo, PropsWithChildren, useContext, useMemo } from 'react';
 import { ChatContext } from '@/ChatContext';
 import { Card, cn } from 'reablocks';
-import { Conversation } from '@/types';
+import { Message } from '@/types';
 import { motion } from 'motion/react';
-import { MessageQuestion } from './MessageQuestion';
-import { MessageResponse } from './MessageResponse';
+import { MessageContent } from './MessageContent';
 import { MessageSources } from './MessageSources';
 import { MessageActions } from './MessageActions';
 
@@ -29,9 +28,9 @@ interface SessionMessageProps extends PropsWithChildren {
   className?: string;
 
   /**
-   * Conversation to render.
+   * Message to render.
    */
-  conversation: Conversation;
+  message: Message;
 
   /**
    * Whether the message is the last one in the list.
@@ -41,29 +40,41 @@ interface SessionMessageProps extends PropsWithChildren {
 }
 
 export const SessionMessage = memo<SessionMessageProps>(
-  ({ conversation, isLast, children, className }) => {
+  ({ message, isLast, children, className }) => {
     const { theme, isLoading } = useContext(ChatContext);
+    const { base, user, assistant, system, tool } = theme.messages.message;
+
+    // Custom roles fall back to the assistant presentation.
+    const roleClassName = useMemo(() => {
+      const roles: Record<string, string> = { user, assistant, system, tool };
+      return roles[message.role] ?? assistant;
+    }, [message.role, user, assistant, system, tool]);
+
+    const isUser = message.role === 'user';
+    const isAssistant = message.role === 'assistant';
 
     return (
-      <motion.div key={conversation.id} variants={messageVariants}>
-        <Card className={cn(theme.messages.message.base, className)}>
-          {children || (
-            <>
-              <MessageQuestion
-                question={conversation.question}
-                files={conversation.files}
+      <motion.div key={message.id} variants={messageVariants}>
+        <Card className={cn(base, className)}>
+          {children ||
+            (isUser ? (
+              <MessageContent
+                content={message.content}
+                className={roleClassName}
+                files={message.files}
+                expandable
               />
-              <MessageResponse
-                response={conversation.response}
-                isLoading={isLast && isLoading}
-              />
-              <MessageSources sources={conversation.sources} />
-              <MessageActions
-                question={conversation.question}
-                response={conversation.response}
-              />
-            </>
-          )}
+            ) : (
+              <>
+                <MessageContent
+                  content={message.content}
+                  className={roleClassName}
+                  isLoading={isAssistant && isLast && isLoading}
+                />
+                <MessageSources sources={message.sources} />
+                {isAssistant && <MessageActions message={message} />}
+              </>
+            ))}
         </Card>
       </motion.div>
     );

@@ -5,8 +5,8 @@ import {
   parseSSELine,
   parseSSE,
   sessionsToAgUiMessages,
-  addConversationToSession,
-  updateConversationInSession
+  addMessageToSession,
+  updateMessageInSession
 } from './useAgUi';
 
 function makeSSEStream(chunks: string[]): Response {
@@ -149,7 +149,63 @@ describe('parseSSE', () => {
 });
 
 describe('sessionsToAgUiMessages', () => {
-  it('converts conversations to user/assistant message pairs', () => {
+  it('maps messages 1:1 by role', () => {
+    const session: Session = {
+      id: 's1',
+      messages: [
+        { id: 'm1', role: 'user', content: 'hi' },
+        { id: 'm2', role: 'assistant', content: 'hello' },
+        { id: 'm3', role: 'system', content: 'be nice' }
+      ]
+    };
+
+    expect(sessionsToAgUiMessages(session)).toEqual([
+      { id: 'm1', role: 'user', content: 'hi' },
+      { id: 'm2', role: 'assistant', content: 'hello' },
+      { id: 'm3', role: 'system', content: 'be nice' }
+    ]);
+  });
+
+  it('maps tool messages with their tool call metadata', () => {
+    const session: Session = {
+      id: 's1',
+      messages: [
+        {
+          id: 'm1',
+          role: 'tool',
+          content: 'get_weather',
+          metadata: {
+            toolCallId: 't1',
+            toolCallName: 'get_weather',
+            args: '{}'
+          }
+        }
+      ]
+    };
+
+    expect(sessionsToAgUiMessages(session)).toEqual([
+      {
+        id: 'm1',
+        role: 'tool',
+        content: 'get_weather',
+        toolCallId: 't1',
+        name: 'get_weather'
+      }
+    ]);
+  });
+
+  it('maps custom roles to assistant', () => {
+    const session: Session = {
+      id: 's1',
+      messages: [{ id: 'm1', role: 'status', content: 'thinking' }]
+    };
+
+    expect(sessionsToAgUiMessages(session)).toEqual([
+      { id: 'm1', role: 'assistant', content: 'thinking' }
+    ]);
+  });
+
+  it('converts legacy conversations to user/assistant messages', () => {
     const session: Session = {
       id: 's1',
       conversations: [
@@ -157,49 +213,111 @@ describe('sessionsToAgUiMessages', () => {
       ]
     };
 
-    const messages = sessionsToAgUiMessages(session);
-    expect(messages).toEqual([
-      { id: 'c1-q', role: 'user', content: 'hi' },
-      { id: 'c1-r', role: 'assistant', content: 'hello' }
+    expect(sessionsToAgUiMessages(session)).toEqual([
+      { id: 'c1-question', role: 'user', content: 'hi' },
+      { id: 'c1-response', role: 'assistant', content: 'hello' }
     ]);
   });
 
-  it('omits assistant message when response is empty', () => {
+  it('omits the assistant message when a legacy response is missing', () => {
     const session: Session = {
       id: 's1',
       conversations: [{ id: 'c1', question: 'hi', createdAt: new Date() }]
     };
 
-    const messages = sessionsToAgUiMessages(session);
-    expect(messages).toEqual([{ id: 'c1-q', role: 'user', content: 'hi' }]);
+    expect(sessionsToAgUiMessages(session)).toEqual([
+      { id: 'c1-question', role: 'user', content: 'hi' }
+    ]);
   });
 });
 
-describe('addConversationToSession', () => {
+describe('addMessageToSession', () => {
   it('does not mutate the original array', () => {
     const sessions: Session[] = [
-      { id: 's1', conversations: [], createdAt: new Date() }
+      { id: 's1', messages: [], createdAt: new Date() }
     ];
-    const conv = { id: 'c1', question: 'hi', createdAt: new Date() };
-    const result = addConversationToSession(sessions, 's1', conv);
+    const result = addMessageToSession(sessions, 's1', {
+      id: 'm1',
+      role: 'user',
+      content: 'hi',
+      createdAt: new Date()
+    });
 
     expect(result).not.toBe(sessions);
-    expect(sessions[0].conversations).toHaveLength(0);
-    expect(result[0].conversations).toHaveLength(1);
+    expect(sessions[0].messages).toHaveLength(0);
+    expect(result[0].messages).toHaveLength(1);
+    expect(result[0].messages[0]).toEqual(
+      expect.objectContaining({ id: 'm1', role: 'user', content: 'hi' })
+    );
   });
-});
 
-describe('updateConversationInSession', () => {
-  it('updates the response on the matching conversation', () => {
+  it('leaves other sessions untouched', () => {
+    const other: Session = { id: 's2', messages: [] };
+    const sessions: Session[] = [{ id: 's1', messages: [] }, other];
+
+    const result = addMessageToSession(sessions, 's1', {
+      id: 'm1',
+      role: 'user',
+      content: 'hi'
+    });
+
+    expect(result[1]).toBe(other);
+  });
+
+  it('appends onto legacy conversation sessions', () => {
     const sessions: Session[] = [
       {
         id: 's1',
-        conversations: [{ id: 'c1', question: 'hi', createdAt: new Date() }],
+        conversations: [
+          { id: 'c1', question: 'hi', response: 'hello', createdAt: new Date() }
+        ]
+      }
+    ];
+
+    const result = addMessageToSession(sessions, 's1', {
+      id: 'm1',
+      role: 'user',
+      content: 'again'
+    });
+
+    expect(result[0].messages.map(m => m.content)).toEqual([
+      'hi',
+      'hello',
+      'again'
+    ]);
+  });
+});
+
+describe('updateMessageInSession', () => {
+  it('updates the content of the matching message', () => {
+    const sessions: Session[] = [
+      {
+        id: 's1',
+        messages: [
+          { id: 'm1', role: 'user', content: 'hi' },
+          { id: 'm2', role: 'assistant', content: 'hel' }
+        ],
         createdAt: new Date()
       }
     ];
 
-    const result = updateConversationInSession(sessions, 's1', 'c1', 'hello');
-    expect(result[0].conversations[0].response).toBe('hello');
+    const result = updateMessageInSession(sessions, 's1', 'm2', 'hello');
+
+    expect(result[0].messages[1].content).toBe('hello');
+    expect(result[0].messages[1].updatedAt).toBeInstanceOf(Date);
+    expect(result[0].messages[0].content).toBe('hi');
+    expect(sessions[0].messages[1].content).toBe('hel');
+  });
+
+  it('is a no-op when the message id is unknown', () => {
+    const sessions: Session[] = [
+      {
+        id: 's1',
+        messages: [{ id: 'm1', role: 'assistant', content: 'hi' }]
+      }
+    ];
+
+    const result = updateMessageInSession(sessions, 's1', 'nope', 'hello');
+    expect(result[0].messages[0].content).toBe('hi');
   });
 });
