@@ -16,6 +16,7 @@ import {
   SessionMessagePanel,
   SessionMessagesHeader,
   ChatContext,
+  Message,
   SessionMessage,
   MessageStatus,
   MessageStatusStep,
@@ -38,15 +39,13 @@ import Placeholder from './assets/placeholder.svg?react';
 import PlaceholderDark from './assets/placeholder-dark.svg?react';
 import { MessageActions } from '@/SessionMessages';
 import { MessageFiles } from '@/SessionMessages';
-import { MessageQuestion } from '@/SessionMessages';
-import { MessageResponse } from '@/SessionMessages';
 import { MessageSources } from '@/SessionMessages';
 import {
   fakeSessions,
   fakeSessionsWithEmbeds,
   sessionWithSources,
   sessionsWithFiles,
-  sessionsWithPartialConversation,
+  sessionsWithPendingResponse,
   sessionWithCSVFiles,
   createSendMessageHandler
 } from './examples';
@@ -194,7 +193,7 @@ export const Loading = () => {
       <Chat
         isLoading
         viewType="console"
-        sessions={sessionsWithPartialConversation}
+        sessions={sessionsWithPendingResponse}
         activeSessionId="1"
         onDeleteSession={() => alert('delete!')}
       >
@@ -242,17 +241,18 @@ export const FileUploads = () => {
 
           return [{
             ...session,
-            conversations: [
-              ...session.conversations,
+            messages: [
+              ...session.messages,
               {
                 id: (Math.random() * 100).toString(),
+                role: 'user',
                 createdAt: new Date(),
-                question: message,
+                content: message,
                 ...(selectedFile ? { files: [{
                   name: selectedFile.name,
                   size: selectedFile.size,
                   type: selectedFile.type,
-                }]} : [])
+                }]} : {})
               }
             ]
           }];
@@ -375,11 +375,17 @@ export const SessionGrouping = () => {
     title,
     createdAt: subDays(new Date(), daysAgo),
     updatedAt: subDays(new Date(), daysAgo),
-    conversations: [
+    messages: [
       {
         id: `${id}-1`,
-        question: 'Sample question',
-        response: 'Sample response',
+        role: 'user',
+        content: 'Sample question',
+        createdAt: subDays(new Date(), daysAgo)
+      },
+      {
+        id: `${id}-2`,
+        role: 'assistant',
+        content: 'Sample response',
         createdAt: subDays(new Date(), daysAgo),
         updatedAt: subDays(new Date(), daysAgo)
       }
@@ -441,11 +447,17 @@ export const HundredSessions = () => {
       title: `Session ${index + 1}`,
       createdAt: subDays(new Date(), index),
       updatedAt: subDays(new Date(), index),
-      conversations: [
+      messages: [
         {
-          id: `conv-${index}-1`,
-          question: `Question for session ${index + 1}`,
-          response: `Response for session ${index + 1}`,
+          id: `msg-${index}-1`,
+          role: 'user',
+          content: `Question for session ${index + 1}`,
+          createdAt: subDays(new Date(), index)
+        },
+        {
+          id: `msg-${index}-2`,
+          role: 'assistant',
+          content: `Response for session ${index + 1}`,
           createdAt: subDays(new Date(), index),
           updatedAt: subDays(new Date(), index)
         }
@@ -485,24 +497,31 @@ export const HundredSessions = () => {
   );
 };
 
-export const HundredConversations = () => {
-  const generateFakeConversations = (count: number) => {
-    return Array.from({ length: count }, (_, index) => ({
-      id: `conv-${index + 1}`,
-      question: `Question ${index + 1}: What is the meaning of life, the universe, and everything?`,
-      response: `Answer ${index + 1}: According to The Hitchhiker's Guide to the Galaxy, it's 42. But in reality, that's a complex philosophical question that has puzzled humanity for centuries.`,
-      createdAt: subMinutes(new Date(), count - index),
-      updatedAt: subMinutes(new Date(), count - index)
-    }));
-  };
+export const HundredMessages = () => {
+  const generateFakeMessages = (turns: number): Message[] =>
+    Array.from({ length: turns }, (_, index) => [
+      {
+        id: `msg-${index + 1}-user`,
+        role: 'user',
+        content: `Question ${index + 1}: What is the meaning of life, the universe, and everything?`,
+        createdAt: subMinutes(new Date(), turns - index)
+      },
+      {
+        id: `msg-${index + 1}-assistant`,
+        role: 'assistant',
+        content: `Answer ${index + 1}: According to The Hitchhiker's Guide to the Galaxy, it's 42. But in reality, that's a complex philosophical question that has puzzled humanity for centuries.`,
+        createdAt: subMinutes(new Date(), turns - index),
+        updatedAt: subMinutes(new Date(), turns - index)
+      }
+    ]).flat();
 
-  const sessionWithHundredConversations: Session[] = [
+  const sessionWithHundredMessages: Session[] = [
     {
       id: 'session-100',
-      title: 'Session with 100 Conversations',
+      title: 'Session with 100 Messages',
       createdAt: subHours(new Date(), 5),
       updatedAt: new Date(),
-      conversations: generateFakeConversations(100)
+      messages: generateFakeMessages(50)
     }
   ];
 
@@ -522,7 +541,7 @@ export const HundredConversations = () => {
     >
       <Chat
         viewType="console"
-        sessions={sessionWithHundredConversations}
+        sessions={sessionWithHundredMessages}
         activeSessionId="session-100"
       >
         <SessionsList>
@@ -547,12 +566,18 @@ export const LongSessionNames = () => {
       title: `Session ${index + 1}: This is a very long session name to test how the UI handles overflow and text wrapping in the session list. It should be truncated or wrapped appropriately to ensure a good user experience.`,
       createdAt: subHours(new Date(), count - index),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
-          id: '1',
-          question:
+          id: '1-user',
+          role: 'user',
+          content:
             'Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics?',
-          response:
+          createdAt: new Date()
+        },
+        {
+          id: '1-assistant',
+          role: 'assistant',
+          content:
             'Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics? Can you provide an in-depth explanation of the theory of relativity, including its historical context, key principles, mathematical foundations, experimental evidence, and its implications for our understanding of space, time, and gravity? Additionally, how does it relate to quantum mechanics, and what are the current challenges in reconciling these two fundamental theories of physics?',
           createdAt: new Date(),
           updatedAt: new Date()
@@ -669,11 +694,17 @@ export const MarkdownShowcase = () => {
       title: 'Markdown Showcase',
       createdAt: subHours(new Date(), 1),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
-          id: 'conversation-1',
-          question: markdownQuestion,
-          response: markdownResponse,
+          id: 'message-1',
+          role: 'user',
+          content: markdownQuestion,
+          createdAt: new Date()
+        },
+        {
+          id: 'message-2',
+          role: 'assistant',
+          content: markdownResponse,
           createdAt: new Date()
         }
       ]
@@ -739,11 +770,17 @@ export const CVEExample = () => {
       title: 'CVE Showcase',
       createdAt: subHours(new Date(), 1),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
-          id: 'conversation-1',
-          question: markdownQuestion,
-          response: markdownResponse,
+          id: 'message-1',
+          role: 'user',
+          content: markdownQuestion,
+          createdAt: new Date()
+        },
+        {
+          id: 'message-2',
+          role: 'assistant',
+          content: markdownResponse,
           createdAt: new Date()
         }
       ]
@@ -901,10 +938,10 @@ const CustomMessagesHeader: FC<any> = () => {
   );
 };
 
-const CustomMessageQuestion: FC<any> = ({ question, files }) => (
+const CustomUserMessage: FC<any> = ({ content, files }) => (
   <>
     <span className="text-lg font-semibold text-blue-500">
-      This is my question: {question}
+      This is my question: {content}
     </span>
     <MessageFiles files={files}>
       <CustomMessageFile />
@@ -912,9 +949,9 @@ const CustomMessageQuestion: FC<any> = ({ question, files }) => (
   </>
 );
 
-const CustomMessageResponse: FC<any> = ({ response }) => (
+const CustomAssistantMessage: FC<any> = ({ content }) => (
   <blockquote className="border-l border-blue-500 pl-2">
-    This is the response: {response}
+    This is the response: {content}
   </blockquote>
 );
 
@@ -1042,29 +1079,27 @@ export const CustomComponents = () => {
             <CustomMessagesHeader />
           </SessionMessagesHeader>
           <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
+            {messages =>
+              messages.map((message, index) => (
                 <SessionMessage
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                  key={conversation.id}
+                  message={message}
+                  isLast={index === messages.length - 1}
+                  key={message.id}
                 >
-                  <MessageQuestion
-                    question={conversation.question}
-                    files={conversation.files}
-                  >
-                    <CustomMessageQuestion />
-                  </MessageQuestion>
-                  <MessageResponse response={conversation.response}>
-                    <CustomMessageResponse />
-                  </MessageResponse>
-                  <MessageSources sources={conversation.sources}>
-                    <CustomMessageSource />
-                  </MessageSources>
-                  <MessageActions
-                    question={conversation.question}
-                    response={conversation.response}
-                  />
+                  {message.role === 'user' ? (
+                    <CustomUserMessage
+                      content={message.content}
+                      files={message.files}
+                    />
+                  ) : (
+                    <>
+                      <CustomAssistantMessage content={message.content} />
+                      <MessageSources sources={message.sources}>
+                        <CustomMessageSource />
+                      </MessageSources>
+                      <MessageActions message={message} />
+                    </>
+                  )}
                 </SessionMessage>
               ))
             }
@@ -1110,22 +1145,34 @@ export const ImageFiles = () => {
       title: 'Multiple Image Files Showcase',
       createdAt: subHours(new Date(), 1),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
-          id: 'conversation-1',
-          question: 'Analyze these images and describe what you see.',
-          response:
-            'I\'m sorry, but as an AI language model, I cannot actually see or analyze images. I can only process and respond to text input. If you\'d like me to describe or analyze images, you would need to provide detailed textual descriptions of the images.',
+          id: 'message-1',
+          role: 'user',
+          content: 'Analyze these images and describe what you see.',
           createdAt: new Date(),
           files: staticImageFiles
         },
         {
-          id: 'conversation-2',
-          question: 'Analyze these images and describe what you see.',
-          response:
+          id: 'message-2',
+          role: 'assistant',
+          content:
             'I\'m sorry, but as an AI language model, I cannot actually see or analyze images. I can only process and respond to text input. If you\'d like me to describe or analyze images, you would need to provide detailed textual descriptions of the images.',
+          createdAt: new Date()
+        },
+        {
+          id: 'message-3',
+          role: 'user',
+          content: 'Analyze these images and describe what you see.',
           createdAt: new Date(),
           files: [staticImageFiles[0]]
+        },
+        {
+          id: 'message-4',
+          role: 'assistant',
+          content:
+            'I\'m sorry, but as an AI language model, I cannot actually see or analyze images. I can only process and respond to text input. If you\'d like me to describe or analyze images, you would need to provide detailed textual descriptions of the images.',
+          createdAt: new Date()
         }
       ]
     }
@@ -1264,11 +1311,17 @@ export const WithToolStatus = () => {
       title: 'Tool Status Demo',
       createdAt: subHours(new Date(), 1),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
-          id: 'conversation-1',
-          question: 'Can you analyze my codebase and find any issues?',
-          response:
+          id: 'message-1',
+          role: 'user',
+          content: 'Can you analyze my codebase and find any issues?',
+          createdAt: new Date()
+        },
+        {
+          id: 'message-2',
+          role: 'assistant',
+          content:
             'I\'ll analyze your codebase now. Let me read through the files and check for any potential issues.',
           createdAt: new Date()
         }
@@ -1304,32 +1357,24 @@ export const WithToolStatus = () => {
         <SessionMessagePanel>
           <SessionMessagesHeader />
           <SessionMessages>
-            {conversations =>
-              conversations.map((conversation, index) => (
-                <SessionMessage
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
-                  key={conversation.id}
-                >
-                  <MessageQuestion
-                    question={conversation.question}
-                    files={conversation.files}
+            {messages => (
+              <>
+                {messages.map((message, index) => (
+                  <SessionMessage
+                    message={message}
+                    isLast={index === messages.length - 1}
+                    key={message.id}
                   />
-                  <MessageResponse response={conversation.response} />
-                  <div className="mt-4">
-                    <MessageStatus
-                      status={status}
-                      text={status === 'complete' ? 'Analysis complete' : 'Analyzing codebase...'}
-                      steps={steps}
-                    />
-                  </div>
-                  <MessageActions
-                    question={conversation.question}
-                    response={conversation.response}
+                ))}
+                <div className="mt-4">
+                  <MessageStatus
+                    status={status}
+                    text={status === 'complete' ? 'Analysis complete' : 'Analyzing codebase...'}
+                    steps={steps}
                   />
-                </SessionMessage>
-              ))
-            }
+                </div>
+              </>
+            )}
           </SessionMessages>
           <ChatInput />
         </SessionMessagePanel>

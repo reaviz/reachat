@@ -301,11 +301,17 @@ const sessions: Session[] = [
     title: 'Dynamic Components Demo',
     createdAt: subHours(new Date(), 2),
     updatedAt: new Date(),
-    conversations: [
+    messages: [
       {
-        id: 'conv-1',
-        question: "What's the weather in San Francisco?",
-        response: `Here's the current weather:
+        id: 'msg-1',
+        role: 'user',
+        content: "What's the weather in San Francisco?",
+        createdAt: subHours(new Date(), 2)
+      },
+      {
+        id: 'msg-2',
+        role: 'assistant',
+        content: `Here's the current weather:
 
 \`\`\`component
 ${JSON.stringify(weatherSpec, null, 2)}
@@ -315,9 +321,15 @@ Looks like a typical foggy day in the city!`,
         createdAt: subHours(new Date(), 2)
       },
       {
-        id: 'conv-2',
-        question: 'Show me weather for multiple cities',
-        response: `Here's a comparison of weather across three cities:
+        id: 'msg-3',
+        role: 'user',
+        content: 'Show me weather for multiple cities',
+        createdAt: subHours(new Date(), 1.5)
+      },
+      {
+        id: 'msg-4',
+        role: 'assistant',
+        content: `Here's a comparison of weather across three cities:
 
 \`\`\`component
 ${JSON.stringify(multiWeatherSpec, null, 2)}
@@ -327,9 +339,15 @@ San Francisco is mild, New York is rainy, and Miami is warm and sunny.`,
         createdAt: subHours(new Date(), 1.5)
       },
       {
-        id: 'conv-3',
-        question: 'Any deployment updates?',
-        response: `Yes! Here's the latest update:
+        id: 'msg-5',
+        role: 'user',
+        content: 'Any deployment updates?',
+        createdAt: subHours(new Date(), 1)
+      },
+      {
+        id: 'msg-6',
+        role: 'assistant',
+        content: `Yes! Here's the latest update:
 
 \`\`\`component
 ${JSON.stringify(alertSpec, null, 2)}
@@ -339,9 +357,15 @@ Everything looks good. All services are healthy.`,
         createdAt: subHours(new Date(), 1)
       },
       {
-        id: 'conv-4',
-        question: 'Show me the dashboard metrics',
-        response: `Here's your dashboard overview with nested components:
+        id: 'msg-7',
+        role: 'user',
+        content: 'Show me the dashboard metrics',
+        createdAt: subHours(new Date(), 0.5)
+      },
+      {
+        id: 'msg-8',
+        role: 'assistant',
+        content: `Here's your dashboard overview with nested components:
 
 \`\`\`component
 ${JSON.stringify(dashboardSpec, null, 2)}
@@ -360,11 +384,17 @@ const errorSessions: Session[] = [
     title: 'Error Handling Demo',
     createdAt: subHours(new Date(), 1),
     updatedAt: new Date(),
-    conversations: [
+    messages: [
       {
-        id: 'conv-err-1',
-        question: 'Show me an unknown component',
-        response: `Here's a component that doesn't exist in the catalog:
+        id: 'msg-err-1',
+        role: 'user',
+        content: 'Show me an unknown component',
+        createdAt: subHours(new Date(), 1)
+      },
+      {
+        id: 'msg-err-2',
+        role: 'assistant',
+        content: `Here's a component that doesn't exist in the catalog:
 
 \`\`\`component
 { "type": "NonExistentWidget", "props": { "foo": "bar" } }
@@ -374,9 +404,15 @@ The error should be displayed gracefully above.`,
         createdAt: subHours(new Date(), 1)
       },
       {
-        id: 'conv-err-2',
-        question: 'Show me invalid JSON',
-        response: `Here's some broken JSON:
+        id: 'msg-err-3',
+        role: 'user',
+        content: 'Show me invalid JSON',
+        createdAt: subHours(new Date(), 0.5)
+      },
+      {
+        id: 'msg-err-4',
+        role: 'assistant',
+        content: `Here's some broken JSON:
 
 \`\`\`component
 { type: WeatherCard, props: invalid }
@@ -386,9 +422,15 @@ The parser should handle this gracefully.`,
         createdAt: subHours(new Date(), 0.5)
       },
       {
-        id: 'conv-err-3',
-        question: 'Show me invalid props',
-        response: `Here's a valid component type with wrong props:
+        id: 'msg-err-5',
+        role: 'user',
+        content: 'Show me invalid props',
+        createdAt: new Date()
+      },
+      {
+        id: 'msg-err-6',
+        role: 'assistant',
+        content: `Here's a valid component type with wrong props:
 
 \`\`\`component
 { "type": "WeatherCard", "props": { "city": 123, "temperature": "not-a-number", "condition": "unknown" } }

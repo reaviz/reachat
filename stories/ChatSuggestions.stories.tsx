@@ -169,7 +169,7 @@ export const EmptySession = () => {
               id: newId,
               title: 'New Session',
               createdAt: new Date(),
-              conversations: []
+              messages: []
             }
           ]);
           setActiveId(newId);
@@ -182,11 +182,17 @@ export const EmptySession = () => {
                 id: newId,
                 title: message.substring(0, 30),
                 createdAt: new Date(),
-                conversations: [
+                messages: [
                   {
-                    id: '1',
-                    question: message,
-                    response: 'This is a response to your question.',
+                    id: '1-user',
+                    role: 'user',
+                    content: message,
+                    createdAt: new Date()
+                  },
+                  {
+                    id: '1-assistant',
+                    role: 'assistant',
+                    content: 'This is a response to your question.',
                     createdAt: new Date()
                   }
                 ]
@@ -199,12 +205,18 @@ export const EmptySession = () => {
                 session.id === activeId
                   ? {
                       ...session,
-                      conversations: [
-                        ...session.conversations,
+                      messages: [
+                        ...session.messages,
                         {
-                          id: Date.now().toString(),
-                          question: message,
-                          response: 'This is a response to your question.',
+                          id: `${Date.now()}-user`,
+                          role: 'user',
+                          content: message,
+                          createdAt: new Date()
+                        },
+                        {
+                          id: `${Date.now()}-assistant`,
+                          role: 'assistant',
+                          content: 'This is a response to your question.',
                           createdAt: new Date()
                         }
                       ]
@@ -351,7 +363,7 @@ export const DynamicSuggestions = () => {
       id: 'session-1',
       title: 'Dynamic Suggestions Demo',
       createdAt: new Date(),
-      conversations: []
+      messages: []
     }
   ]);
   const [activeId, setActiveId] = useState<string>('session-1');
@@ -409,12 +421,18 @@ export const DynamicSuggestions = () => {
         session.id === activeId
           ? {
               ...session,
-              conversations: [
-                ...session.conversations,
+              messages: [
+                ...session.messages,
                 {
-                  id: Date.now().toString(),
-                  question: message,
-                  response,
+                  id: `${Date.now()}-user`,
+                  role: 'user',
+                  content: message,
+                  createdAt: new Date()
+                },
+                {
+                  id: `${Date.now()}-assistant`,
+                  role: 'assistant',
+                  content: response,
                   createdAt: new Date()
                 }
               ]

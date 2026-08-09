@@ -102,7 +102,7 @@ const ChatSample: FC = () => {
               title: `New Session #${newId}`,
               createdAt: new Date(),
               updatedAt: new Date(),
-              conversations: []
+              messages: []
             }
           ]);
           setActiveId(newId);
@@ -179,7 +179,7 @@ export const WithChildren: Story = {
                     title: `New Session #${newId}`,
                     createdAt: new Date(),
                     updatedAt: new Date(),
-                    conversations: []
+                    messages: []
                   }
                 ]);
                 setActiveId(newId);
@@ -240,7 +240,7 @@ export const WithChildrenPortal: Story = {
                       title: `New Session #${newId}`,
                       createdAt: new Date(),
                       updatedAt: new Date(),
-                      conversations: []
+                      messages: []
                     }
                   ]);
                   setActiveId(newId);

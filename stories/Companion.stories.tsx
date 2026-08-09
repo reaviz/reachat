@@ -63,7 +63,7 @@ export const Basic = () => {
               title: `New Session #${newId}`,
               createdAt: new Date(),
               updatedAt: new Date(),
-              conversations: []
+              messages: []
             }
           ]);
           setActiveId(newId);
@@ -153,7 +153,7 @@ export const WithAppBar = () => {
               title: `New Session #${newId}`,
               createdAt: new Date(),
               updatedAt: new Date(),
-              conversations: []
+              messages: []
             }
           ]);
           setActiveId(newId);
@@ -230,10 +230,11 @@ export const TemplatesView = () => {
       title: template.title,
       createdAt: new Date(),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
           id: '1',
-          question: template.message,
+          role: 'user',
+          content: template.message,
           createdAt: new Date()
         }
       ]
@@ -296,10 +297,11 @@ export const TemplatesViewWithTitle = () => {
       title: template.title,
       createdAt: new Date(),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
           id: '1',
-          question: template.message,
+          role: 'user',
+          content: template.message,
           createdAt: new Date()
         }
       ]
@@ -368,10 +370,11 @@ export const TemplatesViewWithAppBar = () => {
       title: template.title,
       createdAt: new Date(),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
           id: '1',
-          question: template.message,
+          role: 'user',
+          content: template.message,
           createdAt: new Date()
         }
       ]

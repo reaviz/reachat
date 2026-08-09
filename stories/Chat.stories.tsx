@@ -10,6 +10,7 @@ import {
 } from '../src';
 import {
   fakeSessions,
+  legacyConversationSessions,
   sessionWithSources,
   sessionsWithFiles,
   createSendMessageHandler
@@ -58,7 +59,7 @@ export const Compact = () => {
               title: `New Session #${newId}`,
               createdAt: new Date(),
               updatedAt: new Date(),
-              conversations: []
+              messages: []
             }
           ]);
           setActiveId(newId);
@@ -111,7 +112,7 @@ export const FullScreen = () => {
               title: `New Session #${newId}`,
               createdAt: new Date(),
               updatedAt: new Date(),
-              conversations: []
+              messages: []
             }
           ]);
           setActiveId(newId);
@@ -156,7 +157,7 @@ export const Empty = () => {
               title: `New Session #${newId}`,
               createdAt: new Date(),
               updatedAt: new Date(),
-              conversations: []
+              messages: []
             }
           ]);
           setActiveId(newId);
@@ -178,12 +179,12 @@ export const Empty = () => {
               </div>
             }
           >
-            {conversations =>
-              conversations.map((conversation, index) => (
+            {messages =>
+              messages.map((message, index) => (
                 <SessionMessage
-                  key={conversation.id}
-                  conversation={conversation}
-                  isLast={index === conversations.length - 1}
+                  key={message.id}
+                  message={message}
+                  isLast={index === messages.length - 1}
                 />
               ))
             }
@@ -226,7 +227,7 @@ export const WithAppBar = () => {
               title: `New Session #${newId}`,
               createdAt: new Date(),
               updatedAt: new Date(),
-              conversations: []
+              messages: []
             }
           ]);
           setActiveId(newId);
@@ -264,6 +265,65 @@ export const WithAppBar = () => {
             <ChatInput />
           </SessionMessagePanel>
         </div>
+      </Chat>
+    </div>
+  );
+};
+
+/**
+ * Backwards compatibility: sessions that still use the deprecated
+ * `conversations` field are converted to messages internally, so legacy
+ * data keeps rendering without any changes.
+ */
+export const LegacyConversations = () => {
+  const [activeId, setActiveId] = useState<string>(
+    legacyConversationSessions[0].id
+  );
+  const [sessions, setSessions] = useState<Session[]>(
+    legacyConversationSessions
+  );
+
+  return (
+    <div
+      className="dark:bg-gray-950 bg-white"
+      style={{
+        width: 350,
+        height: 500,
+        padding: 20,
+        borderRadius: 5
+      }}
+    >
+      <Chat
+        viewType="chat"
+        sessions={sessions}
+        activeSessionId={activeId}
+        onSelectSession={setActiveId}
+        onDeleteSession={() => alert('delete!')}
+        onSendMessage={message =>
+          setSessions(prev =>
+            prev.map(session =>
+              session.id === activeId
+                ? {
+                    ...session,
+                    conversations: [
+                      ...session.conversations,
+                      {
+                        id: Date.now().toString(),
+                        question: message,
+                        response: 'This is a response to your question.',
+                        createdAt: new Date()
+                      }
+                    ]
+                  }
+                : session
+            )
+          )
+        }
+      >
+        <SessionMessagePanel>
+          <SessionMessages />
+          <ChatInput />
+        </SessionMessagePanel>
       </Chat>
     </div>
   );
