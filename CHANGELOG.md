@@ -1,3 +1,182 @@
+# 4.0.0 - 8/9/26
+- [breaking] replace the question/response `Conversation` model with a flat, role-based `Message` list to support agentic workflows
+- [breaking] `SessionMessage` prop `conversation` renamed to `message`; rendering is now driven by `message.role`
+- [breaking] `SessionMessages` render prop now receives `Message[]` instead of `Conversation[]`
+- [breaking] `MessageActions` props `question`/`response` replaced by a single `message`
+- [breaking] theme keys `messages.message.question`/`.response` renamed to `.user`/`.assistant`
+- [breaking] `useAgUi` helpers `addConversationToSession`/`updateConversationInSession` renamed to `addMessageToSession`/`updateMessageInSession`
+- [feature] new `Message` and `MessageRole` types — `user`, `assistant`, `system`, `tool` and custom role strings
+- [feature] new theme keys `messages.message.system` and `messages.message.tool`
+- [feature] `useAgUi` records tool calls as `role: 'tool'` messages with `metadata: { toolCallId, toolCallName, args }`, and streams text following a tool call into a new assistant message
+- [feature] new `conversationsToMessages()` and `getSessionMessages()` utilities for normalizing session data
+- [deprecation] `Conversation`, `Session.conversations`, `MessageQuestion` and `MessageResponse` are deprecated but still work
+
+## Migration Guide
+
+The legacy `conversations` array is still accepted and converted internally, so
+**existing apps that only pass session data keep working without changes.** The
+breaking parts are the component props and theme keys.
+
+| Before | After |
+|---|---|
+| `session.conversations: Conversation[]` | `session.messages: Message[]` (legacy `conversations` still accepted, auto-converted) |
+| `{ question, response }` | two messages: `{ role: 'user', content }` and `{ role: 'assistant', content }` |
+| `<SessionMessages>{convos => ...}</SessionMessages>` | `<SessionMessages>{messages => ...}</SessionMessages>` |
+| `<SessionMessage conversation={c} />` | `<SessionMessage message={m} />` |
+| `<MessageActions question={q} response={r} />` | `<MessageActions message={m} />` |
+| `<MessageQuestion question={q} />` / `<MessageResponse response={r} />` | `<SessionMessage message={m} />` (wrappers kept, deprecated) |
+| `theme.messages.message.question` / `.response` | `theme.messages.message.user` / `.assistant` (plus new `system`, `tool`) |
+| `addConversationToSession` / `updateConversationInSession` | `addMessageToSession` / `updateMessageInSession` |
+
+### Session data
+
+Do nothing and rely on the deprecated auto-conversion:
+
+```tsx
+// Still works — converted via getSessionMessages() internally
+const sessions = [
+  {
+    id: '1',
+    title: 'Weather',
+    conversations: [
+      {
+        id: 'c1',
+        createdAt: new Date(),
+        question: 'What is the weather?',
+        response: 'Sunny and 72°F.'
+      }
+    ]
+  }
+];
+```
+
+Or move to messages:
+
+```tsx
+import type { Session } from 'reachat';
+
+const sessions: Session[] = [
+  {
+    id: '1',
+    title: 'Weather',
+    messages: [
+      {
+        id: 'm1',
+        role: 'user',
+        content: 'What is the weather?',
+        createdAt: new Date()
+      },
+      {
+        id: 'm2',
+        role: 'assistant',
+        content: 'Sunny and 72°F.',
+        createdAt: new Date()
+      }
+    ]
+  }
+];
+```
+
+To convert stored data up front, use the exported helpers:
+
+```tsx
+import { conversationsToMessages, getSessionMessages } from 'reachat';
+
+// Convert a legacy conversation array
+const converted = conversationsToMessages(session.conversations);
+
+// Or normalize any session, new or legacy, into a Message[]
+const messages = getSessionMessages(session);
+```
+
+`getSessionMessages()` returns `session.messages` when present and falls back to
+converting `session.conversations`. Prefer it anywhere you read messages off a
+session.
+
+### Custom renderers
+
+```tsx
+// Before
+<SessionMessages>
+  {conversations =>
+    conversations.map((conversation, i) => (
+      <SessionMessage
+        key={conversation.id}
+        conversation={conversation}
+        isLast={i === conversations.length - 1}
+      />
+    ))
+  }
+</SessionMessages>
+
+// After
+<SessionMessages>
+  {messages =>
+    messages.map((message, i) => (
+      <SessionMessage
+        key={message.id}
+        message={message}
+        isLast={i === messages.length - 1}
+      />
+    ))
+  }
+</SessionMessages>
+```
+
+Each message renders in its own card, so a session is now a stream of message
+cards rather than question/response pair cards. `SessionMessage` picks its
+presentation from `message.role`: `user` renders files plus the expandable
+markdown content, `assistant` renders markdown with sources, actions and the
+loading cursor, and `system`/`tool`/custom roles use assistant-style content
+with their own theme class.
+
+### Custom themes
+
+```tsx
+// Before
+const theme = {
+  messages: { message: { question: '...', response: '...' } }
+};
+
+// After
+const theme = {
+  messages: {
+    message: {
+      user: '...',
+      assistant: '...',
+      system: '...', // new — muted, centered informational style
+      tool: '...' // new — compact style for tool activity
+    }
+  }
+};
+```
+
+### useAgUi
+
+`useAgUi`'s public API (`sessions`, `sendMessage`, `stopMessage`, …) is
+unchanged, but the sessions it produces are now message-based and tool calls
+appear as `role: 'tool'` messages:
+
+```tsx
+[
+  { id: '…', role: 'user', content: 'Weather in Paris?' },
+  { id: '…', role: 'assistant', content: 'Let me check.' },
+  {
+    id: '…',
+    role: 'tool',
+    content: 'get_weather',
+    metadata: { toolCallId: 'call_1', toolCallName: 'get_weather', args: '{"location":"Paris"}' }
+  },
+  { id: '…', role: 'assistant', content: 'It is 18°C and sunny.' }
+]
+```
+
+Text that arrives after a tool call starts a *new* assistant message, so a
+single run can produce multiple consecutive assistant messages. The module-level
+helpers `addConversationToSession`/`updateConversationInSession` were renamed to
+`addMessageToSession`/`updateMessageInSession`; the old names are removed. See
+`src/useAgUi/README.md` for details.
+
 # 3.4.1 - 6/15/26
 - [chore] improve `Markdown` to supply its own defaults rather than rely on `Chat` to provide them
 

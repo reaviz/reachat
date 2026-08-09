@@ -59,7 +59,8 @@ theme via Tailwind.
 - Image Preview
 - Message Sources
 - Animations
-- Conversation Pagination
+- Agentic message model ( `user` / `assistant` / `system` / `tool` roles )
+- Message Pagination
 - Smart/Dynamic Grouping of Sessions
 - Keyboard shortcuts
 - Animations via Motion.dev

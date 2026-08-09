@@ -101,25 +101,100 @@ The library uses a **composable slot-based architecture**. The main `Chat` compo
 
 ### Key Data Types
 
+A session is a **flat, ordered list of role-tagged messages**. This replaces
+the old `question`/`response` pair model so agentic transcripts (tool calls,
+consecutive assistant messages, system notices) can be represented.
+
 ```typescript
 // Core data structures in src/types.ts
+type MessageRole = 'user' | 'assistant' | 'system' | 'tool' | (string & {});
+
+interface Message {
+  id: string;
+  role: MessageRole;
+  /** Markdown content of the message */
+  content: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  /** Sources referenced by this message (typically assistant messages) */
+  sources?: ConversationSource[];
+  /** Files attached to this message (typically user messages) */
+  files?: ConversationFile[];
+  /** Arbitrary structured data, eg. `{ toolCallId, toolCallName, args }` */
+  metadata?: Record<string, any>;
+}
+
 interface Session {
   id: string;
   title?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  conversations: Conversation[];
-}
-
-interface Conversation {
-  id: string;
-  createdAt: Date;
-  question: string;
-  response?: string;
-  sources?: ConversationSource[];
-  files?: ConversationFile[];
+  messages?: Message[];
+  /** @deprecated Use `messages` — auto-converted internally */
+  conversations?: Conversation[];
 }
 ```
+
+`MessageRole` is open-ended — custom role strings are allowed and fall back to
+the assistant presentation in `SessionMessage`.
+
+#### Backwards Compatibility
+
+The legacy `Conversation` shape (`{ id, createdAt, question, response?,
+sources?, files? }`) is still exported and still accepted on
+`Session.conversations`, but is `@deprecated`. Two helpers in
+`src/utils/messages.ts` (both public exports) handle the conversion:
+
+```typescript
+/** Each conversation becomes a `user` message and, when a response exists, an `assistant` message. */
+conversationsToMessages(conversations: Conversation[]): Message[];
+
+/** Returns `session.messages`, falling back to converting `session.conversations`. */
+getSessionMessages(session?: Session | null): Message[];
+```
+
+Generated ids are `${conversation.id}-question` and
+`${conversation.id}-response`. When both `messages` and `conversations` are
+present, `messages` wins. **All internal consumers read messages exclusively
+through `getSessionMessages()`** — do the same in new code rather than reading
+`session.messages` directly.
+
+#### Message Rendering
+
+`SessionMessages` normalizes the active session with `getSessionMessages()`,
+paginates over the resulting `Message[]`, and renders one `SessionMessage`
+card per message. Its render prop receives the message list:
+
+```tsx
+<SessionMessages>
+  {(messages: Message[]) =>
+    messages.map((message, i) => (
+      <SessionMessage
+        key={message.id}
+        message={message}
+        isLast={i === messages.length - 1}
+      />
+    ))
+  }
+</SessionMessages>
+```
+
+`SessionMessage` picks its presentation from `message.role`:
+
+| Role | Presentation |
+|------|--------------|
+| `user` | files + markdown + long-content expand overlay |
+| `assistant` | markdown + `MessageSources` + `MessageActions` + loading cursor when `isLast && isLoading` |
+| `system` / `tool` / custom | assistant-style content with the role's theme class |
+
+When `isLoading` is true and the last message has `role: 'user'`,
+`SessionMessages` renders a pending assistant placeholder with the blinking
+cursor after it.
+
+`MessageActions` takes `message={message}` (copy copies `message.content`) and
+is rendered on assistant messages by default. `MessageQuestion` and
+`MessageResponse` remain as `@deprecated` thin wrappers over `MessageContent`
+so existing custom renderers keep compiling.
 
 ### View Types
 
@@ -143,6 +218,24 @@ const chatTheme: ChatTheme = {
 Components use the theme via `useComponentTheme` from reablocks:
 ```typescript
 const theme = useComponentTheme<ChatTheme>('chat', customTheme);
+```
+
+Message styling is keyed by role under `messages.message`:
+
+```typescript
+messages: {
+  message: {
+    base: string;
+    user: string;       // was: question
+    assistant: string;  // was: response
+    system: string;     // new — muted, centered informational style
+    tool: string;       // new — compact style for tool activity
+    cursor: string;
+    overlay: string;
+    expand: string;
+    // ...files, sources, markdown, footer, scrollToBottom
+  }
+}
 ```
 
 ### Rich Text Input Features
