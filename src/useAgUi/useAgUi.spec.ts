@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { act, cleanup, renderHook } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Session } from '@/types';
 import { AgUiEventType } from './types';
 import {
@@ -6,7 +7,8 @@ import {
   parseSSE,
   sessionsToAgUiMessages,
   addMessageToSession,
-  updateMessageInSession
+  updateMessageInSession,
+  useAgUi
 } from './useAgUi';
 
 function makeSSEStream(chunks: string[]): Response {
@@ -35,6 +37,20 @@ async function collectEvents(
   }
   return events;
 }
+
+function makeAgentResponse(chunks: string[]): Response {
+  return {
+    ...makeSSEStream(chunks),
+    ok: true,
+    status: 200,
+    statusText: 'OK'
+  } as Response;
+}
+
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 describe('parseSSELine', () => {
   it('parses a valid data line', () => {
@@ -194,6 +210,26 @@ describe('sessionsToAgUiMessages', () => {
     ]);
   });
 
+  it('omits pending tool activity until a result is available', () => {
+    const session: Session = {
+      id: 's1',
+      messages: [
+        {
+          id: 'm1',
+          role: 'tool',
+          content: 'get_weather',
+          metadata: {
+            toolCallId: 't1',
+            toolCallName: 'get_weather',
+            toolCallStatus: 'pending'
+          }
+        }
+      ]
+    };
+
+    expect(sessionsToAgUiMessages(session)).toEqual([]);
+  });
+
   it('maps custom roles to assistant', () => {
     const session: Session = {
       id: 's1',
@@ -319,5 +355,108 @@ describe('updateMessageInSession', () => {
 
     const result = updateMessageInSession(sessions, 's1', 'nope', 'hello');
     expect(result[0].messages[0].content).toBe('hi');
+  });
+});
+
+describe('useAgUi message event handling', () => {
+  it('preserves consecutive text messages and their server ids', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(
+          makeAgentResponse([
+            [
+              'data: {"type":"TEXT_MESSAGE_START","messageId":"a1","role":"assistant"}',
+              'data: {"type":"TEXT_MESSAGE_CONTENT","messageId":"a1","delta":"First"}',
+              'data: {"type":"TEXT_MESSAGE_END","messageId":"a1"}',
+              'data: {"type":"TEXT_MESSAGE_START","messageId":"a2","role":"assistant"}',
+              'data: {"type":"TEXT_MESSAGE_CONTENT","messageId":"a2","delta":"Second"}',
+              'data: {"type":"TEXT_MESSAGE_END","messageId":"a2"}'
+            ].join('\n\n') + '\n\n'
+          ])
+        )
+    );
+
+    const { result } = renderHook(() =>
+      useAgUi({
+        agent: 'https://example.com/agent',
+        initialSessions: [{ id: 's1', messages: [] }],
+        initialActiveSessionId: 's1'
+      })
+    );
+
+    await act(async () => {
+      await (result.current.sendMessage('Go') as unknown as Promise<void>);
+    });
+
+    expect(result.current.sessions[0].messages).toEqual([
+      expect.objectContaining({ role: 'user', content: 'Go' }),
+      expect.objectContaining({
+        id: 'a1',
+        role: 'assistant',
+        content: 'First'
+      }),
+      expect.objectContaining({
+        id: 'a2',
+        role: 'assistant',
+        content: 'Second'
+      })
+    ]);
+  });
+
+  it('stores tool result content and round-trips it to AG-UI', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(
+          makeAgentResponse([
+            [
+              'data: {"type":"TOOL_CALL_START","toolCallId":"t1","toolCallName":"get_weather"}',
+              'data: {"type":"TOOL_CALL_ARGS","toolCallId":"t1","delta":"{\\"city\\":\\"Paris\\"}"}',
+              'data: {"type":"TOOL_CALL_END","toolCallId":"t1"}',
+              'data: {"type":"TOOL_CALL_RESULT","toolCallId":"t1","content":"18 C and sunny"}'
+            ].join('\n\n') + '\n\n'
+          ])
+        )
+    );
+
+    const { result } = renderHook(() =>
+      useAgUi({
+        agent: 'https://example.com/agent',
+        initialSessions: [{ id: 's1', messages: [] }],
+        initialActiveSessionId: 's1'
+      })
+    );
+
+    await act(async () => {
+      await (result.current.sendMessage(
+        'Weather?'
+      ) as unknown as Promise<void>);
+    });
+
+    const toolMessage = result.current.sessions[0].messages?.find(
+      message => message.role === 'tool'
+    );
+    expect(toolMessage).toEqual(
+      expect.objectContaining({
+        role: 'tool',
+        content: '18 C and sunny',
+        metadata: expect.objectContaining({
+          toolCallId: 't1',
+          toolCallName: 'get_weather',
+          args: '{"city":"Paris"}',
+          toolCallStatus: 'complete'
+        })
+      })
+    );
+    expect(sessionsToAgUiMessages(result.current.sessions[0])).toContainEqual({
+      id: toolMessage?.id,
+      role: 'tool',
+      content: '18 C and sunny',
+      toolCallId: 't1',
+      name: 'get_weather'
+    });
   });
 });

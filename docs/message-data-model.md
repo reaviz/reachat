@@ -165,17 +165,21 @@ guide. Default values for `user`/`assistant` are the current
 - Session state is message-based. `sendMessage` appends a `role: 'user'`
   message, then creates a streaming `role: 'assistant'` message whose
   `content` grows with each text delta.
-- Tool calls become first-class: on `TOOL_CALL_END`, a
-  `role: 'tool'` message is appended with
-  `metadata: { toolCallId, toolCallName, args }` (the `onToolCall` callback
-  is still invoked). Text after a tool call streams into a *new* assistant
-  message — consecutive assistant messages are now representable.
+- Tool calls become first-class: on `TOOL_CALL_END`, a pending
+  `role: 'tool'` activity message is appended with
+  `metadata: { toolCallId, toolCallName, args, toolCallStatus }` (the
+  `onToolCall` callback is still invoked). `TOOL_CALL_RESULT` replaces its
+  content with the execution result before it is included in later AG-UI
+  history.
+- Text deltas are accumulated by AG-UI `messageId`, preserving the protocol's
+  START/CONTENT/END boundaries and allowing consecutive assistant messages.
 - Helpers renamed: `addConversationToSession` → `addMessageToSession`,
   `updateConversationInSession` → `updateMessageInSession` (old names removed;
   they were exported utilities but are internal in spirit — note in migration
   guide).
-- `sessionsToAgUiMessages` maps messages 1:1 by role instead of splitting
-  conversations (tool messages map to AG-UI `tool` role).
+- `sessionsToAgUiMessages` maps completed messages by role instead of splitting
+  conversations (completed tool messages map to AG-UI `tool`; pending tool
+  activity is omitted).
 
 ### 6. Everything else
 

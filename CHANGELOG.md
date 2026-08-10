@@ -7,7 +7,7 @@
 - [breaking] `useAgUi` helpers `addConversationToSession`/`updateConversationInSession` renamed to `addMessageToSession`/`updateMessageInSession`
 - [feature] new `Message` and `MessageRole` types — `user`, `assistant`, `system`, `tool` and custom role strings
 - [feature] new theme keys `messages.message.system` and `messages.message.tool`
-- [feature] `useAgUi` records tool calls as `role: 'tool'` messages with `metadata: { toolCallId, toolCallName, args }`, and streams text following a tool call into a new assistant message
+- [feature] `useAgUi` preserves AG-UI text-message IDs and boundaries, records pending tool calls as `role: 'tool'` activity, and replaces their content with `TOOL_CALL_RESULT` data before including them in later history
 - [feature] new `conversationsToMessages()` and `getSessionMessages()` utilities for normalizing session data
 - [feature] multi-user / multi-agent sessions — new `MessageAuthor` type and optional `Message.author`; `SessionMessage` renders an avatar + name header via the new `MessageAuthorBadge` component (opt out with `showAuthor={false}`)
 - [feature] new theme key `messages.message.author` (`base`, `avatar`, `name`) for the author header
@@ -167,15 +167,22 @@ appear as `role: 'tool'` messages:
   {
     id: '…',
     role: 'tool',
-    content: 'get_weather',
-    metadata: { toolCallId: 'call_1', toolCallName: 'get_weather', args: '{"location":"Paris"}' }
+    content: '18°C and sunny',
+    metadata: {
+      toolCallId: 'call_1',
+      toolCallName: 'get_weather',
+      args: '{"location":"Paris"}',
+      toolCallStatus: 'complete'
+    }
   },
   { id: '…', role: 'assistant', content: 'It is 18°C and sunny.' }
 ]
 ```
 
-Text that arrives after a tool call starts a *new* assistant message, so a
-single run can produce multiple consecutive assistant messages. The module-level
+Text events are grouped by their AG-UI `messageId`, so a single run can produce
+multiple consecutive assistant messages without collapsing their boundaries.
+Pending tool activity is displayed immediately but omitted from later AG-UI
+history until `TOOL_CALL_RESULT` supplies the actual content. The module-level
 helpers `addConversationToSession`/`updateConversationInSession` were renamed to
 `addMessageToSession`/`updateMessageInSession`; the old names are removed. See
 `src/useAgUi/README.md` for details.

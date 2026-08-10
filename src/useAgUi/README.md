@@ -55,8 +55,8 @@ ordered `Message[]`, each tagged with a `role` (`user`, `assistant`, `system`,
 
 1. When the user sends a message, the hook appends a `role: 'user'` message to the active session and sends an HTTP POST to your agent endpoint with a `RunAgentInput` payload containing the message history, tools, and context.
 2. The agent responds with a Server-Sent Events (SSE) stream of AG-UI events.
-3. The hook parses the stream in real-time, accumulating `TEXT_MESSAGE_CONTENT` deltas into the `content` of a streaming `role: 'assistant'` message so the UI updates token-by-token.
-4. On `TOOL_CALL_END` a `role: 'tool'` message is appended to the transcript, and any text that follows starts a **new** assistant message — so a run can produce multiple consecutive assistant messages.
+3. The hook parses the stream in real-time, accumulating `TEXT_MESSAGE_CONTENT` deltas by their AG-UI `messageId` so the UI updates token-by-token while preserving consecutive message boundaries.
+4. On `TOOL_CALL_END` a pending `role: 'tool'` activity message is appended to the transcript. `TOOL_CALL_RESULT` replaces its content with the actual result, which is then safe to send back in later history.
 5. Sessions and messages are managed internally — a new session is auto-created on first message if none is active.
 
 ```
@@ -77,7 +77,11 @@ Browser                          Agent Endpoint
   │ <──────────────────────────────────│   │  (appended on TOOL_CALL_END)
   │  SSE: TOOL_CALL_END                │   ┘
   │ <──────────────────────────────────│
-  │  SSE: TEXT_MESSAGE_CONTENT (delta) │   ┐
+  │  SSE: TOOL_CALL_RESULT             │
+  │ <──────────────────────────────────│
+  │  SSE: TEXT_MESSAGE_START           │   ┐
+  │ <──────────────────────────────────│   │
+  │  SSE: TEXT_MESSAGE_CONTENT (delta) │   │
   │ <──────────────────────────────────│   ├─ assistant message #2
   │  SSE: TEXT_MESSAGE_END             │   ┘
   │ <──────────────────────────────────│
@@ -94,11 +98,12 @@ The session transcript that produces looks like:
   {
     id: '…',
     role: 'tool',
-    content: 'get_weather',
+    content: '18°C and sunny',
     metadata: {
       toolCallId: 'call_1',
       toolCallName: 'get_weather',
-      args: '{"location":"Paris"}'
+      args: '{"location":"Paris"}',
+      toolCallStatus: 'complete'
     }
   },
   { id: '…', role: 'assistant', content: 'It is 18°C and sunny in Paris.' }
@@ -110,9 +115,12 @@ The session transcript that produces looks like:
 Tool activity is a first-class part of the transcript rather than text spliced
 into a response string:
 
-- `content` is the tool name.
-- `metadata` carries `{ toolCallId, toolCallName, args }` — `args` is the raw
-  accumulated JSON string from the `TOOL_CALL_ARGS` deltas.
+- While the tool is pending, `content` is the tool name and metadata includes
+  `toolCallStatus: 'pending'` so custom renderers can show activity.
+- When `TOOL_CALL_RESULT` arrives, `content` becomes the actual result and
+  `toolCallStatus` becomes `complete`.
+- `metadata` also carries `{ toolCallId, toolCallName, args }` — `args` is the
+  raw accumulated JSON string from the `TOOL_CALL_ARGS` deltas.
 - The message renders with the `theme.messages.message.tool` style. Override
   the presentation via the `SessionMessages` render prop or the
   `SessionMessage` `children` slot.
@@ -139,9 +147,10 @@ into a response string:
 ```
 
 When the history is sent back to the agent, `sessionsToAgUiMessages()` maps
-each reachat message 1:1 onto an AG-UI message by role, attaching
-`toolCallId` / `name` for tool messages. Custom roles with no AG-UI
-equivalent are sent as `assistant`.
+each completed reachat message onto an AG-UI message by role, attaching
+`toolCallId` / `name` for tool messages. Pending tool activity is omitted so a
+tool name is never sent as if it were an execution result. Custom roles with no
+AG-UI equivalent are sent as `assistant`.
 
 ## Options
 

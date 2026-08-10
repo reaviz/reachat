@@ -173,25 +173,31 @@ function toAgUiRole(role: string): AgUiRole {
  * Converts reachat Session history into AG-UI messages.
  */
 export function sessionsToAgUiMessages(session: Session): AgUiMessage[] {
-  return getSessionMessages(session).map(message => {
-    const result: AgUiMessage = {
-      id: message.id,
-      role: toAgUiRole(message.role),
-      content: message.content
-    };
+  return getSessionMessages(session)
+    .filter(
+      message =>
+        message.role !== 'tool' ||
+        message.metadata?.toolCallStatus !== 'pending'
+    )
+    .map(message => {
+      const result: AgUiMessage = {
+        id: message.id,
+        role: toAgUiRole(message.role),
+        content: message.content
+      };
 
-    if (message.role === 'tool') {
-      const { toolCallId, toolCallName } = message.metadata ?? {};
-      if (toolCallId) {
-        result.toolCallId = toolCallId;
+      if (message.role === 'tool') {
+        const { toolCallId, toolCallName } = message.metadata ?? {};
+        if (toolCallId) {
+          result.toolCallId = toolCallId;
+        }
+        if (toolCallName) {
+          result.name = toolCallName;
+        }
       }
-      if (toolCallName) {
-        result.name = toolCallName;
-      }
-    }
 
-    return result;
-  });
+      return result;
+    });
 }
 
 /**
@@ -430,35 +436,108 @@ export function useAgUi({
           );
         }
 
-        // Track the in-flight assistant message and any tool calls
-        let assistantMessageId: string | null = null;
-        let assistantText = '';
-        const toolCalls = new Map<string, { name: string; args: string }>();
+        // AG-UI message ids define stream boundaries. Keep one buffer per id
+        // so consecutive or interleaved messages remain distinct.
+        const textMessages = new Map<
+          string,
+          { content: string; role: Message['role'] }
+        >();
+        let chunkMessageId: string | null = null;
+        const toolCalls = new Map<
+          string,
+          { name: string; args: string; messageId?: string }
+        >();
 
-        // Appends a text delta, starting a new assistant message when
-        // there is not one streaming (eg. after a tool call).
-        const appendAssistantText = (delta: string) => {
-          if (assistantMessageId === null) {
-            assistantMessageId = generateId();
-            assistantText = delta;
-            const id = assistantMessageId;
-            const content = assistantText;
+        const startTextMessage = (
+          messageId: string,
+          role: Message['role'] = 'assistant'
+        ) => {
+          if (textMessages.has(messageId)) return;
+
+          textMessages.set(messageId, { content: '', role });
+          setSessions(prev =>
+            addMessageToSession(prev, sessionId, {
+              id: messageId,
+              role,
+              content: '',
+              createdAt: new Date()
+            })
+          );
+        };
+
+        const appendTextDelta = (
+          messageId: string,
+          delta: string,
+          role: Message['role'] = 'assistant'
+        ) => {
+          const textMessage = textMessages.get(messageId);
+          if (!textMessage) {
+            textMessages.set(messageId, { content: delta, role });
             setSessions(prev =>
               addMessageToSession(prev, sessionId, {
-                id,
-                role: 'assistant',
-                content,
+                id: messageId,
+                role,
+                content: delta,
                 createdAt: new Date()
               })
             );
           } else {
-            assistantText += delta;
-            const id = assistantMessageId;
-            const content = assistantText;
+            textMessage.content += delta;
             setSessions(prev =>
-              updateMessageInSession(prev, sessionId, id, content)
+              updateMessageInSession(
+                prev,
+                sessionId,
+                messageId,
+                textMessage.content
+              )
             );
           }
+        };
+
+        const upsertToolResult = (toolCallId: string, content: string) => {
+          const toolCall = toolCalls.get(toolCallId);
+          const messageId = toolCall?.messageId ?? generateId();
+
+          setSessions(prev =>
+            prev.map(session => {
+              if (session.id !== sessionId) return session;
+
+              const messages = getSessionMessages(session);
+              const existing = messages.some(
+                candidate => candidate.id === messageId
+              );
+              const updatedAt = new Date();
+              const metadata = {
+                toolCallId,
+                toolCallName: toolCall?.name,
+                args: toolCall?.args,
+                toolCallStatus: 'complete'
+              };
+
+              return {
+                ...session,
+                updatedAt,
+                messages: existing
+                  ? messages.map(candidate =>
+                      candidate.id === messageId
+                        ? { ...candidate, content, metadata, updatedAt }
+                        : candidate
+                    )
+                  : [
+                      ...messages,
+                      {
+                        id: messageId,
+                        role: 'tool',
+                        content,
+                        createdAt: updatedAt,
+                        metadata
+                      }
+                    ]
+              };
+            })
+          );
+
+          toolCalls.delete(toolCallId);
         };
 
         for await (const eventOrError of parseSSE(
@@ -474,14 +553,39 @@ export function useAgUi({
           onEventRef.current?.(event);
 
           switch (event.type) {
+            case AgUiEventType.TEXT_MESSAGE_START: {
+              startTextMessage(event.messageId, event.role ?? 'assistant');
+              break;
+            }
+
             case AgUiEventType.TEXT_MESSAGE_CONTENT: {
-              appendAssistantText(event.delta);
+              appendTextDelta(event.messageId, event.delta);
+              break;
+            }
+
+            case AgUiEventType.TEXT_MESSAGE_END: {
+              if (chunkMessageId === event.messageId) {
+                chunkMessageId = null;
+              }
               break;
             }
 
             case AgUiEventType.TEXT_MESSAGE_CHUNK: {
+              if (event.messageId) {
+                chunkMessageId = event.messageId;
+                startTextMessage(event.messageId, event.role ?? 'assistant');
+              }
+
               if (event.delta) {
-                appendAssistantText(event.delta);
+                if (chunkMessageId) {
+                  appendTextDelta(
+                    chunkMessageId,
+                    event.delta,
+                    event.role ?? 'assistant'
+                  );
+                }
+              } else if (event.delta === '') {
+                chunkMessageId = null;
               }
               break;
             }
@@ -506,23 +610,21 @@ export function useAgUi({
               const tc = toolCalls.get(event.toolCallId);
               if (tc) {
                 // Tool activity becomes its own message in the transcript
+                tc.messageId = generateId();
                 setSessions(prev =>
                   addMessageToSession(prev, sessionId, {
-                    id: generateId(),
+                    id: tc.messageId,
                     role: 'tool',
                     content: tc.name,
                     createdAt: new Date(),
                     metadata: {
                       toolCallId: event.toolCallId,
                       toolCallName: tc.name,
-                      args: tc.args
+                      args: tc.args,
+                      toolCallStatus: 'pending'
                     }
                   })
                 );
-
-                // Any text that follows starts a new assistant message
-                assistantMessageId = null;
-                assistantText = '';
 
                 if (onToolCallRef.current) {
                   try {
@@ -536,7 +638,11 @@ export function useAgUi({
                   }
                 }
               }
-              toolCalls.delete(event.toolCallId);
+              break;
+            }
+
+            case AgUiEventType.TOOL_CALL_RESULT: {
+              upsertToolResult(event.toolCallId, event.content);
               break;
             }
 
