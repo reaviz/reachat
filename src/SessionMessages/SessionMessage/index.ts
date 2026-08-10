@@ -1,4 +1,5 @@
 export * from './SessionMessage';
+export * from './MessageAuthorBadge';
 export * from './MessageSource';
 export * from './MessageActions';
 export * from './MessageFile';

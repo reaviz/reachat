@@ -199,6 +199,44 @@ guide. Default values for `user`/`assistant` are the current
 | `theme.messages.message.question/.response` | `theme.messages.message.user/.assistant` (+ new `system`, `tool`) |
 | `addConversationToSession` / `updateConversationInSession` | `addMessageToSession` / `updateMessageInSession` |
 
+## Addendum: participant identity (multi-user / multi-agent)
+
+Implemented as a follow-up on the same branch. `role` alone cannot tell two
+humans (both `role: 'user'`) or two agents apart, so `Message` gains an
+optional author:
+
+```typescript
+export interface MessageAuthor {
+  /** Stable identifier for the participant, eg. a user or agent id */
+  id?: string;
+  /** Display name rendered in the message header */
+  name: string;
+  /** Avatar for the participant — an image URL or a custom node */
+  avatar?: string | ReactNode;
+}
+
+interface Message {
+  // ...
+  author?: MessageAuthor;
+}
+```
+
+- `role` describes *what kind* of participant wrote the message (and picks
+  the presentation); `author` describes *who* (and renders identity).
+- When `author` is set, `SessionMessage` renders a `MessageAuthorBadge`
+  (avatar + name, themed via `theme.messages.message.author`) above the
+  message body — also when a custom `children` body is supplied. Opt out
+  per message with `showAuthor={false}`.
+- Custom roles are now fully assistant-like: in addition to falling back to
+  the assistant theme class, they get the `MessageActions` footer and the
+  streaming cursor (`isLast && isLoading`). `system` and `tool` still get
+  neither. This makes named agents on custom roles first-class rather than
+  a degraded assistant.
+- Multiple humans: same `role: 'user'`, different `author`s. Multiple
+  agents: shared `role: 'assistant'` or per-agent custom roles; per-agent
+  styling hangs off `message.author.id` via the render prop (see
+  `stories/MultiParty.stories.tsx`).
+
 ## Non-goals
 
 - Multi-part message content (text + images + structured blocks in one

@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 import { MessageContent } from './MessageContent';
 import { MessageSources } from './MessageSources';
 import { MessageActions } from './MessageActions';
+import { MessageAuthorBadge } from './MessageAuthorBadge';
 
 const messageVariants = {
   hidden: {
@@ -37,10 +38,16 @@ interface SessionMessageProps extends PropsWithChildren {
    * This let's the chat know when to show the loading cursor.
    */
   isLast?: boolean;
+
+  /**
+   * Whether to render the author header when `message.author` is set.
+   * @default true
+   */
+  showAuthor?: boolean;
 }
 
 export const SessionMessage = memo<SessionMessageProps>(
-  ({ message, isLast, children, className }) => {
+  ({ message, isLast, children, className, showAuthor = true }) => {
     const { theme, isLoading } = useContext(ChatContext);
     const { base, user, assistant, system, tool } = theme.messages.message;
 
@@ -51,11 +58,20 @@ export const SessionMessage = memo<SessionMessageProps>(
     }, [message.role, user, assistant, system, tool]);
 
     const isUser = message.role === 'user';
-    const isAssistant = message.role === 'assistant';
+
+    // Custom roles (eg. named agents) behave like the assistant: they get
+    // the actions footer and the streaming cursor. system/tool do not.
+    const isAssistantLike =
+      message.role !== 'user' &&
+      message.role !== 'system' &&
+      message.role !== 'tool';
 
     return (
       <motion.div key={message.id} variants={messageVariants}>
         <Card className={cn(base, className)}>
+          {showAuthor && message.author && (
+            <MessageAuthorBadge author={message.author} />
+          )}
           {children ||
             (isUser ? (
               <MessageContent
@@ -69,10 +85,10 @@ export const SessionMessage = memo<SessionMessageProps>(
                 <MessageContent
                   content={message.content}
                   className={roleClassName}
-                  isLoading={isAssistant && isLast && isLoading}
+                  isLoading={isAssistantLike && isLast && isLoading}
                 />
                 <MessageSources sources={message.sources} />
-                {isAssistant && <MessageActions message={message} />}
+                {isAssistantLike && <MessageActions message={message} />}
               </>
             ))}
         </Card>

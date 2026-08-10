@@ -63,6 +63,11 @@ export interface ChatTheme {
       assistant: string;
       system: string;
       tool: string;
+      author: {
+        base: string;
+        avatar: string;
+        name: string;
+      };
       cursor: string;
       overlay: string;
       expand: string;
@@ -249,6 +254,19 @@ export const chatTheme: ChatTheme = {
         'bg-gray-50 border-gray-200 text-gray-500',
         'dark:bg-gray-900/40 dark:border-gray-700/50 dark:text-gray-400'
       ].join(' '),
+      author: {
+        base: [
+          'mb-1 flex items-center gap-2 px-1 text-xs font-semibold',
+          'text-gray-500 dark:text-gray-400'
+        ].join(' '),
+        avatar: [
+          'flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full',
+          'bg-gray-200 dark:bg-gray-800',
+          '[&>img]:h-full [&>img]:w-full [&>img]:object-cover',
+          '[&>svg]:h-3.5 [&>svg]:w-3.5'
+        ].join(' '),
+        name: 'truncate'
+      },
       overlay:
         "overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-linear-to-b after:from-transparent dark:after:to-gray-900 after:to-gray-200",
       cursor: 'inline-block w-1 h-4 bg-current',

@@ -9,6 +9,9 @@
 - [feature] new theme keys `messages.message.system` and `messages.message.tool`
 - [feature] `useAgUi` records tool calls as `role: 'tool'` messages with `metadata: { toolCallId, toolCallName, args }`, and streams text following a tool call into a new assistant message
 - [feature] new `conversationsToMessages()` and `getSessionMessages()` utilities for normalizing session data
+- [feature] multi-user / multi-agent sessions — new `MessageAuthor` type and optional `Message.author`; `SessionMessage` renders an avatar + name header via the new `MessageAuthorBadge` component (opt out with `showAuthor={false}`)
+- [feature] new theme key `messages.message.author` (`base`, `avatar`, `name`) for the author header
+- [feature] custom message roles are now fully assistant-like — they render the `MessageActions` footer and the streaming cursor, not just the assistant theme class
 - [deprecation] `Conversation`, `Session.conversations`, `MessageQuestion` and `MessageResponse` are deprecated but still work
 
 ## Migration Guide

@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 
 export interface ConversationSource {
   /**
@@ -74,7 +74,33 @@ export interface Suggestion {
 }
 
 export type MessageRole =
-  'user' | 'assistant' | 'system' | 'tool' | (string & {});
+  | 'user'
+  | 'assistant'
+  | 'system'
+  | 'tool'
+  | (string & {});
+
+/**
+ * Identity of the participant who sent a message. Lets multiple people
+ * and multiple agents share one session — `role` describes *what kind*
+ * of participant wrote the message, `author` describes *who*.
+ */
+export interface MessageAuthor {
+  /**
+   * Stable identifier for the participant, eg. a user or agent id
+   */
+  id?: string;
+
+  /**
+   * Display name rendered in the message header
+   */
+  name: string;
+
+  /**
+   * Avatar for the participant — an image URL or a custom node
+   */
+  avatar?: string | ReactNode;
+}
 
 export interface Message {
   /**
@@ -83,9 +109,16 @@ export interface Message {
   id: string;
 
   /**
-   * Who authored the message
+   * What kind of participant authored the message
    */
   role: MessageRole;
+
+  /**
+   * Which participant authored the message. Optional — when present,
+   * `SessionMessage` renders an author header (avatar + name) so
+   * multiple people or agents can be told apart in one session.
+   */
+  author?: MessageAuthor;
 
   /**
    * Markdown content of the message

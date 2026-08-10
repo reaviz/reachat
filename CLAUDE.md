@@ -109,9 +109,20 @@ consecutive assistant messages, system notices) can be represented.
 // Core data structures in src/types.ts
 type MessageRole = 'user' | 'assistant' | 'system' | 'tool' | (string & {});
 
+/** Who sent a message — lets multiple people/agents share one session */
+interface MessageAuthor {
+  id?: string;
+  name: string;
+  /** Image URL or custom node */
+  avatar?: string | ReactNode;
+}
+
 interface Message {
   id: string;
+  /** What kind of participant wrote the message */
   role: MessageRole;
+  /** Which participant wrote it — renders an avatar + name header */
+  author?: MessageAuthor;
   /** Markdown content of the message */
   content: string;
   createdAt?: Date;
@@ -137,6 +148,18 @@ interface Session {
 
 `MessageRole` is open-ended — custom role strings are allowed and fall back to
 the assistant presentation in `SessionMessage`.
+
+#### Multi-User / Multi-Agent Sessions
+
+`role` and `author` are orthogonal: `role` picks the presentation (user
+bubble, assistant, system, tool), `author` identifies the participant. Multiple
+humans share `role: 'user'` with different authors; multiple agents either
+share `role: 'assistant'` or use custom role strings (eg. `'researcher'`).
+When `message.author` is set, `SessionMessage` renders a `MessageAuthorBadge`
+header (avatar + name) above the body — including when a custom `children`
+body is passed (opt out with `showAuthor={false}`). See
+`stories/MultiParty.stories.tsx` for multi-agent, group-chat and
+per-participant-styling demos.
 
 #### Backwards Compatibility
 
@@ -185,7 +208,11 @@ card per message. Its render prop receives the message list:
 |------|--------------|
 | `user` | files + markdown + long-content expand overlay |
 | `assistant` | markdown + `MessageSources` + `MessageActions` + loading cursor when `isLast && isLoading` |
-| `system` / `tool` / custom | assistant-style content with the role's theme class |
+| `system` / `tool` | assistant-style content with the role's theme class; no actions or cursor |
+| custom (eg. agent roles) | full assistant presentation — theme class falls back to `assistant`, and actions + loading cursor are included |
+
+Any message with an `author` additionally gets a `MessageAuthorBadge` header
+above its body.
 
 When `isLoading` is true and the last message has `role: 'user'`,
 `SessionMessages` renders a pending assistant placeholder with the blinking
@@ -230,6 +257,11 @@ messages: {
     assistant: string;  // was: response
     system: string;     // new — muted, centered informational style
     tool: string;       // new — compact style for tool activity
+    author: {           // new — MessageAuthorBadge (avatar + name header)
+      base: string;
+      avatar: string;
+      name: string;
+    };
     cursor: string;
     overlay: string;
     expand: string;
