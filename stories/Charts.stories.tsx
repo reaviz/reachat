@@ -99,12 +99,18 @@ const sessionWithCharts: Session[] = [
     title: 'Data Analysis with Charts',
     createdAt: subHours(new Date(), 1),
     updatedAt: new Date(),
-    conversations: [
+    messages: [
       {
-        id: 'conversation-1',
-        question:
+        id: 'message-1',
+        role: 'user',
+        content:
           'Can you show me the programming language popularity data as a bar chart?',
-        response: `Sure! Here's a bar chart showing the popularity of programming languages based on recent survey data:
+        createdAt: subHours(new Date(), 1)
+      },
+      {
+        id: 'message-2',
+        role: 'assistant',
+        content: `Sure! Here's a bar chart showing the popularity of programming languages based on recent survey data:
 
 \`\`\`component
 ${JSON.stringify(barChartData, null, 2)}
@@ -114,10 +120,16 @@ As you can see, JavaScript leads the pack with 35% popularity, followed by Pytho
         createdAt: subHours(new Date(), 1)
       },
       {
-        id: 'conversation-2',
-        question:
+        id: 'message-3',
+        role: 'user',
+        content:
           'What about the monthly revenue growth? Can you visualize that?',
-        response: `Absolutely! Here's a line chart showing the monthly revenue growth for the first half of the year:
+        createdAt: subHours(new Date(), 0.5)
+      },
+      {
+        id: 'message-4',
+        role: 'assistant',
+        content: `Absolutely! Here's a line chart showing the monthly revenue growth for the first half of the year:
 
 \`\`\`component
 ${JSON.stringify(lineChartData, null, 2)}
@@ -127,10 +139,16 @@ The trend shows consistent growth, with revenue increasing from $100K in January
         createdAt: subHours(new Date(), 0.5)
       },
       {
-        id: 'conversation-3',
-        question:
+        id: 'message-5',
+        role: 'user',
+        content:
           'How about device usage? A pie chart would be great for that.',
-        response: `Great choice! Pie charts are perfect for showing distribution. Here's the device usage breakdown:
+        createdAt: new Date()
+      },
+      {
+        id: 'message-6',
+        role: 'assistant',
+        content: `Great choice! Pie charts are perfect for showing distribution. Here's the device usage breakdown:
 
 \`\`\`component
 ${JSON.stringify(pieChartData, null, 2)}
@@ -149,12 +167,18 @@ const sessionWithMultipleCharts: Session[] = [
     title: 'Quarterly Report',
     createdAt: subHours(new Date(), 2),
     updatedAt: new Date(),
-    conversations: [
+    messages: [
       {
-        id: 'conversation-1',
-        question:
+        id: 'message-1',
+        role: 'user',
+        content:
           'Can you give me a comprehensive analysis with multiple charts?',
-        response: `Of course! Let me present the quarterly analysis with multiple visualizations.
+        createdAt: new Date()
+      },
+      {
+        id: 'message-2',
+        role: 'assistant',
+        content: `Of course! Let me present the quarterly analysis with multiple visualizations.
 
 ## Revenue Trend
 
@@ -266,11 +290,17 @@ export const AllChartTypes = () => {
       title: 'Chart Types Showcase',
       createdAt: subHours(new Date(), 1),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
-          id: 'conversation-1',
-          question: 'Show me all the different chart types available.',
-          response: `Here's a showcase of all available chart types:
+          id: 'message-1',
+          role: 'user',
+          content: 'Show me all the different chart types available.',
+          createdAt: new Date()
+        },
+        {
+          id: 'message-2',
+          role: 'assistant',
+          content: `Here's a showcase of all available chart types:
 
 ## Bar Chart
 \`\`\`component

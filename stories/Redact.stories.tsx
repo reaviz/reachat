@@ -45,11 +45,17 @@ I can see you've provided:
       title: 'Redaction Showcase',
       createdAt: subHours(new Date(), 1),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
-          id: 'conversation-1',
-          question: markdownQuestion,
-          response: markdownResponse,
+          id: 'message-1',
+          role: 'user',
+          content: markdownQuestion,
+          createdAt: new Date()
+        },
+        {
+          id: 'message-2',
+          role: 'assistant',
+          content: markdownResponse,
           createdAt: new Date()
         }
       ]
@@ -128,11 +134,17 @@ This example shows custom matchers:
       title: 'Custom Matchers',
       createdAt: subHours(new Date(), 1),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
-          id: 'conversation-1',
-          question: markdownQuestion,
-          response: markdownResponse,
+          id: 'message-1',
+          role: 'user',
+          content: markdownQuestion,
+          createdAt: new Date()
+        },
+        {
+          id: 'message-2',
+          role: 'assistant',
+          content: markdownResponse,
           createdAt: new Date()
         }
       ]

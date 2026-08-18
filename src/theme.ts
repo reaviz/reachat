@@ -59,8 +59,15 @@ export interface ChatTheme {
     showMore: string;
     message: {
       base: string;
-      question: string;
-      response: string;
+      user: string;
+      assistant: string;
+      system: string;
+      tool: string;
+      author: {
+        base: string;
+        avatar: string;
+        name: string;
+      };
       cursor: string;
       overlay: string;
       expand: string;
@@ -229,14 +236,37 @@ export const chatTheme: ChatTheme = {
     showMore: 'mb-4',
     message: {
       base: 'mt-4 mb-4 flex flex-col p-0 rounded-sm border-none bg-transparent',
-      question: [
+      user: [
         'relative font-semibold mb-4 px-4 py-4 pb-2 rounded-3xl rounded-br-none text-typography border bg-gray-200 border-gray-300 text-gray-900',
         'dark:bg-gray-900/60 dark:border-gray-700/50 dark:text-gray-100'
       ].join(' '),
-      response: [
+      assistant: [
         'relative data-[compact=false]:px-4 text-gray-900',
         'dark:text-gray-100'
       ].join(' '),
+      system: [
+        'relative my-2 mx-auto max-w-[80%] px-4 py-2 text-center text-sm rounded-lg',
+        'bg-gray-100 text-gray-500',
+        'dark:bg-gray-800/40 dark:text-gray-400'
+      ].join(' '),
+      tool: [
+        'relative my-1 px-3 py-2 text-xs rounded-lg border',
+        'bg-gray-50 border-gray-200 text-gray-500',
+        'dark:bg-gray-900/40 dark:border-gray-700/50 dark:text-gray-400'
+      ].join(' '),
+      author: {
+        base: [
+          'mb-1 flex items-center gap-2 px-1 text-xs font-semibold',
+          'text-gray-500 dark:text-gray-400'
+        ].join(' '),
+        avatar: [
+          'flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full',
+          'bg-gray-200 dark:bg-gray-800',
+          '[&>img]:h-full [&>img]:w-full [&>img]:object-cover',
+          '[&>svg]:h-3.5 [&>svg]:w-3.5'
+        ].join(' '),
+        name: 'truncate'
+      },
       overlay:
         "overflow-y-hidden max-h-[350px] after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-linear-to-b after:from-transparent dark:after:to-gray-900 after:to-gray-200",
       cursor: 'inline-block w-1 h-4 bg-current',

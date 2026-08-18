@@ -1,15 +1,17 @@
 import debounce from 'lodash/debounce.js';
 import { AnimatePresence, motion } from 'motion/react';
-import { Button, cn, IconButton, useInfinityList } from 'reablocks';
+import { Button, Card, cn, IconButton, useInfinityList } from 'reablocks';
 import type { ReactNode, UIEventHandler } from 'react';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import ArrowDownIcon from '@/assets/arrow-down.svg?react';
 import { ChatContext } from '@/ChatContext';
-import type { Conversation } from '@/types';
+import type { Message } from '@/types';
+import { getSessionMessages } from '@/utils/messages';
 
 import { SessionEmpty } from './SessionEmpty';
 import { SessionMessage } from './SessionMessage/SessionMessage';
+import { MessageContent } from './SessionMessage/MessageContent';
 
 const containerVariants = {
   hidden: {},
@@ -58,7 +60,7 @@ interface SessionMessagesProps {
   /**
    * Render function for the session messages.
    */
-  children?: (conversations: Conversation[]) => ReactNode;
+  children?: (messages: Message[]) => ReactNode;
 
   /**
    * Whether to show the load more button.
@@ -96,7 +98,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
   onScroll,
   onLoadMore
 }) => {
-  const { activeSession, theme } = useContext(ChatContext);
+  const { activeSession, theme, isLoading } = useContext(ChatContext);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const messagesRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
@@ -146,22 +148,30 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
     }
   };
 
-  // Reverse the conversations so the last one is the first one
-  const reversedConvos = useMemo(
-    () => [...(activeSession?.conversations ?? [])].reverse(),
+  // Normalize the session into a flat list of messages
+  const messages = useMemo(
+    () => getSessionMessages(activeSession),
     [activeSession]
   );
 
+  // Reverse the messages so the last one is the first one
+  const reversedMessages = useMemo(() => [...messages].reverse(), [messages]);
+
   const { data, hasMore, showNext } = useInfinityList({
-    items: reversedConvos,
+    items: reversedMessages,
     size: limit
   });
 
   // Reverse the data to the last one last now
-  const reReversedConvo = useMemo(() => [...data].reverse(), [data]);
+  const reReversedMessages = useMemo(() => [...data].reverse(), [data]);
 
-  // If we are not paging, just return the conversations
-  const convosToRender = limit ? reReversedConvo : activeSession?.conversations;
+  // If we are not paging, just return all the messages
+  const messagesToRender = limit ? reReversedMessages : messages;
+
+  // When the agent is working and the last message is from the user,
+  // render a pending assistant placeholder with the loading cursor.
+  const showPendingMessage =
+    isLoading && messages[messages.length - 1]?.role === 'user';
 
   if (!activeSession) {
     return <SessionEmpty>{newSessionContent}</SessionEmpty>;
@@ -204,14 +214,23 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
             }
           >
             {children
-              ? children(convosToRender)
-              : convosToRender.map((conversation, index) => (
+              ? children(messagesToRender)
+              : messagesToRender.map((message, index) => (
                   <SessionMessage
-                    key={conversation.id}
-                    conversation={conversation}
-                    isLast={index === convosToRender.length - 1}
+                    key={message.id}
+                    message={message}
+                    isLast={index === messagesToRender.length - 1}
                   />
                 ))}
+            {showPendingMessage && (
+              <Card className={cn(theme.messages.message.base)}>
+                <MessageContent
+                  content=""
+                  className={theme.messages.message.assistant}
+                  isLoading
+                />
+              </Card>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>

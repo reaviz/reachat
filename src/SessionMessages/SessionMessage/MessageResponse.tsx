@@ -1,10 +1,6 @@
-import { ChatContext } from '@/ChatContext';
-import { Slot } from '@radix-ui/react-slot';
-import { motion } from 'motion/react';
-import { cn } from 'reablocks';
 import { memo, PropsWithChildren, useContext } from 'react';
-import { Markdown } from '@/Markdown';
-import { Plugin } from 'unified';
+import { ChatContext } from '@/ChatContext';
+import { MessageContent } from './MessageContent';
 
 export interface MessageResponseProps extends PropsWithChildren {
   /**
@@ -18,39 +14,23 @@ export interface MessageResponseProps extends PropsWithChildren {
   isLoading?: boolean;
 }
 
+/**
+ * @deprecated Use `SessionMessage` with a `role: 'assistant'` message instead.
+ */
 export const MessageResponse = memo<MessageResponseProps>(
   ({ response, isLoading, children }) => {
-    const { theme, isCompact, remarkPlugins, markdownComponents } =
-      useContext(ChatContext);
-    const Comp = children ? Slot : 'div';
+    const { theme } = useContext(ChatContext);
+
     return (
-      <Comp
-        data-compact={isCompact}
-        className={cn(theme.messages.message.response)}
+      <MessageContent
+        content={response}
+        className={theme.messages.message.assistant}
+        isLoading={isLoading}
       >
-        {children || (
-          <>
-            <Markdown
-              remarkPlugins={remarkPlugins as Plugin[]}
-              theme={theme.messages.message.markdown}
-              customComponents={markdownComponents}
-            >
-              {response}
-            </Markdown>
-            {isLoading && (
-              <motion.div
-                className={cn(theme.messages.message.cursor)}
-                animate={{ opacity: [1, 0] }}
-                transition={{
-                  duration: 0.7,
-                  repeat: Infinity,
-                  repeatType: 'reverse'
-                }}
-              />
-            )}
-          </>
-        )}
-      </Comp>
+        {children}
+      </MessageContent>
     );
   }
 );
+
+MessageResponse.displayName = 'MessageResponse';

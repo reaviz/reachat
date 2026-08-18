@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Session, Conversation } from '@/types';
+import { Message, Session } from '@/types';
+import { getSessionMessages } from '@/utils/messages';
 import {
   AgUiEvent,
   AgUiEventType,
   AgUiContext,
   AgUiMessage,
+  AgUiRole,
   AgUiRunAgentInput,
   AgUiTool,
   AgUiToolCallInfo
@@ -108,60 +110,94 @@ function generateId(): string {
   return Math.random().toString(36).substring(2, 11);
 }
 
-export function addConversationToSession(
+/**
+ * Appends a message to the given session.
+ */
+export function addMessageToSession(
   sessions: Session[],
   sessionId: string,
-  conversation: Conversation
+  message: Message
 ): Session[] {
   return sessions.map(s => {
     if (s.id !== sessionId) return s;
     return {
       ...s,
-      updatedAt: conversation.createdAt,
-      conversations: [...s.conversations, conversation]
-    };
-  });
-}
-
-export function updateConversationInSession(
-  sessions: Session[],
-  sessionId: string,
-  conversationId: string,
-  response: string
-): Session[] {
-  return sessions.map(s => {
-    if (s.id !== sessionId) return s;
-    return {
-      ...s,
-      updatedAt: new Date(),
-      conversations: s.conversations.map(c => {
-        if (c.id !== conversationId) return c;
-        return { ...c, response, updatedAt: new Date() };
-      })
+      updatedAt: message.createdAt ?? new Date(),
+      messages: [...getSessionMessages(s), message]
     };
   });
 }
 
 /**
- * Converts reachat Session/Conversation history into AG-UI messages.
+ * Replaces the content of a message within the given session.
+ */
+export function updateMessageInSession(
+  sessions: Session[],
+  sessionId: string,
+  messageId: string,
+  content: string
+): Session[] {
+  return sessions.map(s => {
+    if (s.id !== sessionId) return s;
+    const updatedAt = new Date();
+    return {
+      ...s,
+      updatedAt,
+      messages: getSessionMessages(s).map(m => {
+        if (m.id !== messageId) return m;
+        return { ...m, content, updatedAt };
+      })
+    };
+  });
+}
+
+const AG_UI_ROLES: AgUiRole[] = [
+  'developer',
+  'system',
+  'assistant',
+  'user',
+  'tool'
+];
+
+/**
+ * Maps a reachat message role onto an AG-UI role. Custom roles that have
+ * no AG-UI equivalent are sent as `assistant`.
+ */
+function toAgUiRole(role: string): AgUiRole {
+  return AG_UI_ROLES.includes(role as AgUiRole)
+    ? (role as AgUiRole)
+    : 'assistant';
+}
+
+/**
+ * Converts reachat Session history into AG-UI messages.
  */
 export function sessionsToAgUiMessages(session: Session): AgUiMessage[] {
-  const messages: AgUiMessage[] = [];
-  for (const conv of session.conversations) {
-    messages.push({
-      id: `${conv.id}-q`,
-      role: 'user',
-      content: conv.question
+  return getSessionMessages(session)
+    .filter(
+      message =>
+        message.role !== 'tool' ||
+        message.metadata?.toolCallStatus !== 'pending'
+    )
+    .map(message => {
+      const result: AgUiMessage = {
+        id: message.id,
+        role: toAgUiRole(message.role),
+        content: message.content
+      };
+
+      if (message.role === 'tool') {
+        const { toolCallId, toolCallName } = message.metadata ?? {};
+        if (toolCallId) {
+          result.toolCallId = toolCallId;
+        }
+        if (toolCallName) {
+          result.name = toolCallName;
+        }
+      }
+
+      return result;
     });
-    if (conv.response) {
-      messages.push({
-        id: `${conv.id}-r`,
-        role: 'assistant',
-        content: conv.response
-      });
-    }
-  }
-  return messages;
 }
 
 /**
@@ -308,7 +344,7 @@ export function useAgUi({
       title: 'New Session',
       createdAt: new Date(),
       updatedAt: new Date(),
-      conversations: []
+      messages: []
     };
     setSessions(prev => [newSession, ...prev]);
     setActiveSessionId(id);
@@ -337,20 +373,21 @@ export function useAgUi({
           title: message.slice(0, 50),
           createdAt: new Date(),
           updatedAt: new Date(),
-          conversations: []
+          messages: []
         };
         setSessions(prev => [newSession, ...prev]);
         setActiveSessionId(sessionId);
       }
 
-      const conversationId = generateId();
+      const userMessageId = generateId();
       const now = new Date();
 
-      // Add the user's question immediately
+      // Add the user's message immediately
       setSessions(prev =>
-        addConversationToSession(prev, sessionId, {
-          id: conversationId,
-          question: message,
+        addMessageToSession(prev, sessionId, {
+          id: userMessageId,
+          role: 'user',
+          content: message,
           createdAt: now
         })
       );
@@ -358,18 +395,14 @@ export function useAgUi({
       setIsLoading(true);
 
       // Build the history for the agent
-      const currentSession = [
-        ...(sessions.find(s => s.id === sessionId)?.conversations ?? [])
-      ];
-
-      const historyMessages = sessionsToAgUiMessages({
-        id: sessionId,
-        conversations: currentSession
-      });
+      const currentSession = sessions.find(s => s.id === sessionId);
+      const historyMessages = currentSession
+        ? sessionsToAgUiMessages(currentSession)
+        : [];
 
       // Add the new message
       historyMessages.push({
-        id: `${conversationId}-q`,
+        id: userMessageId,
         role: 'user',
         content: message
       });
@@ -403,15 +436,108 @@ export function useAgUi({
           );
         }
 
-        // Track streaming response text and tool calls
-        let responseText = '';
-        const toolCalls = new Map<string, { name: string; args: string }>();
+        // AG-UI message ids define stream boundaries. Keep one buffer per id
+        // so consecutive or interleaved messages remain distinct.
+        const textMessages = new Map<
+          string,
+          { content: string; role: Message['role'] }
+        >();
+        let chunkMessageId: string | null = null;
+        const toolCalls = new Map<
+          string,
+          { name: string; args: string; messageId?: string }
+        >();
 
-        // Helper to update the conversation response in-place
-        const updateResponse = (text: string) => {
+        const startTextMessage = (
+          messageId: string,
+          role: Message['role'] = 'assistant'
+        ) => {
+          if (textMessages.has(messageId)) return;
+
+          textMessages.set(messageId, { content: '', role });
           setSessions(prev =>
-            updateConversationInSession(prev, sessionId, conversationId, text)
+            addMessageToSession(prev, sessionId, {
+              id: messageId,
+              role,
+              content: '',
+              createdAt: new Date()
+            })
           );
+        };
+
+        const appendTextDelta = (
+          messageId: string,
+          delta: string,
+          role: Message['role'] = 'assistant'
+        ) => {
+          const textMessage = textMessages.get(messageId);
+          if (!textMessage) {
+            textMessages.set(messageId, { content: delta, role });
+            setSessions(prev =>
+              addMessageToSession(prev, sessionId, {
+                id: messageId,
+                role,
+                content: delta,
+                createdAt: new Date()
+              })
+            );
+          } else {
+            textMessage.content += delta;
+            setSessions(prev =>
+              updateMessageInSession(
+                prev,
+                sessionId,
+                messageId,
+                textMessage.content
+              )
+            );
+          }
+        };
+
+        const upsertToolResult = (toolCallId: string, content: string) => {
+          const toolCall = toolCalls.get(toolCallId);
+          const messageId = toolCall?.messageId ?? generateId();
+
+          setSessions(prev =>
+            prev.map(session => {
+              if (session.id !== sessionId) return session;
+
+              const messages = getSessionMessages(session);
+              const existing = messages.some(
+                candidate => candidate.id === messageId
+              );
+              const updatedAt = new Date();
+              const metadata = {
+                toolCallId,
+                toolCallName: toolCall?.name,
+                args: toolCall?.args,
+                toolCallStatus: 'complete'
+              };
+
+              return {
+                ...session,
+                updatedAt,
+                messages: existing
+                  ? messages.map(candidate =>
+                      candidate.id === messageId
+                        ? { ...candidate, content, metadata, updatedAt }
+                        : candidate
+                    )
+                  : [
+                      ...messages,
+                      {
+                        id: messageId,
+                        role: 'tool',
+                        content,
+                        createdAt: updatedAt,
+                        metadata
+                      }
+                    ]
+              };
+            })
+          );
+
+          toolCalls.delete(toolCallId);
         };
 
         for await (const eventOrError of parseSSE(
@@ -427,16 +553,39 @@ export function useAgUi({
           onEventRef.current?.(event);
 
           switch (event.type) {
+            case AgUiEventType.TEXT_MESSAGE_START: {
+              startTextMessage(event.messageId, event.role ?? 'assistant');
+              break;
+            }
+
             case AgUiEventType.TEXT_MESSAGE_CONTENT: {
-              responseText += event.delta;
-              updateResponse(responseText);
+              appendTextDelta(event.messageId, event.delta);
+              break;
+            }
+
+            case AgUiEventType.TEXT_MESSAGE_END: {
+              if (chunkMessageId === event.messageId) {
+                chunkMessageId = null;
+              }
               break;
             }
 
             case AgUiEventType.TEXT_MESSAGE_CHUNK: {
+              if (event.messageId) {
+                chunkMessageId = event.messageId;
+                startTextMessage(event.messageId, event.role ?? 'assistant');
+              }
+
               if (event.delta) {
-                responseText += event.delta;
-                updateResponse(responseText);
+                if (chunkMessageId) {
+                  appendTextDelta(
+                    chunkMessageId,
+                    event.delta,
+                    event.role ?? 'assistant'
+                  );
+                }
+              } else if (event.delta === '') {
+                chunkMessageId = null;
               }
               break;
             }
@@ -459,18 +608,41 @@ export function useAgUi({
 
             case AgUiEventType.TOOL_CALL_END: {
               const tc = toolCalls.get(event.toolCallId);
-              if (tc && onToolCallRef.current) {
-                try {
-                  await onToolCallRef.current({
-                    toolCallId: event.toolCallId,
-                    toolCallName: tc.name,
-                    args: tc.args
-                  });
-                } catch {
-                  // Tool call handler errors are non-fatal
+              if (tc) {
+                // Tool activity becomes its own message in the transcript
+                tc.messageId = generateId();
+                setSessions(prev =>
+                  addMessageToSession(prev, sessionId, {
+                    id: tc.messageId,
+                    role: 'tool',
+                    content: tc.name,
+                    createdAt: new Date(),
+                    metadata: {
+                      toolCallId: event.toolCallId,
+                      toolCallName: tc.name,
+                      args: tc.args,
+                      toolCallStatus: 'pending'
+                    }
+                  })
+                );
+
+                if (onToolCallRef.current) {
+                  try {
+                    await onToolCallRef.current({
+                      toolCallId: event.toolCallId,
+                      toolCallName: tc.name,
+                      args: tc.args
+                    });
+                  } catch {
+                    // Tool call handler errors are non-fatal
+                  }
                 }
               }
-              toolCalls.delete(event.toolCallId);
+              break;
+            }
+
+            case AgUiEventType.TOOL_CALL_RESULT: {
+              upsertToolResult(event.toolCallId, event.content);
               break;
             }
 

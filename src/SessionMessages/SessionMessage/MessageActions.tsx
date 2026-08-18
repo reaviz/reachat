@@ -9,6 +9,7 @@ import {
   useCallback,
   useContext
 } from 'react';
+import { Message } from '@/types';
 import CopyIcon from '@/assets/copy.svg?react';
 import ThumbsDownIcon from '@/assets/thumbs-down.svg?react';
 import ThumbUpIcon from '@/assets/thumbs-up.svg?react';
@@ -16,14 +17,9 @@ import RefreshIcon from '@/assets/refresh.svg?react';
 
 export interface MessageActionsProps extends PropsWithChildren {
   /**
-   * Question to be copied
+   * Message the actions apply to.
    */
-  question: string;
-
-  /**
-   * Response to be copied
-   */
-  response?: string;
+  message: Message;
 
   /**
    * Icon to show for copy.
@@ -70,8 +66,7 @@ export const MessageActions = memo<MessageActionsProps>(
   ({ children, ...props }) => {
     const { theme } = useContext(ChatContext);
     const {
-      question,
-      response,
+      message,
       copyIcon = <CopyIcon />,
       thumbsUpIcon = <ThumbUpIcon />,
       thumbsDownIcon = <ThumbsDownIcon />,
@@ -98,9 +93,9 @@ export const MessageActions = memo<MessageActionsProps>(
       if (onCopy) {
         onCopy();
       } else {
-        handleCopy(`${question}${response ? `\n${response}` : ''}`);
+        handleCopy(message?.content ?? '');
       }
-    }, [onCopy, handleCopy, question, response]);
+    }, [onCopy, handleCopy, message]);
 
     return (
       (copyIcon || thumbsDownIcon || thumbsUpIcon || refreshIcon) && (
@@ -111,7 +106,7 @@ export const MessageActions = memo<MessageActionsProps>(
                 <IconButton
                   variant="text"
                   disablePadding
-                  title="Copy question and response"
+                  title="Copy message"
                   className={cn(theme.messages.message.footer.copy)}
                   onClick={handleCopyClick}
                 >

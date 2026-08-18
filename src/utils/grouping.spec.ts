@@ -9,7 +9,7 @@ describe('groupSessionsByDate', () => {
     createdAt: subDays(new Date(), daysAgo),
     updatedAt: subDays(new Date(), daysAgo),
     title: `Test Session ${daysAgo} days ago`,
-    conversations: []
+    messages: []
   });
 
   beforeEach(() => {

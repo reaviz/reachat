@@ -1,11 +1,7 @@
+import { memo, PropsWithChildren, useContext } from 'react';
 import { ChatContext } from '@/ChatContext';
-import { Slot } from '@radix-ui/react-slot';
-import { Button, cn } from 'reablocks';
-import { memo, PropsWithChildren, useContext, useState } from 'react';
-import { Markdown } from '@/Markdown';
-import { Plugin } from 'unified';
-import { MessageFiles } from './MessageFiles';
 import { ConversationFile } from '@/types';
+import { MessageContent } from './MessageContent';
 
 export interface MessageQuestionProps extends PropsWithChildren {
   /**
@@ -14,50 +10,27 @@ export interface MessageQuestionProps extends PropsWithChildren {
   question: string;
 
   /**
-   * Array of sources referenced in the conversation
+   * Array of files attached to the question.
    */
   files?: ConversationFile[];
 }
 
+/**
+ * @deprecated Use `SessionMessage` with a `role: 'user'` message instead.
+ */
 export const MessageQuestion = memo<MessageQuestionProps>(
-  ({ children, ...props }) => {
-    const { theme, remarkPlugins, markdownComponents } =
-      useContext(ChatContext);
-    const { question, files } = props;
-    const Comp = children ? Slot : 'div';
-    const [expanded, setExpanded] = useState(false);
-    const isLong = question.length > 500;
+  ({ question, files, children }) => {
+    const { theme } = useContext(ChatContext);
 
     return (
-      <Comp
-        className={cn(theme.messages.message.question, {
-          [theme.messages.message.overlay]: isLong && !expanded
-        })}
-        {...props}
+      <MessageContent
+        content={question}
+        className={theme.messages.message.user}
+        files={files}
+        expandable
       >
-        {children || (
-          <>
-            <MessageFiles files={files} />
-            <Markdown
-              remarkPlugins={remarkPlugins as Plugin[]}
-              theme={theme.messages.message.markdown}
-              customComponents={markdownComponents}
-            >
-              {question}
-            </Markdown>
-            {isLong && !expanded && (
-              <Button
-                variant="link"
-                size="small"
-                className={theme.messages.message.expand}
-                onClick={() => setExpanded(true)}
-              >
-                Show more
-              </Button>
-            )}
-          </>
-        )}
-      </Comp>
+        {children}
+      </MessageContent>
     );
   }
 );

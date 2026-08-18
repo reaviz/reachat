@@ -49,10 +49,15 @@ function App() {
 
 ## How It Works
 
-1. When the user sends a message, the hook sends an HTTP POST to your agent endpoint with a `RunAgentInput` payload containing the conversation history, tools, and context.
+The hook is built on reachat's message data model: a `Session` holds a flat,
+ordered `Message[]`, each tagged with a `role` (`user`, `assistant`, `system`,
+`tool`).
+
+1. When the user sends a message, the hook appends a `role: 'user'` message to the active session and sends an HTTP POST to your agent endpoint with a `RunAgentInput` payload containing the message history, tools, and context.
 2. The agent responds with a Server-Sent Events (SSE) stream of AG-UI events.
-3. The hook parses the stream in real-time, accumulating `TEXT_MESSAGE_CONTENT` deltas into the conversation response so the UI updates token-by-token.
-4. Sessions and conversations are managed internally — a new session is auto-created on first message if none is active.
+3. The hook parses the stream in real-time, accumulating `TEXT_MESSAGE_CONTENT` deltas by their AG-UI `messageId` so the UI updates token-by-token while preserving consecutive message boundaries.
+4. On `TOOL_CALL_END` a pending `role: 'tool'` activity message is appended to the transcript. `TOOL_CALL_RESULT` replaces its content with the actual result, which is then safe to send back in later history.
+5. Sessions and messages are managed internally — a new session is auto-created on first message if none is active.
 
 ```
 Browser                          Agent Endpoint
@@ -61,16 +66,91 @@ Browser                          Agent Endpoint
   │ ──────────────────────────────────>│
   │                                    │
   │  SSE: TEXT_MESSAGE_START           │
+  │ <──────────────────────────────────│   ┐
+  │  SSE: TEXT_MESSAGE_CONTENT (delta) │   ├─ assistant message #1
+  │ <──────────────────────────────────│   │  (content grows per delta)
+  │  SSE: TEXT_MESSAGE_CONTENT (delta) │   │
+  │ <──────────────────────────────────│   ┘
+  │  SSE: TOOL_CALL_START              │
+  │ <──────────────────────────────────│   ┐
+  │  SSE: TOOL_CALL_ARGS (delta)       │   ├─ tool message
+  │ <──────────────────────────────────│   │  (appended on TOOL_CALL_END)
+  │  SSE: TOOL_CALL_END                │   ┘
   │ <──────────────────────────────────│
-  │  SSE: TEXT_MESSAGE_CONTENT (delta) │
+  │  SSE: TOOL_CALL_RESULT             │
   │ <──────────────────────────────────│
-  │  SSE: TEXT_MESSAGE_CONTENT (delta) │
-  │ <──────────────────────────────────│
-  │  SSE: TEXT_MESSAGE_END             │
+  │  SSE: TEXT_MESSAGE_START           │   ┐
+  │ <──────────────────────────────────│   │
+  │  SSE: TEXT_MESSAGE_CONTENT (delta) │   │
+  │ <──────────────────────────────────│   ├─ assistant message #2
+  │  SSE: TEXT_MESSAGE_END             │   ┘
   │ <──────────────────────────────────│
   │  SSE: RUN_FINISHED                 │
   │ <──────────────────────────────────│
 ```
+
+The session transcript that produces looks like:
+
+```ts
+[
+  { id: '…', role: 'user', content: 'What is the weather in Paris?' },
+  { id: '…', role: 'assistant', content: 'Let me check that for you.' },
+  {
+    id: '…',
+    role: 'tool',
+    content: '18°C and sunny',
+    metadata: {
+      toolCallId: 'call_1',
+      toolCallName: 'get_weather',
+      args: '{"location":"Paris"}',
+      toolCallStatus: 'complete'
+    }
+  },
+  { id: '…', role: 'assistant', content: 'It is 18°C and sunny in Paris.' }
+];
+```
+
+### Tool Messages
+
+Tool activity is a first-class part of the transcript rather than text spliced
+into a response string:
+
+- While the tool is pending, `content` is the tool name and metadata includes
+  `toolCallStatus: 'pending'` so custom renderers can show activity.
+- When `TOOL_CALL_RESULT` arrives, `content` becomes the actual result and
+  `toolCallStatus` becomes `complete`.
+- `metadata` also carries `{ toolCallId, toolCallName, args }` — `args` is the
+  raw accumulated JSON string from the `TOOL_CALL_ARGS` deltas.
+- The message renders with the `theme.messages.message.tool` style. Override
+  the presentation via the `SessionMessages` render prop or the
+  `SessionMessage` `children` slot.
+
+```tsx
+<SessionMessages>
+  {messages =>
+    messages.map((message, i) => (
+      <SessionMessage
+        key={message.id}
+        message={message}
+        isLast={i === messages.length - 1}
+      >
+        {message.role === 'tool' ? (
+          <ToolCallCard
+            name={message.metadata?.toolCallName}
+            args={message.metadata?.args}
+          />
+        ) : undefined}
+      </SessionMessage>
+    ))
+  }
+</SessionMessages>
+```
+
+When the history is sent back to the agent, `sessionsToAgUiMessages()` maps
+each completed reachat message onto an AG-UI message by role, attaching
+`toolCallId` / `name` for tool messages. Pending tool activity is omitted so a
+tool name is never sent as if it were an execution result. Custom roles with no
+AG-UI equivalent are sent as `assistant`.
 
 ## Options
 
@@ -138,7 +218,7 @@ const agui = useAgUi({
 
 ### With Tool Calls
 
-Define tools using JSON Schema parameters and handle them with the `onToolCall` callback:
+Define tools using JSON Schema parameters and handle them with the `onToolCall` callback. The hook also appends a `role: 'tool'` message to the session for every completed call, so the tool activity shows up in the transcript whether or not you supply a callback:
 
 ```tsx
 const agui = useAgUi({
@@ -159,17 +239,17 @@ const agui = useAgUi({
   onToolCall: async toolCall => {
     if (toolCall.toolCallName === 'get_weather') {
       const { location } = JSON.parse(toolCall.args);
-      const weather = await fetchWeather(location);
-      return JSON.stringify(weather);
+      await fetchWeather(location);
     }
-    return '{}';
   }
 });
 ```
 
+`onToolCall` is a side-effect hook — its return value is ignored and thrown errors are swallowed as non-fatal.
+
 ### With Context
 
-Send additional context to the agent alongside the conversation history:
+Send additional context to the agent alongside the message history:
 
 ```tsx
 const agui = useAgUi({
@@ -213,7 +293,7 @@ const agui = useAgUi({
 
 ### Pre-populated Sessions
 
-Start with existing conversation history:
+Start with existing message history:
 
 ```tsx
 const agui = useAgUi({
@@ -224,11 +304,17 @@ const agui = useAgUi({
       title: 'Previous chat',
       createdAt: new Date(),
       updatedAt: new Date(),
-      conversations: [
+      messages: [
         {
-          id: 'conv-1',
-          question: 'Hello!',
-          response: 'Hi there! How can I help?',
+          id: 'msg-1',
+          role: 'user',
+          content: 'Hello!',
+          createdAt: new Date()
+        },
+        {
+          id: 'msg-2',
+          role: 'assistant',
+          content: 'Hi there! How can I help?',
           createdAt: new Date()
         }
       ]
@@ -238,19 +324,21 @@ const agui = useAgUi({
 });
 ```
 
+Legacy sessions using the deprecated `conversations` array are still accepted — they are converted to messages internally via `getSessionMessages()`, so no changes are required to keep an existing app working.
+
 ## Supported AG-UI Events
 
 The hook handles the following AG-UI event types:
 
-| Event                  | Behavior                                    |
-| ---------------------- | ------------------------------------------- |
-| `TEXT_MESSAGE_CONTENT` | Appends delta to the streaming response     |
-| `TEXT_MESSAGE_CHUNK`   | Same as above (convenience event)           |
-| `TOOL_CALL_START`      | Begins tracking a tool call                 |
-| `TOOL_CALL_ARGS`       | Accumulates streamed tool arguments         |
-| `TOOL_CALL_END`        | Invokes `onToolCall` with the complete call |
-| `RUN_ERROR`            | Invokes `onError` callback                  |
-| `RUN_FINISHED`         | Marks the run as complete                   |
+| Event                  | Behavior                                                                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TEXT_MESSAGE_CONTENT` | Appends delta to the streaming `assistant` message, creating one if none is in flight                                                       |
+| `TEXT_MESSAGE_CHUNK`   | Same as above (convenience event)                                                                                                           |
+| `TOOL_CALL_START`      | Begins tracking a tool call                                                                                                                 |
+| `TOOL_CALL_ARGS`       | Accumulates streamed tool arguments                                                                                                         |
+| `TOOL_CALL_END`        | Appends a `tool` message with `metadata: { toolCallId, toolCallName, args }`, ends the current assistant message, then invokes `onToolCall` |
+| `RUN_ERROR`            | Invokes `onError` callback                                                                                                                  |
+| `RUN_FINISHED`         | Marks the run as complete                                                                                                                   |
 
 Other events (`RUN_STARTED`, `STEP_STARTED`, `STEP_FINISHED`, `STATE_SNAPSHOT`, etc.) are passed through to the `onEvent` callback but don't affect the chat state directly.
 
