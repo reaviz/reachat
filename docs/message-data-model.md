@@ -229,8 +229,9 @@ interface Message {
   the presentation); `author` describes *who* (and renders identity).
 - When `author` is set, `SessionMessage` renders a `MessageAuthorBadge`
   (avatar + name, themed via `theme.messages.message.author`) above the
-  message body — also when a custom `children` body is supplied. Opt out
-  per message with `showAuthor={false}`.
+  default message body. Opt out per message with `showAuthor={false}`. Custom
+  `children` replace the entire default template; compose the exported
+  `MessageAuthorBadge` when a custom template should retain the author header.
 - Custom roles are now fully assistant-like: in addition to falling back to
   the assistant theme class, they get the `MessageActions` footer and the
   streaming cursor (`isLast && isLoading`). `system` and `tool` still get

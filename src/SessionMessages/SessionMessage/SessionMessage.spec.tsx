@@ -113,7 +113,7 @@ describe('SessionMessage', () => {
       expect(screen.queryByText('Austin')).toBeNull();
     });
 
-    it('renders the header even with custom children', () => {
+    it('lets custom children replace the author header', () => {
       renderMessage(
         {
           id: 'm1',
@@ -125,7 +125,7 @@ describe('SessionMessage', () => {
       );
 
       expect(screen.getByTestId('custom')).toBeDefined();
-      expect(screen.getByText('Researcher')).toBeDefined();
+      expect(screen.queryByText('Researcher')).toBeNull();
     });
   });
 
@@ -153,6 +153,42 @@ describe('SessionMessage', () => {
       renderMessage({ id: 'm2', role: 'tool', content: 'ran query' });
 
       expect(screen.queryByTitle('Copy message')).toBeNull();
+    });
+
+    it('renders sources for assistant and custom agent roles', () => {
+      renderMessage({
+        id: 'm1',
+        role: 'assistant',
+        content: 'hi',
+        sources: [{ title: 'Assistant source' }]
+      });
+      renderMessage({
+        id: 'm2',
+        role: 'researcher',
+        content: 'hi',
+        sources: [{ title: 'Agent source' }]
+      });
+
+      expect(screen.getByText('Assistant source')).toBeDefined();
+      expect(screen.getByText('Agent source')).toBeDefined();
+    });
+
+    it('does not render sources for system or tool messages', () => {
+      renderMessage({
+        id: 'm1',
+        role: 'system',
+        content: 'connected',
+        sources: [{ title: 'System source' }]
+      });
+      renderMessage({
+        id: 'm2',
+        role: 'tool',
+        content: 'ran query',
+        sources: [{ title: 'Tool source' }]
+      });
+
+      expect(screen.queryByText('System source')).toBeNull();
+      expect(screen.queryByText('Tool source')).toBeNull();
     });
   });
 

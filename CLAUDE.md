@@ -156,10 +156,11 @@ bubble, assistant, system, tool), `author` identifies the participant. Multiple
 humans share `role: 'user'` with different authors; multiple agents either
 share `role: 'assistant'` or use custom role strings (eg. `'researcher'`).
 When `message.author` is set, `SessionMessage` renders a `MessageAuthorBadge`
-header (avatar + name) above the body — including when a custom `children`
-body is passed (opt out with `showAuthor={false}`). See
-`stories/MultiParty.stories.tsx` for multi-agent, group-chat and
-per-participant-styling demos.
+header (avatar + name) above the default body (opt out with
+`showAuthor={false}`). Custom `children` replace the whole default template;
+compose the exported `MessageAuthorBadge` when a custom template should retain
+the author header. See `stories/MultiParty.stories.tsx` for multi-agent,
+group-chat and per-participant-styling demos.
 
 #### Backwards Compatibility
 

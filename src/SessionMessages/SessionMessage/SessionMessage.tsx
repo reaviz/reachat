@@ -69,28 +69,33 @@ export const SessionMessage = memo<SessionMessageProps>(
     return (
       <motion.div key={message.id} variants={messageVariants}>
         <Card className={cn(base, className)}>
-          {showAuthor && message.author && (
-            <MessageAuthorBadge author={message.author} />
-          )}
-          {children ||
-            (isUser ? (
-              <MessageContent
-                content={message.content}
-                className={roleClassName}
-                files={message.files}
-                expandable
-              />
-            ) : (
-              <>
+          {children || (
+            <>
+              {showAuthor && message.author && (
+                <MessageAuthorBadge author={message.author} />
+              )}
+              {isUser ? (
                 <MessageContent
                   content={message.content}
                   className={roleClassName}
-                  isLoading={isAssistantLike && isLast && isLoading}
+                  files={message.files}
+                  expandable
                 />
-                <MessageSources sources={message.sources} />
-                {isAssistantLike && <MessageActions message={message} />}
-              </>
-            ))}
+              ) : (
+                <>
+                  <MessageContent
+                    content={message.content}
+                    className={roleClassName}
+                    isLoading={isAssistantLike && isLast && isLoading}
+                  />
+                  {isAssistantLike && (
+                    <MessageSources sources={message.sources} />
+                  )}
+                  {isAssistantLike && <MessageActions message={message} />}
+                </>
+              )}
+            </>
+          )}
         </Card>
       </motion.div>
     );
