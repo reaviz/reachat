@@ -1,4 +1,4 @@
-# 4.0.0 - 8/9/26
+# 4.0.0 - 8/19/26
 - [breaking] replace the question/response `Conversation` model with a flat, role-based `Message` list to support agentic workflows
 - [breaking] `SessionMessage` prop `conversation` renamed to `message`; rendering is now driven by `message.role`
 - [breaking] `SessionMessages` render prop now receives `Message[]` instead of `Conversation[]`
